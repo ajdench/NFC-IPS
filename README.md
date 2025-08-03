@@ -18,7 +18,7 @@ This project is intended for concept development, refinement, and distribution v
 
 To use this viewer, you will need an NFC tag encoded with a URI that includes your Base64 encoded IPS JSON. For example:
 
-`https://ajdench.github.io/nfc-ips/eyJrZXkiOiJ2YWx1ZSJ9` (where `eyJrZXkiOiJ2YWx1ZSI=` is Base64 for `{"key":"value"}`)
+`https://ajdench.github.io/nfc-ips/eyJrZXkiOiJ2YWx1ZSI=`. (where `eyJrZXkiOiJ2YWx1ZSI=` is Base64 for `{"key":"value"}`)
 
 ## Local Development
 
