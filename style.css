@@ -20,6 +20,39 @@ h1 {
     color: #333;
 }
 
+.header {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.app-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #555;
+}
+
+.poi-box {
+    border: 2px solid red;
+    background-color: #ffe0e0; /* Pale red fill */
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 8px;
+    text-align: left;
+    position: relative;
+}
+
+.poi-title {
+    position: absolute;
+    top: -15px; /* Adjust to position outside the box */
+    left: 10px;
+    background-color: #ffe0e0; /* Match box background */
+    padding: 0 5px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: red;
+}
+
 #ips-display {
     margin-top: 20px;
     padding: 15px;
