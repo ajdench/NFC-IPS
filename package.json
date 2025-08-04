@@ -17,6 +17,7 @@
   ],
   "author": "",
   "license": "MIT",
+  "homepage": "https://ajdench.github.io/NFC-IPS/",
   "devDependencies": {
     "gh-pages": "^6.3.0"
   }
