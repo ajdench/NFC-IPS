@@ -1,31 +1,48 @@
+:root {
+    --standard-padding: 20px;
+    --half-padding: calc(var(--standard-padding) / 2);
+}
+
+/* Global Styles */
 body {
     font-family: Arial, sans-serif;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column; /* Arrange items vertically */
+    justify-content: flex-start; /* Align items to the top */
+    align-items: stretch; /* Allow children to stretch horizontally */
     min-height: 100vh;
     margin: 0;
     background-color: #f4f4f4;
+    padding-top: var(--standard-padding);
+    padding-bottom: var(--half-padding);
+    box-sizing: border-box; /* Include padding in height calculation */
 }
 
-.container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-h1 {
-    color: #333;
-}
-
+/* Layout */
 .header {
-    position: absolute;
-    top: 10px;
-    left: 10px;
+    width: 100%;
+    padding-left: var(--standard-padding);
+    box-sizing: border-box;
+    margin-bottom: var(--standard-padding);
 }
 
+.poi-box-wrapper {
+    width: 100%;
+    padding: 0 var(--standard-padding);
+    box-sizing: border-box;
+    margin-bottom: var(--standard-padding);
+}
+
+.main-content-wrapper {
+    width: 100%;
+    padding: 0 var(--standard-padding);
+    box-sizing: border-box;
+    flex-grow: 1; /* Allow it to take available space */
+    display: flex; /* Use flex to push container to bottom */
+    flex-direction: column;
+}
+
+/* Components */
 .app-title {
     font-size: 1.2em;
     font-weight: bold;
@@ -33,32 +50,46 @@ h1 {
 }
 
 .poi-box {
-    border: 2px solid red;
     background-color: #ffe0e0; /* Pale red fill */
-    padding: 15px;
-    margin-top: 20px;
+    height: 100px; /* Fixed height */
+    padding: var(--standard-padding);
     border-radius: 8px;
     text-align: left;
-    position: relative;
+    box-sizing: border-box; /* Include padding in height calculation */
+    display: flex; /* Use flexbox for content alignment */
+    align-items: flex-start; /* Align content to the top */
+    justify-content: flex-start; /* Align content to the left */
 }
 
 .poi-title {
-    position: absolute;
-    top: -15px; /* Adjust to position outside the box */
-    left: 10px;
-    background-color: #ffe0e0; /* Match box background */
-    padding: 0 5px;
     font-size: 1.1em;
     font-weight: bold;
     color: red;
+    margin: 0; /* Remove default margins */
+    line-height: 1; /* Ensure no extra line height */
+    padding: 0; /* Ensure no internal padding */
+}
+
+.container {
+    background-color: #fff;
+    padding: var(--standard-padding);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: left; /* Align text to the left */
+    width: 100%; /* Full width within its wrapper */
+    margin-top: auto; /* Push to the bottom */
+    margin-bottom: var(--half-padding);
+    flex-shrink: 0; /* Prevent shrinking */
+    box-sizing: border-box;
 }
 
 #ips-display {
-    margin-top: 20px;
     padding: 15px;
     border: 1px solid #ddd;
     border-radius: 4px;
     background-color: #e9e9e9;
     text-align: left;
     white-space: pre-wrap; /* To preserve formatting of JSON */
+    width: 100%; /* Ensure it takes full width of its parent */
+    box-sizing: border-box; /* Include padding in width calculation */
 }
