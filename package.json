@@ -6,7 +6,7 @@
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "build": "echo 'No build step needed for this static site.'",
+    "build": "cp index.html style.css script.js README-gh-pages.md build/ && mv build/README-gh-pages.md build/README.md",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

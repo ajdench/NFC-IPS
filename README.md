@@ -14,6 +14,10 @@ This project provides a simple single-page web application designed to display I
 
 This project is intended for concept development, refinement, and distribution via GitHub Pages.
 
+**Live Demo:** [https://ajdench.github.io/NFC-IPS/](https://ajdench.github.io/NFC-IPS/)
+
+For information specific to the deployed GitHub Pages branch, see its [README.md](https://github.com/ajdench/NFC-IPS/tree/gh-pages).
+
 ## Usage
 
 To use this viewer, you will need an NFC tag encoded with a URI that includes your Base64 encoded IPS JSON. For example:
