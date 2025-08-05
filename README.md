@@ -33,3 +33,7 @@ To use this viewer, you will need an NFC tag encoded with a URI that includes yo
 3.  Open `index.html` in your web browser.
 
     *Note: For local testing with URL parameters, you might need to manually append the Base64 string to the URL in your browser (e.g., `file:///path/to/nfc-ips/index.html#eyJrZXkiOiJ2YWx1ZSI=`). However, the script is designed to parse the path directly, so a local web server might be more appropriate for accurate testing (e.g., using `python -m http.server`).*
+
+## Return to gh-pages branch
+
+https://github.com/ajdench/NFC-IPS/tree/gh-pages
