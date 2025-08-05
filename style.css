@@ -1,7 +1,10 @@
 :root {
-    --standard-padding: 20px;
+    --size-multiplier: 0.75;
+    --payload-text-multiplier: 0.75;
+    --standard-padding: calc(20px * var(--size-multiplier));
     --half-padding: calc(var(--standard-padding) / 2);
     --detail-padding: 10px;
+    --font-size-uniform: calc(20px * var(--size-multiplier));
 
     /* Color Palette */
     --text-color-dark: #555;
@@ -30,6 +33,7 @@
 /* Global Styles */
 body {
     font-family: Arial, sans-serif;
+    font-size: var(--font-size-uniform);
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -70,7 +74,6 @@ body {
 
 /* Components */
 .app-title {
-    font-size: 1.2em;
     font-weight: bold;
     color: var(--text-color-dark);
 }
@@ -90,7 +93,7 @@ body {
 
 .poi-title,
 .info-title {
-    font-size: 1.1em;
+    font-size: var(--font-size-uniform);
     font-weight: bold;
     margin: 0;
     line-height: 1;
@@ -101,8 +104,9 @@ body {
 .patient-details-container {
     display: flex;
     flex-wrap: wrap;
-    align-items: baseline;
-    gap: var(--half-padding) var(--standard-padding);
+    align-items: center;
+    justify-content: space-between; /* Distribute space dynamically */
+    gap: var(--standard-padding); /* Consistent gap for both horizontal and vertical */
     width: 100%;
 }
 
@@ -110,18 +114,25 @@ body {
     display: inline-flex; /* Change to inline-flex to contain children */
     border-radius: 8px; /* Overall rounding */
     overflow: hidden; /* Hide corners of children */
-    margin: 2px; /* Add a small margin for spacing */
+}
+
+.detail-ghost-item {
+    height: calc(var(--font-size-uniform) + 2 * 10px); /* Match height of real items */
+    flex-basis: auto; /* Allow content to determine initial size */
+    flex-grow: 1; /* Allow it to grow to take up space */
+    visibility: hidden; /* Make it invisible */
 }
 
 .detail-label,
 .detail-value {
-    padding: 5px 10px;
+    padding: 10px;
     box-sizing: border-box;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     color: var(--text-color-dark);
     white-space: nowrap;
+    font-size: var(--font-size-uniform); /* Explicitly set font size */
 }
 
 .detail-label {

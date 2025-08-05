@@ -4,6 +4,8 @@ This document records ongoing learning, architectural decisions, and specific to
 
 ## Learning & Insights:
 
+*   **Dynamic Flexbox Spacing (Ghost Items):** To ensure consistent wrapping and dynamic spacing with `justify-content: space-between`, implemented the "ghost item" technique. Invisible flex items are added to the container, forcing proper space distribution even on lines with fewer elements. This also involved refining the `gap` property on the flex container for consistent horizontal and vertical spacing.
+*   **Dynamic Flexbox Spacing:** Implemented dynamic horizontal spacing for wrapping detail components using `justify-content: space-between` on the flex container. This ensures the first item is left-aligned and the last item is right-aligned, with remaining space distributed evenly between items on each line.
 *   **Component Styling:** Iteratively refined the patient detail component styling to match a visual target, creating a "pill" shape with distinct, configurable background colors and font weights for the label and value.
 *   **Layout Evolution (Grid to Flexbox):** For the patient detail components, the layout was evolved from a CSS Grid (`repeat(auto-fit,...)`) to a `display: flex` with `flex-wrap: wrap`. This better achieves a continuous, wrapping line of details rather than a structured grid, improving the natural flow of information.
 *   **Dynamic Component Generation:** Refactored the main info boxes to be dynamically generated from a JavaScript configuration array. This cleans up the `index.html`, centralizes the UI structure in the script, and makes the layout more scalable and maintainable.
