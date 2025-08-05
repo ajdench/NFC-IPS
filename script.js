@@ -107,7 +107,7 @@ function createPatientDetailsElement(patientData) {
             detailBox.classList.add('detail-box');
             const labelSpan = document.createElement('span');
             labelSpan.classList.add('detail-label');
-            labelSpan.textContent = `${detail.label}:`;
+            labelSpan.textContent = detail.label;
             const valueSpan = document.createElement('span');
             valueSpan.classList.add('detail-value');
             valueSpan.textContent = detail.value;
