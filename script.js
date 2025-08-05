@@ -119,6 +119,14 @@ function createPatientDetailsElement(patientData) {
     return detailsContainer;
 }
 
+function addGhostItems(container, count) {
+    for (let i = 0; i < count; i++) {
+        const ghost = document.createElement('div');
+        ghost.classList.add('detail-ghost-item');
+        container.appendChild(ghost);
+    }
+}
+
 function renderPatientBox(ipsData) {
     const patientBox = document.querySelector('[data-key="patient"]');
     if (!patientBox) return;
@@ -131,6 +139,7 @@ function renderPatientBox(ipsData) {
         patientTitle.textContent = 'Patient';
         const detailsElement = createPatientDetailsElement(ipsData);
         patientBox.appendChild(detailsElement);
+        addGhostItems(detailsElement, 10); // Add 10 ghost items
     } else {
         patientTitle.textContent = 'Patient (No data)';
     }
@@ -150,6 +159,7 @@ function renderMainContent(ipsData) {
         const pre = document.createElement('pre');
         pre.style.whiteSpace = 'pre-wrap';
         pre.style.wordBreak = 'break-all';
+        pre.style.fontSize = 'calc(var(--font-size-uniform) * var(--payload-text-multiplier))'; // Apply payload text multiplier
         pre.textContent = JSON.stringify(ipsData, null, 2);
         container.appendChild(pre);
     } else {
