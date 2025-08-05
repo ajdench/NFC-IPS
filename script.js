@@ -8,32 +8,54 @@ function decodeBase64(str) {
     }
 }
 
-// Function to parse URL and display IPS data
-function displayIpsData() {
-    const path = window.location.pathname;
-    // Expected path format: /nfc-ips/<base64_payload>
-    const parts = path.split('/');
-    const base64Payload = parts[parts.length - 1];
+// Function to format date
+function formatDate(dateString) {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+}
 
-    const ipsDisplayElement = document.getElementById('ips-display');
+// Function to display patient data
+async function displayPatientData() {
+    const patientBox = document.querySelector('.info-box.grey');
+    const patientTitle = patientBox.querySelector('.info-title');
 
-    if (base64Payload && base64Payload !== 'nfc-ips') { // Check if payload exists and is not just the repo name
-        const decodedPayload = decodeBase64(base64Payload);
-        if (decodedPayload) {
-            try {
-                const jsonData = JSON.parse(decodedPayload);
-                ipsDisplayElement.textContent = JSON.stringify(jsonData, null, 2);
-            } catch (e) {
-                ipsDisplayElement.textContent = 'Error: Could not parse IPS JSON. Invalid JSON format.';
-                console.error("Error parsing JSON: ", e);
+    try {
+        const response = await fetch('default-ips.json');
+        const patientData = await response.json();
+
+        const title = patientData.name[0].prefix ? patientData.name[0].prefix[0] : '';
+        const forename = patientData.name[0].given ? patientData.name[0].given[0] : '';
+        const surname = patientData.name[0].family ? patientData.name[0].family : '';
+        const sex = patientData.gender ? patientData.gender : '';
+        const dob = patientData.birthDate ? formatDate(patientData.birthDate) : '';
+
+        let serviceNumber = '';
+        let nhsNumber = '';
+
+        patientData.identifier.forEach(identifier => {
+            if (identifier.type && identifier.type.text === 'Service Number') {
+                serviceNumber = identifier.value;
             }
-        } else {
-            ipsDisplayElement.textContent = 'Error: Could not decode Base64 payload.';
-        }
-    } else {
-        ipsDisplayElement.textContent = 'No IPS data found in URL. Please encode IPS JSON as Base64 and append to the URL.';
+            if (identifier.type && identifier.type.text === 'NHS Number') {
+                nhsNumber = identifier.value;
+            }
+        });
+
+        // Update the title of the box
+        patientTitle.textContent = 'Patient';
+
+        // Create a new paragraph for the patient details
+        const detailsParagraph = document.createElement('p');
+        detailsParagraph.textContent = `Title: ${title}, Forename: ${forename}, Surname: ${surname}, Sex: ${sex}, Date of Birth: ${dob}, Service Number: ${serviceNumber}, NHS Number: ${nhsNumber}`;
+        
+        // Append the new paragraph below the title
+        patientBox.appendChild(detailsParagraph);
+
+    } catch (error) {
+        console.error('Error fetching or parsing patient data:', error);
+        patientTitle.textContent = 'Patient (Error loading data)';
     }
 }
 
 // Call the function when the page loads
-document.addEventListener('DOMContentLoaded', displayIpsData);
+document.addEventListener('DOMContentLoaded', displayPatientData);
