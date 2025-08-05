@@ -1,49 +1,77 @@
 :root {
     --standard-padding: 20px;
     --half-padding: calc(var(--standard-padding) / 2);
+    --detail-padding: 10px;
+
+    /* Color Palette */
+    --text-color-dark: #555;
+    --text-color-poi: red;
+    --text-color-orange: #e65100;
+    --text-color-yellow: #fbc02d;
+    --text-color-green: #388e3c;
+    --text-color-blue: #1976d2;
+    --text-color-purple: #7b1fa2;
+    --text-color-error: lightcoral;
+
+    --bg-color-page: #f4f4f4;
+    --bg-color-container: #fff;
+    --bg-color-detail: #e0e0e0;
+
+    --bg-color-patient: #e9e9e9;
+    --bg-color-poi: #ffe0e0;
+    --bg-color-orange: #ffe0b2;
+    --bg-color-yellow: #fff9c4;
+    --bg-color-green: #c8e6c9;
+    --bg-color-blue: #bbdefb;
+    --bg-color-purple: #e1bee7;
 }
 
 /* Global Styles */
 body {
     font-family: Arial, sans-serif;
     display: flex;
-    flex-direction: column; /* Arrange items vertically */
-    justify-content: flex-start; /* Align items to the top */
-    align-items: stretch; /* Allow children to stretch horizontally */
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
     min-height: 100vh;
     margin: 0;
-    background-color: #f4f4f4;
+    background-color: var(--bg-color-page);
     padding: var(--standard-padding);
-    box-sizing: border-box; /* Include padding in height calculation */
-    gap: var(--standard-padding); /* Gap between direct children of body */
+    box-sizing: border-box;
+    gap: var(--standard-padding);
 }
 
 /* Layout */
-/* .header styles removed as per request */
+#info-boxes-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--standard-padding);
+    width: 100%;
+}
 
 .poi-box-wrapper,
 .info-box-wrapper {
     width: 100%;
     box-sizing: border-box;
-    flex-grow: 1; /* Allow these wrappers to grow and take equal space */
-    display: flex; /* Ensure content inside wrapper is also flex */
+    flex-grow: 1;
+    display: flex;
     flex-direction: column;
 }
 
 .main-content-wrapper {
     width: 100%;
     box-sizing: border-box;
-    flex-grow: 0; /* Prevent it from taking extra space */
-    display: flex; /* Ensure content inside wrapper is also flex */
+    flex-grow: 0;
+    display: flex;
     flex-direction: column;
-    margin-top: auto; /* Push to the bottom */
+    margin-top: auto;
 }
 
 /* Components */
 .app-title {
     font-size: 1.2em;
     font-weight: bold;
-    color: #555;
+    color: var(--text-color-dark);
 }
 
 .poi-box,
@@ -51,73 +79,117 @@ body {
     padding: var(--standard-padding);
     border-radius: 8px;
     text-align: left;
-    box-sizing: border-box; /* Include padding in height calculation */
-    display: flex; /* Use flexbox for content alignment */
-    align-items: flex-start; /* Align content to the top */
-    justify-content: flex-start; /* Align content to the left */
-    flex-grow: 1; /* Allow boxes to grow within their wrappers */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-grow: 1;
 }
 
 .poi-title,
 .info-title {
     font-size: 1.1em;
     font-weight: bold;
-    margin: 0; /* Remove default margins */
-    line-height: 1; /* Ensure no extra line height */
-    padding: 0; /* Ensure no internal padding */
+    margin: 0;
+    line-height: 1;
+    padding: 0;
+    margin-bottom: var(--standard-padding);
 }
 
-/* Color variations for info boxes */
+.patient-details-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--half-padding) var(--standard-padding);
+    width: 100%;
+}
+
+.detail-box {
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 5px;
+    min-width: 0;
+    margin: 0 2px 0 3px; /* Fix for fiddly alignment */
+}
+
+.detail-label,
+.detail-value {
+    background-color: var(--bg-color-detail);
+    border-radius: 4px;
+    padding: 5px 8px;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color-dark);
+    white-space: nowrap;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.detail-label {
+    font-weight: bold;
+}
+
+.detail-value {
+    font-weight: normal;
+}
+
 .info-box.grey {
-    background-color: #e9e9e9; /* Pale grey */
-    color: #555; /* Darker grey text */
+    background-color: var(--bg-color-patient);
+    color: var(--text-color-dark);
 }
 
 .poi-box {
-    background-color: #ffe0e0; /* Pale red fill */
-    color: red; /* Red text for POI */
+    background-color: var(--bg-color-poi);
+    color: var(--text-color-poi);
 }
 
 .info-box.orange {
-    background-color: #ffe0b2; /* Pale orange */
-    color: #e65100; /* Darker orange text */
+    background-color: var(--bg-color-orange);
+    color: var(--text-color-orange);
 }
 
 .info-box.yellow {
-    background-color: #fff9c4; /* Pale yellow */
-    color: #fbc02d; /* Darker yellow text */
+    background-color: var(--bg-color-yellow);
+    color: var(--text-color-yellow);
 }
 
 .info-box.green {
-    background-color: #c8e6c9; /* Pale green */
-    color: #388e3c; /* Darker green text */
+    background-color: var(--bg-color-green);
+    color: var(--text-color-green);
 }
 
 .info-box.blue {
-    background-color: #bbdefb; /* Pale blue */
-    color: #1976d2; /* Darker blue text */
+    background-color: var(--bg-color-blue);
+    color: var(--text-color-blue);
 }
 
 .info-box.purple {
-    background-color: #e1bee7; /* Pale purple */
-    color: #7b1fa2; /* Darker purple text */
+    background-color: var(--bg-color-purple);
+    color: var(--text-color-purple);
 }
 
 .container {
-    background-color: #fff;
+    background-color: var(--bg-color-container);
     padding: var(--standard-padding);
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: left; /* Align text to the left */
-    width: 100%; /* Full width within its wrapper */
-    flex-grow: 0; /* Prevent container from growing */
+    text-align: left;
+    width: 100%;
+    flex-grow: 0;
     box-sizing: border-box;
 }
 
 .container p {
-    color: lightcoral; /* Pale red color for text inside container */
-    padding: 0; /* No padding */
-    margin: 0; /* Remove default paragraph margins */
+    color: var(--text-color-error);
+    padding: 0;
+    margin: 0;
 }
-
-/* #ips-display styles removed as per request */
