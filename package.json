@@ -6,8 +6,9 @@
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "build": "cp index.html style.css script.js README-gh-pages.md default-ips.json build/ && mv build/README-gh-pages.md build/README.md",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "cp index.html style.css script.js README-gh-pages.md payload-1.json payload-2.json build/ && mv build/README-gh-pages.md build/README.md",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "live-server"
   },
   "keywords": [
     "NFC",
@@ -19,6 +20,7 @@
   "license": "MIT",
   "homepage": "https://ajdench.github.io/NFC-IPS/",
   "devDependencies": {
-    "gh-pages": "^6.3.0"
+    "gh-pages": "^6.3.0",
+    "live-server": "^1.2.2"
   }
 }

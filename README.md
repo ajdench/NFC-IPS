@@ -1,6 +1,20 @@
 # NFC International Patient Summary (IPS) Viewer
 
-This project provides a simple single-page web application designed to display International Patient Summary (IPS) data encoded within an NFC tag. The IPS data is expected to be a Base64 encoded JSON message appended to the URL.
+This project provides a single-page web application designed to display International Patient Summary (IPS) data. It can process IPS data encoded as a Base64 JSON message appended to the URL, or load a default IPS file if no URL data is present.
+
+## Key Features and Architectural Highlights:
+
+*   **Dynamic UI Generation:** Core UI components, including the various information boxes, are dynamically generated from JavaScript configurations, leading to cleaner HTML and more maintainable code.
+*   **Refined Patient Detail Styling:** Patient details are presented in a visually distinct "pill" format, with clear separation and consistent alignment for labels and values.
+*   **Dynamic Spacing with Ghost Items:** Utilizes an advanced flexbox technique with "ghost items" to ensure consistent wrapping and dynamic, even spacing between patient detail components, regardless of the number of items on a line.
+*   **Scalable Styling with CSS Variables:** The application leverages CSS variables for all key styling parameters, including colors, padding, and font sizes. A global `--size-multiplier` variable allows for easy, uniform scaling of the entire UI.
+*   **Client-Side SPA:** All logic is handled client-side via JavaScript, making it suitable for static site deployment.
+*   **Static Site Deployment:** Leverages GitHub Pages for hosting, with automated deployment via `gh-pages`.
+*   **Modular CSS:** Styles are organized into logical sections with extensive use of variables for maintainability.
+
+## Ongoing Development / Known Issues
+
+*   **Payload Text Area Stretching:** We are currently facing a persistent layout challenge where the `textarea` and `pre` elements used for displaying and inputting payload data do not consistently stretch to fill 100% of their available vertical space within the Flexbox layout. Multiple CSS-based solutions have been attempted, including adjusting `min-height`, `flex-grow`, and parent container properties. An attempt to replace these elements with `div[contenteditable]` was also made but introduced new layout issues and has been reverted. This remains an active area of investigation to improve the user interface.
 
 ## How it Works
 

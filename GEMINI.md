@@ -16,6 +16,8 @@ This document records ongoing learning, architectural decisions, and specific to
 *   **Box Sizing:** Confirmed the importance of `box-sizing: border-box` on elements (especially `body` and containers) to ensure padding is included within specified dimensions, preventing unwanted scrollbars.
 *   **README.md Management:** Established a pattern for distinct `README.md` files for `main` and `gh-pages` branches with cross-linking.
 
+
+
 ## Architectural Approaches:
 
 *   **Client-Side SPA:** The project is a single-page application (SPA) with all logic handled client-side via JavaScript, suitable for NFC URI parsing.
@@ -31,3 +33,20 @@ This document records ongoing learning, architectural decisions, and specific to
 *   Explore options for NFC tag encoding and testing.
 *   **Global GEMINI.md Update:** Remember to manually update the global `/.gemini/GEMINI.md` with relevant general context and learning from this project.
 *   **CLAUDE.md Update:** Cannot directly update `CLAUDE.md` as it is outside the project directory. User needs to manually update or change working directory.
+
+## Unresolved Issues / Bugs:
+
+*   **Bug: Persistent Flexbox Stretching Issue (textarea/pre)**
+    *   **Description:** `textarea` and `pre` elements within the `.payload-pane` flex container are not stretching to fill 100% of the available height, despite multiple attempts to apply standard flexbox solutions. The attempt to replace these elements with `div[contenteditable]` was unsuccessful and caused new layout issues, leading to a revert.
+    *   **Attempts to Resolve:**
+        1.  **Initial Hypothesis:** Missing `min-height: 0;` on `.payload-pane` and/or `textarea`/`pre` elements.
+            *   **Action:** Added `min-height: 0;` to `.payload-pane` in `style.css`. (`#payload-display, #json-input` already had it).
+            *   **Outcome:** Issue persisted.
+        2.  **Second Hypothesis:** Parent container (`.main-content-wrapper`) not expanding sufficiently due to `flex-grow: 0;`.
+            *   **Action:** Changed `flex-grow: 0;` to `flex-grow: 1;` on `.main-content-wrapper` in `style.css`.
+            *   **Outcome:** Issue persisted.
+        3.  **Attempted Alternative: Replace elements with `div[contenteditable]`**
+            *   **Action:** Replaced `<pre>` and `<textarea>` with `div` elements having `contenteditable` attributes in `index.html`. Adjusted `style.css` and `script.js` accordingly.
+            *   **Outcome:** Introduced new layout issues and was reverted.
+    *   **Current State:** The `textarea` and `pre` elements still do not stretch to the full height of their container. All changes related to the `div[contenteditable]` approach have been reverted.
+    *   **Next Steps (Proposed):** Further investigation into potential CSS conflicts, intrinsic sizing behaviors, or a need for a different HTML structure.

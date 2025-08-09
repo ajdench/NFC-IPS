@@ -14,15 +14,14 @@ const infoBoxConfig = [
 
 function decodeBase64(str) {
     try {
-        const binaryString = atob(str);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-        }
-        return new TextDecoder().decode(bytes);
+        // Attempt to decode from Base64
+        const decoded = atob(str);
+        // Further check if the result is a valid JSON string, otherwise it might be random text
+        JSON.parse(decoded);
+        return decoded;
     } catch (e) {
-        console.error("Error decoding Base64: ", e);
-        return null;
+        // If it fails, it's likely not Base64 or not valid JSON, so return the original string
+        return str;
     }
 }
 
@@ -34,26 +33,15 @@ function formatDate(dateString) {
 
 // --- DATA FUNCTIONS ---
 
-async function getIPSData() {
-    const hash = window.location.hash.substring(1);
-    if (hash) {
-        const decodedJson = decodeBase64(hash);
-        if (decodedJson) {
-            try {
-                return JSON.parse(decodedJson);
-            } catch (e) {
-                console.error("Error parsing JSON from URL:", e);
-            }
-        }
-    }
+async function fetchJson(url) {
     try {
-        const response = await fetch('default-ips.json');
+        const response = await fetch(url);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         return await response.json();
     } catch (error) {
-        console.error('Error fetching default patient data:', error);
+        console.error(`Error fetching JSON from ${url}:`, error);
         return null;
     }
 }
@@ -73,7 +61,6 @@ function createInfoBoxes() {
 
         const box = document.createElement('div');
         box.className = boxClass;
-        // Add a data attribute to easily select the box later
         if(config.dataKey) box.dataset.key = config.dataKey;
 
         const title = document.createElement('h2');
@@ -97,7 +84,7 @@ function createPatientDetailsElement(patientData) {
         { label: 'Surname', value: name.family },
         { label: 'Sex', value: patientData.gender },
         { label: 'Date of Birth', value: formatDate(patientData.birthDate) },
-        { label: 'Service Number', value: patientData.identifier?.find(id => id.type?.text === 'Service Number')?.value },
+        { label: 'Service Number', value: patientData.identifier?.find(id => id.type?.coding?.some(c => c.code === 'MIL'))?.value },
         { label: 'NHS Number', value: patientData.identifier?.find(id => id.type?.text === 'NHS Number')?.value }
     ];
 
@@ -139,44 +126,68 @@ function renderPatientBox(ipsData) {
         patientTitle.textContent = 'Patient';
         const detailsElement = createPatientDetailsElement(ipsData);
         patientBox.appendChild(detailsElement);
-        addGhostItems(detailsElement, 10); // Add 10 ghost items
+        addGhostItems(detailsElement, 10);
     } else {
         patientTitle.textContent = 'Patient (No data)';
     }
 }
 
-function renderMainContent(ipsData) {
-    const container = document.querySelector('.main-content-wrapper .container');
-    if (!container) return;
-    container.innerHTML = '';
-
-    const title = document.createElement('h2');
-    title.className = 'info-title';
-    title.textContent = 'Payload';
-    container.appendChild(title);
-
-    if (ipsData) {
-        const pre = document.createElement('pre');
-        pre.style.whiteSpace = 'pre-wrap';
-        pre.style.wordBreak = 'break-all';
-        pre.style.fontSize = 'calc(var(--font-size-uniform) * var(--payload-text-multiplier))'; // Apply payload text multiplier
-        pre.textContent = JSON.stringify(ipsData, null, 2);
-        container.appendChild(pre);
-    } else {
-        const p = document.createElement('p');
-        p.textContent = 'Error: Could not load or parse IPS data. Please check the console for details.';
-        p.style.color = 'var(--text-color-error)';
-        container.appendChild(p);
+function renderPayloadDisplay(data) {
+    const payloadDisplay = document.getElementById('payload-display');
+    if (payloadDisplay) {
+        payloadDisplay.textContent = JSON.stringify(data, null, 2);
     }
+}
+
+function processAndRenderAll(ipsData) {
+    if (!ipsData) {
+        alert('Error: Could not load or parse IPS data.');
+        return;
+    }
+    renderPatientBox(ipsData);
+    renderPayloadDisplay(ipsData);
 }
 
 // --- INITIALIZATION ---
 
 async function init() {
-    createInfoBoxes(); // Create the static layout first
-    const ipsData = await getIPSData();
-    renderPatientBox(ipsData);
-    renderMainContent(ipsData);
+    createInfoBoxes();
+
+    const payloadToggle = document.getElementById('payload-toggle');
+    const parseButton = document.getElementById('parse-button');
+    const jsonInput = document.getElementById('json-input');
+
+    async function loadAndRenderPayload(payloadName) {
+        const data = await fetchJson(payloadName);
+        processAndRenderAll(data);
+    }
+
+    // Initial load
+    loadAndRenderPayload('payload-1.json');
+
+    // Event Listeners
+    payloadToggle.addEventListener('change', () => {
+        const selectedPayload = payloadToggle.checked ? 'payload-2.json' : 'payload-1.json';
+        loadAndRenderPayload(selectedPayload);
+    });
+
+    parseButton.addEventListener('click', () => {
+        const rawInput = jsonInput.value.trim();
+        if (!rawInput) {
+            alert('Input is empty.');
+            return;
+        }
+
+        const decodedInput = decodeBase64(rawInput);
+        
+        try {
+            const parsedJson = JSON.parse(decodedInput);
+            processAndRenderAll(parsedJson);
+        } catch (e) {
+            alert('Invalid JSON. Please check the format.');
+            console.error('Error parsing custom JSON:', e);
+        }
+    });
 }
 
 document.addEventListener('DOMContentLoaded', init);
