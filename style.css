@@ -66,7 +66,7 @@ body {
 .main-content-wrapper {
     width: 100%;
     box-sizing: border-box;
-    flex-grow: 0;
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
     margin-top: auto;
@@ -195,4 +195,176 @@ body {
     color: var(--text-color-error);
     padding: 0;
     margin: 0;
+}
+
+/* New Payload Section Styles */
+.payload-container {
+    display: flex;
+    flex-direction: column;
+    position: relative; /* For absolute positioning of controls */
+    padding: var(--standard-padding);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: var(--bg-color-container);
+}
+
+.payload-controls-row {
+    position: absolute;
+    top: var(--standard-padding);
+    left: calc(50% - var(--half-padding) - 60px); /* Align left edge of toggle with right edge of left pane */
+    display: flex;
+    gap: var(--standard-padding);
+    align-items: center;
+}
+
+#parse-button-container {
+    position: absolute;
+    top: var(--standard-padding);
+    right: var(--standard-padding);
+    display: flex;
+    align-items: center;
+}
+
+.payload-content {
+    display: flex;
+    gap: var(--standard-padding);
+    flex-grow: 1;
+    align-items: stretch; /* Ensure children stretch to equal height */
+    margin-top: calc(var(--standard-padding) + 34px + var(--standard-padding)); /* Push content down below controls */
+}
+
+.payload-pane {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    gap: var(--half-padding);
+    height: 100%; /* Ensure payload-pane takes full height */
+    flex-grow: 1; /* Ensure payload-pane grows to fill available space */
+    min-height: 0; /* Allow shrinking below content size */
+    border: 1px solid #ccc; /* Added */
+    border-radius: 4px; /* Added for consistency */
+}
+
+#payload-display, #json-input {
+    flex-grow: 1;
+    /* border: 1px solid #ccc; */
+    border-radius: 4px;
+    padding: var(--half-padding);
+    font-size: calc(var(--font-size-uniform) * var(--payload-text-multiplier));
+    white-space: pre-wrap;
+    word-break: break-all;
+    height: 100%; /* Ensure content fills its parent */
+    margin: 0; /* Reset default browser margins */
+    min-height: 0; /* Allow shrinking below content size */
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+#json-input {
+    /* resize: none; */
+}
+
+/* Toggle Switch Styles */
+.payload-toggle-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px; /* Adjusted width */
+    height: 34px; /* Adjusted height */
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px; /* Round slider */
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* New styles for labels inside slider */
+.slider-label {
+    position: absolute;
+    color: white;
+    font-size: 12px; /* Smaller font for labels */
+    font-weight: bold;
+    line-height: 34px; /* Center vertically */
+    text-align: center;
+    width: 50%; /* Each label takes half the slider width */
+    user-select: none; /* Prevent text selection */
+}
+
+.slider-label.left {
+    left: 0;
+    color: var(--text-color-dark); /* Default color for inactive side */
+}
+
+.slider-label.right {
+    right: 0;
+    color: white; /* Default color for active side */
+}
+
+input:checked + .slider .slider-label.left {
+    color: white; /* Active side color */
+}
+
+input:checked + .slider .slider-label.right {
+    color: var(--text-color-dark); /* Inactive side color */
+}
+
+#parse-button {
+    /* Mimic switch styles */
+    width: 60px; /* Same as switch */
+    height: 34px; /* Same as switch */
+    border-radius: 34px; /* Same as switch slider */
+    background-color: #2196F3; /* Blue color */
+    color: white;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    transition: background-color .4s;
+}
+
+#parse-button:hover {
+    background-color: #1976D2;
 }

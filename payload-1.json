@@ -1,0 +1,44 @@
+{
+  "resourceType": "Patient",
+  "id": "example",
+  "identifier": [
+    {
+      "use": "official",
+      "type": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+            "code": "NH",
+            "display": "National Health Service Number"
+          }
+        ],
+        "text": "NHS Number"
+      },
+      "value": "485 777 3456"
+    },
+    {
+      "use": "secondary",
+      "type": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+            "code": "MCD",
+            "display": "Military ID number"
+          }
+        ],
+        "text": "Service Number"
+      },
+      "value": "5199"
+    }
+  ],
+  "name": [
+    {
+      "use": "official",
+      "prefix": ["Drummer"],
+      "given": ["Thomas"],
+      "family": "Hodge"
+    }
+  ],
+  "birthDate": "1884-06-02",
+  "gender": "male"
+}

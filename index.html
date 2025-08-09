@@ -11,8 +11,34 @@
     <div id="info-boxes-container"></div>
 
     <div class="main-content-wrapper">
-        <div class="container">
-            <p>No IPS data found in URL. Please encode IPS JSON as Base64 and append to the URL.</p>
+        <div class="container payload-container">
+            <h2 class="info-title">Payload</h2> <!-- Moved title here -->
+            <div class="header-spacer"></div> <!-- New spacer div -->
+            <div class="payload-controls-row"> <!-- Renamed and refactored -->
+                <div class="payload-toggle-wrapper">
+                    <!-- Removed "Payload" text from here -->
+                    <label class="switch">
+                        <input type="checkbox" id="payload-toggle" role="switch">
+                        <span class="slider round">
+                            <span class="slider-label left">1</span>
+                            <span class="slider-label right">2</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+            <!-- New container for parse button, outside payload-controls-row -->
+            <div id="parse-button-container">
+                <button id="parse-button">Parse</button>
+            </div>
+            <div class="payload-content">
+                <div class="payload-pane left-pane">
+                    <pre id="payload-display"></pre>
+                </div>
+                <div class="payload-pane right-pane">
+                    <textarea id="json-input" placeholder="Paste raw JSON or Base64 encoded JSON here..."></textarea>
+                    <!-- Removed the bottom parse button from here -->
+                </div>
+            </div>
         </div>
     </div>
 
