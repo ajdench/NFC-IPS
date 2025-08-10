@@ -11,10 +11,13 @@ This project provides a single-page web application designed to display Internat
 *   **Client-Side SPA:** All logic is handled client-side via JavaScript, making it suitable for static site deployment.
 *   **Static Site Deployment:** Leverages GitHub Pages for hosting, with automated deployment via `gh-pages`.
 *   **Modular CSS:** Styles are organized into logical sections with extensive use of variables for maintainability.
+*   **Flexible Header Layout:** The header section, including the "Payload" title and controls, has been refactored from absolute positioning to a flexible `display: flex` layout. This improves layout predictability and simplifies spacing management.
+*   **Responsive Control Sizing:** Control elements (toggle switch and parse button) now dynamically size their height based on `calc(var(--standard-padding) * 2)`, ensuring consistent scaling with the overall UI.
+*   **Precise Control Alignment:** The toggle switch is precisely aligned with the right-hand side of the left content pane using a combination of flexbox properties and calculated margins.
 
 ## Ongoing Development / Known Issues
 
-*   **Payload Text Area Stretching:** We are currently facing a persistent layout challenge where the `textarea` and `pre` elements used for displaying and inputting payload data do not consistently stretch to fill 100% of their available vertical space within the Flexbox layout. Multiple CSS-based solutions have been attempted, including adjusting `min-height`, `flex-grow`, and parent container properties. An attempt to replace these elements with `div[contenteditable]` was also made but introduced new layout issues and has been reverted. This remains an active area of investigation to improve the user interface.
+*   **Resolved: Payload Text Area Stretching:** The persistent layout challenge where the `textarea` and `pre` elements did not consistently stretch has been resolved. This was achieved by replacing these elements with `div[contenteditable]` and making necessary adjustments to parent container flex properties.
 
 ## How it Works
 
@@ -46,7 +49,7 @@ To use this viewer, you will need an NFC tag encoded with a URI that includes yo
     `cd nfc-ips`
 3.  Open `index.html` in your web browser.
 
-    *Note: For local testing with URL parameters, you might need to manually append the Base64 string to the URL in your browser (e.g., `file:///path/to/nfc-ips/index.html#eyJrZXkiOiJ2YWx1ZSI=`). However, the script is designed to parse the path directly, so a local web server might be more appropriate for accurate testing (e.g., using `python -m http.server`).*
+    *Note: For local testing with URL parameters, you might need to manually append the Base64 string to the URL in your browser (e.g., `file:///path/to/nfc-ips/index.html#eyJrZXkiOiJ2YWxib2x1ZSI=`). However, the script is designed to parse the path directly, so a local web server might be more appropriate for accurate testing (e.g., using `python -m http.server`).*
 
 ## Return to gh-pages branch
 

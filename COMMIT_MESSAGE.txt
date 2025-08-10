@@ -1,0 +1,9 @@
+Refactor: Revert contenteditable experiment and document flexbox issue
+
+Reverted changes related to the div[contenteditable] experiment in index.html, style.css, and script.js as it introduced new layout issues.
+
+Updated GEMINI.md to reflect the unsuccessful attempt and document the persistent flexbox stretching bug for textarea and pre elements.
+
+Updated README.md to include a section on "Ongoing Development / Known Issues" to inform about the unresolved flexbox layout problem.
+
+Restored style.css from a partial backup provided by the user after it was inadvertently emptied.

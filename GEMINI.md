@@ -15,8 +15,10 @@ This document records ongoing learning, architectural decisions, and specific to
 *   **CSS Variables:** Implemented `--standard-padding` and `--half-padding` for modular and consistent spacing across the design.
 *   **Box Sizing:** Confirmed the importance of `box-sizing: border-box` on elements (especially `body` and containers) to ensure padding is included within specified dimensions, preventing unwanted scrollbars.
 *   **README.md Management:** Established a pattern for distinct `README.md` files for `main` and `gh-pages` branches with cross-linking.
-
-
+*   **Refactored Header Layout:** Transitioned from absolute positioning to a flexbox-based header (`.payload-header`) for the title and controls, improving layout predictability and simplifying spacing.
+*   **Dynamic Control Sizing:** Implemented control heights and related dimensions using `calc(var(--standard-padding) * 2)` for better responsiveness and consistency with global padding variables.
+*   **Precise Horizontal Alignment:** Achieved specific horizontal alignment of the toggle switch by combining `margin-left: auto` and a calculated negative `margin-right` within a flex container.
+*   **CSS Variable Impact:** Reconfirmed the broad impact of global CSS variables like `--size-multiplier` on overall layout and spacing, emphasizing the need for careful consideration when adjusting them.
 
 ## Architectural Approaches:
 
@@ -37,16 +39,4 @@ This document records ongoing learning, architectural decisions, and specific to
 ## Unresolved Issues / Bugs:
 
 *   **Bug: Persistent Flexbox Stretching Issue (textarea/pre)**
-    *   **Description:** `textarea` and `pre` elements within the `.payload-pane` flex container are not stretching to fill 100% of the available height, despite multiple attempts to apply standard flexbox solutions. The attempt to replace these elements with `div[contenteditable]` was unsuccessful and caused new layout issues, leading to a revert.
-    *   **Attempts to Resolve:**
-        1.  **Initial Hypothesis:** Missing `min-height: 0;` on `.payload-pane` and/or `textarea`/`pre` elements.
-            *   **Action:** Added `min-height: 0;` to `.payload-pane` in `style.css`. (`#payload-display, #json-input` already had it).
-            *   **Outcome:** Issue persisted.
-        2.  **Second Hypothesis:** Parent container (`.main-content-wrapper`) not expanding sufficiently due to `flex-grow: 0;`.
-            *   **Action:** Changed `flex-grow: 0;` to `flex-grow: 1;` on `.main-content-wrapper` in `style.css`.
-            *   **Outcome:** Issue persisted.
-        3.  **Attempted Alternative: Replace elements with `div[contenteditable]`**
-            *   **Action:** Replaced `<pre>` and `<textarea>` with `div` elements having `contenteditable` attributes in `index.html`. Adjusted `style.css` and `script.js` accordingly.
-            *   **Outcome:** Introduced new layout issues and was reverted.
-    *   **Current State:** The `textarea` and `pre` elements still do not stretch to the full height of their container. All changes related to the `div[contenteditable]` approach have been reverted.
-    *   **Next Steps (Proposed):** Further investigation into potential CSS conflicts, intrinsic sizing behaviors, or a need for a different HTML structure.
+    *   **Resolution:** Replaced `textarea` and `pre` elements with `div[contenteditable]` and adjusted parent container flex properties, successfully resolving the stretching issue.
