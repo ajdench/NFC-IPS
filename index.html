@@ -12,30 +12,31 @@
 
     <div class="main-content-wrapper">
         <div class="container payload-container">
-            <h2 class="info-title">Payload</h2> <!-- Moved title here -->
-            <div class="header-spacer"></div> <!-- New spacer div -->
-            <div class="payload-controls-row"> <!-- Renamed and refactored -->
-                <div class="payload-toggle-wrapper">
-                    <!-- Removed "Payload" text from here -->
-                    <label class="switch">
-                        <input type="checkbox" id="payload-toggle" role="switch">
-                        <span class="slider round">
-                            <span class="slider-label left">1</span>
-                            <span class="slider-label right">2</span>
-                        </span>
-                    </label>
+            <div class="payload-header">
+                <h2 class="info-title">Payload</h2> <!-- Moved title here -->
+                <div class="payload-controls-row"> <!-- Renamed and refactored -->
+                    <div class="payload-toggle-wrapper">
+                        <!-- Removed "Payload" text from here -->
+                        <label class="switch">
+                            <input type="checkbox" id="payload-toggle" role="switch">
+                            <span class="slider round">
+                                <span class="slider-label left">1</span>
+                                <span class="slider-label right">2</span>
+                            </span>
+                        </label>
+                    </div>
                 </div>
-            </div>
-            <!-- New container for parse button, outside payload-controls-row -->
-            <div id="parse-button-container">
-                <button id="parse-button">Parse</button>
+                <!-- New container for parse button, outside payload-controls-row -->
+                <div id="parse-button-container">
+                    <button id="parse-button">Parse</button>
+                </div>
             </div>
             <div class="payload-content">
                 <div class="payload-pane left-pane">
-                    <pre id="payload-display"></pre>
+                    <div id="payload-display" contenteditable="true"></div>
                 </div>
                 <div class="payload-pane right-pane">
-                    <textarea id="json-input" placeholder="Paste raw JSON or Base64 encoded JSON here..."></textarea>
+                    <div id="json-input" contenteditable="true" placeholder="Paste raw JSON or Base64 encoded JSON here..."></div>
                     <!-- Removed the bottom parse button from here -->
                 </div>
             </div>

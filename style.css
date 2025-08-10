@@ -30,6 +30,10 @@
     --bg-color-purple: #e1bee7;
 }
 
+html, body {
+    height: 100%;
+}
+
 /* Global Styles */
 body {
     font-family: Arial, sans-serif;
@@ -187,7 +191,7 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     text-align: left;
     width: 100%;
-    flex-grow: 0;
+    flex-grow: 1;
     box-sizing: border-box;
 }
 
@@ -208,19 +212,23 @@ body {
     background-color: var(--bg-color-container);
 }
 
+.payload-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    margin-bottom: var(--standard-padding); /* Gap below header */
+}
+
 .payload-controls-row {
-    position: absolute;
-    top: var(--standard-padding);
-    left: calc(50% - var(--half-padding) - 60px); /* Align left edge of toggle with right edge of left pane */
     display: flex;
     gap: var(--standard-padding);
     align-items: center;
+    margin-left: auto; /* Push to the right */
+    margin-right: calc(50% + var(--half-padding) - 60px); /* Align with right edge of left pane */
 }
 
 #parse-button-container {
-    position: absolute;
-    top: var(--standard-padding);
-    right: var(--standard-padding);
     display: flex;
     align-items: center;
 }
@@ -230,7 +238,7 @@ body {
     gap: var(--standard-padding);
     flex-grow: 1;
     align-items: stretch; /* Ensure children stretch to equal height */
-    margin-top: calc(var(--standard-padding) + 34px + var(--standard-padding)); /* Push content down below controls */
+    /* margin-top: 43px; */ /* Removed */
 }
 
 .payload-pane {
@@ -257,6 +265,7 @@ body {
     margin: 0; /* Reset default browser margins */
     min-height: 0; /* Allow shrinking below content size */
     flex-shrink: 0; /* Prevent shrinking */
+    outline: none; /* Remove focus outline */
 }
 
 #json-input {
@@ -274,7 +283,7 @@ body {
     position: relative;
     display: inline-block;
     width: 60px; /* Adjusted width */
-    height: 34px; /* Adjusted height */
+    height: calc(var(--standard-padding) * 2); /* Adjusted height */
 }
 
 .switch input {
@@ -292,14 +301,14 @@ body {
     bottom: 0;
     background-color: #ccc;
     transition: .4s;
-    border-radius: 34px; /* Round slider */
+    border-radius: calc(var(--standard-padding) * 2); /* Round slider */
 }
 
 .slider:before {
     position: absolute;
     content: "";
-    height: 26px;
-    width: 26px;
+    height: calc((var(--standard-padding) * 2) - 8px);
+    width: calc((var(--standard-padding) * 2) - 8px);
     left: 4px;
     bottom: 4px;
     background-color: white;
@@ -316,7 +325,7 @@ input:focus + .slider {
 }
 
 input:checked + .slider:before {
-    transform: translateX(26px);
+    transform: translateX(calc((var(--standard-padding) * 2) - 8px));
 }
 
 /* New styles for labels inside slider */
@@ -325,7 +334,7 @@ input:checked + .slider:before {
     color: white;
     font-size: 12px; /* Smaller font for labels */
     font-weight: bold;
-    line-height: 34px; /* Center vertically */
+    line-height: calc(var(--standard-padding) * 2); /* Center vertically */
     text-align: center;
     width: 50%; /* Each label takes half the slider width */
     user-select: none; /* Prevent text selection */
@@ -352,8 +361,8 @@ input:checked + .slider .slider-label.right {
 #parse-button {
     /* Mimic switch styles */
     width: 60px; /* Same as switch */
-    height: 34px; /* Same as switch */
-    border-radius: 34px; /* Same as switch slider */
+    height: calc(var(--standard-padding) * 2); /* Same as switch */
+    border-radius: calc(var(--standard-padding) * 2); /* Same as switch slider */
     background-color: #2196F3; /* Blue color */
     color: white;
     font-weight: bold;

@@ -172,7 +172,7 @@ async function init() {
     });
 
     parseButton.addEventListener('click', () => {
-        const rawInput = jsonInput.value.trim();
+        const rawInput = jsonInput.textContent.trim();
         if (!rawInput) {
             alert('Input is empty.');
             return;
