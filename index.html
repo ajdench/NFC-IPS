@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFC IPS Viewer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section id="info-boxes-container"></section>
+
+    <main>
+        <div id="message-display" aria-live="polite"></div>
+        <div class="main-content-wrapper">
+        <section class="container payload-container">
+            <header class="payload-header">
+                <h2 class="info-title">Payload</h2>
+                <div class="payload-controls-row">
+                    <div class="payload-toggle-wrapper">
+                        <label class="switch">
+                            <input type="checkbox" id="payload-toggle" role="switch">
+                            <span class="slider round">
+                                <span class="slider-label left">1</span>
+                                <span class="slider-label right">2</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <div id="parse-button-container">
+                    <button id="parse-button">Parse</button>
+                </div>
+            </header>
+            <div class="payload-content">
+                <div class="payload-pane left-pane">
+                    <div id="payload-display" contenteditable="true"></div>
+                </div>
+                <div class="payload-pane right-pane">
+                    <div id="json-input" contenteditable="true" placeholder="Paste raw JSON or Base64 encoded JSON here..."></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="resources/vendor/pako.min.js"></script>
+    <script src="resources/vendor/protobuf.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
