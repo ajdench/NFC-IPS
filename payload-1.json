@@ -14,7 +14,7 @@
         ],
         "text": "NHS Number"
       },
-      "value": "485 777 3456"
+      "value": "4857773456"
     },
     {
       "use": "secondary",
@@ -22,7 +22,7 @@
         "coding": [
           {
             "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
-            "code": "MCD",
+            "code": "MIL",
             "display": "Military ID number"
           }
         ],

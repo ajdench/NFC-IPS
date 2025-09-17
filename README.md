@@ -15,9 +15,26 @@ This project provides a single-page web application designed to display Internat
 *   **Responsive Control Sizing:** Control elements (toggle switch and parse button) now dynamically size their height based on `calc(var(--standard-padding) * 2)`, ensuring consistent scaling with the overall UI.
 *   **Precise Control Alignment:** The toggle switch is precisely aligned with the right-hand side of the left content pane using a combination of flexbox properties and calculated margins.
 
-## Ongoing Development / Known Issues
+## Current Development Status
 
-*   **Resolved: Payload Text Area Stretching:** The persistent layout challenge where the `textarea` and `pre` elements did not consistently stretch has been resolved. This was achieved by replacing these elements with `div[contenteditable]` and making necessary adjustments to parent container flex properties.
+### ✅ Recently Completed
+*   **Advanced Payload Processing:** Comprehensive support for multiple payload formats including FHIR Patient resources, legacy indexed payloads, and CodeRef protobuf schemas
+*   **Protobuf Integration:** Full codec pipeline with automatic schema detection, compression handling (pako), and legacy format support
+*   **Medical Data Visualization:** Color-coded care stages from POI through Role 3 care with detailed vitals, conditions, and events
+*   **Interactive Payload Management:** Toggle between demo payloads with custom input parsing and real-time display updates
+*   **Resolved: Payload Text Area Stretching:** Layout issues resolved by replacing textarea/pre elements with contenteditable divs
+
+### 🚧 Current Architecture
+*   **Modular JavaScript Design:** Separated concerns with codec pipeline, payload service, and rendering functions
+*   **State Management:** Global app state handling demo payloads, fragment data, and comparison views
+*   **Utility Pipeline:** Comprehensive Base64 handling, date formatting, NHS number formatting, and gender code mapping
+*   **CSS Variables System:** Scalable UI with centralized color schemes and responsive design patterns
+
+### 📋 Technical Highlights
+*   **Multi-Schema Support:** Automatic detection and parsing of legacy vs. CodeRef protobuf schemas
+*   **Compression Handling:** Automatic inflation attempts with pako for compressed payloads
+*   **Patient Comparison:** IPS changes visualization comparing reference and current patient data
+*   **Error Boundaries:** Comprehensive error handling with user-friendly messaging
 
 ## How it Works
 
@@ -50,6 +67,47 @@ To use this viewer, you will need an NFC tag encoded with a URI that includes yo
 3.  Open `index.html` in your web browser.
 
     *Note: For local testing with URL parameters, you might need to manually append the Base64 string to the URL in your browser (e.g., `file:///path/to/nfc-ips/index.html#eyJrZXkiOiJ2YWxib2x1ZSI=`). However, the script is designed to parse the path directly, so a local web server might be more appropriate for accurate testing (e.g., using `python -m http.server`).*
+
+## Enhanced Local Development
+
+### Prerequisites
+```bash
+npm install  # Install development dependencies
+```
+
+### Development Commands
+```bash
+npm run dev         # Start live-server with hot reload
+npm run build       # Build for production
+npm run deploy      # Deploy to GitHub Pages
+```
+
+### Development Notes
+*   **NFC Testing:** Use development server for URL fragment testing
+*   **Demo Payloads:** payload-1.json and payload-2.json provide test data
+*   **Custom Input:** Right pane supports JSON and Base64-encoded payloads
+*   **Protobuf Schemas:** Located in resources/ for NFC payload decoding
+
+## Code Architecture Overview
+
+### Core Components (script.js - 1,183 lines)
+- **Codec Pipeline:** Protobuf decoding with multi-schema support
+- **Payload Service:** Builds view models from FHIR, legacy, and CodeRef formats
+- **Rendering Functions:** Dynamic DOM generation with medical stage visualization
+- **Utility Functions:** Base64 handling, date formatting, gender mapping
+
+### Styling System (style.css - 468 lines)
+- **CSS Variables:** Centralized theming with `--size-multiplier` scaling
+- **Color-Coded Stages:** Medical care stages from POI through Role 3
+- **Responsive Design:** Flexbox layouts with mobile-first approach
+- **Interactive Components:** Toggle switches and parse buttons
+
+### Data Flow
+1. NFC fragment parsing or manual input
+2. Multi-format payload detection and decoding
+3. View model generation with patient and stage data
+4. Dynamic UI rendering with color-coded medical stages
+5. Comparison views for IPS changes tracking
 
 ## Return to gh-pages branch
 

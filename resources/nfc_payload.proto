@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package medis.nfc;
+
+message CodeRef {
+    string sys = 1;
+    string code = 2;
+}
+
+message Patient {
+    string given = 1;
+    string family = 2;
+    CodeRef gender = 3;
+    CodeRef blood_group = 4;
+    CodeRef nhs_id = 5;
+    CodeRef service_id = 6;
+    string dob = 7;
+}
+
+message Vital {
+    CodeRef code = 1;
+    double value = 2;
+}
+
+message Condition {
+    CodeRef code = 1;
+    string onset = 2;
+}
+
+message Event {
+    CodeRef code = 1;
+    string time = 2;
+    double dose = 3;
+    string unit = 4;
+    string route = 5;
+}
+
+message Stage {
+    repeated Vital vitals = 1;
+    repeated Condition conditions = 2;
+    repeated Event events = 3;
+}
+
+message NFCPayload {
+    Patient patient = 1;
+    Stage poi = 2;
+    Stage medevac = 3;
+    Stage r1 = 4;
+    Stage r2 = 5;
+    Stage casevac = 6;
+    Stage r3 = 7;
+    int64 t = 8;
+}

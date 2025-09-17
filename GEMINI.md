@@ -38,5 +38,10 @@ This document records ongoing learning, architectural decisions, and specific to
 
 ## Unresolved Issues / Bugs:
 
+*   **Bug: Excess Gap Below Detail Elements in Patient Box**
+    *   **Description:** The `div.info-box.grey` (Patient box) consistently displays an excess vertical gap below the detail elements (pill shapes), making its total height 120px when it should be closer to 90px based on content and padding. This persists despite attempts to precisely control the height of individual detail elements and remove `flex-grow` properties from parent containers.
+    *   **Impact:** Leads to inconsistent vertical spacing and a visually unappealing layout.
+    *   **Current Status:** Unresolved.
+
 *   **Bug: Persistent Flexbox Stretching Issue (textarea/pre)**
     *   **Resolution:** Replaced `textarea` and `pre` elements with `div[contenteditable]` and adjusted parent container flex properties, successfully resolving the stretching issue.

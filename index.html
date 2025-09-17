@@ -7,16 +7,16 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- The info boxes will be dynamically generated here -->
-    <div id="info-boxes-container"></div>
+    <section id="info-boxes-container"></section>
 
-    <div class="main-content-wrapper">
-        <div class="container payload-container">
-            <div class="payload-header">
-                <h2 class="info-title">Payload</h2> <!-- Moved title here -->
-                <div class="payload-controls-row"> <!-- Renamed and refactored -->
+    <main>
+        <div id="message-display" aria-live="polite"></div>
+        <div class="main-content-wrapper">
+        <section class="container payload-container">
+            <header class="payload-header">
+                <h2 class="info-title">Payload</h2>
+                <div class="payload-controls-row">
                     <div class="payload-toggle-wrapper">
-                        <!-- Removed "Payload" text from here -->
                         <label class="switch">
                             <input type="checkbox" id="payload-toggle" role="switch">
                             <span class="slider round">
@@ -26,23 +26,23 @@
                         </label>
                     </div>
                 </div>
-                <!-- New container for parse button, outside payload-controls-row -->
                 <div id="parse-button-container">
                     <button id="parse-button">Parse</button>
                 </div>
-            </div>
+            </header>
             <div class="payload-content">
                 <div class="payload-pane left-pane">
                     <div id="payload-display" contenteditable="true"></div>
                 </div>
                 <div class="payload-pane right-pane">
                     <div id="json-input" contenteditable="true" placeholder="Paste raw JSON or Base64 encoded JSON here..."></div>
-                    <!-- Removed the bottom parse button from here -->
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
+    <script src="resources/vendor/pako.min.js"></script>
+    <script src="resources/vendor/protobuf.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -6,7 +6,7 @@
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "build": "cp index.html style.css script.js README-gh-pages.md payload-1.json payload-2.json build/ && mv build/README-gh-pages.md build/README.md",
+    "build": "mkdir -p build && cp index.html style.css script.js README-gh-pages.md payload-1.json payload-2.json build/ && cp -R resources build/ && mv build/README-gh-pages.md build/README.md",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "live-server"
   },
@@ -22,5 +22,9 @@
   "devDependencies": {
     "gh-pages": "^6.3.0",
     "live-server": "^1.2.2"
+  },
+  "dependencies": {
+    "pako": "^2.1.0",
+    "protobufjs": "^7.5.4"
   }
 }
