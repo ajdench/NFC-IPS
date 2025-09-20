@@ -70,5 +70,4 @@ message NFCPayload {
     int64 t = 8;
     BundleMetadata bundleMetadata = 9;
     repeated Allergy allergies = 10;
-    string original_bundle_json = 11;  // Complete original FHIR Bundle as JSON string for perfect restoration
 }

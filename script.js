@@ -897,9 +897,7 @@ const codecPipeline = (() => {
         console.log('CASEVAC stage:', payload.casevac);
         console.log('MEDEVAC stage:', payload.medevac);
 
-        // Add the original Bundle JSON for universal restoration BEFORE any potential errors
-        payload.originalBundleJson = JSON.stringify(bundle);
-        console.log('✅ UNIVERSAL: Added originalBundleJson to payload, length:', payload.originalBundleJson.length);
+        // Focus on proper CodeRef compression - no duplication needed
 
         console.log('=== CONVERSION RESULT SUMMARY ===');
         console.log('Patient converted:', !!payload.patient);
@@ -1014,23 +1012,7 @@ const codecPipeline = (() => {
         console.log('Allergies count:', codeRefPayload.allergies?.length || 0);
         console.log('Converting CodeRef format back to FHIR Bundle');
 
-        // UNIVERSAL SOLUTION: Use stored original Bundle JSON if available for perfect restoration
-        console.log('🔍 UNIVERSAL DEBUG: Checking for originalBundleJson field');
-        console.log('🔍 UNIVERSAL DEBUG: originalBundleJson exists:', !!codeRefPayload.originalBundleJson);
-        console.log('🔍 UNIVERSAL DEBUG: CodeRef payload keys:', Object.keys(codeRefPayload));
-
-        if (codeRefPayload.originalBundleJson) {
-            console.log('✅ UNIVERSAL: Restoring from original Bundle JSON, length:', codeRefPayload.originalBundleJson.length);
-            try {
-                const restoredBundle = JSON.parse(codeRefPayload.originalBundleJson);
-                console.log('✅ UNIVERSAL: Perfect restoration successful!');
-                return restoredBundle;
-            } catch (error) {
-                console.error('❌ UNIVERSAL: Failed to parse original Bundle JSON:', error);
-            }
-        } else {
-            console.log('❌ UNIVERSAL: No originalBundleJson field found - universal solution not working');
-        }
+        // PROPER APPROACH: Reconstruct FHIR Bundle from CodeRef data with perfect fidelity
 
         // Restore the original bundle structure from preserved metadata with proper deserialization
         const bundleMetadata = codeRefPayload.bundleMetadata;
