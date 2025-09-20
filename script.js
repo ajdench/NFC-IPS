@@ -616,7 +616,7 @@ const codecPipeline = (() => {
             console.log('🚨 DECODE FIX: Manually preserving original_bundle_json from protobuf message');
             console.log('🚨 DECODE FIX: Found field as:', message.original_bundle_json ? 'original_bundle_json' : 'originalBundleJson');
             console.log('🚨 DECODE FIX: original bundle length:', originalBundle.length);
-            object.original_bundle_json = originalBundle;
+            object.originalBundleJson = originalBundle;
         }
 
         console.log('Converted to object:', object);
@@ -898,8 +898,8 @@ const codecPipeline = (() => {
         console.log('MEDEVAC stage:', payload.medevac);
 
         // Add the original Bundle JSON for universal restoration BEFORE any potential errors
-        payload.original_bundle_json = JSON.stringify(bundle);
-        console.log('✅ UNIVERSAL: Added original_bundle_json to payload, length:', payload.original_bundle_json.length);
+        payload.originalBundleJson = JSON.stringify(bundle);
+        console.log('✅ UNIVERSAL: Added originalBundleJson to payload, length:', payload.originalBundleJson.length);
 
         console.log('=== CONVERSION RESULT SUMMARY ===');
         console.log('Patient converted:', !!payload.patient);
@@ -1015,21 +1015,21 @@ const codecPipeline = (() => {
         console.log('Converting CodeRef format back to FHIR Bundle');
 
         // UNIVERSAL SOLUTION: Use stored original Bundle JSON if available for perfect restoration
-        console.log('🔍 UNIVERSAL DEBUG: Checking for original_bundle_json field');
-        console.log('🔍 UNIVERSAL DEBUG: original_bundle_json exists:', !!codeRefPayload.original_bundle_json);
+        console.log('🔍 UNIVERSAL DEBUG: Checking for originalBundleJson field');
+        console.log('🔍 UNIVERSAL DEBUG: originalBundleJson exists:', !!codeRefPayload.originalBundleJson);
         console.log('🔍 UNIVERSAL DEBUG: CodeRef payload keys:', Object.keys(codeRefPayload));
 
-        if (codeRefPayload.original_bundle_json) {
-            console.log('✅ UNIVERSAL: Restoring from original Bundle JSON, length:', codeRefPayload.original_bundle_json.length);
+        if (codeRefPayload.originalBundleJson) {
+            console.log('✅ UNIVERSAL: Restoring from original Bundle JSON, length:', codeRefPayload.originalBundleJson.length);
             try {
-                const restoredBundle = JSON.parse(codeRefPayload.original_bundle_json);
+                const restoredBundle = JSON.parse(codeRefPayload.originalBundleJson);
                 console.log('✅ UNIVERSAL: Perfect restoration successful!');
                 return restoredBundle;
             } catch (error) {
                 console.error('❌ UNIVERSAL: Failed to parse original Bundle JSON:', error);
             }
         } else {
-            console.log('❌ UNIVERSAL: No original_bundle_json field found - universal solution not working');
+            console.log('❌ UNIVERSAL: No originalBundleJson field found - universal solution not working');
         }
 
         // Restore the original bundle structure from preserved metadata with proper deserialization
@@ -1427,11 +1427,11 @@ const codecPipeline = (() => {
                 payload = convertFhirToCodeRef(payload);
 
                 // The convertFhirToCodeRef already adds original_bundle_json, but ensure it's preserved
-                if (!payload.original_bundle_json) {
-                    payload.original_bundle_json = originalBundleJson || rawFhirJson;
-                    console.log('✅ UNIVERSAL: Added original_bundle_json in encodeToFragment, length:', payload.original_bundle_json.length);
+                if (!payload.originalBundleJson) {
+                    payload.originalBundleJson = originalBundleJson || rawFhirJson;
+                    console.log('✅ UNIVERSAL: Added originalBundleJson in encodeToFragment, length:', payload.originalBundleJson.length);
                 } else {
-                    console.log('✅ UNIVERSAL: original_bundle_json already present from conversion, length:', payload.original_bundle_json.length);
+                    console.log('✅ UNIVERSAL: originalBundleJson already present from conversion, length:', payload.originalBundleJson.length);
                 }
             } else {
                 console.log('🔍 ENCODE: CodeRef payload path (no FHIR conversion)');
@@ -1517,8 +1517,7 @@ const codecPipeline = (() => {
         // Ensure original_bundle_json field is in snake_case format
         if (normalizedObject.originalBundleJson && !normalizedObject.original_bundle_json) {
             console.log('🔍 NAMING DEBUG: Converting originalBundleJson to original_bundle_json');
-            normalizedObject.original_bundle_json = normalizedObject.originalBundleJson;
-            delete normalizedObject.originalBundleJson;
+            // Keep field in camelCase for protobuf.js compatibility
         }
 
         console.log('🔍 NAMING DEBUG: Final normalizedObject.original_bundle_json exists:', !!normalizedObject.original_bundle_json);
@@ -1617,15 +1616,15 @@ const codecPipeline = (() => {
             }
 
             // Log original Bundle JSON storage for universal restoration
-            if (protoPayload.original_bundle_json) {
-                console.log('🔄 UNIVERSAL: Bundle JSON → Protobuf, length:', protoPayload.original_bundle_json.length);
+            if (protoPayload.originalBundleJson) {
+                console.log('🔄 UNIVERSAL: Bundle JSON → Protobuf, length:', protoPayload.originalBundleJson.length);
             } else {
-                console.log('❌ UNIVERSAL: original_bundle_json field missing before protobuf creation');
+                console.log('❌ UNIVERSAL: originalBundleJson field missing before protobuf creation');
                 console.log('❌ UNIVERSAL: protoPayload keys:', Object.keys(protoPayload));
 
-                // FINAL FAILSAFE: Create original_bundle_json from the current payload data
-                console.log('🚨 FINAL FAILSAFE: Creating original_bundle_json from payload data');
-                protoPayload.original_bundle_json = JSON.stringify({
+                // FINAL FAILSAFE: Create originalBundleJson from the current payload data
+                console.log('🚨 FINAL FAILSAFE: Creating originalBundleJson from payload data');
+                protoPayload.originalBundleJson = JSON.stringify({
                     resourceType: "Bundle",
                     id: protoPayload.bundleMetadata?.id || "restored-bundle",
                     type: "document",
@@ -1633,17 +1632,34 @@ const codecPipeline = (() => {
                     entry: [], // Reconstructed from payload data - minimal structure for character preservation
                     restored: true // Flag to indicate this was reconstructed
                 });
-                console.log('🚨 FINAL FAILSAFE: Added fallback original_bundle_json, length:', protoPayload.original_bundle_json.length);
+                console.log('🚨 FINAL FAILSAFE: Added fallback originalBundleJson, length:', protoPayload.originalBundleJson.length);
             }
 
             console.log('🔧 PROTOBUF CREATION DEBUG');
             console.log('🔧 protoPayload.original_bundle_json exists:', !!protoPayload.original_bundle_json);
+            console.log('🔧 protoPayload.originalBundleJson exists:', !!protoPayload.originalBundleJson);
+            console.log('🔧 protoPayload.originalBundleJson length:', protoPayload.originalBundleJson?.length);
             console.log('🔧 Creating protobuf message with keys:', Object.keys(protoPayload));
+
+            // CRITICAL: Check schema fields
+            console.log('🔧 SCHEMA DEBUG: payloadType fields:', Object.keys(payloadType.fields));
+            console.log('🔧 SCHEMA DEBUG: field 11 info:', payloadType.fields['original_bundle_json']);
+            console.log('🔧 SCHEMA DEBUG: field 11 name:', payloadType.fields[11]?.name);
 
             const message = payloadType.create(protoPayload);
 
             console.log('🔧 Created message.original_bundle_json exists:', !!message.original_bundle_json);
+            console.log('🔧 Created message.originalBundleJson exists:', !!message.originalBundleJson);
             console.log('🔧 Created message keys:', Object.keys(message));
+            console.log('🔧 Created message field 11 value:', message[Object.keys(payloadType.fields)[10]]);
+
+            // CRITICAL: Check if field 11 exists with different name
+            for (let i = 0; i < 15; i++) {
+                const field = payloadType.fields[i];
+                if (field) {
+                    console.log(`🔧 Field ${i}: ${field.name} = ${message[field.name]?.length || message[field.name]}`);
+                }
+            }
 
             const buffer = payloadType.encode(message).finish();
 
@@ -1654,10 +1670,20 @@ const codecPipeline = (() => {
             // CRITICAL TEST: Immediately decode to verify field preservation
             const testDecode = payloadType.decode(buffer);
             console.log('🔧 IMMEDIATE DECODE TEST: original_bundle_json exists:', !!testDecode.original_bundle_json);
-            console.log('🔧 IMMEDIATE DECODE TEST: original_bundle_json length:', testDecode.original_bundle_json?.length);
-            if (!testDecode.original_bundle_json) {
+            console.log('🔧 IMMEDIATE DECODE TEST: originalBundleJson exists:', !!testDecode.originalBundleJson);
+            console.log('🔧 IMMEDIATE DECODE TEST: originalBundleJson length:', testDecode.originalBundleJson?.length);
+            if (!testDecode.originalBundleJson) {
                 console.log('🚨 CRITICAL FAILURE: Field lost during protobuf encode/decode cycle!');
                 console.log('🚨 Available fields in decoded message:', Object.keys(testDecode));
+
+                // Test with smaller string to verify if it's a size issue
+                console.log('🔧 SIZE TEST: Testing encode/decode with small string...');
+                const testPayload = { ...protoPayload, originalBundleJson: 'test123' };
+                const testMessage = payloadType.create(testPayload);
+                const testBuffer = payloadType.encode(testMessage).finish();
+                const testDecodeSmall = payloadType.decode(testBuffer);
+                console.log('🔧 SIZE TEST: Small string survived:', !!testDecodeSmall.originalBundleJson);
+                console.log('🔧 SIZE TEST: Small string value:', testDecodeSmall.originalBundleJson);
             }
 
             // Convert binary to hex representation for display
