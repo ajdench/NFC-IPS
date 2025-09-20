@@ -1647,6 +1647,19 @@ const codecPipeline = (() => {
 
             const buffer = payloadType.encode(message).finish();
 
+            console.log('🔧 PROTOBUF ENCODING COMPLETE');
+            console.log('🔧 Buffer size:', buffer.length, 'bytes');
+            console.log('🔧 Testing immediate decode to verify field preservation...');
+
+            // CRITICAL TEST: Immediately decode to verify field preservation
+            const testDecode = payloadType.decode(buffer);
+            console.log('🔧 IMMEDIATE DECODE TEST: original_bundle_json exists:', !!testDecode.original_bundle_json);
+            console.log('🔧 IMMEDIATE DECODE TEST: original_bundle_json length:', testDecode.original_bundle_json?.length);
+            if (!testDecode.original_bundle_json) {
+                console.log('🚨 CRITICAL FAILURE: Field lost during protobuf encode/decode cycle!');
+                console.log('🚨 Available fields in decoded message:', Object.keys(testDecode));
+            }
+
             // Convert binary to hex representation for display
             const hexString = Array.from(new Uint8Array(buffer))
                 .map(byte => byte.toString(16).padStart(2, '0'))

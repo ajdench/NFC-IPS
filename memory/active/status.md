@@ -95,3 +95,11 @@ This is a **mature, production-ready application** that demonstrates:
 
 ### Update: 2025-09-19 06:05
 - Documented exhaustive debugging approach: always add console logs first, seek console outputs when issues arise. Researched console access - no direct browser console MCPs available, use manual DevTools + systematic logging patterns.
+
+### Update: 2025-09-20 03:30
+- **CRITICAL ISSUE IDENTIFIED**: original_bundle_json field (49,969 chars) added during encode but lost during protobuf decode
+- **Root Cause**: Protobuf serialization/deserialization not preserving large string fields
+- **Evidence**: Encode logs show field exists, decode logs show field missing
+- **Architecture**: Current architecture working well (89,053 → 1,200 char compression), just field preservation issue
+- **Version Control**: Established jj version control, current architecture checkpointed
+- **Next**: Fix immediate field preservation issue before considering architecture alternatives
