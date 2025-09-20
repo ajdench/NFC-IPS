@@ -109,6 +109,14 @@ npm run deploy      # Deploy to GitHub Pages
 4. Dynamic UI rendering with color-coded medical stages
 5. Comparison views for IPS changes tracking
 
+## Technical Documentation
+
+### Codec Pipeline
+For detailed information about the encoding/decoding system, including protobuf schemas, compression handling, and format conversion between FHIR and CodeRef formats, see [CODEC.md](CODEC.md).
+
+### Terminology System
+For details about the CodeRef terminology system, medical code mappings, and the migration path to production FHIR terminology services, see [TERMINOLOGY.md](TERMINOLOGY.md).
+
 ## Return to gh-pages branch
 
 https://github.com/ajdench/NFC-IPS/tree/gh-pages

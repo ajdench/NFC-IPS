@@ -15,11 +15,15 @@ message Patient {
     CodeRef nhs_id = 5;
     CodeRef service_id = 6;
     string dob = 7;
+    string rank = 8;
+    string title = 9;
+    string nationality = 10;
 }
 
 message Vital {
     CodeRef code = 1;
     double value = 2;
+    string time = 3;
 }
 
 message Condition {
@@ -41,6 +45,20 @@ message Stage {
     repeated Event events = 3;
 }
 
+message BundleMetadata {
+    string id = 1;
+    string meta_json = 2;
+    string identifier_json = 3;
+    string type = 4;
+    string timestamp = 5;
+}
+
+message Allergy {
+    CodeRef code = 1;
+    string onset = 2;
+    string severity = 3;
+}
+
 message NFCPayload {
     Patient patient = 1;
     Stage poi = 2;
@@ -50,4 +68,7 @@ message NFCPayload {
     Stage casevac = 6;
     Stage r3 = 7;
     int64 t = 8;
+    BundleMetadata bundleMetadata = 9;
+    repeated Allergy allergies = 10;
+    string original_bundle_json = 11;  // Complete original FHIR Bundle as JSON string for perfect restoration
 }

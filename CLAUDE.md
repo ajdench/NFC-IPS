@@ -1,4 +1,4 @@
-# CLAUDE.md - NFC IPS Viewer Memory System Guide v1.0
+# CLAUDE.md - Compressed Memory System Guide v3.0
 
 > **You are Claude Code, working within a 10,000 token memory budget. This document + active memory files are your persistent context. Always load these first.**
 
@@ -79,95 +79,137 @@ echo "Next: implement Z" >> memory/active/context.md
 
 ## 🏗️ Project Structure
 
-### NFC IPS Viewer Project
+### [CUSTOMIZE THIS SECTION]
 ```yaml
-project_name: NFC IPS Viewer
-type: Single-page web application for displaying International Patient Summary data
-stack: JavaScript ES6+, HTML5, CSS3, protobuf.js, pako
-start_command: npm run dev (live-server)
+project_name: [YOUR PROJECT]
+type: [web app/cli tool/library]
+stack: [technologies used]
+start_command: [how to run]
 
 structure:
-  root/: Main application files
-  resources/: External dependencies and proto schemas
-  ips-screenshots/: Documentation screenshots
-  memory/: Claude-dementia memory system (to be created)
-
+  src/: Main source code
+  tests/: Test files
+  docs/: Documentation
+  
 key_files:
-  - index.html: Main application entry point (48 lines)
-  - script.js: Core application logic (1,183 lines)
-  - style.css: Complete styling system (468 lines)
-  - package.json: Build and deployment configuration
-  - payload-1.json: Demo payload data
-  - payload-2.json: Second demo payload data
+  - path/to/main.py: Entry point
+  - path/to/config.yaml: Configuration
 ```
 
-## 🎯 Current Project Status
+## 🎯 Operating Principles
 
-### Completed Features
-- ✅ **Core Architecture**: Modular JavaScript with codec pipeline, payload service, and rendering functions
-- ✅ **UI Components**: Dynamic info boxes with color-coded stages (POI, CASEVAC, MEDEVAC, R1-R3)
-- ✅ **Data Processing**: Multi-format support (FHIR, legacy indexed, CodeRef protobuf payloads)
-- ✅ **Payload Parsing**: Base64 decoding, JSON parsing, protobuf decoding with compression
-- ✅ **Interactive Controls**: Toggle switch for demo payloads, custom input parsing
-- ✅ **Responsive Design**: CSS variables system with scalable UI components
-- ✅ **Patient Display**: Formatted patient details with NHS numbers, identifiers
-- ✅ **Stage Sections**: Medical data organized by care stages (vitals, conditions, events)
-- ✅ **NFC Integration**: URL fragment parsing for NFC-encoded payloads
-- ✅ **Build System**: npm scripts for development and GitHub Pages deployment
+### 1. Compressed Intelligence
+- **Information density** over verbosity
+- **Tables/lists** over paragraphs (3:1 compression)
+- **References** over copying code
+- **One-line summaries** with bullet details
 
-### Technical Architecture
-- **Codec Pipeline**: Handles protobuf decoding with legacy and CodeRef schema support
-- **Payload Service**: Builds view models from various data formats
-- **Rendering Engine**: Dynamic DOM generation with color-coded medical stages
-- **State Management**: Global app state with demo payloads and current view models
-- **Utility Functions**: Base64 normalization, date formatting, gender mapping
+### 2. Progressive Context
+- Start with minimal files
+- Load specific references as needed
+- Never exceed token budget
+- Archive old information automatically
 
-### Deployment Status
-- 📍 **GitHub Pages**: Live at https://ajdench.github.io/NFC-IPS/
-- 📍 **Build Pipeline**: Automated gh-pages deployment
-- 📍 **Dependencies**: protobuf.js and pako for compression/decompression
+### 3. Fix Don't Skip
+- Stop on errors
+- Find root cause
+- Document fix in memory/fixes/
+- Add regression test
+
+### 4. Ask Don't Assume
+- Document questions in memory/questions/
+- Include context and options
+- Wait for clarification
+- Record answers
+
+## 📁 Memory Directory Guide
+
+```
+memory/
+├── active/               # Current work (3k tokens)
+│   ├── status.md        # Dashboard + updates
+│   └── context.md       # Task context
+├── reference/           # Stable info (5k tokens)
+│   ├── architecture.md  # System design
+│   ├── patterns.md      # Code patterns
+│   └── decisions.md     # Tech decisions
+├── patterns/            # Reusable solutions
+├── fixes/              # YYYY-MM-DD-issue.md
+├── implementations/     # Feature tracking
+├── questions/          # YYYY-MM-DD-topic.md
+└── archive/            # Compressed old files
+```
+
+## ✅ Pre-Work Checklist
+
+- [ ] Load CLAUDE.md + active memory
+- [ ] Check git status
+- [ ] Review recent updates
+- [ ] Identify current task
+- [ ] Load relevant patterns/references
+- [ ] Verify services running
+- [ ] Run tests for clean baseline
+
+## 🚀 Quick Commands
+
+```bash
+# Memory management
+./memory/update.sh "what changed"
+./memory/compress.sh
+./memory/weekly-maintenance.sh
+
+# Git workflow
+git add -p
+git commit -m "type(scope): message"
+git push origin branch
+
+# Testing
+[test command]
+[lint command]
+
+# Search memory
+grep -r "pattern" memory/
+```
+
+## 📝 Documentation Templates
+
+### Fix Documentation
+```markdown
+# YYYY-MM-DD-descriptive-name.md
+## Problem: [One line]
+## Cause: [Root cause]
+## Fix: [Solution]
+## Prevention: [Test added]
+```
+
+### Question Tracking
+```markdown
+# YYYY-MM-DD-topic.md
+## Status: OPEN|ANSWERED
+## Q: [Specific question]
+## Context: [Why needed]
+## Options: [Considered choices]
+## Answer: [When received]
+```
+
+### Pattern Documentation
+```markdown
+# pattern-name.md
+## Use When: [Scenario]
+## Solution: [Approach]
+## Example: path/to/implementation
+## Trade-offs: [Considerations]
+```
 
 ## 🛡️ Quality Gates
 
 Before EVERY commit:
-- [ ] Tests passing (npm test - currently no tests defined)
+- [ ] Tests passing
 - [ ] No hardcoded secrets
 - [ ] Memory updated
 - [ ] Compression checked
 - [ ] Questions documented
 - [ ] Fixes recorded
-
-## 🚀 Quick Commands
-
-```bash
-# Development
-npm run dev          # Start live-server
-npm run build        # Build for deployment
-npm run deploy       # Deploy to GitHub Pages
-
-# Git workflow
-git add -p
-git commit -m "type(scope): message"
-git push origin main
-
-# Search memory (when created)
-grep -r "pattern" memory/
-```
-
-## 📝 Next Steps
-
-### High Priority
-1. **Memory System Setup**: Install claude-dementia memory system
-2. **Testing Framework**: Add unit tests for payload processing
-3. **Error Handling**: Improve error boundaries and user feedback
-4. **Documentation**: Complete inline code documentation
-
-### Enhancement Opportunities
-- Performance optimization for large payloads
-- Accessibility improvements (ARIA labels, keyboard navigation)
-- Print stylesheet for medical records
-- Export functionality (PDF, CSV)
-- Validation for incoming payload data
 
 ## 🚨 Emergency Procedures
 
@@ -187,14 +229,15 @@ grep -r "pattern" memory/
 1. Read CLAUDE.md
 2. Check memory/active/status.md
 3. Review git log
-4. Check script.js for current functionality
+4. Check memory/reference/architecture.md
 5. Ask user for clarification
 
-### Build Failures
-1. Check npm run build output
-2. Verify all dependencies in package.json
-3. Test locally with npm run dev
-4. Document in memory/fixes/
+### Tests Failing
+1. STOP writing code
+2. Read full error
+3. Check memory/fixes/ for similar
+4. Fix root cause
+5. Document in memory/fixes/
 
 ## 🎓 Remember
 
@@ -209,5 +252,5 @@ grep -r "pattern" memory/
 
 **Load this file first in EVERY session. Your memory system depends on it.**
 
-**Version**: 1.0.0
-**Token Budget**: This file uses ~1,200 tokens
+**Version**: 3.0.0  
+**Token Budget**: This file uses ~1,000 tokens

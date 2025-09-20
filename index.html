@@ -15,7 +15,7 @@
         <section class="container payload-container">
             <header class="payload-header">
                 <h2 class="info-title">Payload</h2>
-                <div class="payload-controls-row">
+                <!-- <div class="payload-controls-row">
                     <div class="payload-toggle-wrapper">
                         <label class="switch">
                             <input type="checkbox" id="payload-toggle" role="switch">
@@ -25,22 +25,40 @@
                             </span>
                         </label>
                     </div>
-                </div>
-                <div id="parse-button-container">
+                </div> -->
+                <div id="toast-container" class="toast-container"></div>
+                <div id="button-container">
                     <button id="parse-button">Parse</button>
+                    <button id="debug-regenerate" style="background: orange; margin-left: 10px;">🔍 Debug Regenerate</button>
                 </div>
             </header>
             <div class="payload-content">
                 <div class="payload-pane left-pane">
-                    <div id="payload-display" contenteditable="true"></div>
+                    <div class="pane-header">
+                        <h3 id="left-pane-title" class="pane-title clickable-title" data-mode="fragment">URL Fragment</h3>
+                        <span id="left-char-count" class="char-count">0 characters</span>
+                        <div class="preset-buttons">
+                            <button id="clear-left" class="preset-button">Clear</button>
+                            <button id="preset-1" class="preset-button">#1</button>
+                            <button id="preset-2" class="preset-button">#2</button>
+                            <button id="preset-3" class="preset-button">#3</button>
+                        </div>
+                        <button id="action-button" class="pane-button decode-mode">Decode</button>
+                    </div>
+                    <div id="left-input" contenteditable="true" placeholder="Paste Base64 encoded fragment here..."></div>
                 </div>
                 <div class="payload-pane right-pane">
-                    <div id="json-input" contenteditable="true" placeholder="Paste raw JSON or Base64 encoded JSON here..."></div>
+                    <div class="pane-header">
+                        <h3 id="right-pane-title" class="pane-title clickable-title" data-format="fhir">IPS FHIR JSON</h3>
+                        <span id="right-char-count" class="char-count">0 characters</span>
+                    </div>
+                    <div id="right-input" contenteditable="true" placeholder="Output will appear here..."></div>
                 </div>
             </div>
         </section>
     </main>
 
+    <script src="console-logger.js"></script>
     <script src="resources/vendor/pako.min.js"></script>
     <script src="resources/vendor/protobuf.min.js"></script>
     <script src="script.js"></script>
