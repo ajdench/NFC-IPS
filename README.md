@@ -58,15 +58,43 @@ To use this viewer, you will need an NFC tag encoded with a URI that includes yo
 
 `https://ajdench.github.io/nfc-ips/eyJrZXkiOiJ2YWx1ZSI=`. (where `eyJrZXkiOiJ2YWx1ZSI=` is Base64 for `{"key":"value"}`)
 
-## Local Development
+## Setup Instructions
 
-1.  Clone this repository:
-    `git clone https://github.com/ajdench/nfc-ips.git`
-2.  Navigate to the project directory:
-    `cd nfc-ips`
-3.  Open `index.html` in your web browser.
+### Prerequisites
+- Modern web browser with JavaScript ES6+ support
+- Node.js (optional, for development server)
+- Git
 
-    *Note: For local testing with URL parameters, you might need to manually append the Base64 string to the URL in your browser (e.g., `file:///path/to/nfc-ips/index.html#eyJrZXkiOiJ2YWxib2x1ZSI=`). However, the script is designed to parse the path directly, so a local web server might be more appropriate for accurate testing (e.g., using `python -m http.server`).*
+### Quick Start
+1.  **Clone this repository:**
+    ```bash
+    git clone https://github.com/ajdench/nfc-ips.git
+    cd nfc-ips
+    ```
+
+2.  **Install dependencies (optional):**
+    ```bash
+    npm install  # For development tools
+    ```
+
+3.  **Start development server:**
+    ```bash
+    npm run dev  # Uses live-server with hot reload
+    # OR
+    python -m http.server 8080  # Simple HTTP server
+    ```
+
+4.  **Access the application:**
+    - Home: `http://localhost:8080/nfc/ips/home.html`
+    - Viewer: `http://localhost:8080/nfc/ips/viewer.html`
+    - Encoding: `http://localhost:8080/nfc/ips/encoding.html`
+
+### Environment Variables
+No environment variables required for basic operation. Configuration is handled via:
+- `config/constants.js` - Application constants and theming
+- `style.css` - CSS variables for UI customization
+
+*Note: For NFC fragment testing, use the development server to properly handle URL fragments and routing.*
 
 ## Enhanced Local Development
 
@@ -88,26 +116,91 @@ npm run deploy      # Deploy to GitHub Pages
 *   **Custom Input:** Right pane supports JSON and Base64-encoded payloads
 *   **Protobuf Schemas:** Located in resources/ for NFC payload decoding
 
-## Code Architecture Overview
+## Architecture Overview
 
-### Core Components (script.js - 1,183 lines)
-- **Codec Pipeline:** Protobuf decoding with multi-schema support
-- **Payload Service:** Builds view models from FHIR, legacy, and CodeRef formats
-- **Rendering Functions:** Dynamic DOM generation with medical stage visualization
-- **Utility Functions:** Base64 handling, date formatting, gender mapping
+### High-Level System Architecture
 
-### Styling System (style.css - 468 lines)
-- **CSS Variables:** Centralized theming with `--size-multiplier` scaling
-- **Color-Coded Stages:** Medical care stages from POI through Role 3
-- **Responsive Design:** Flexbox layouts with mobile-first approach
-- **Interactive Components:** Toggle switches and parse buttons
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   NFC Device    │    │  Web Browser    │    │  GitHub Pages   │
+│                 │────│                 │────│   (Static Host) │
+│ • NFC Tag       │    │ • JavaScript    │    │ • HTML/CSS/JS   │
+│ • URL Fragment  │    │ • Protobuf      │    │ • Demo Payloads │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+                                │
+                                ▼
+                    ┌─────────────────────────┐
+                    │    Application Pages    │
+                    │                         │
+                    │ • /nfc/ips/home.html    │◄── Entry Point
+                    │ • /nfc/ips/viewer.html  │◄── Main Viewer
+                    │ • /nfc/ips/encoding.html│◄── 4-Pane Editor
+                    └─────────────────────────┘
+                                │
+                                ▼
+            ┌─────────────────────────────────────────┐
+            │         Core Processing Pipeline         │
+            │                                         │
+            │  URL Fragment → Base64 → Protobuf →     │
+            │  CodeRef → FHIR → View Model → UI       │
+            └─────────────────────────────────────────┘
+                                │
+                    ┌───────────┼───────────┐
+                    ▼           ▼           ▼
+        ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+        │ Terminology  │ │ Compression  │ │   UI Layer   │
+        │   Service    │ │   Handler    │ │              │
+        │              │ │              │ │ • Medical    │
+        │ • SNOMED CT  │ │ • Pako.js    │ │   Stages     │
+        │ • LOINC      │ │ • Base64     │ │ • Dynamic    │
+        │ • UCUM       │ │ • Protobuf   │ │   Rendering  │
+        └──────────────┘ └──────────────┘ └──────────────┘
+```
 
-### Data Flow
-1. NFC fragment parsing or manual input
-2. Multi-format payload detection and decoding
-3. View model generation with patient and stage data
-4. Dynamic UI rendering with color-coded medical stages
-5. Comparison views for IPS changes tracking
+### Core Components
+
+#### 1. **Application Entry Points** (`nfc/ips/` directory)
+- **home.html**: Simple landing page with centered title
+- **viewer.html**: Main IPS viewer application (2,644 lines total)
+- **encoding.html**: 4-pane encoding/decoding editor
+
+#### 2. **Core JavaScript** (`script.js` - 1,914 lines)
+- **Terminology Service**: Medical code resolution and validation
+- **Codec Pipeline**: Multi-format protobuf processing
+- **UI Rendering Engine**: Dynamic DOM generation
+- **State Management**: Centralized application state
+
+#### 3. **Configuration System** (`config/constants.js`)
+- **Centralized Constants**: Colors, dimensions, routes, medical systems
+- **Theme Variables**: Following AI-CODEGEN-SPEC modular design
+- **API Configuration**: Terminology services and compression settings
+
+#### 4. **Styling Architecture** (`style.css` - 662 lines)
+- **CSS Variable System**: `--size-multiplier` for scalable UI
+- **Color-Coded Medical Stages**: POI → CASEVAC → MEDEVAC → R1-R3
+- **Responsive Grid Layouts**: Flexbox and CSS Grid hybrid approach
+
+### Data Processing Pipeline
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   NFC Fragment  │───►│   Base64 Decode │───►│ Protobuf Decode │
+│ URL-safe Base64 │    │ + Decompression │    │  Schema Detection│
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+                                                        │
+┌─────────────────┐    ┌─────────────────┐    ┌────────▼────────┐
+│   UI Rendering  │◄───│   View Model    │◄───│  CodeRef→FHIR   │
+│ Medical Stages  │    │   Generation    │    │   Conversion    │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+### Key Architectural Principles
+
+1. **Modular Design**: Separated concerns with clear single responsibilities
+2. **No Hardcoding**: All values centralized in `config/constants.js`
+3. **Global CSS Inheritance**: Changes propagate across all pages
+4. **Component Reusability**: Shared UI patterns and utility functions
+5. **Defensive Programming**: Comprehensive error handling throughout
 
 ## Technical Documentation
 

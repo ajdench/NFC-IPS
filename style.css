@@ -610,8 +610,7 @@ input:checked + .slider .slider-label.right {
     color: var(--text-color-dark);
 }
 
-#convert-button, #parse-button {
-    width: calc(var(--standard-padding) * 4);
+#convert-button, #parse-button, #debug-regenerate {
     height: calc(var(--standard-padding) * 2);
     border-radius: calc(var(--standard-padding) * 2);
     color: white;
@@ -623,6 +622,16 @@ input:checked + .slider .slider-label.right {
     cursor: pointer;
     border: none;
     transition: background-color .4s;
+}
+
+#convert-button, #parse-button {
+    width: calc(var(--standard-padding) * 4);
+}
+
+#debug-regenerate {
+    flex: 1;
+    margin-left: var(--standard-padding);
+    padding: 0 var(--standard-padding);
 }
 
 #convert-button {
@@ -642,9 +651,17 @@ input:checked + .slider .slider-label.right {
 }
 
 #parse-button:disabled {
-    background-color: #81C784;
+    background-color: #BBDEFB;
     cursor: not-allowed;
     opacity: 0.7;
+}
+
+#debug-regenerate {
+    background-color: #FFD0A0;
+}
+
+#debug-regenerate:hover {
+    background-color: #FFB74D;
 }
 
 .char-count {
@@ -653,6 +670,15 @@ input:checked + .slider .slider-label.right {
     color: var(--text-color-dark);
     opacity: 0.7;
     white-space: nowrap;
+}
+
+.clickable-title {
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.clickable-title:hover {
+    color: #2196F3;
 }
 
 .toast-container {

@@ -2,9 +2,56 @@ syntax = "proto3";
 
 package medis.nfc;
 
+// Phase 2: System URL Compression (90% reduction)
+enum SystemType {
+    UNKNOWN_SYSTEM = 0;
+    SNOMED_CT = 1;          // http://snomed.info/sct
+    LOINC = 2;              // http://loinc.org
+    UCUM = 3;               // http://unitsofmeasure.org
+    HL7_CONDITION = 4;      // http://terminology.hl7.org/CodeSystem/condition-clinical
+    HL7_VERIFICATION = 5;   // http://terminology.hl7.org/CodeSystem/condition-ver-status
+    HL7_OBSERVATION = 6;    // http://terminology.hl7.org/CodeSystem/observation-category
+    ISO_3166 = 7;           // urn:iso:std:iso:3166
+    NHS_IDENTIFIER = 8;     // https://fhir.nhs.uk/Id/nhs-number
+}
+
+// Phase 2: Status Code Compression (95% reduction)
+enum ClinicalStatus {
+    UNKNOWN_CLINICAL = 0;
+    ACTIVE = 1;             // "active"
+    RESOLVED = 2;           // "resolved"
+    INACTIVE = 3;           // "inactive"
+    REMISSION = 4;          // "remission"
+}
+
+enum VerificationStatus {
+    UNKNOWN_VERIFICATION = 0;
+    CONFIRMED = 1;          // "confirmed"
+    UNCONFIRMED = 2;        // "unconfirmed"
+    PROVISIONAL = 3;        // "provisional"
+    DIFFERENTIAL = 4;       // "differential"
+}
+
+enum ObservationCategory {
+    UNKNOWN_CATEGORY = 0;
+    VITAL_SIGNS = 1;        // "vital-signs"
+    LABORATORY = 2;         // "laboratory"
+    SURVEY = 3;            // "survey"
+    SOCIAL_HISTORY = 4;    // "social-history"
+}
+
+// Enhanced CodeRef with optional enum compression
 message CodeRef {
-    string sys = 1;
+    oneof system_reference {
+        string sys = 1;         // Legacy: full system URL
+        SystemType system_id = 9; // Phase 2: enum compression
+    }
     string code = 2;
+
+    // Optional status compression fields
+    ClinicalStatus clinical_status = 10;
+    VerificationStatus verification_status = 11;
+    ObservationCategory category = 12;
 }
 
 message Patient {

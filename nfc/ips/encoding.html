@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFC IPS Viewer - Payload Editor</title>
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../../payload-page.css">
+</head>
+<body>
+    <main>
+        <div class="main-content-wrapper">
+            <section class="container payload-container">
+                <header class="payload-header">
+                    <h2 id="main-title" class="info-title clickable-title">NFC IPS Viewer</h2>
+                    <div id="toast-container" class="toast-container"></div>
+                </header>
+                <div class="payload-content payload-grid">
+            <!-- Top Row -->
+            <div class="payload-pane top-left">
+                <div class="pane-header">
+                    <h3 id="top-left-title" class="pane-title clickable-title" data-mode="fhir">IPS FHIR JSON</h3>
+                    <span id="top-left-char-count" class="char-count">0 characters</span>
+                    <button id="top-left-action" class="pane-button encode-mode">Encode</button>
+                </div>
+                <div id="top-left-input" contenteditable="true" placeholder="Paste IPS FHIR JSON here..."></div>
+            </div>
+
+            <div class="payload-pane top-right">
+                <div class="pane-header">
+                    <h3 id="top-right-title" class="pane-title clickable-title" data-format="fragment">URL Fragment</h3>
+                    <span id="top-right-char-count" class="char-count">0 characters</span>
+                </div>
+                <div id="top-right-input" contenteditable="true" placeholder="Encoded fragment will appear here..."></div>
+            </div>
+
+            <!-- Bottom Row -->
+            <div class="payload-pane bottom-left">
+                <div class="pane-header">
+                    <h3 id="bottom-left-title" class="pane-title clickable-title" data-mode="fhir">IPS FHIR Template</h3>
+                    <span id="bottom-left-char-count" class="char-count">0 characters</span>
+                    <button id="bottom-left-action" class="pane-button encode-mode">Encode</button>
+                </div>
+                <div id="bottom-left-input" contenteditable="true" placeholder="Simplified IPS FHIR template..."></div>
+            </div>
+
+            <div class="payload-pane bottom-right">
+                <div class="pane-header">
+                    <h3 id="bottom-right-title" class="pane-title clickable-title" data-format="fragment">URL Fragment</h3>
+                    <span id="bottom-right-char-count" class="char-count">0 characters</span>
+                </div>
+                <div id="bottom-right-input" contenteditable="true" placeholder="Encoded template fragment will appear here..."></div>
+            </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="../../console-logger.js"></script>
+    <script src="../../resources/vendor/pako.min.js"></script>
+    <script src="../../resources/vendor/protobuf.min.js"></script>
+    <script type="module" src="../../script.js"></script>
+    <script src="../../payload-page.js"></script>
+</body>
+</html>

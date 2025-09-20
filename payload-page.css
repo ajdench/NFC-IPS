@@ -1,0 +1,46 @@
+/* Payload Page Grid Override - Use main page styling for everything else */
+
+.payload-content.payload-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: var(--standard-padding);
+}
+
+/* Override main page 50% width for grid layout */
+.payload-content.payload-grid .payload-pane {
+    width: 100%;
+    height: 100%;
+}
+
+/* All pane headers use grey styling like main page */
+
+/* Action button styling */
+.pane-button.encode-mode {
+    background-color: var(--text-color-green);
+}
+
+.pane-button.encode-mode:hover {
+    background-color: #2e7031;
+}
+
+.pane-button.decode-mode {
+    background-color: var(--text-color-orange);
+}
+
+.pane-button.decode-mode:hover {
+    background-color: #cc4100;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .payload-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(4, 1fr);
+    }
+
+    .payload-page {
+        padding: calc(var(--standard-padding) / 2);
+        gap: calc(var(--standard-padding) / 2);
+    }
+}
