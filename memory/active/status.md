@@ -103,3 +103,12 @@ This is a **mature, production-ready application** that demonstrates:
 - **Architecture**: Current architecture working well (89,053 → 1,200 char compression), just field preservation issue
 - **Version Control**: Established jj version control, current architecture checkpointed
 - **Next**: Fix immediate field preservation issue before considering architecture alternatives
+
+### Update: 2025-09-20 05:05 - MAJOR PIPELINE REBASELINE
+- **ARCHITECTURE CLARITY**: Removed originalBundleJson duplication hack entirely
+- **CORE ISSUE IDENTIFIED**: CodeRef conversion loses structural information needed for exact reconstruction
+- **CURRENT STATE**: Clean compression pipeline working (89,053 → 6,623 chars = 92.6% compression)
+- **PROBLEM**: CodeRef→FHIR reconstruction creates 70 entries vs original structure, outputs 35,728 chars instead of 89,053
+- **ROOT CAUSE**: CodeRef format insufficient - doesn't preserve original FHIR Bundle structure/grouping
+- **REQUIREMENT**: CodeRef must encode enough structural information to restore exact original FHIR Bundle
+- **PIPELINE STATUS**: Clean architecture established, now needs CodeRef structural preservation fixes
