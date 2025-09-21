@@ -2,12 +2,14 @@
   "name": "nfc-ips-viewer",
   "version": "1.0.0",
   "description": "A simple single-page web application to display International Patient Summary (IPS) data from NFC tags.",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "build": "mkdir -p build && cp index.html style.css script.js README-gh-pages.md payload-1.json payload-2.json build/ && cp -R resources build/ && mv build/README-gh-pages.md build/README.md",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/test-utils.mjs",
+    "test:utils": "node scripts/test-utils.mjs",
     "dev": "live-server"
   },
   "keywords": [

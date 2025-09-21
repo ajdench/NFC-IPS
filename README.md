@@ -113,6 +113,9 @@ npm run deploy      # Deploy to GitHub Pages
 ### Development Notes
 *   **NFC Testing:** Use development server for URL fragment testing
 *   **Demo Payloads:** payload-1.json and payload-2.json provide test data
+*   **Full IPS Scaffold:** `full-ips-fhir-json-example-scaffold.json` contains a comprehensive, stage-by-stage IPS bundle (Composition, Patient, supporting resources, and POI → Rear TACEVAC care settings) for end-to-end encode/decode testing
+*   **Manual Workflow:** On page load the left pane shows the default IPS FHIR JSON for reference, but no automatic encoding/decoding occurs—use `Encode`/`Parse` to drive the pipeline manually
+*   **OPCP Palette:** CASEVAC, AXP, MEDEVAC, R1, Fwd TACEVAC, R2, Rear TACEVAC, and R3 follow a curated colour progression; AXP is tuned between CASEVAC/MEDEVAC hues and R3 carries a richer lavender tone
 *   **Custom Input:** Right pane supports JSON and Base64-encoded payloads
 *   **Protobuf Schemas:** Located in resources/ for NFC payload decoding
 

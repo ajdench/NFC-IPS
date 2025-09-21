@@ -31,6 +31,16 @@ import {
     FHIR_EXTENSIONS,
     FHIR_PROFILES
 } from './config/constants.js';
+import {
+    normaliseBase64,
+    base64ToUint8Array,
+    base64ToString
+} from './util/base64.js';
+import {
+    tryParseJson,
+    looksLikeJson,
+    safeDeepClone
+} from './util/json.js';
 
 // =============================================================================
 // CONFIGURATION AND DATA MODELS
@@ -46,10 +56,13 @@ const infoBoxConfig = [
     { title: 'Clinical Summary', colorClass: 'khaki', dataKey: 'clinicalSummary' },
     { title: 'Point of Injury and/or Illness (POI)', colorClass: 'red', dataKey: 'poi', specialClass: 'poi-box' },
     { title: 'Casualty Evacuation (CASEVAC)', colorClass: 'yellow', dataKey: 'casevac' },
+    { title: 'Ambulance Exchange Point (AXP)', colorClass: 'axp', dataKey: 'axp' },
     { title: 'Medical Evacuation (MEDEVAC)', colorClass: 'orange', dataKey: 'medevac' },
     { title: 'Role 1 Care (R1)', colorClass: 'green', dataKey: 'r1' },
-    { title: 'Role 2 Care (R2)', colorClass: 'blue', dataKey: 'r2' },
-    { title: 'Role 3 Care (R3)', colorClass: 'purple', dataKey: 'r3' }
+    { title: 'Forward Tactical Evacuation (Fwd TACEVAC)', colorClass: 'fwd-tacevac', dataKey: 'fwdTacevac' },
+    { title: 'Role 2 Care (R2)', colorClass: 'purple', dataKey: 'r2' },
+    { title: 'Rear Tactical Evacuation (Rear TACEVAC)', colorClass: 'blue', dataKey: 'rearTacevac' },
+    { title: 'Role 3 Care (R3)', colorClass: 'rear-tacevac', dataKey: 'r3' }
 ];
 
 /**
@@ -82,120 +95,6 @@ const appState = {
 // UTILITY FUNCTIONS
 // =============================================================================
 
-/**
- * Base64 URL-Safe to Standard Converter
- * Purpose: Convert URL-safe Base64 (from NFC URLs) to standard Base64 for atob() decoding
- *
- * Why needed: NFC URLs use URL-safe Base64 (- and _ chars) but JavaScript's atob()
- * requires standard Base64 (+ and / chars). We want URL-safe for URLs, but need
- * standard for decoding.
- *
- * @param {string} input - URL-safe Base64 string (contains - and _ instead of + and /)
- * @returns {string} - Standard Base64 string with proper padding for atob()
- *
- * Example:
- *   URL-safe:  'SGVsbG8tV29ybGQ'   (good for URLs)
- *   Standard:  'SGVsbG8+V29ybGQ='  (needed for atob())
- */
-function normaliseBase64(input) {
-    if (!input) return '';
-    const cleaned = input.replace(/\s+/g, '').replace(/-/g, '+').replace(/_/g, '/');
-    const remainder = cleaned.length % 4;
-    if (remainder === 2) return `${cleaned}==`;
-    if (remainder === 3) return `${cleaned}=`;
-    if (remainder === 1) return `${cleaned}===`;
-    return cleaned;
-}
-
-/**
- * Base64 to Uint8Array Converter
- * Purpose: Convert Base64 string to binary array for protobuf decoding
- * Usage: Core component of fragment → binary → protobuf pipeline
- *
- * @param {string} input - Base64 encoded string
- * @returns {Uint8Array|null} - Binary array or null if conversion fails
- *
- * Example:
- *   base64ToUint8Array('SGVsbG8=') → Uint8Array[72, 101, 108, 108, 111]
- */
-function base64ToUint8Array(input) {
-    try {
-        const normalised = normaliseBase64(input);
-        const binary = atob(normalised);
-        const length = binary.length;
-        const bytes = new Uint8Array(length);
-        for (let i = 0; i < length; i += 1) {
-            bytes[i] = binary.charCodeAt(i);
-        }
-        return bytes;
-    } catch (error) {
-        return null;
-    }
-}
-
-/**
- * Base64 to String Decoder
- * Purpose: Convert Base64 encoded data to UTF-8 string with fallback handling
- * Usage: Decode Base64 payloads that contain text data
- *
- * @param {string} input - Base64 encoded string
- * @returns {string|null} - Decoded string or null if conversion fails
- *
- * Example:
- *   base64ToString('SGVsbG8gV29ybGQ=') → 'Hello World'
- */
-function base64ToString(input) {
-    const bytes = base64ToUint8Array(input);
-    if (!bytes) return null;
-    try {
-        return new TextDecoder().decode(bytes);
-    } catch (error) {
-        let result = '';
-        for (let i = 0; i < bytes.length; i += 1) {
-            result += String.fromCharCode(bytes[i]);
-        }
-        return result;
-    }
-}
-
-/**
- * Safe JSON Parser
- * Purpose: Attempt JSON parsing with error handling for robust payload processing
- * Usage: Parse JSON strings from various sources (Base64 decoded, direct input)
- *
- * @param {string} raw - Raw string that might be valid JSON
- * @returns {Object|Array|null} - Parsed JSON object/array or null if invalid
- *
- * Example:
- *   tryParseJson('{"name": "John"}') → {name: "John"}
- *   tryParseJson('invalid') → null
- */
-function tryParseJson(raw) {
-    if (typeof raw !== 'string') return null;
-    try {
-        return JSON.parse(raw);
-    } catch (error) {
-        return null;
-    }
-}
-
-/**
- * JSON Format Detector
- * Purpose: Quick heuristic check if string might be JSON without parsing
- * Usage: Pre-filter strings before expensive JSON parsing attempts
- *
- * @param {string} raw - String to examine
- * @returns {boolean} - True if string looks like JSON (starts with { or [)
- *
- * Example:
- *   looksLikeJson('{"data": 123}') → true
- *   looksLikeJson('plain text') → false
- */
-function looksLikeJson(raw) {
-    if (typeof raw !== 'string') return false;
-    const trimmed = raw.trim();
-    return trimmed.startsWith('{') || trimmed.startsWith('[');
-}
 
 /**
  * Human-Readable Date Formatter
@@ -1425,51 +1324,6 @@ async function fetchJson(url) {
  * Safe deep cloning that preserves large strings and avoids JSON.parse(JSON.stringify()) corruption
  * Uses structuredClone when available, falls back to manual cloning for large objects
  */
-function safeDeepClone(obj) {
-    // Use structuredClone if available (modern browsers)
-    if (typeof structuredClone !== 'undefined') {
-        try {
-            return structuredClone(obj);
-        } catch (error) {
-            console.warn('structuredClone failed, falling back to manual clone:', error);
-        }
-    }
-
-    // Manual deep cloning for complex objects with large strings
-    function cloneValue(value) {
-        // Handle null and undefined
-        if (value === null || value === undefined) {
-            return value;
-        }
-
-        // Handle primitives (including large strings)
-        if (typeof value !== 'object') {
-            return value;
-        }
-
-        // Handle Date objects
-        if (value instanceof Date) {
-            return new Date(value.getTime());
-        }
-
-        // Handle Arrays
-        if (Array.isArray(value)) {
-            return value.map(item => cloneValue(item));
-        }
-
-        // Handle regular objects
-        const cloned = {};
-        for (const key in value) {
-            if (value.hasOwnProperty(key)) {
-                cloned[key] = cloneValue(value[key]);
-            }
-        }
-        return cloned;
-    }
-
-    return cloneValue(obj);
-}
-
 // --- CODEC PIPELINE ---
 
 const codecPipeline = (() => {
@@ -1830,7 +1684,10 @@ const codecPipeline = (() => {
             meta_json: JSON.stringify(bundle.meta || {}),
             identifier_json: JSON.stringify(bundle.identifier || {}),
             type: bundle.type || 'document',
-            timestamp: bundle.timestamp || new Date().toISOString()
+            timestamp: bundle.timestamp || new Date().toISOString(),
+            composition_fullUrl: bundle.entry?.find(entry => entry.resource?.resourceType === 'Composition')?.fullUrl || null,
+            composition_json: JSON.stringify(bundle.entry?.find(entry => entry.resource?.resourceType === 'Composition')?.resource || null),
+            entries_json: JSON.stringify(bundle.entry || [])
         };
 
         console.log('BUNDLE PRESERVATION - Storing bundleMetadata:', bundleMetadata);
@@ -1842,9 +1699,12 @@ const codecPipeline = (() => {
             bundleMetadata: bundleMetadata,
             poi: { vitals: [], conditions: [], events: [] },
             casevac: { vitals: [], conditions: [], events: [] },
+            axp: { vitals: [], conditions: [], events: [] },
             medevac: { vitals: [], conditions: [], events: [] },
             r1: { vitals: [], conditions: [], events: [] },
+            fwdTacevac: { vitals: [], conditions: [], events: [] },
             r2: { vitals: [], conditions: [], events: [] },
+            rearTacevac: { vitals: [], conditions: [], events: [] },
             r3: { vitals: [], conditions: [], events: [] },
             t: Date.now()
         };
@@ -1906,11 +1766,40 @@ const codecPipeline = (() => {
         return payload;
     }
 
+    const CARE_STAGE_VALUE_MAP = {
+        poi: 'poi',
+        casevac: 'casevac',
+        axp: 'axp',
+        mevac: 'medevac', // common shorthand typo
+        medevac: 'medevac',
+        r1: 'r1',
+        'fwdtacevac': 'fwdTacevac',
+        'fwd-tacevac': 'fwdTacevac',
+        'forwardtacevac': 'fwdTacevac',
+        'forward-tacevac': 'fwdTacevac',
+        'fwd tacevac': 'fwdTacevac',
+        r2: 'r2',
+        'reartacevac': 'rearTacevac',
+        'rear-tacevac': 'rearTacevac',
+        'rear tacevac': 'rearTacevac',
+        r3: 'r3'
+    };
+
+    function normaliseCareStageValue(rawValue) {
+        if (!rawValue) return null;
+        const trimmed = String(rawValue).trim();
+        const direct = CARE_STAGE_VALUE_MAP[trimmed];
+        if (direct) return direct;
+        const lowered = trimmed.toLowerCase().replace(/\s+/g, '');
+        return CARE_STAGE_VALUE_MAP[lowered] || trimmed;
+    }
+
     function getCareStageFromExtension(resource) {
         const careStageExt = resource.extension?.find(ext =>
             ext.url === FHIR_EXTENSIONS.CARE_STAGE
         );
-        return careStageExt?.valueCode;
+        if (!careStageExt) return null;
+        return normaliseCareStageValue(careStageExt.valueCode || careStageExt.valueString || careStageExt.value); 
     }
 
     function convertConditionToCodeRef(condition) {
@@ -2019,30 +1908,33 @@ const codecPipeline = (() => {
             entry: []
         };
 
-        // Reconstruct Bundle from CodeRef data
-        // Add Composition entry (required for IPS Bundle)
-        bundle.entry.push({
-            fullUrl: 'urn:uuid:30551ce1-5a28-4356-b684-1e639094ad17',
-            resource: {
-                resourceType: 'Composition',
-                id: 'composition-example',
-                status: 'final',
-                type: {
-                    coding: [{
-                        system: 'http://loinc.org',
-                        code: '60591-5',
-                        display: 'Patient summary Document'
-                    }]
-                },
-                subject: {
-                    reference: 'urn:uuid:patient-example'
-                },
-                date: new Date().toISOString(),
-                author: [{ reference: 'urn:uuid:practitioner-example' }],
-                title: 'International Patient Summary',
-                section: []
-            }
-        });
+        const originalEntries = bundleMetadata?.entries_json ? JSON.parse(bundleMetadata.entries_json) : null;
+        if (originalEntries) {
+            bundle.entry = originalEntries.map(entry => ({ ...entry, resource: entry.resource ? JSON.parse(JSON.stringify(entry.resource)) : entry.resource }));
+        } else {
+            bundle.entry.push({
+                fullUrl: bundleMetadata?.composition_fullUrl || 'urn:uuid:generated-composition',
+                resource: bundleMetadata?.composition_json ? JSON.parse(bundleMetadata.composition_json) : {
+                    resourceType: 'Composition',
+                    id: 'composition-example',
+                    status: 'final',
+                    type: {
+                        coding: [{
+                            system: 'http://loinc.org',
+                            code: '60591-5',
+                            display: 'Patient summary Document'
+                        }]
+                    },
+                    subject: {
+                        reference: 'urn:uuid:patient-example'
+                    },
+                    date: new Date().toISOString(),
+                    author: [{ reference: 'urn:uuid:practitioner-example' }],
+                    title: 'International Patient Summary',
+                    section: []
+                }
+            });
+        }
 
         // Convert patient data back to FHIR Patient resource
         if (codeRefPayload.patient) {
@@ -2065,7 +1957,7 @@ const codecPipeline = (() => {
         }
 
         // Convert clinical data from each stage back to FHIR resources
-        const stageKeys = ['poi', 'casevac', 'medevac', 'r1', 'r2', 'r3'];
+        const stageKeys = ['poi', 'casevac', 'axp', 'medevac', 'r1', 'fwdTacevac', 'r2', 'rearTacevac', 'r3'];
         stageKeys.forEach(stageKey => {
             const stage = codeRefPayload[stageKey];
             if (!stage) return;
@@ -2717,11 +2609,14 @@ const payloadService = (() => {
             const patientResource = patientEntry?.resource || null;
 
             // Build stage sections from Bundle entries
-            const stageSections = buildStageSectionsFromBundle(payload);
+            const stageData = buildStageSectionsFromBundle(payload);
 
             return buildFromFhir(patientResource, {
                 ...options,
-                stageSections
+                stageSections: stageData.sections,
+                summary: stageData.summary,
+                allergies: stageData.allergies,
+                rawPayload: options.rawPayload || payload
             });
         }
 
@@ -2751,6 +2646,7 @@ const payloadService = (() => {
             type: 'fhir',
             label: options.label || 'FHIR Patient',
             patientResource,
+            allergies: options.allergies || [],
             stageSections: options.stageSections || {},
             summary: options.summary || null,
             rawPayload: options.rawPayload || patientResource,
@@ -3396,9 +3292,23 @@ const payloadService = (() => {
     }
 
     function buildStageSectionsFromBundle(bundle) {
-        // TODO: Extract stage sections from FHIR Bundle entries based on care stage extensions
-        // For now, return empty stage sections to prevent errors
-        return {};
+        if (!bundle || bundle.resourceType !== 'Bundle') {
+            return { sections: {}, summary: null, allergies: [] };
+        }
+
+        try {
+            const codeRefPayload = codecPipeline.convertFhirToCodeRef(bundle);
+            const stageResult = buildCodeRefStageSections(codeRefPayload);
+            const summary = buildSummary(codeRefPayload, stageResult.totals);
+            return {
+                sections: stageResult.sections || {},
+                summary,
+                allergies: codeRefPayload.allergies || []
+            };
+        } catch (error) {
+            console.warn('Failed to build stage sections from FHIR bundle:', error);
+            return { sections: {}, summary: null, allergies: [] };
+        }
     }
 
     return { buildViewModelFromObject, loadFromFragment, parseUserInput };
@@ -3418,7 +3328,7 @@ const payloadService = (() => {
  */
 function createInfoBoxes() {
     const container = document.getElementById('info-boxes-container');
-    if (!container) return;
+    if (!container || container.children.length > 0) return;
 
     infoBoxConfig.forEach(config => {
         const wrapperClass = config.specialClass ? 'poi-box-wrapper' : 'info-box-wrapper';
@@ -3956,7 +3866,8 @@ const formatState = {
     rightFormat: 'fhir',  // 'fhir', 'coderef', 'protobuf', 'fragment'
     conversionResults: {}, // Store all format results
     originalFhir: null, // Preserve original FHIR data to prevent round-trip loss
-    originalFragment: null // Preserve original fragment data for restoration
+    originalFragment: null, // Preserve original fragment data for restoration
+    suppressMessages: false
 };
 
 /**
@@ -4286,6 +4197,7 @@ async function init() {
         }
     }
 
+    // If no fragment payload, default to first demo bundle for initial render
     // Only render if we have a URL fragment with valid data
     if (initialViewModel) {
         appState.currentViewModel = initialViewModel;
@@ -4319,7 +4231,9 @@ async function init() {
             if (formatState.originalFragment) {
                 console.log('Restoring original fragment length:', formatState.originalFragment.length);
                 leftInput.textContent = formatState.originalFragment;
-                showMessage('Restored original fragment data', 'success');
+                if (!formatState.suppressMessages) {
+                    showMessage('Restored original fragment data', 'success');
+                }
             }
             // Otherwise, if switching from FHIR to fragment and we have FHIR content, encode it
             else if (currentContent && looksLikeJson(currentContent)) {
@@ -4328,7 +4242,9 @@ async function init() {
                     const fhirData = JSON.parse(currentContent);
                     const fragment = await codecPipeline.encodeToFragment(fhirData);
                     leftInput.textContent = fragment;
-                    showMessage('Converted FHIR to fragment', 'success');
+                    if (!formatState.suppressMessages) {
+                        showMessage('Converted FHIR to fragment', 'success');
+                    }
                 } catch (error) {
                     console.error('Error converting FHIR to fragment:', error);
                 }
@@ -4344,7 +4260,9 @@ async function init() {
                 console.log('🔍 FINAL RESULT: Restoring original FHIR length:', formatState.originalFhir.length);
                 leftInput.textContent = formatState.originalFhir;
                 console.log('🔍 FINAL RESULT: Displayed FHIR character count:', leftInput.textContent.length);
-                showMessage('Restored original FHIR data', 'success');
+                if (!formatState.suppressMessages) {
+                    showMessage('Restored original FHIR data', 'success');
+                }
             }
             // Otherwise, if switching from fragment to FHIR and we have fragment content, decode it
             else if (currentContent && !looksLikeJson(currentContent)) {
@@ -4360,7 +4278,9 @@ async function init() {
                         leftInput.textContent = fhirJson;
                         console.log('🔍 FINAL RESULT: Displayed FHIR character count:', leftInput.textContent.length);
                         console.log('🔍 FINAL RESULT: First 200 chars:', fhirJson.substring(0, 200));
-                        showMessage('Converted fragment to FHIR', 'success');
+                        if (!formatState.suppressMessages) {
+                            showMessage('Converted fragment to FHIR', 'success');
+                        }
                     }
                 } catch (error) {
                     console.error('Error converting fragment to FHIR:', error);
@@ -4370,6 +4290,7 @@ async function init() {
 
         leftPaneTitle.setAttribute('data-mode', newMode);
         updateCharCount(leftInput, leftCharCount);
+        formatState.suppressMessages = false;
     }
 
     function updateRightPaneFormat(newFormat) {
@@ -4699,38 +4620,28 @@ async function init() {
     }
 
     // Initialize enhanced UI state
-    updateLeftPaneMode('fhir');     // Start with FHIR JSON (ips-fhir-json-1.json)
     updateRightPaneFormat('protobuf'); // Start with first decode step (Protobuf Binary Format)
 
     // Load default content based on current mode
     if (!fragment) {
-        // Only load defaults if no URL fragment was provided
-        console.log('Loading default content...');
-        console.log('formatState.leftMode:', formatState.leftMode);
-        console.log('presetFragments[1] exists:', !!presetFragments[1]);
-        console.log('presetFragments[1] length:', presetFragments[1]?.length);
+        // Default to FHIR input without triggering automatic encoding/decoding
+        console.log('Loading default FHIR content...');
 
-        if (formatState.leftMode === 'fragment') {
-            if (presetFragments[1] && presetFragments[1].length > 0) {
-                leftInput.textContent = presetFragments[1];
-                updateCharCount(leftInput, leftCharCount);
-                showMessage('Loaded preset #1 fragment as default', 'success');
-                console.log('Loaded fragment:', presetFragments[1].substring(0, 50) + '...');
-
-                // Fragment loaded - user must click Decode to continue pipeline
-            } else {
-                console.log('presetFragments[1] is empty or undefined');
-                showMessage('No default fragment available', 'warning');
-            }
+        if (payload1) {
+            const fhirJson = JSON.stringify(payload1, null, 2);
+            formatState.originalFhir = fhirJson;
         } else {
-            if (payload1) {
-                leftInput.textContent = JSON.stringify(payload1, null, 2);
-                updateCharCount(leftInput, leftCharCount);
-                showMessage('Loaded preset #1 FHIR JSON as default', 'success');
-
-                // FHIR JSON loaded - user must click Encode to continue pipeline
-            }
+            formatState.originalFhir = null;
         }
+
+        formatState.originalFragment = null;
+        formatState.suppressMessages = true;
+        await updateLeftPaneMode('fhir');
+        updateCharCount(leftInput, leftCharCount);
+
+        delete formatState.conversionResults.fhir;
+        rightInput.textContent = '';
+        updateCharCount(rightInput, rightCharCount);
     }
 
     // Set initial active preset to #1

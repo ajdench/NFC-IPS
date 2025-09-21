@@ -260,20 +260,25 @@ export const VALIDATION = {
 };
 
 // =============================================================================
+// BASE PATH HELPERS (support GitHub Pages deployment paths)
+// =============================================================================
+const BASE_URL = new URL('../', import.meta.url);
+
+// =============================================================================
 // DEMO PAYLOAD FILES
 // =============================================================================
 export const DEMO_PAYLOADS = {
-    PAYLOAD_1: '../../payload-1.json',
-    PAYLOAD_2: '../../payload-2.json',
-    IPS_FHIR_JSON_1: '../../ips-fhir-json-1.json'
+    PAYLOAD_1: new URL('payload-1.json', BASE_URL).href,
+    PAYLOAD_2: new URL('payload-2.json', BASE_URL).href,
+    IPS_FHIR_JSON_1: new URL('ips-fhir-json-1.json', BASE_URL).href
 };
 
 // =============================================================================
 // RESOURCE FILES
 // =============================================================================
 export const RESOURCES = {
-    NFC_PAYLOAD_PROTO: '/resources/nfc_payload.proto',
-    NFC_PAYLOAD_LEGACY_PROTO: '/resources/nfc_payload_legacy.proto'
+    NFC_PAYLOAD_PROTO: new URL('resources/nfc_payload.proto', BASE_URL).href,
+    NFC_PAYLOAD_LEGACY_PROTO: new URL('resources/nfc_payload_legacy.proto', BASE_URL).href
 };
 
 // =============================================================================
