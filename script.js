@@ -3328,7 +3328,9 @@ const payloadService = (() => {
  */
 function createInfoBoxes() {
     const container = document.getElementById('info-boxes-container');
-    if (!container || container.children.length > 0) return;
+    if (!container) return;
+
+    container.innerHTML = '';
 
     infoBoxConfig.forEach(config => {
         const wrapperClass = config.specialClass ? 'poi-box-wrapper' : 'info-box-wrapper';
@@ -3346,11 +3348,32 @@ function createInfoBoxes() {
         const title = document.createElement('h2');
         title.className = config.specialClass ? 'poi-title' : 'info-title';
         title.textContent = config.title;
+        title.dataset.baseTitle = config.title;
 
         box.appendChild(title);
         wrapper.appendChild(box);
         container.appendChild(wrapper);
     });
+}
+
+function setTitleAvailability(titleElement, hasData) {
+    if (!titleElement) return;
+    const baseTitle = titleElement.dataset.baseTitle || titleElement.textContent.split('•')[0].trim();
+    titleElement.dataset.baseTitle = baseTitle;
+
+    const container = titleElement.parentElement;
+
+    if (hasData) {
+        titleElement.textContent = baseTitle;
+        if (container) {
+            container.classList.remove('empty');
+        }
+    } else {
+        titleElement.innerHTML = `${baseTitle} <span class="empty-marker">•</span> <span class="empty-text">No data available</span>`;
+        if (container) {
+            container.classList.add('empty');
+        }
+    }
 }
 
 /**
@@ -3422,23 +3445,17 @@ function renderPatientBox(patientResource) {
     const patientTitle = patientBox.querySelector('.info-title');
     const existingDetails = patientBox.querySelector('.patient-details-container');
     if (existingDetails) existingDetails.remove();
-    const existingPlaceholder = patientBox.querySelector('.stage-placeholder');
-    if (existingPlaceholder) existingPlaceholder.remove();
 
     const patientConfig = infoBoxConfig.find(config => config.dataKey === 'patient');
     const patientColorClass = patientConfig ? patientConfig.colorClass : 'grey';
 
     if (patientResource && patientResource.resourceType === 'Patient') {
-        patientTitle.textContent = 'Patient';
+        setTitleAvailability(patientTitle, true);
         const detailsElement = createPatientDetailsElement(patientResource, patientColorClass);
         patientBox.appendChild(detailsElement);
         addGhostItems(detailsElement, 10);
     } else {
-        patientTitle.textContent = 'Patient';
-        const placeholder = document.createElement('p');
-        placeholder.className = 'stage-placeholder';
-        placeholder.textContent = 'No data available';
-        patientBox.appendChild(placeholder);
+        setTitleAvailability(patientTitle, false);
     }
 }
 
@@ -3534,8 +3551,6 @@ function renderStageSections(stageSections = {}) {
 
         const existingContainer = stageBox.querySelector('.stage-details-container');
         if (existingContainer) existingContainer.remove();
-        const existingPlaceholder = stageBox.querySelector('.stage-placeholder');
-        if (existingPlaceholder) existingPlaceholder.remove();
 
         const config = infoBoxConfig.find(item => item.dataKey === stageKey);
         const stageColor = config ? config.colorClass : null;
@@ -3574,13 +3589,14 @@ function renderStageSections(stageSections = {}) {
             mistSections.push({ type: 'Treatment', items: sortedEvents });
         }
 
+        const titleElement = stageBox.querySelector('.info-title');
+
         if (!mistSections.length) {
-            const placeholder = document.createElement('p');
-            placeholder.className = 'stage-placeholder';
-            placeholder.textContent = 'No data available';
-            stageBox.appendChild(placeholder);
+            setTitleAvailability(titleElement, false);
             return;
         }
+
+        setTitleAvailability(titleElement, true);
 
         const container = document.createElement('div');
         container.classList.add('stage-details-container');
@@ -3714,9 +3730,6 @@ function renderClinicalSummaryBox(currentPatient, allergies, summary) {
     const existingDetails = clinicalSummaryBox.querySelector('.patient-details-container');
     if (existingDetails) existingDetails.remove();
 
-    const existingPlaceholder = clinicalSummaryBox.querySelector('.stage-placeholder');
-    if (existingPlaceholder) existingPlaceholder.remove();
-
     const detailsContainer = document.createElement('div');
     detailsContainer.classList.add('patient-details-container');
 
@@ -3736,17 +3749,17 @@ function renderClinicalSummaryBox(currentPatient, allergies, summary) {
     const differences = buildPatientDifferences(null, currentPatient);
     differences.forEach(diff => detailItems.push(diff));
 
+    const titleElement = clinicalSummaryBox.querySelector('.info-title');
+
     if (detailItems.length) {
         detailItems.forEach(item => {
             detailsContainer.appendChild(createDetailBoxElement(item.label, item.value, 'khaki'));
         });
         clinicalSummaryBox.appendChild(detailsContainer);
         addGhostItems(detailsContainer, 10);
+        setTitleAvailability(titleElement, true);
     } else {
-        const placeholder = document.createElement('p');
-        placeholder.className = 'stage-placeholder';
-        placeholder.textContent = 'No data available';
-        clinicalSummaryBox.appendChild(placeholder);
+        setTitleAvailability(titleElement, false);
     }
 }
 
