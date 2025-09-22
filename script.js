@@ -54,15 +54,15 @@ import {
 const infoBoxConfig = [
     { title: 'Patient Demographics', colorClass: 'grey', dataKey: 'patient' },
     { title: 'Clinical Summary', colorClass: 'khaki', dataKey: 'clinicalSummary' },
-    { title: 'Point of Injury and/or Illness (POI)', colorClass: 'red', dataKey: 'poi', specialClass: 'poi-box' },
+    { title: 'Point of Injury and/or Illness (POI)', colorClass: 'red', dataKey: 'poi' },
     { title: 'Casualty Evacuation (CASEVAC)', colorClass: 'yellow', dataKey: 'casevac' },
     { title: 'Ambulance Exchange Point (AXP)', colorClass: 'axp', dataKey: 'axp' },
     { title: 'Medical Evacuation (MEDEVAC)', colorClass: 'orange', dataKey: 'medevac' },
     { title: 'Role 1 Care (R1)', colorClass: 'green', dataKey: 'r1' },
     { title: 'Forward Tactical Evacuation (Fwd TACEVAC)', colorClass: 'fwd-tacevac', dataKey: 'fwdTacevac' },
-    { title: 'Role 2 Care (R2)', colorClass: 'purple', dataKey: 'r2' },
-    { title: 'Rear Tactical Evacuation (Rear TACEVAC)', colorClass: 'blue', dataKey: 'rearTacevac' },
-    { title: 'Role 3 Care (R3)', colorClass: 'rear-tacevac', dataKey: 'r3' }
+    { title: 'Role 2 Care (R2)', colorClass: 'blue', dataKey: 'r2' },
+    { title: 'Rear Tactical Evacuation (Rear TACEVAC)', colorClass: 'rear-tacevac', dataKey: 'rearTacevac' },
+    { title: 'Role 3 Care (R3)', colorClass: 'purple', dataKey: 'r3' }
 ];
 
 /**

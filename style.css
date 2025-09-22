@@ -107,7 +107,6 @@ body {
     width: 100%;
 }
 
-.poi-box-wrapper,
 .info-box-wrapper {
     width: 100%;
     box-sizing: border-box;
@@ -130,7 +129,6 @@ body {
     color: var(--text-color-dark);
 }
 
-.poi-box,
 .info-box {
     padding: var(--standard-padding);
     border-radius: 8px;
@@ -146,12 +144,10 @@ body {
 
 
 
-.poi-box.empty .poi-title,
 .info-box.empty .info-title {
     margin-bottom: 0;
 }
 
-.poi-title,
 .info-title {
     font-size: var(--font-size-uniform);
     font-weight: bold;
@@ -201,14 +197,12 @@ body {
     color: var(--text-color-dark);
 }
 
-.info-title .empty-marker,
-.poi-title .empty-marker {
+.info-title .empty-marker {
     font-weight: bold;
     opacity: 0.85;
 }
 
-.info-title .empty-text,
-.poi-title .empty-text {
+.info-title .empty-text {
     font-style: italic;
     font-weight: normal;
     opacity: 0.85;
@@ -219,7 +213,7 @@ body {
     color: var(--text-color-dark);
 }
 
-.poi-box {
+.info-box.red {
     background-color: var(--bg-color-poi);
     color: var(--text-color-poi);
 }

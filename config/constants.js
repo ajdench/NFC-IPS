@@ -321,14 +321,20 @@ export const ADDITIONAL_COLORS = {
 /**
  * Example Usage:
  *
- * import { COLORS, ROUTES, CARE_STAGES } from './config/constants.js';
+ * import { COLORS, ROUTES, DEMO_PAYLOADS, RESOURCES } from './config/constants.js';
  *
- * // Instead of: element.style.color = '#2196F3';
+ * // Color constants
  * element.style.color = COLORS.PRIMARY_BLUE;
  *
- * // Instead of: window.location.href = 'encoding.html';
+ * // Navigation routes
  * window.location.href = ROUTES.ENCODING;
  *
- * // Instead of: if (stage === 'POI') { ... }
- * if (stage === CARE_STAGES.POI.shortName) { ... }
+ * // Demo payload files (auto-resolved paths)
+ * const payload = await fetch(DEMO_PAYLOADS.IPS_FHIR_JSON_1);
+ *
+ * // Resource files (protobuf schemas)
+ * const proto = await fetch(RESOURCES.NFC_PAYLOAD_PROTO);
+ *
+ * // Validation patterns
+ * const isValidNHS = VALIDATION.NHS_NUMBER_PATTERN.test(number);
  */
