@@ -427,6 +427,7 @@ body {
     font-size: calc(var(--font-size-uniform) * 0.9);
     font-weight: bold;
     color: var(--text-color-dark);
+    align-self: flex-end;
 }
 
 .clickable-title {
@@ -503,7 +504,7 @@ body {
 }
 
 .right-pane .pane-header {
-    justify-content: flex-end;
+    justify-content: space-between;
     position: relative;
 }
 
@@ -522,6 +523,20 @@ body {
     justify-content: center;
     height: calc(var(--standard-padding) * 1.5);
     margin: 0;
+}
+
+.right-pane .pane-button {
+    order: 1;
+    flex-shrink: 0;
+}
+
+.right-pane #parse-button {
+    height: calc(var(--standard-padding) * 1.5);
+    border-radius: calc(var(--standard-padding) * 1.5);
+    font-size: calc(var(--font-size-uniform) * 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .right-buttons-group {
