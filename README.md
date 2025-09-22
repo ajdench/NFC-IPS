@@ -217,3 +217,7 @@ For details about the CodeRef terminology system, medical code mappings, and the
 ## Return to gh-pages branch
 
 https://github.com/ajdench/NFC-IPS/tree/gh-pages
+
+
+## Known Issues
+- POI pane does not collapse to the condensed empty-state style (shows default padding/format) while other OPCP panes do.
