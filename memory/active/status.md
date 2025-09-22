@@ -50,3 +50,21 @@
 
 ### Update: 2025-09-22 09:00
 - UI alignment improvements: Parse button repositioned to right pane header with perfect size/text alignment matching Encode/Decode button
+
+### Update: 2025-09-22 10:30
+- MIST date display inconsistencies fixed: enhanced chronological logic to handle missing timestamps with fallback 'No Date' display, preserved all medical data instead of filtering out non-timestamped items
+
+### Update: 2025-09-22 10:42
+- End-to-end conversion testing completed: ✅ utility tests pass, ✅ build process works, ✅ demo payloads accessible via HTTP, ✅ right pane header layout fixed with proper order convention (title > characters > button), ✅ Parse button functionality verified
+
+### Update: 2025-09-22 14:20
+- Fixed MIST chronological row marking - moved isFirstInRow marking after array reversal to ensure proper date display for first pills in each chronological group
+
+### Update: 2025-09-22 15:05
+- Payload pane gap removed to align editable region flush beneath header; documentation reflects new layout
+
+### Update: 2025-09-22 15:20
+- Debug Regenerate button retired; payload header now has only standard padding separating it from the pane stack
+
+### Update: 2025-09-22 15:28
+- Payload header margin adjusted to 0.75× standard with title margin zeroed to keep panes tight without double-gap

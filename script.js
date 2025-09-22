@@ -295,6 +295,163 @@ function resolveCodePrefix(system) {
 }
 
 /**
+ * Clean debug logging for MIST date display analysis
+ */
+function debugMIST(message, data = null) {
+    const timestamp = new Date().toISOString();
+    const logEntry = `${timestamp}: ${message}`;
+    const fullEntry = data ? `${logEntry}\n${JSON.stringify(data, null, 2)}\n---\n` : `${logEntry}\n`;
+
+    if (!window.mistDebugLog) window.mistDebugLog = '';
+    window.mistDebugLog += fullEntry;
+    console.log('🔍 MIST:', message, data);
+}
+
+function exportMISTDebugLog() {
+    if (!window.mistDebugLog) return;
+    const blob = new Blob([window.mistDebugLog], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mist-debug-${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+window.exportMISTDebugLog = exportMISTDebugLog;
+
+/**
+ * Group medical data chronologically into MIST rows for consistent date/time display
+ * Purpose: Ensure first pill in each chronological row shows date, subsequent pills show time only
+ *
+ * @param {Array} vitals - Array of vital data objects
+ * @param {Array} conditions - Array of condition data objects
+ * @param {Array} events - Array of event data objects
+ * @returns {Array} - Array of chronological rows with mixed data types
+ */
+/**
+ * Extract timestamp from an item regardless of field structure
+ * @param {Object} item - The data item (vitals, conditions, events)
+ * @returns {string|null} - ISO timestamp string or null if no timestamp
+ */
+function extractTimestamp(item) {
+    return item.time || item.onset || item.rawData?.dateTime || null;
+}
+
+function createMISTChronologicalRows(vitals, conditions, events) {
+    debugMIST('createMISTChronologicalRows called', {
+        vitalCount: vitals.length,
+        conditionCount: conditions.length,
+        eventCount: events.length
+    });
+    // Combine all data with timestamps and types
+    const allData = [
+        ...vitals.map(item => ({ ...item, dataType: 'vitals' })),
+        ...conditions.map(item => ({ ...item, dataType: 'conditions' })),
+        ...events.map(item => ({ ...item, dataType: 'events' }))
+    ];
+
+    // Separate data with and without timestamps
+    const withTimestamps = allData.filter(item => extractTimestamp(item));
+    const withoutTimestamps = allData.filter(item => !extractTimestamp(item));
+
+    debugMIST('After timestamp analysis', {
+        originalCount: allData.length,
+        withTimestamps: withTimestamps.length,
+        withoutTimestamps: withoutTimestamps.length,
+        eventsSample: allData.filter(item => item.dataType === 'events').slice(0, 3).map(item => ({
+            dataType: item.dataType,
+            time: item.time,
+            onset: item.onset,
+            rawDataDateTime: item.rawData?.dateTime,
+            description: item.description,
+            hasTime: !!item.time,
+            hasOnset: !!item.onset,
+            hasRawDataDateTime: !!item.rawData?.dateTime
+        })),
+        sampleWithTimestamps: withTimestamps.slice(0, 2).map(item => ({
+            dataType: item.dataType,
+            time: item.time,
+            onset: item.onset,
+            description: item.description
+        })),
+        sampleWithoutTimestamps: withoutTimestamps.slice(0, 2).map(item => ({
+            dataType: item.dataType,
+            description: item.description
+        }))
+    });
+
+    // Sort timestamped data chronologically (oldest first for proper MIST order)
+    withTimestamps.sort((a, b) => {
+        const timeA = new Date(extractTimestamp(a));
+        const timeB = new Date(extractTimestamp(b));
+        return timeA - timeB;
+    });
+
+    // Mark first pill of each date PER DATA TYPE for display logic BEFORE reversal
+    // This ensures the oldest pill of each type gets the full date
+    const dateTrackingByType = {};
+
+    withTimestamps.forEach((item, index) => {
+        const timestamp = extractTimestamp(item);
+        const currentDate = formatDateForComparison(timestamp);
+        const dataType = item.dataType;
+
+        // Track last date per data type independently
+        if (!dateTrackingByType[dataType]) {
+            dateTrackingByType[dataType] = null;
+        }
+
+        if (currentDate !== dateTrackingByType[dataType]) {
+            item.isFirstDisplayedInRow = true;
+            dateTrackingByType[dataType] = currentDate;
+            debugMIST(`Marked isFirstDisplayedInRow=true for ${dataType} item ${index} (oldest in chronological order)`, {
+                dataType: item.dataType,
+                description: item.description,
+                timestamp: timestamp,
+                currentDate: currentDate
+            });
+        } else {
+            item.isFirstDisplayedInRow = false;
+        }
+    });
+
+    // Keep chronological order (oldest first) - DO NOT REVERSE for UI display
+    // withTimestamps.reverse(); // REMOVED - UI should show oldest->newest left->right
+
+    // Mark non-timestamped data: First item shows "No Date", others show nothing
+    withoutTimestamps.forEach((item, index) => {
+        item.isFirstDisplayedInRow = (index === 0);  // Only first item shows "No Date"
+        item.noTimestamp = true;  // Flag for special handling
+    });
+
+    const finalData = [...withTimestamps, ...withoutTimestamps];
+
+    debugMIST('Final MIST chronological rows', {
+        totalCount: finalData.length,
+        timestampedCount: withTimestamps.length,
+        nonTimestampedCount: withoutTimestamps.length,
+        firstDisplayedInRowCount: finalData.filter(item => item.isFirstDisplayedInRow).length,
+        perTypeFirstCount: {
+            vitals: finalData.filter(item => item.dataType === 'vitals' && item.isFirstDisplayedInRow).length,
+            conditions: finalData.filter(item => item.dataType === 'conditions' && item.isFirstDisplayedInRow).length,
+            events: finalData.filter(item => item.dataType === 'events' && item.isFirstDisplayedInRow).length
+        },
+        finalOrder: finalData.slice(0, 5).map(item => ({
+            dataType: item.dataType,
+            description: item.description,
+            isFirstDisplayedInRow: item.isFirstDisplayedInRow,
+            timestamp: extractTimestamp(item),
+            noTimestamp: item.noTimestamp
+        }))
+    });
+
+    return finalData;
+}
+
+/**
  * Standardized Medical Data Pill Generator
  * Purpose: Create consistent UI pills for different types of medical data
  * Usage: Generate formatted display elements for vitals, conditions, medications
@@ -302,13 +459,14 @@ function resolveCodePrefix(system) {
  * @param {string} type - Data type ('vital', 'condition', 'medication', 'event')
  * @param {Object} rawData - Medical data object with code, description, value, etc.
  * @param {Object} sectionDateTracker - Tracks dates for efficient display grouping
+ * @param {boolean} isFirstDisplayedInRow - Whether this is the first pill displayed in a chronological row (left-to-right MIST order)
  * @returns {HTMLElement} - Formatted pill element for medical data display
  *
  * Example:
  *   createStandardizedPill('vital', {code: '8480-6', value: 120, unit: 'mmHg'})
  *   → HTML pill element for systolic blood pressure
  */
-function createStandardizedPill(type, rawData, sectionDateTracker) {
+function createStandardizedPill(type, rawData, sectionDateTracker, isFirstDisplayedInRow = false) {
     const { code, description, value, unit, dose, route, time, onset } = rawData;
 
     // Determine the primary timestamp
@@ -346,7 +504,7 @@ function createStandardizedPill(type, rawData, sectionDateTracker) {
         }
     }
 
-    // Handle date display logic
+    // Handle date display logic for MIST chronological rows
     let dateDisplay = '';
     let tooltipDateDisplay = '';
 
@@ -355,20 +513,78 @@ function createStandardizedPill(type, rawData, sectionDateTracker) {
         const fullDateTime = formatDateTime(primaryTime);
         const timeOnly = formatTimeOnly(primaryTime);
 
-        // Check if this is same date as previous in section
-        if (currentDate === sectionDateTracker.lastDate) {
-            dateDisplay = timeOnly;
-        } else {
+        // MIST logic: First pill in chronological row shows date, subsequent pills show time only
+        if (isFirstDisplayedInRow) {
             dateDisplay = fullDateTime;
             sectionDateTracker.lastDate = currentDate;
+            if (type === 'events') {
+                console.log('🎯 EVENT PILL FULL DATE:', {
+                    description: description?.substring(0, 30),
+                    dateDisplay: dateDisplay,
+                    isFirstDisplayedInRow: isFirstDisplayedInRow
+                });
+            }
+            debugMIST('Pill showing FULL DATE', {
+                type: type,
+                description: description,
+                isFirstDisplayedInRow: isFirstDisplayedInRow,
+                dateDisplay: dateDisplay,
+                primaryTime: primaryTime
+            });
+        } else {
+            dateDisplay = timeOnly;
+            if (type === 'events') {
+                console.log('🎯 EVENT PILL TIME ONLY:', {
+                    description: description?.substring(0, 30),
+                    dateDisplay: dateDisplay,
+                    isFirstDisplayedInRow: isFirstDisplayedInRow
+                });
+            }
+            debugMIST('Pill showing TIME ONLY', {
+                type: type,
+                description: description,
+                isFirstDisplayedInRow: isFirstDisplayedInRow,
+                dateDisplay: dateDisplay,
+                primaryTime: primaryTime
+            });
         }
 
         tooltipDateDisplay = fullDateTime; // Tooltip always shows full date
+    } else {
+        // Handle data without timestamps: show "No Date" on first item only
+        if (rawData.noTimestamp && isFirstDisplayedInRow) {
+            dateDisplay = 'No Date';
+            tooltipDateDisplay = 'No timestamp available';
+            debugMIST('Pill showing NO DATE (first non-timestamped)', {
+                type: type,
+                description: description,
+                isFirstDisplayedInRow: isFirstDisplayedInRow,
+                dateDisplay: dateDisplay
+            });
+        } else {
+            // No date display for subsequent non-timestamped items
+            debugMIST('Pill has NO TIMESTAMP (no display)', {
+                type: type,
+                description: description,
+                isFirstDisplayedInRow: isFirstDisplayedInRow,
+                time: time,
+                onset: onset
+            });
+        }
     }
 
     // Assemble final value and tooltip
     const valueParts = [valueContent, dateDisplay].filter(Boolean);
-    const finalValue = valueParts.join(' | ');
+    const finalValue = valueParts.join(' • ');
+
+    if (type === 'events' && dateDisplay) {
+        console.log('🎯 EVENT FINAL VALUE:', {
+            description: description?.substring(0, 30),
+            valueContent: valueContent,
+            dateDisplay: dateDisplay,
+            finalValue: finalValue
+        });
+    }
 
     // Create tooltip with proper code prefix
     const codePrefix = resolveCodePrefix(code.system);
@@ -379,6 +595,19 @@ function createStandardizedPill(type, rawData, sectionDateTracker) {
     const displayName = resolveCodeDisplay(code.system, code.code);
     const typeLabel = type === 'vitals' ? 'Vitals' : type === 'conditions' ? 'Condition' : 'Event';
     const label = `${typeLabel} • ${displayName}`;
+
+    // Debug Events pill output
+    if (type === 'events' && dateDisplay) {
+        console.log('🎯 EVENTS PILL RETURNED:', {
+            type: type,
+            description: description?.substring(0, 30),
+            valueContent: valueContent,
+            dateDisplay: dateDisplay,
+            finalValue: finalValue,
+            label: label,
+            isFirstDisplayedInRow: isFirstDisplayedInRow
+        });
+    }
 
     return {
         label,
@@ -1798,8 +2027,20 @@ const codecPipeline = (() => {
         const careStageExt = resource.extension?.find(ext =>
             ext.url === FHIR_EXTENSIONS.CARE_STAGE
         );
-        if (!careStageExt) return null;
-        return normaliseCareStageValue(careStageExt.valueCode || careStageExt.valueString || careStageExt.value); 
+        if (!careStageExt) {
+            debugMIST(`No care stage extension found for ${resource.resourceType}`, {
+                resourceId: resource.id,
+                extensions: resource.extension?.map(ext => ext.url) || []
+            });
+            return null;
+        }
+        const careStage = normaliseCareStageValue(careStageExt.valueCode || careStageExt.valueString || careStageExt.value);
+        debugMIST(`Extracted care stage: ${careStage}`, {
+            resourceType: resource.resourceType,
+            resourceId: resource.id,
+            rawValue: careStageExt.valueCode || careStageExt.valueString || careStageExt.value
+        });
+        return careStage;
     }
 
     function convertConditionToCodeRef(condition) {
@@ -2808,17 +3049,127 @@ const payloadService = (() => {
         const eventsSource = payload.E || {};
 
         stageKeys.forEach(stageKey => {
+            debugMIST(`Processing LEGACY stage: ${stageKey}`);
+
             const sectionDateTracker = new Map();
-            const vitals = normaliseLegacyVitals(vitalsSource[stageKey], codebook, sectionDateTracker);
-            const conditions = normaliseLegacyConditions(conditionsSource[stageKey], codebook, sectionDateTracker);
-            const events = normaliseLegacyEvents(eventsSource[stageKey], codebook, sectionDateTracker);
+
+            // Get raw data first
+            const rawVitals = normaliseLegacyVitalsRaw(vitalsSource[stageKey], codebook);
+            const rawConditions = normaliseLegacyConditionsRaw(conditionsSource[stageKey], codebook);
+            const rawEvents = normaliseLegacyEventsRaw(eventsSource[stageKey], codebook);
+
+            debugMIST(`Raw data for ${stageKey}`, {
+                rawVitals: rawVitals.length,
+                rawConditions: rawConditions.length,
+                rawEvents: rawEvents.length
+            });
+
+            // Create MIST chronological rows
+            const chronologicalRows = createMISTChronologicalRows(rawVitals, rawConditions, rawEvents);
+
+            // Process chronological rows into pills - keep chronological order intact
+            const allPills = [];
+            const vitals = [];
+            const conditions = [];
+            const events = [];
+
+            chronologicalRows.forEach(item => {
+                if (item.dataType === 'events' && item.isFirstDisplayedInRow) {
+                    console.log(`🎯 EVENTS in ${stageKey}:`, {
+                        description: item.description?.substring(0, 30),
+                        isFirstDisplayedInRow: item.isFirstDisplayedInRow,
+                        timestamp: extractTimestamp(item)
+                    });
+                }
+                const pill = createStandardizedPill(item.dataType, item, sectionDateTracker, item.isFirstDisplayedInRow);
+                allPills.push(pill); // Keep chronological order
+                if (item.dataType === 'vitals') vitals.push(pill);
+                else if (item.dataType === 'conditions') conditions.push(pill);
+                else if (item.dataType === 'events') events.push(pill);
+            });
+
+            debugMIST(`Final pills for ${stageKey}`, {
+                vitals: vitals.length,
+                conditions: conditions.length,
+                events: events.length
+            });
+
             totals.vitals += vitals.length;
             totals.conditions += conditions.length;
             totals.events += events.length;
-            sections[stageKey] = { vitals, conditions, events };
+            sections[stageKey] = { vitals, conditions, events, allPills };
         });
 
         return { sections, totals };
+    }
+
+    function normaliseLegacyVitalsRaw(entries, codebook) {
+        if (!Array.isArray(entries)) return [];
+        return entries
+            .map(item => {
+                if (!Array.isArray(item) || item.length === 0) return null;
+                const [index, value, unit] = item;
+                const code = resolveLegacyCode(codebook, index);
+                const displayName = resolveCodeDisplay(code.system, code.code);
+
+                return {
+                    code: code.ref,
+                    description: displayName,
+                    value: value,
+                    unit: unit,
+                    dose: null,
+                    route: null,
+                    time: null,
+                    onset: null
+                };
+            })
+            .filter(Boolean);
+    }
+
+    function normaliseLegacyConditionsRaw(entries, codebook) {
+        if (!Array.isArray(entries)) return [];
+        return entries
+            .map(item => {
+                if (!Array.isArray(item) || item.length === 0) return null;
+                const [index, onset] = item;
+                const code = resolveLegacyCode(codebook, index);
+                const displayName = resolveCodeDisplay(code.system, code.code);
+
+                return {
+                    code: code.ref,
+                    description: displayName,
+                    value: null,
+                    unit: null,
+                    dose: null,
+                    route: null,
+                    time: null,
+                    onset: onset
+                };
+            })
+            .filter(Boolean);
+    }
+
+    function normaliseLegacyEventsRaw(entries, codebook) {
+        if (!Array.isArray(entries)) return [];
+        return entries
+            .map(item => {
+                if (!Array.isArray(item) || item.length === 0) return null;
+                const [index, time] = item;
+                const code = resolveLegacyCode(codebook, index);
+                const displayName = resolveCodeDisplay(code.system, code.code);
+
+                return {
+                    code: code.ref,
+                    description: displayName,
+                    value: null,
+                    unit: null,
+                    dose: null,
+                    route: null,
+                    time: time,
+                    onset: null
+                };
+            })
+            .filter(Boolean);
     }
 
     function normaliseLegacyVitals(entries, codebook, sectionDateTracker) {
@@ -3084,18 +3435,122 @@ const payloadService = (() => {
         const totals = { vitals: 0, conditions: 0, events: 0 };
 
         stageKeys.forEach(stageKey => {
+            debugMIST(`Processing CODEREF stage: ${stageKey}`);
+
             const stage = payload[stageKey] || {};
             const sectionDateTracker = new Map();
-            const vitals = normaliseCodeRefVitals(stage.vitals || [], sectionDateTracker);
-            const conditions = normaliseCodeRefConditions(stage.conditions || [], sectionDateTracker);
-            const events = normaliseCodeRefEvents(stage.events || [], sectionDateTracker);
+
+            // Get raw data first
+            const rawVitals = normaliseCodeRefVitalsRaw(stage.vitals || []);
+            const rawConditions = normaliseCodeRefConditionsRaw(stage.conditions || []);
+            const rawEvents = normaliseCodeRefEventsRaw(stage.events || []);
+
+            debugMIST(`Raw data for ${stageKey}`, {
+                rawVitals: rawVitals.length,
+                rawConditions: rawConditions.length,
+                rawEvents: rawEvents.length
+            });
+
+            // Create MIST chronological rows
+            const chronologicalRows = createMISTChronologicalRows(rawVitals, rawConditions, rawEvents);
+
+            // Process chronological rows into pills - keep chronological order intact
+            const allPills = [];
+            const vitals = [];
+            const conditions = [];
+            const events = [];
+
+            chronologicalRows.forEach(item => {
+                if (item.dataType === 'events' && item.isFirstDisplayedInRow) {
+                    console.log(`🎯 EVENTS in ${stageKey}:`, {
+                        description: item.description?.substring(0, 30),
+                        isFirstDisplayedInRow: item.isFirstDisplayedInRow,
+                        timestamp: extractTimestamp(item)
+                    });
+                }
+                const pill = createStandardizedPill(item.dataType, item, sectionDateTracker, item.isFirstDisplayedInRow);
+                allPills.push(pill); // Keep chronological order
+                if (item.dataType === 'vitals') vitals.push(pill);
+                else if (item.dataType === 'conditions') conditions.push(pill);
+                else if (item.dataType === 'events') events.push(pill);
+            });
+
+            debugMIST(`Final pills for ${stageKey}`, {
+                vitals: vitals.length,
+                conditions: conditions.length,
+                events: events.length
+            });
+
             totals.vitals += vitals.length;
             totals.conditions += conditions.length;
             totals.events += events.length;
-            sections[stageKey] = { vitals, conditions, events };
+            sections[stageKey] = { vitals, conditions, events, allPills };
         });
 
         return { sections, totals };
+    }
+
+    function normaliseCodeRefVitalsRaw(entries) {
+        return entries
+            .map(item => {
+                if (!item || !item.code) return null;
+                const code = normaliseCodeRef(item.code);
+                const description = resolveCodeDisplay(code.system, code.code);
+
+                return {
+                    code,
+                    description,
+                    value: item.value,
+                    unit: item.unit,
+                    dose: null,
+                    route: item.route,
+                    time: item.time,
+                    onset: null
+                };
+            })
+            .filter(Boolean);
+    }
+
+    function normaliseCodeRefConditionsRaw(entries) {
+        return entries
+            .map(item => {
+                if (!item || !item.code) return null;
+                const code = normaliseCodeRef(item.code);
+                const description = resolveCodeDisplay(code.system, code.code);
+
+                return {
+                    code,
+                    description,
+                    value: null,
+                    unit: null,
+                    dose: null,
+                    route: null,
+                    time: null,
+                    onset: item.onset
+                };
+            })
+            .filter(Boolean);
+    }
+
+    function normaliseCodeRefEventsRaw(entries) {
+        return entries
+            .map(item => {
+                if (!item || !item.code) return null;
+                const code = normaliseCodeRef(item.code);
+                const description = resolveCodeDisplay(code.system, code.code);
+
+                return {
+                    code,
+                    description,
+                    value: null,
+                    unit: null,
+                    dose: item.dose,
+                    route: item.route,
+                    time: item.time,
+                    onset: null
+                };
+            })
+            .filter(Boolean);
     }
 
     function normaliseCodeRefVitals(entries, sectionDateTracker = { lastDate: null }) {
@@ -3333,20 +3788,21 @@ function createInfoBoxes() {
     container.innerHTML = '';
 
     infoBoxConfig.forEach(config => {
-        const wrapperClass = config.specialClass ? 'poi-box-wrapper' : 'info-box-wrapper';
-        const boxClass = config.specialClass ? 'poi-box' : `info-box ${config.colorClass}`;
+        // const wrapperClass = config.specialClass ? 'poi-box-wrapper' : 'info-box-wrapper';
+        // const boxClass = config.specialClass ? 'poi-box' : `info-box ${config.colorClass}`;
 
         const wrapper = document.createElement('div');
-        wrapper.className = wrapperClass;
+        wrapper.className = 'info-box-wrapper';
 
         const box = document.createElement('div');
-        box.className = boxClass;
+        box.className = `info-box ${config.colorClass}`;
         if (config.dataKey) {
             box.dataset.key = config.dataKey;
         }
 
         const title = document.createElement('h2');
-        title.className = config.specialClass ? 'poi-title' : 'info-title';
+        // title.className = config.specialClass ? 'poi-title' : 'info-title';
+        title.className = 'info-title';
         title.textContent = config.title;
         title.dataset.baseTitle = config.title;
 
@@ -3358,21 +3814,44 @@ function createInfoBoxes() {
 
 function setTitleAvailability(titleElement, hasData) {
     if (!titleElement) return;
-    const baseTitle = titleElement.dataset.baseTitle || titleElement.textContent.split('•')[0].trim();
+
+    const baseTitle = titleElement.dataset.baseTitle
+        || titleElement.textContent.split('•')[0].trim();
     titleElement.dataset.baseTitle = baseTitle;
 
     const container = titleElement.parentElement;
 
+    // Rebuild the title structure so we can manage layout consistently
+    titleElement.innerHTML = '';
+
+    const baseSpan = document.createElement('span');
+    baseSpan.className = 'base-title';
+    baseSpan.textContent = baseTitle;
+    titleElement.appendChild(baseSpan);
+
     if (hasData) {
-        titleElement.textContent = baseTitle;
+        titleElement.classList.remove('is-empty');
         if (container) {
             container.classList.remove('empty');
         }
-    } else {
-        titleElement.innerHTML = `${baseTitle} <span class="empty-marker">•</span> <span class="empty-text">No data available</span>`;
-        if (container) {
-            container.classList.add('empty');
-        }
+        return;
+    }
+
+    const emptySpan = document.createElement('span');
+    emptySpan.className = 'empty-text';
+    emptySpan.textContent = 'No data available';
+
+    const spacerSpan = document.createElement('span');
+    spacerSpan.className = 'empty-spacer';
+    spacerSpan.setAttribute('aria-hidden', 'true');
+    spacerSpan.textContent = baseTitle;
+
+    titleElement.appendChild(emptySpan);
+    titleElement.appendChild(spacerSpan);
+    titleElement.classList.add('is-empty');
+
+    if (container) {
+        container.classList.add('empty');
     }
 }
 
@@ -3913,7 +4392,6 @@ async function init() {
 
     // New enhanced UI elements
     const parseButton = document.getElementById('parse-button');
-    const debugRegenerateButton = document.getElementById('debug-regenerate');
     const leftPaneTitle = document.getElementById('left-pane-title');
     const rightPaneTitle = document.getElementById('right-pane-title');
     const actionButton = document.getElementById('action-button');
@@ -4535,18 +5013,6 @@ async function init() {
         } catch (error) {
             console.error('Parse error:', error);
             showMessage(`Parse failed: ${error.message}`, 'error');
-        }
-    });
-
-    // Debug regenerate button
-    debugRegenerateButton.addEventListener('click', async () => {
-        try {
-            showMessage('🔍 Regenerating fragment with debug logs...', 'info');
-            await window.forceRegenerateFragment();
-            showMessage('✅ Fragment regenerated! Check console for detailed logs.', 'success');
-        } catch (error) {
-            console.error('Error regenerating fragment:', error);
-            showMessage('❌ Error regenerating fragment: ' + error.message, 'error');
         }
     });
 

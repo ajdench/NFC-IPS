@@ -17,37 +17,41 @@
                 </header>
                 <div class="payload-content payload-grid">
             <!-- Top Row -->
-            <div class="payload-pane top-left">
+            <div class="payload-pane left-pane top-left">
                 <div class="pane-header">
                     <h3 id="top-left-title" class="pane-title clickable-title" data-mode="fhir">IPS FHIR JSON</h3>
                     <span id="top-left-char-count" class="char-count">0 characters</span>
+                    <div class="preset-buttons preset-placeholder" aria-hidden="true"></div>
                     <button id="top-left-action" class="pane-button encode-mode">Encode</button>
                 </div>
                 <div id="top-left-input" contenteditable="true" placeholder="Paste IPS FHIR JSON here..."></div>
             </div>
 
-            <div class="payload-pane top-right">
+            <div class="payload-pane right-pane top-right">
                 <div class="pane-header">
                     <h3 id="top-right-title" class="pane-title clickable-title" data-format="fragment">URL Fragment</h3>
                     <span id="top-right-char-count" class="char-count">0 characters</span>
+                    <button class="pane-button parse-button" disabled>Parse</button>
                 </div>
                 <div id="top-right-input" contenteditable="true" placeholder="Encoded fragment will appear here..."></div>
             </div>
 
             <!-- Bottom Row -->
-            <div class="payload-pane bottom-left">
+            <div class="payload-pane left-pane bottom-left">
                 <div class="pane-header">
                     <h3 id="bottom-left-title" class="pane-title clickable-title" data-mode="fhir">IPS FHIR Template</h3>
                     <span id="bottom-left-char-count" class="char-count">0 characters</span>
+                    <div class="preset-buttons preset-placeholder" aria-hidden="true"></div>
                     <button id="bottom-left-action" class="pane-button encode-mode">Encode</button>
                 </div>
                 <div id="bottom-left-input" contenteditable="true" placeholder="Simplified IPS FHIR template..."></div>
             </div>
 
-            <div class="payload-pane bottom-right">
+            <div class="payload-pane right-pane bottom-right">
                 <div class="pane-header">
                     <h3 id="bottom-right-title" class="pane-title clickable-title" data-format="fragment">URL Fragment</h3>
                     <span id="bottom-right-char-count" class="char-count">0 characters</span>
+                    <button class="pane-button parse-button" disabled>Parse</button>
                 </div>
                 <div id="bottom-right-input" contenteditable="true" placeholder="Encoded template fragment will appear here..."></div>
             </div>
