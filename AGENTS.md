@@ -67,7 +67,8 @@ const timeMatch = entry.value.match(/(\d{1,2} \w{3} \d{2} \d{2}:\d{2})/);
 - Removed Debug Regenerate control; payload header now sits directly above panes with standard padding only.
 - Payload header spacing tuned: margin set to 0.75× standard while title margin stays zero to keep panes tight without feeling cramped.
 - MIST renderer now trusts normalized pill data; regex-based date collapsing removed so Treatment pills retain full dates where expected.
-- Parse pill cleanup: conditions drop the "Onset" prefix; events use dose/route info without repeating FQN and infer units for numeric doses (including SNOMED med mappings).
+- Parse pill cleanup: conditions drop the "Onset" prefix; events use dose/route info without repeating FQN, infer units for numeric doses (including SNOMED med mappings), and suppress generic manual routes.
+- Future enhancement: consider surfacing additional FHIR context for radiological interventions (category, bodySite, reasonCode, performer, outcome) once pill layout supports richer metadata.
 
 # Agent Notes (2025-09-21)
 

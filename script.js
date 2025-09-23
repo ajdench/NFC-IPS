@@ -535,17 +535,21 @@ function createStandardizedPill(type, rawData, sectionDateTracker, isFirstDispla
         }
 
         const tooltipExtras = [];
+        const displayParts = [];
 
         if (hasDose) {
             const doseWithUnit = unitDisplay ? `${cleanedDose} ${unitDisplay}` : cleanedDose;
-            valueContent = doseWithUnit;
+            displayParts.push(doseWithUnit);
             tooltipExtras.push(doseWithUnit);
-        } else if (cleanedRoute) {
-            valueContent = cleanedRoute;
-            tooltipExtras.push(cleanedRoute);
-        } else {
-            valueContent = '';
         }
+
+        const isMeaningfulRoute = cleanedRoute && !/^manual(?:\b|\s)/i.test(cleanedRoute);
+        if (isMeaningfulRoute) {
+            displayParts.push(cleanedRoute);
+            tooltipExtras.push(cleanedRoute);
+        }
+
+        valueContent = displayParts.join(' • ');
 
         tooltipValueContent = [descriptionText, ...tooltipExtras]
             .filter(Boolean)
