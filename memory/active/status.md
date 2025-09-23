@@ -86,3 +86,6 @@
 
 ### Update: 2025-09-22 23:24
 - Comprehensive Events date display bug documentation completed - CLAUDE.md and AGENTS.md updated with investigation details, failed fixes, and Codex assignment
+
+### Update: 2025-09-23 09:10
+- Added flat Vitals container between OPCP stack and payload panes for future global vitals rollup; payload pane borders match header grey with overflow clipping so headers respect rounded corners
