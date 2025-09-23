@@ -1,0 +1,95 @@
+/* Payload Page Grid Override - Use main page styling for everything else */
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-width: 0;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+}
+
+.main-content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+}
+
+.payload-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+}
+
+.payload-content.payload-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: var(--standard-padding);
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+    height: 100%;
+    grid-auto-rows: 1fr;
+    align-items: stretch;
+    align-content: stretch;
+}
+
+/* Override main page 50% width for grid layout */
+.payload-content.payload-grid .payload-pane {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* All pane headers use grey styling like main page */
+
+/* Action button styling */
+.pane-button.encode-mode {
+    background-color: var(--text-color-green);
+}
+
+.pane-button.encode-mode:hover {
+    background-color: #2e7031;
+}
+
+.pane-button.decode-mode {
+    background-color: var(--text-color-orange);
+}
+
+.pane-button.decode-mode:hover {
+    background-color: #cc4100;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .payload-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(4, 1fr);
+    }
+
+    .payload-page {
+        padding: calc(var(--standard-padding) / 2);
+        gap: calc(var(--standard-padding) / 2);
+    }
+}
