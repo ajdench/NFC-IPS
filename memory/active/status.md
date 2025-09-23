@@ -68,3 +68,18 @@
 
 ### Update: 2025-09-22 15:28
 - Payload header margin adjusted to 0.75× standard with title margin zeroed to keep panes tight without double-gap
+
+### Update: 2025-09-22 15:40
+- OPCP renderer now consumes normalized pill data directly; removed regex date mangling so Treatment first pills show full timestamps
+
+### Update: 2025-09-22 22:36
+- Comprehensive Events MIST debugging added - implemented extractTimestamp helper and enhanced pill creation logging to investigate presentation layer issue
+
+### Update: 2025-09-22 22:54
+- Fixed Events date display issue: presentation layer in renderStageSections wasn't handling Events dates properly due to regex pattern mismatch - added special Treatment section handling to preserve full dates for first Events pill in each OPCP pane
+
+### Update: 2025-09-22 23:07
+- Restored original empty pane display logic by removing Events-specific workaround - investigating why empty panes lost styling
+
+### Update: 2025-09-22 23:24
+- Comprehensive Events date display bug documentation completed - CLAUDE.md and AGENTS.md updated with investigation details, failed fixes, and Codex assignment

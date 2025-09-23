@@ -47,6 +47,17 @@ import {
 // =============================================================================
 
 /**
+ * Dual Title Display Configuration
+ * Purpose: Global settings for displaying both short and full titles in panes
+ * Usage: Controls which panes show dual titles and transparency settings
+ */
+const DUAL_TITLE_CONFIG = {
+    enabled: true,
+    transparency: 0.5,
+    enabledPanes: new Set(['patient', 'clinicalSummary']) // Currently enabled for Patient Demographics and Clinical Summary
+};
+
+/**
  * Medical Stage Configuration
  * Purpose: Defines UI rendering and data mapping for OPCP (Operational Patient Care Pathway) stages
  * Usage: Drives dynamic info box generation and color coding
@@ -517,13 +528,6 @@ function createStandardizedPill(type, rawData, sectionDateTracker, isFirstDispla
         if (isFirstDisplayedInRow) {
             dateDisplay = fullDateTime;
             sectionDateTracker.lastDate = currentDate;
-            if (type === 'events') {
-                console.log('🎯 EVENT PILL FULL DATE:', {
-                    description: description?.substring(0, 30),
-                    dateDisplay: dateDisplay,
-                    isFirstDisplayedInRow: isFirstDisplayedInRow
-                });
-            }
             debugMIST('Pill showing FULL DATE', {
                 type: type,
                 description: description,
@@ -533,13 +537,6 @@ function createStandardizedPill(type, rawData, sectionDateTracker, isFirstDispla
             });
         } else {
             dateDisplay = timeOnly;
-            if (type === 'events') {
-                console.log('🎯 EVENT PILL TIME ONLY:', {
-                    description: description?.substring(0, 30),
-                    dateDisplay: dateDisplay,
-                    isFirstDisplayedInRow: isFirstDisplayedInRow
-                });
-            }
             debugMIST('Pill showing TIME ONLY', {
                 type: type,
                 description: description,
@@ -577,14 +574,6 @@ function createStandardizedPill(type, rawData, sectionDateTracker, isFirstDispla
     const valueParts = [valueContent, dateDisplay].filter(Boolean);
     const finalValue = valueParts.join(' • ');
 
-    if (type === 'events' && dateDisplay) {
-        console.log('🎯 EVENT FINAL VALUE:', {
-            description: description?.substring(0, 30),
-            valueContent: valueContent,
-            dateDisplay: dateDisplay,
-            finalValue: finalValue
-        });
-    }
 
     // Create tooltip with proper code prefix
     const codePrefix = resolveCodePrefix(code.system);
@@ -596,18 +585,6 @@ function createStandardizedPill(type, rawData, sectionDateTracker, isFirstDispla
     const typeLabel = type === 'vitals' ? 'Vitals' : type === 'conditions' ? 'Condition' : 'Event';
     const label = `${typeLabel} • ${displayName}`;
 
-    // Debug Events pill output
-    if (type === 'events' && dateDisplay) {
-        console.log('🎯 EVENTS PILL RETURNED:', {
-            type: type,
-            description: description?.substring(0, 30),
-            valueContent: valueContent,
-            dateDisplay: dateDisplay,
-            finalValue: finalValue,
-            label: label,
-            isFirstDisplayedInRow: isFirstDisplayedInRow
-        });
-    }
 
     return {
         label,
@@ -3074,13 +3051,6 @@ const payloadService = (() => {
             const events = [];
 
             chronologicalRows.forEach(item => {
-                if (item.dataType === 'events' && item.isFirstDisplayedInRow) {
-                    console.log(`🎯 EVENTS in ${stageKey}:`, {
-                        description: item.description?.substring(0, 30),
-                        isFirstDisplayedInRow: item.isFirstDisplayedInRow,
-                        timestamp: extractTimestamp(item)
-                    });
-                }
                 const pill = createStandardizedPill(item.dataType, item, sectionDateTracker, item.isFirstDisplayedInRow);
                 allPills.push(pill); // Keep chronological order
                 if (item.dataType === 'vitals') vitals.push(pill);
@@ -3461,13 +3431,6 @@ const payloadService = (() => {
             const events = [];
 
             chronologicalRows.forEach(item => {
-                if (item.dataType === 'events' && item.isFirstDisplayedInRow) {
-                    console.log(`🎯 EVENTS in ${stageKey}:`, {
-                        description: item.description?.substring(0, 30),
-                        isFirstDisplayedInRow: item.isFirstDisplayedInRow,
-                        timestamp: extractTimestamp(item)
-                    });
-                }
                 const pill = createStandardizedPill(item.dataType, item, sectionDateTracker, item.isFirstDisplayedInRow);
                 allPills.push(pill); // Keep chronological order
                 if (item.dataType === 'vitals') vitals.push(pill);
@@ -3803,8 +3766,28 @@ function createInfoBoxes() {
         const title = document.createElement('h2');
         // title.className = config.specialClass ? 'poi-title' : 'info-title';
         title.className = 'info-title';
-        title.textContent = config.title;
         title.dataset.baseTitle = config.title;
+
+        // Check if dual title display is enabled for this pane
+        if (DUAL_TITLE_CONFIG.enabled && DUAL_TITLE_CONFIG.enabledPanes.has(config.dataKey)) {
+            title.classList.add('dual-title');
+
+            // Left title (main title)
+            const leftTitle = document.createElement('span');
+            leftTitle.className = 'left-title';
+            leftTitle.textContent = config.title;
+
+            // Right title (duplicate with transparency)
+            const rightTitle = document.createElement('span');
+            rightTitle.className = 'right-title';
+            rightTitle.textContent = config.title;
+            rightTitle.style.opacity = DUAL_TITLE_CONFIG.transparency;
+
+            title.appendChild(leftTitle);
+            title.appendChild(rightTitle);
+        } else {
+            title.textContent = config.title;
+        }
 
         box.appendChild(title);
         wrapper.appendChild(box);
@@ -3820,38 +3803,74 @@ function setTitleAvailability(titleElement, hasData) {
     titleElement.dataset.baseTitle = baseTitle;
 
     const container = titleElement.parentElement;
+    const isDualTitle = titleElement.classList.contains('dual-title');
 
     // Rebuild the title structure so we can manage layout consistently
     titleElement.innerHTML = '';
 
-    const baseSpan = document.createElement('span');
-    baseSpan.className = 'base-title';
-    baseSpan.textContent = baseTitle;
-    titleElement.appendChild(baseSpan);
+    if (isDualTitle && hasData) {
+        // Rebuild dual title structure for populated state
+        const leftTitle = document.createElement('span');
+        leftTitle.className = 'left-title';
+        leftTitle.textContent = baseTitle;
+
+        const rightTitle = document.createElement('span');
+        rightTitle.className = 'right-title';
+        rightTitle.textContent = baseTitle;
+        rightTitle.style.opacity = DUAL_TITLE_CONFIG.transparency;
+
+        titleElement.appendChild(leftTitle);
+        titleElement.appendChild(rightTitle);
+    } else if (isDualTitle && !hasData) {
+        // Dual title empty state: left title + empty text + right title
+        const leftTitle = document.createElement('span');
+        leftTitle.className = 'base-title';
+        leftTitle.textContent = baseTitle;
+
+        const emptySpan = document.createElement('span');
+        emptySpan.className = 'empty-text';
+        emptySpan.textContent = 'No data available';
+
+        const rightTitle = document.createElement('span');
+        rightTitle.className = 'right-title';
+        rightTitle.textContent = baseTitle;
+        rightTitle.style.opacity = DUAL_TITLE_CONFIG.transparency;
+
+        titleElement.appendChild(leftTitle);
+        titleElement.appendChild(emptySpan);
+        titleElement.appendChild(rightTitle);
+    } else {
+        // Standard single title behavior
+        const baseSpan = document.createElement('span');
+        baseSpan.className = 'base-title';
+        baseSpan.textContent = baseTitle;
+        titleElement.appendChild(baseSpan);
+
+        if (!hasData) {
+            const emptySpan = document.createElement('span');
+            emptySpan.className = 'empty-text';
+            emptySpan.textContent = 'No data available';
+
+            const spacerSpan = document.createElement('span');
+            spacerSpan.className = 'empty-spacer';
+            spacerSpan.setAttribute('aria-hidden', 'true');
+            spacerSpan.textContent = baseTitle;
+
+            titleElement.appendChild(emptySpan);
+            titleElement.appendChild(spacerSpan);
+        }
+    }
 
     if (hasData) {
         titleElement.classList.remove('is-empty');
         if (container) {
             container.classList.remove('empty');
         }
-        return;
-    }
-
-    const emptySpan = document.createElement('span');
-    emptySpan.className = 'empty-text';
-    emptySpan.textContent = 'No data available';
-
-    const spacerSpan = document.createElement('span');
-    spacerSpan.className = 'empty-spacer';
-    spacerSpan.setAttribute('aria-hidden', 'true');
-    spacerSpan.textContent = baseTitle;
-
-    titleElement.appendChild(emptySpan);
-    titleElement.appendChild(spacerSpan);
-    titleElement.classList.add('is-empty');
-
-    if (container) {
-        container.classList.add('empty');
+    } else {
+        titleElement.classList.add('is-empty');
+        if (container) {
+            container.classList.add('empty');
+        }
     }
 }
 
@@ -4035,38 +4054,11 @@ function renderStageSections(stageSections = {}) {
         const stageColor = config ? config.colorClass : null;
         const stageData = stageSections[stageKey] || { vitals: [], conditions: [], events: [] };
 
-        // MIST format with chronological ordering within each section
-        const mistSections = [];
-
-        // Sort conditions (Mechanism/Injury) by onset time
-        if (stageData.conditions.length) {
-            const sortedConditions = [...stageData.conditions].sort((a, b) => {
-                const timeA = new Date(a.rawData?.dateTime || a.onset || 0);
-                const timeB = new Date(b.rawData?.dateTime || b.onset || 0);
-                return timeA - timeB;
-            });
-            mistSections.push({ type: 'Mechanism/Injury', items: sortedConditions });
-        }
-
-        // Sort vitals (Symptoms) by time
-        if (stageData.vitals.length) {
-            const sortedVitals = [...stageData.vitals].sort((a, b) => {
-                const timeA = new Date(a.rawData?.dateTime || a.time || 0);
-                const timeB = new Date(b.rawData?.dateTime || b.time || 0);
-                return timeA - timeB;
-            });
-            mistSections.push({ type: 'Symptoms', items: sortedVitals });
-        }
-
-        // Sort events (Treatment) by time
-        if (stageData.events.length) {
-            const sortedEvents = [...stageData.events].sort((a, b) => {
-                const timeA = new Date(a.rawData?.dateTime || a.time || 0);
-                const timeB = new Date(b.rawData?.dateTime || b.time || 0);
-                return timeA - timeB;
-            });
-            mistSections.push({ type: 'Treatment', items: sortedEvents });
-        }
+        const mistSections = [
+            { type: 'Mechanism/Injury', items: stageData.conditions || [] },
+            { type: 'Symptoms', items: stageData.vitals || [] },
+            { type: 'Treatment', items: stageData.events || [] }
+        ].filter(section => Array.isArray(section.items) && section.items.length);
 
         const titleElement = stageBox.querySelector('.info-title');
 
@@ -4080,9 +4072,6 @@ function renderStageSections(stageSections = {}) {
         const container = document.createElement('div');
         container.classList.add('stage-details-container');
 
-        // Track dates across entire OPCP pane for smart date display
-        let lastDateInPane = null;
-
         mistSections.forEach((section, sectionIndex) => {
             // Add section spacer (except for first section)
             if (sectionIndex > 0) {
@@ -4094,7 +4083,8 @@ function renderStageSections(stageSections = {}) {
 
             // Add items in this section
             section.items.forEach((entry, itemIndex) => {
-                const isFirstItemInPane = sectionIndex === 0 && itemIndex === 0;
+                if (!entry) return;
+
                 // For first item in section, show full label. For subsequent items, extract just the coded description
                 let displayLabel = entry.label;
                 if (itemIndex > 0 && entry.label.includes('•')) {
@@ -4102,44 +4092,7 @@ function renderStageSections(stageSections = {}) {
                     displayLabel = entry.label.split('•')[1].trim();
                 }
 
-                // Handle date formatting - show full date for first occurrence, time only for same date
-                let displayValue = entry.value;
-
-                // Extract date from value if it contains "Onset" or time info
-                const onsetMatch = entry.value.match(/Onset (.+)/);
-                const timeMatch = entry.value.match(/(\d{1,2} \w+ \d{2} \d{2}:\d{2})/);  // Updated to match hh:mm format
-
-                if (onsetMatch) {
-                    const dateStr = onsetMatch[1];
-                    const currentDate = formatDateForComparison(dateStr);
-
-                    if (isFirstItemInPane) {
-                        // First item in pane - always show full date
-                        lastDateInPane = currentDate;
-                    } else if (currentDate && currentDate === lastDateInPane) {
-                        // Same date as previous - show only time
-                        displayValue = `Onset ${formatTimeOnly(dateStr)}`;
-                    } else {
-                        // New date - show full date and update tracking
-                        lastDateInPane = currentDate;
-                    }
-                } else if (timeMatch) {
-                    const dateStr = timeMatch[1];
-                    const currentDate = formatDateForComparison(dateStr);
-
-                    if (isFirstItemInPane) {
-                        // First item in pane - always show full date
-                        lastDateInPane = currentDate;
-                    } else if (currentDate && currentDate === lastDateInPane) {
-                        // Same date as previous - show only time
-                        displayValue = entry.value.replace(timeMatch[1], formatTimeOnly(dateStr));
-                    } else {
-                        // New date - show full date and update tracking
-                        lastDateInPane = currentDate;
-                    }
-                }
-
-                const detail = createDetailBoxElement(displayLabel, displayValue, stageColor);
+                const detail = createDetailBoxElement(displayLabel, entry.value, stageColor);
                 detail.title = entry.tooltip;
                 container.appendChild(detail);
             });
