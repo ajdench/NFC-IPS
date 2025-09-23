@@ -70,6 +70,8 @@ const timeMatch = entry.value.match(/(\d{1,2} \w{3} \d{2} \d{2}:\d{2})/);
 - Parse pill cleanup: conditions drop the "Onset" prefix; events use dose/route info without repeating FQN, infer units for numeric doses (including SNOMED med mappings), and suppress generic manual routes.
 - Future enhancement: consider surfacing additional FHIR context for radiological interventions (category, bodySite, reasonCode, performer, outcome) once pill layout supports richer metadata.
 - Added flat, shadowless Vitals container between OPCP stack and payload panes to explore global vitals presentation (grey wrapper, white content ready for data binding); payload panes now use matching light borders with overflow clipping so headers respect corner radius.
+- Prototype global vitals line chart renders across stages using Chart.js when available, with lightweight fallback renderer bundled locally.
+- Enriched default IPS sample data & in-code defaults: realistic temperature trend, respiratory rate + SpO₂ on every stage, hemoglobin/pH coverage at R1/R2, and no stray baseline BP/duplicate vitals.
 - Box-shadow styling removed from all containers; consider reintroducing as optional theme toggle in future architecture.
 
 # Agent Notes (2025-09-21)

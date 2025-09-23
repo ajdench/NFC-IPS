@@ -48,9 +48,11 @@ This project provides a single-page web application designed to display Internat
 
 This project is intended for concept development, refinement, and distribution via GitHub Pages.
 
-**Live Demo:** [https://ajdench.github.io/NFC-IPS/](https://ajdench.github.io/NFC-IPS/)
+**Live Demo (main):** [https://ajdench.github.io/NFC-IPS/](https://ajdench.github.io/NFC-IPS/)
 
-For information specific to the deployed GitHub Pages branch, see its [README.md](https://github.com/ajdench/NFC-IPS/tree/gh-pages).
+**Live Demo (Dev2):** [https://ajdench.github.io/NFC-IPS-Dev2/](https://ajdench.github.io/NFC-IPS-Dev2/)
+
+For information specific to the deployed GitHub Pages branch, see its [README.md](https://github.com/ajdench/NFC-IPS/tree/gh-pages). The `Dev2` branch is used for active development and is deployed to its own `gh-pages2` branch.
 
 ## Usage
 

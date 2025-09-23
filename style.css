@@ -400,16 +400,46 @@ body {
 .vitals-content {
     background-color: var(--bg-color-detail-value);
     border-radius: 8px;
-    min-height: 220px;
+    min-height: calc(var(--standard-padding) * 3);
+    position: relative;
+    overflow: hidden;
+    padding: var(--standard-padding);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+#vitals-chart {
+    width: 100%;
+    height: 100%;
+    flex: 1 1 auto;
+    display: block;
+}
+
+.vitals-empty {
+    position: absolute;
+    inset: var(--standard-padding);
     display: flex;
     align-items: center;
     justify-content: center;
-    border: none;
+    color: var(--text-color-dark);
+    opacity: 0.7;
+    font-style: italic;
 }
 
-.vitals-placeholder {
-    width: 100%;
-    height: 100%;
+.vitals-tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    padding: calc(var(--standard-padding) / 4) calc(var(--standard-padding) / 2);
+    border-radius: 4px;
+    font-size: calc(var(--font-size-uniform) * 0.7);
+    white-space: nowrap;
+    transform: translate(-50%, -120%);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    z-index: 5;
 }
 
 .payload-header {
@@ -497,6 +527,8 @@ body {
     transition: color 0.2s ease;
     border-bottom: 2px solid transparent;
     padding-bottom: 2px;
+    display: inline-flex;
+    width: auto;
 }
 
 .clickable-title:hover {

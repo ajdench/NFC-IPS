@@ -89,3 +89,9 @@
 
 ### Update: 2025-09-23 09:10
 - Added flat Vitals container between OPCP stack and payload panes for future global vitals rollup; payload pane borders match header grey with overflow clipping so headers respect rounded corners
+
+### Update: 2025-09-23 09:40
+- Vitals timeline now prefers Chart.js (local vendor) with modular in-project fallback renderer to keep UI functional offline
+
+### Update: 2025-09-23 10:15
+- Default IPS data & in-code defaults tuned: stage-aware temperatures, consistent SpO₂/respiratory rates, medevac BP pair (baseline removed), and hemoglobin/pH additions for R1/R2

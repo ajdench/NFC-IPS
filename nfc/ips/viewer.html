@@ -71,7 +71,8 @@
         <section class="container vitals-container">
             <h2 class="info-title">Vitals</h2>
             <div class="vitals-content">
-                <div class="vitals-placeholder" role="presentation"></div>
+                <canvas id="vitals-chart" aria-label="Vitals trend chart"></canvas>
+                <div id="vitals-empty" class="vitals-empty" role="status">No vitals available</div>
             </div>
         </section>
 
@@ -118,6 +119,9 @@
         </section>
     </main>
 
+    <script src="../../resources/vendor/chart.umd.min.js"></script>
+    <!-- Optional fallback mini-chart implementation (used if Chart.js is unavailable) -->
+    <script src="../../resources/vendor/vitals-chart-mini.js"></script>
     <script src="../../console-logger.js"></script>
     <script src="../../resources/vendor/pako.min.js"></script>
     <script src="../../resources/vendor/protobuf.min.js"></script>

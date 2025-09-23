@@ -2,6 +2,10 @@
 
 This document records ongoing learning, architectural decisions, and specific to-dos related to the NFC IPS Viewer project.
 
+## Branching Strategy
+*   **Dev2 Branch:** A new development branch (`Dev2`) has been created for ongoing work.
+*   **gh-pages2 Branch:** A corresponding `gh-pages2` branch will be used for deploying and testing builds from the `Dev2` branch.
+
 ## Learning & Insights:
 
 *   **Dynamic Flexbox Spacing (Ghost Items):** To ensure consistent wrapping and dynamic spacing with `justify-content: space-between`, implemented the "ghost item" technique. Invisible flex items are added to the container, forcing proper space distribution even on lines with fewer elements. This also involved refining the `gap` property on the flex container for consistent horizontal and vertical spacing.
@@ -43,5 +47,10 @@ This document records ongoing learning, architectural decisions, and specific to
     *   **Impact:** Leads to inconsistent vertical spacing and a visually unappealing layout.
     *   **Current Status:** Unresolved.
 
+## Resolved Issues:
+
 *   **Bug: Persistent Flexbox Stretching Issue (textarea/pre)**
     *   **Resolution:** Replaced `textarea` and `pre` elements with `div[contenteditable]` and adjusted parent container flex properties, successfully resolving the stretching issue.
+*   **Bug: Events Date Display Issue**
+    *   **Description:** The first "Event" pill in each chronological section was incorrectly showing only the time, not the full date and time. This was caused by a presentation-layer regex that rewrote the pill's value, ignoring pre-calculated date information.
+    *   **Resolution:** The rendering logic was fixed to use the normalized pill data directly, removing the faulty regex and date-collapsing logic. The first event in each section now correctly displays the full date and time.

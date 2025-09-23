@@ -76,6 +76,26 @@ const infoBoxConfig = [
     { title: 'Role 3 Care (R3)', colorClass: 'purple', dataKey: 'r3' }
 ];
 
+const stageTitleLookup = infoBoxConfig.reduce((acc, config) => {
+    if (config.dataKey) acc[config.dataKey] = config.title;
+    return acc;
+}, {});
+
+const vitalColorPalette = [
+    '#d32f2f', '#1976d2', '#388e3c', '#f57f17', '#7b1fa2', '#00796b', '#5d4037', '#c2185b'
+];
+const vitalColorAssignments = new Map();
+let vitalColorIndex = 0;
+
+function getVitalColor(vitalType) {
+    if (!vitalColorAssignments.has(vitalType)) {
+        const color = vitalColorPalette[vitalColorIndex % vitalColorPalette.length];
+        vitalColorAssignments.set(vitalType, color);
+        vitalColorIndex += 1;
+    }
+    return vitalColorAssignments.get(vitalType);
+}
+
 /**
  * Medical Care Stage Identifiers
  * Purpose: Extract stage keys for data processing (excludes patient demographics)
@@ -84,6 +104,19 @@ const infoBoxConfig = [
 const stageKeys = infoBoxConfig
     .map(config => config.dataKey)
     .filter(key => key && !['patient', 'clinicalSummary'].includes(key));
+
+let vitalsChartInstance = null;
+let vitalsChartLibrary = 'chartjs';
+
+function destroyVitalsChart() {
+    if (!vitalsChartInstance) return;
+    if (vitalsChartLibrary === 'chartjs' && typeof vitalsChartInstance.destroy === 'function') {
+        vitalsChartInstance.destroy();
+    } else if (vitalsChartLibrary === 'mini' && typeof vitalsChartInstance.destroy === 'function') {
+        vitalsChartInstance.destroy();
+    }
+    vitalsChartInstance = null;
+}
 
 /**
  * Application State Container
@@ -151,6 +184,18 @@ function formatDateTime(dateString) {
     const minutes = parsed.getMinutes().toString().padStart(2, '0');
 
     return `${day} ${month} ${year} ${hours}:${minutes}`;
+}
+
+function formatDateTimeWithBullet(dateString) {
+    const formatted = formatDateTime(dateString);
+    const parts = formatted.split(' ');
+    if (parts.length >= 4) {
+        const datePart = `${parts[0]} ${parts[1]} ${parts[2]}`;
+        const timePart = parts.slice(3).join(' ');
+        return `${datePart} • ${timePart}`;
+    }
+    const idx = formatted.lastIndexOf(' ');
+    return idx > -1 ? `${formatted.slice(0, idx)} • ${formatted.slice(idx + 1)}` : formatted;
 }
 
 /**
@@ -568,7 +613,7 @@ function createStandardizedPill(type, rawData, sectionDateTracker, isFirstDispla
 
     if (primaryTime) {
         const currentDate = formatDateForComparison(primaryTime);
-        const fullDateTime = formatDateTime(primaryTime);
+        const fullDateTime = formatDateTimeWithBullet(primaryTime);
         const timeOnly = formatTimeOnly(primaryTime);
 
         // MIST logic: First pill in chronological row shows date, subsequent pills show time only
@@ -4159,6 +4204,239 @@ function renderStageSections(stageSections = {}) {
     });
 }
 
+function renderVitalsChart(viewModel) {
+    const canvas = document.getElementById('vitals-chart');
+    const emptyState = document.getElementById('vitals-empty');
+
+    if (!canvas) return;
+
+    if (!viewModel || !viewModel.stageSections) {
+        destroyVitalsChart();
+        if (emptyState) emptyState.style.display = 'flex';
+        canvas.style.display = 'none';
+        return;
+    }
+
+    const stageSections = viewModel.stageSections;
+    const datasetsMap = new Map();
+
+    stageKeys.forEach(stageKey => {
+        const section = stageSections[stageKey];
+        if (!section || !Array.isArray(section.vitals) || !section.vitals.length) return;
+
+        const stageTitle = stageTitleLookup[stageKey] || stageKey;
+        const stageShort = stageTitle.match(/\(([^)]+)\)/)?.[1] || stageTitle;
+
+        section.vitals.forEach(pill => {
+            if (!pill) return;
+            const raw = pill.rawData || {};
+            const timeString = raw.dateTime || raw.time;
+            if (!timeString) return;
+
+            const timestamp = new Date(timeString).getTime();
+            if (!Number.isFinite(timestamp)) return;
+
+            let value = Number(raw.value);
+            if (!Number.isFinite(value) && raw.value != null) {
+                value = Number.parseFloat(raw.value);
+            }
+            if (!Number.isFinite(value)) {
+                const valueMatch = typeof pill.value === 'string'
+                    ? pill.value.match(/-?\d+(?:\.\d+)?/)
+                    : null;
+                value = valueMatch ? Number(valueMatch[0]) : Number.NaN;
+            }
+            if (!Number.isFinite(value)) return;
+
+            let unit = raw.unit || '';
+            if (!unit && typeof pill.value === 'string') {
+                const unitGuess = pill.value.replace(/-?\d+(?:\.\d+)?\s*/, '').trim();
+                if (unitGuess && unitGuess.length <= 6) {
+                    unit = unitGuess;
+                }
+            }
+
+            const type = raw.description
+                || (typeof pill.label === 'string' ? pill.label.split('•')[1]?.trim() : 'Vital');
+            const datasetKey = type || 'Vital';
+
+            const entry = {
+                x: timestamp,
+                y: value,
+                meta: {
+                    type: datasetKey,
+                    unit,
+                    stage: stageTitle,
+                    stageShort,
+                    value,
+                    dateTime: timeString
+                }
+            };
+
+            if (!datasetsMap.has(datasetKey)) {
+                datasetsMap.set(datasetKey, []);
+            }
+            datasetsMap.get(datasetKey).push(entry);
+        });
+    });
+
+    let minTime = Infinity;
+    let maxTime = -Infinity;
+
+    const datasets = Array.from(datasetsMap.entries()).map(([label, points]) => {
+        points.sort((a, b) => a.x - b.x);
+        const color = getVitalColor(label);
+
+        if (points.length) {
+            minTime = Math.min(minTime, points[0].x);
+            maxTime = Math.max(maxTime, points[points.length - 1].x);
+        }
+
+        return {
+            label,
+            data: points,
+            borderColor: color,
+            backgroundColor: color,
+            tension: 0.25,
+            pointRadius: 3,
+            pointHoverRadius: 5,
+            spanGaps: true
+        };
+    });
+
+    datasets.forEach(dataset => {
+        dataset.data.forEach(point => {
+            const meta = point.meta || {};
+            const rawUnit = meta.unit;
+            const trimmedUnit = rawUnit ? String(rawUnit).trim() : '';
+            let value = meta.value;
+            if (value == null || Number.isNaN(Number(value))) {
+                value = point.y;
+            }
+            const formattedValue = trimmedUnit ? `${value} ${trimmedUnit}` : `${value}`;
+            meta.displayValue = formattedValue;
+            point.meta = meta;
+        });
+    });
+
+    const hasData = datasets.length > 0;
+    const timeSpan = hasData ? Math.max(maxTime - minTime, 60 * 1000) : 0;
+    const timePadding = hasData ? Math.max(timeSpan * 0.05, 30 * 1000) : 0;
+    const xMin = hasData ? minTime - timePadding : undefined;
+    const xMax = hasData ? maxTime + timePadding : undefined;
+
+    if (emptyState) emptyState.style.display = hasData ? 'none' : 'flex';
+    canvas.style.display = hasData ? 'block' : 'none';
+
+    destroyVitalsChart();
+
+    if (!hasData) return;
+
+    const ctx = canvas.getContext('2d');
+
+    if (typeof Chart !== 'undefined' && Chart !== null && typeof Chart === 'function' && typeof Chart.defaults !== 'undefined') {
+        vitalsChartLibrary = 'chartjs';
+        vitalsChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: { datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'nearest',
+                    intersect: false
+                },
+                scales: {
+                    x: {
+                        type: 'linear',
+                        min: xMin,
+                        max: xMax,
+                        ticks: {
+                            callback(value) {
+                                return formatDateTime(new Date(Number(value)).toISOString());
+                            },
+                            autoSkip: false,
+                            maxTicksLimit: 8
+                        },
+                        adapters: {},
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.06)',
+                            drawTicks: true,
+                            borderDash: [3, 3]
+                        }
+                    },
+                    y: {
+                        display: true,
+                        ticks: {
+                            display: true,
+                            maxTicksLimit: 6,
+                            autoSkip: false
+                        },
+                        title: {
+                            display: false
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)',
+                            borderDash: [2, 2]
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: false,
+                            boxWidth: 6,
+                            boxHeight: 6,
+                            font: {
+                                size: Math.max(9, Math.floor(parseFloat(getComputedStyle(document.documentElement).fontSize || '16') * 0.65))
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title(items) {
+                                if (!items.length) return '';
+                                const first = items[0];
+                                const meta = first.raw?.meta || {};
+                                const dateStr = meta.dateTime
+                                    ? formatDateTimeWithBullet(meta.dateTime)
+                                    : formatDateTimeWithBullet(new Date(Number(first.raw?.x ?? first.parsed.x)).toISOString());
+                                return dateStr;
+                            },
+                            label(context) {
+                                const meta = context.raw.meta || {};
+                                const type = meta.type || context.dataset.label;
+                                const rawUnit = meta.unit || '';
+                                const trimmedUnit = rawUnit ? String(rawUnit).trim() : '';
+                                const stage = meta.stageShort || meta.stage || 'Unknown';
+                                const value = meta.value ?? context.parsed.y;
+                                const displayValue = meta.displayValue || (trimmedUnit ? `${value} ${trimmedUnit}` : `${value}`);
+                                return `${type} • ${displayValue} • ${stage}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    } else if (typeof window !== 'undefined' && window.VitalsMiniChart) {
+        vitalsChartLibrary = 'mini';
+        vitalsChartInstance = new window.VitalsMiniChart(ctx, {
+            type: 'line',
+            data: { datasets },
+            options: {
+                xMin,
+                xMax,
+                legendFontSize: Math.max(10, Math.floor(parseFloat(getComputedStyle(document.documentElement).fontSize || '16') * 0.75))
+            }
+        });
+    } else {
+        // No charting library available
+        canvas.style.display = 'none';
+        if (emptyState) emptyState.style.display = 'flex';
+    }
+}
+
 /**
  * Raw Payload Display Renderer
  * Purpose: Display raw JSON payload data in the right panel for debugging/inspection
@@ -4358,6 +4636,7 @@ function processAndRenderAll(viewModel, comparisonViewModel) {
     renderPayloadDisplay(viewModel.rawPayload);
     renderClinicalSummaryBox(viewModel.patientResource, viewModel.allergies, viewModel.summary);
     renderStageSections(viewModel.stageSections);
+    renderVitalsChart(viewModel);
 }
 
 // --- INITIALISATION ---
@@ -4479,10 +4758,11 @@ async function init() {
         },
         "poi": {
             "vitals": [
-                {"code": {"sys": "loinc", "code": "8310-5"}, "value": 98.2, "unit": "°F", "route": "Tympanic", "time": "2024-01-15T14:16:00Z"},
-                {"code": {"sys": "loinc", "code": "8867-4"}, "value": 92, "unit": "bpm", "time": "2024-01-15T14:17:00Z"},
+                {"code": {"sys": "loinc", "code": "8310-5"}, "value": 97.8, "unit": "°F", "route": "Tympanic", "time": "2024-01-15T14:16:30Z"},
+                {"code": {"sys": "loinc", "code": "8867-4"}, "value": 108, "unit": "bpm", "time": "2024-01-15T14:17:00Z"},
                 {"code": {"sys": "loinc", "code": "8480-6"}, "value": 135, "unit": "mmHg", "time": "2024-01-15T14:17:30Z"},
                 {"code": {"sys": "loinc", "code": "8462-4"}, "value": 90, "unit": "mmHg", "time": "2024-01-15T14:17:30Z"},
+                {"code": {"sys": "loinc", "code": "2708-6"}, "value": 96, "unit": "%", "time": "2024-01-15T14:18:30Z"},
                 {"code": {"sys": "loinc", "code": "9279-1"}, "value": 20, "unit": "/min", "time": "2024-01-15T14:18:00Z"}
             ],
             "conditions": [
@@ -4501,10 +4781,11 @@ async function init() {
         "casevac": {
             "vitals": [
                 {"code": {"sys": "loinc", "code": "8310-5"}, "value": 98.6, "unit": "°F", "route": "Oral", "time": "2024-01-15T15:30:00Z"},
-                {"code": {"sys": "loinc", "code": "8867-4"}, "value": 75, "unit": "bpm", "time": "2024-01-15T15:31:00Z"},
+                {"code": {"sys": "loinc", "code": "8867-4"}, "value": 78, "unit": "bpm", "time": "2024-01-15T15:34:00Z"},
                 {"code": {"sys": "loinc", "code": "8480-6"}, "value": 120, "unit": "mmHg", "time": "2024-01-15T15:31:30Z"},
                 {"code": {"sys": "loinc", "code": "8462-4"}, "value": 80, "unit": "mmHg", "time": "2024-01-15T15:31:30Z"},
-                {"code": {"sys": "loinc", "code": "9279-1"}, "value": 16, "unit": "/min", "time": "2024-01-15T15:32:00Z"}
+                {"code": {"sys": "loinc", "code": "2708-6"}, "value": 95, "unit": "%", "time": "2024-01-15T15:36:00Z"},
+                {"code": {"sys": "loinc", "code": "9279-1"}, "value": 18, "unit": "/min", "time": "2024-01-15T15:32:00Z"}
             ],
             "events": [
                 {"code": {"sys": "sct", "code": "17629007"}, "time": "2024-01-15T15:30:00Z", "dose": "Boxer (MIV-A) Ambulance", "route": "Ground transport"},
@@ -4518,7 +4799,8 @@ async function init() {
                 {"code": {"sys": "loinc", "code": "8867-4"}, "value": 85, "unit": "bpm", "time": "2024-01-15T16:01:00Z"},
                 {"code": {"sys": "loinc", "code": "8480-6"}, "value": 110, "unit": "mmHg", "time": "2024-01-15T16:01:30Z"},
                 {"code": {"sys": "loinc", "code": "8462-4"}, "value": 75, "unit": "mmHg", "time": "2024-01-15T16:01:30Z"},
-                {"code": {"sys": "loinc", "code": "2708-6"}, "value": 95, "unit": "%", "time": "2024-01-15T16:02:00Z"}
+                {"code": {"sys": "loinc", "code": "2708-6"}, "value": 94, "unit": "%", "time": "2024-01-15T16:02:00Z"},
+                {"code": {"sys": "loinc", "code": "9279-1"}, "value": 17, "unit": "/min", "time": "2024-01-15T16:02:30Z"}
             ],
             "conditions": [
                 {"code": {"sys": "sct", "code": "386661006"}, "onset": "2024-01-15T16:00:00Z"},
@@ -4710,6 +4992,7 @@ async function init() {
         renderPayloadDisplay(null);
         renderClinicalSummaryBox(null, null, null);
         renderStageSections({});
+        renderVitalsChart(null);
     }
 
     // === FORMAT SWITCHING FUNCTIONS ===
