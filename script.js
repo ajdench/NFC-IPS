@@ -230,6 +230,18 @@ function inferUnitFromCode(system, code) {
         'loinc:1975-2': 'mg/dL',     // Bilirubin
         'loinc:2951-2': 'mOsm/kg',   // Sodium
         'loinc:6298-4': 'mEq/L',     // Potassium
+
+        // SNOMED medication administrations (common IPS examples)
+        'sct:387207008': 'mg',       // Morphine
+        'sct:387494007': 'mg',       // Ibuprofen
+        'sct:387467008': 'mg',       // Tramadol
+        'sct:372687004': 'mg',       // Amoxicillin
+        'sct:387562000': 'g',        // Amoxicillin (IV) - grams
+        'sct:108761006': 'mg',       // Epinephrine
+        'sct:182777000': 'mg',       // Tranexamic acid (example)
+        'sct:16990000': 'mL',        // Ringer's solution / fluids
+        'sct:432102000': 'mL',       // Normal saline
+        'sct:387713003': 'dose',     // Cephalexin (single dose)
     };
 
     const key = `${system}:${code}`;
