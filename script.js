@@ -499,20 +499,45 @@ function createStandardizedPill(type, rawData, sectionDateTracker, isFirstDispla
             tooltipValueContent = `${description} | ${valueContent}`;
         }
     } else if (type === 'conditions') {
-        // For conditions: show "Onset"
-        valueContent = 'Onset';
+        // Conditions rely on date-only display; keep tooltip descriptive text
+        valueContent = '';
         tooltipValueContent = description;
     } else if (type === 'events') {
-        // For events: show dose if medication-related, otherwise show description
-        if (dose !== undefined && dose !== null && dose !== '' && dose !== 'NaN' && !Number.isNaN(dose)) {
-            // Add unit if available
-            const doseWithUnit = unit ? `${dose} ${unit}` : dose;
-            valueContent = doseWithUnit;
-            tooltipValueContent = `${description} | ${doseWithUnit}`;
-        } else {
-            valueContent = description;
-            tooltipValueContent = description;
+        const cleanedDose = typeof dose === 'number'
+            ? dose.toString()
+            : (dose || '').toString().trim();
+        const cleanedRoute = (route || '').toString().trim();
+
+        const descriptionText = (description || '').toString().trim();
+        const matchesDescription = cleanedDose && descriptionText
+            && cleanedDose.toLowerCase() === descriptionText.toLowerCase();
+
+        const hasDose = cleanedDose !== ''
+            && cleanedDose.toLowerCase() !== 'nan'
+            && !matchesDescription;
+        const isPureNumericDose = hasDose && /^[0-9]+(?:\.[0-9]+)?$/.test(cleanedDose);
+
+        let unitDisplay = unit || '';
+        if (isPureNumericDose && !unitDisplay) {
+            unitDisplay = inferUnitFromCode(code.system, code.code) || '';
         }
+
+        const tooltipExtras = [];
+
+        if (hasDose) {
+            const doseWithUnit = unitDisplay ? `${cleanedDose} ${unitDisplay}` : cleanedDose;
+            valueContent = doseWithUnit;
+            tooltipExtras.push(doseWithUnit);
+        } else if (cleanedRoute) {
+            valueContent = cleanedRoute;
+            tooltipExtras.push(cleanedRoute);
+        } else {
+            valueContent = '';
+        }
+
+        tooltipValueContent = [descriptionText, ...tooltipExtras]
+            .filter(Boolean)
+            .join(' | ') || descriptionText;
     }
 
     // Handle date display logic for MIST chronological rows

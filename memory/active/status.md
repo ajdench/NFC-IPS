@@ -72,6 +72,9 @@
 ### Update: 2025-09-22 15:40
 - OPCP renderer now consumes normalized pill data directly; removed regex date mangling so Treatment first pills show full timestamps
 
+### Update: 2025-09-22 15:55
+- Parse pill formatting refined: conditions show timestamps only; events avoid duplicated FQN, surface route/dose, and infer units for bare numerals
+
 ### Update: 2025-09-22 22:36
 - Comprehensive Events MIST debugging added - implemented extractTimestamp helper and enhanced pill creation logging to investigate presentation layer issue
 
