@@ -317,6 +317,12 @@ function resolveCodePrefix(system) {
     return prefixMap[system] || system;
 }
 
+function normalizeRouteDisplay(routeValue) {
+    if (!routeValue) return '';
+    const trimmed = routeValue.trim();
+    return trimmed.replace(/\s*route$/i, '');
+}
+
 /**
  * Clean debug logging for MIST date display analysis
  */
@@ -2105,10 +2111,12 @@ const codecPipeline = (() => {
             time: medication.effectiveDateTime || new Date().toISOString(),
             dose: medication.dosage?.dose?.value || 0,
             unit: medication.dosage?.dose?.unit || '',
-            route: medication.dosage?.route?.coding?.[0]?.display
+            route: normalizeRouteDisplay(
+                medication.dosage?.route?.coding?.[0]?.display
                 || medication.dosage?.route?.text
                 || medication.dosage?.route?.coding?.[0]?.code
                 || ''
+            )
         };
     }
 
@@ -2121,10 +2129,12 @@ const codecPipeline = (() => {
             time: procedure.performedDateTime || new Date().toISOString(),
             dose: procedure.note?.[0]?.text || '',
             unit: '',
-            route: procedure.bodySite?.[0]?.coding?.[0]?.display
+            route: normalizeRouteDisplay(
+                procedure.bodySite?.[0]?.coding?.[0]?.display
                 || procedure.bodySite?.[0]?.text
                 || procedure.performedString
                 || 'Manual'
+            )
         };
     }
 
