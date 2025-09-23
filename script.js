@@ -53,8 +53,8 @@ import {
  */
 const DUAL_TITLE_CONFIG = {
     enabled: true,
-    transparency: 0.5,
-    enabledPanes: new Set(['patient', 'clinicalSummary']) // Currently enabled for Patient Demographics and Clinical Summary
+    transparency: 0.35,
+    enabledPanes: new Set(['patient', 'clinicalSummary', 'poi', 'casevac', 'axp', 'medevac', 'r1', 'fwdTacevac', 'r2', 'rearTacevac', 'r3']) // All panes enabled
 };
 
 /**
@@ -65,15 +65,15 @@ const DUAL_TITLE_CONFIG = {
 const infoBoxConfig = [
     { title: 'Patient Demographics', colorClass: 'grey', dataKey: 'patient' },
     { title: 'Clinical Summary', colorClass: 'khaki', dataKey: 'clinicalSummary' },
-    { title: 'Point of Injury and/or Illness (POI)', colorClass: 'red', dataKey: 'poi' },
-    { title: 'Casualty Evacuation (CASEVAC)', colorClass: 'yellow', dataKey: 'casevac' },
-    { title: 'Ambulance Exchange Point (AXP)', colorClass: 'axp', dataKey: 'axp' },
-    { title: 'Medical Evacuation (MEDEVAC)', colorClass: 'orange', dataKey: 'medevac' },
-    { title: 'Role 1 Care (R1)', colorClass: 'green', dataKey: 'r1' },
-    { title: 'Forward Tactical Evacuation (Fwd TACEVAC)', colorClass: 'fwd-tacevac', dataKey: 'fwdTacevac' },
-    { title: 'Role 2 Care (R2)', colorClass: 'blue', dataKey: 'r2' },
-    { title: 'Rear Tactical Evacuation (Rear TACEVAC)', colorClass: 'rear-tacevac', dataKey: 'rearTacevac' },
-    { title: 'Role 3 Care (R3)', colorClass: 'purple', dataKey: 'r3' }
+    { title: 'Point of Injury and/or Illness', shortTitle: 'POI', colorClass: 'red', dataKey: 'poi' },
+    { title: 'Casualty Evacuation', shortTitle: 'CASEVAC', colorClass: 'yellow', dataKey: 'casevac' },
+    { title: 'Ambulance Exchange Point', shortTitle: 'AXP', colorClass: 'axp', dataKey: 'axp' },
+    { title: 'Medical Evacuation', shortTitle: 'MEDEVAC', colorClass: 'orange', dataKey: 'medevac' },
+    { title: 'Role 1 Care', shortTitle: 'R1', colorClass: 'green', dataKey: 'r1' },
+    { title: 'Forward Tactical Evacuation', shortTitle: 'Fwd TACEVAC', colorClass: 'fwd-tacevac', dataKey: 'fwdTacevac' },
+    { title: 'Role 2 Care', shortTitle: 'R2', colorClass: 'blue', dataKey: 'r2' },
+    { title: 'Rear Tactical Evacuation', shortTitle: 'Rear TACEVAC', colorClass: 'rear-tacevac', dataKey: 'rearTacevac' },
+    { title: 'Role 3 Care', shortTitle: 'R3', colorClass: 'purple', dataKey: 'r3' }
 ];
 
 const stageTitleLookup = infoBoxConfig.reduce((acc, config) => {
@@ -3869,17 +3869,18 @@ function createInfoBoxes() {
         // title.className = config.specialClass ? 'poi-title' : 'info-title';
         title.className = 'info-title';
         title.dataset.baseTitle = config.title;
+        title.dataset.shortTitle = config.shortTitle || config.title;
 
         // Check if dual title display is enabled for this pane
         if (DUAL_TITLE_CONFIG.enabled && DUAL_TITLE_CONFIG.enabledPanes.has(config.dataKey)) {
             title.classList.add('dual-title');
 
-            // Left title (main title)
+            // Left title (short title for OPCP panes, full title for Demographics/Clinical Summary)
             const leftTitle = document.createElement('span');
             leftTitle.className = 'left-title';
-            leftTitle.textContent = config.title;
+            leftTitle.textContent = config.shortTitle || config.title;
 
-            // Right title (duplicate with transparency)
+            // Right title (always full title with transparency)
             const rightTitle = document.createElement('span');
             rightTitle.className = 'right-title';
             rightTitle.textContent = config.title;
@@ -3902,6 +3903,7 @@ function setTitleAvailability(titleElement, hasData) {
 
     const baseTitle = titleElement.dataset.baseTitle
         || titleElement.textContent.split('•')[0].trim();
+    const shortTitle = titleElement.dataset.shortTitle || baseTitle;
     titleElement.dataset.baseTitle = baseTitle;
 
     const container = titleElement.parentElement;
@@ -3914,7 +3916,7 @@ function setTitleAvailability(titleElement, hasData) {
         // Rebuild dual title structure for populated state
         const leftTitle = document.createElement('span');
         leftTitle.className = 'left-title';
-        leftTitle.textContent = baseTitle;
+        leftTitle.textContent = shortTitle;
 
         const rightTitle = document.createElement('span');
         rightTitle.className = 'right-title';
@@ -3927,7 +3929,7 @@ function setTitleAvailability(titleElement, hasData) {
         // Dual title empty state: left title + empty text + right title
         const leftTitle = document.createElement('span');
         leftTitle.className = 'base-title';
-        leftTitle.textContent = baseTitle;
+        leftTitle.textContent = shortTitle;
 
         const emptySpan = document.createElement('span');
         emptySpan.className = 'empty-text';
