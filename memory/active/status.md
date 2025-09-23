@@ -15,7 +15,7 @@
 - Wrote comprehensive documentation and migration guide
 - Setup tools for easy installation
 
-### Update: 2024-06-22 16:00  
+### Update: 2024-06-22 16:00
 - Refocused documentation on GitHub installation use case
 - Created INSTALL-FOR-CLAUDE.md guide specifically for Claude Code
 - Added ASK-CLAUDE-CODE.md with simple instructions for humans
@@ -95,8 +95,6 @@
 
 ### Update: 2025-09-23 10:15
 - Default IPS data & in-code defaults tuned: stage-aware temperatures, consistent SpO₂/respiratory rates, medevac BP pair (baseline removed), and hemoglobin/pH additions for R1/R2
-<<<<<<< Updated upstream
-=======
 
 ### Update: 2025-09-23 10:23
 - Implemented dual title display feature with global configuration - Patient Demographics and Clinical Summary panes now show right-justified transparent duplicate titles at 50% opacity, maintaining display logic for both empty and populated states
@@ -108,7 +106,7 @@
 - Fixed dual title display - removed parenthetical abbreviations from right-hand full titles, now shows clean format like 'POI' | 'Point of Injury and/or Illness' instead of including (POI) suffix
 
 ### Update: 2025-09-23 13:08
-- Fixed empty state text centering - No data available text in dual title panes now uses absolute positioning to center at true 50% width, matching the perfect centering of No vitals available text
+- Fixed empty state text centering - No data available text in a dual title panes now uses absolute positioning to center at true 50% width, matching the perfect centering of No vitals available text
 
 ### Update: 2025-09-23 13:11
 - Fixed vitals empty text alignment - changed No vitals available from center to left alignment (flex-start) to match the left-aligned No position of No data available text in panes above
@@ -121,10 +119,3 @@
 
 ### Update: 2025-09-23 13:29
 - JJ commit completed - dual title display system implementation committed with comprehensive commit message covering all UI changes, transparency adjustments, and empty state alignment fixes
->>>>>>> Stashed changes
-
-### Update: 2025-09-23 13:41
-- Dual title functionality preserved and committed - JJ commit completed successfully, all dual title display features intact including 35% transparency, short/full title patterns, and empty state centering
-
-### Update: 2025-09-23 13:43
-- Dual title implementation fully restored after git reversion - all features working: 35% transparency, short/full title patterns (POI | Point of Injury and/or Illness), empty state centering, and clean titles without parenthetical abbreviations
