@@ -12,7 +12,7 @@ const FILES_TO_COPY = [
     { src: 'index.html', dest: 'index.html' },
     { src: 'style.css', dest: 'style.css' },
     { src: 'script.js', dest: 'script.js' },
-    { src: 'README-gh-pages.md', dest: 'README.md' },
+    { src: 'README.md', dest: 'README.md' },
     { src: 'payload-1.json', dest: 'payload-1.json' },
     { src: 'payload-2.json', dest: 'payload-2.json' }
 ];
