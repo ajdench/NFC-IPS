@@ -15,6 +15,13 @@ This project provides a single-page web application designed to display Internat
 *   **Responsive Control Sizing:** Control elements (toggle switch and parse button) now dynamically size their height based on `calc(var(--standard-padding) * 2)`, ensuring consistent scaling with the overall UI.
 *   **Precise Control Alignment:** The toggle switch is precisely aligned with the right-hand side of the left content pane using a combination of flexbox properties and calculated margins.
 
+## Recent Changes
+
+*   **Dual Title Display:** Implemented a dual title system for OPCP panes, allowing for both a primary and a secondary title with configurable transparency.
+*   **Vitals Charting:** Integrated Chart.js for improved visualization of patient vitals over time.
+*   **UI and Layout:** Added a dedicated vitals container and flattened the overall payload layout for a cleaner presentation.
+*   **Development Branches:** Created `Dev1` and `Dev2` branches to manage and test new features independently.
+
 ## Current Development Status
 
 ### ✅ Recently Completed

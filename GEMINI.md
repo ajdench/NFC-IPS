@@ -2,55 +2,56 @@
 
 This document records ongoing learning, architectural decisions, and specific to-dos related to the NFC IPS Viewer project.
 
-## Branching Strategy
-*   **Dev2 Branch:** A new development branch (`Dev2`) has been created for ongoing work.
-*   **gh-pages2 Branch:** A corresponding `gh-pages2` branch will be used for deploying and testing builds from the `Dev2` branch.
+## Branching & Deployment
+
+*   **Feature Branches:** We follow a pattern of creating temporary feature branches (e.g., `Dev1`, `Dev2`) for development and testing. These branches are deleted after their work is merged or completed.
+*   **Deployment Workaround:** The `gh-pages` deployment script has a known issue where it incorrectly processes the `.gitignore` file. The current workaround is to temporarily remove the `node_modules/` entry from `.gitignore` before running the deploy command and restore it immediately after.
+*   **Conflict Resolution:** Merge conflicts are documented in a temporary file (e.g., `23-Sep-25-Conflict.md`) to facilitate resolution before being archived.
 
 ## Learning & Insights:
 
-*   **Dynamic Flexbox Spacing (Ghost Items):** To ensure consistent wrapping and dynamic spacing with `justify-content: space-between`, implemented the "ghost item" technique. Invisible flex items are added to the container, forcing proper space distribution even on lines with fewer elements. This also involved refining the `gap` property on the flex container for consistent horizontal and vertical spacing.
-*   **Dynamic Flexbox Spacing:** Implemented dynamic horizontal spacing for wrapping detail components using `justify-content: space-between` on the flex container. This ensures the first item is left-aligned and the last item is right-aligned, with remaining space distributed evenly between items on each line.
-*   **Component Styling:** Iteratively refined the patient detail component styling to match a visual target, creating a "pill" shape with distinct, configurable background colors and font weights for the label and value.
-*   **Layout Evolution (Grid to Flexbox):** For the patient detail components, the layout was evolved from a CSS Grid (`repeat(auto-fit,...)`) to a `display: flex` with `flex-wrap: wrap`. This better achieves a continuous, wrapping line of details rather than a structured grid, improving the natural flow of information.
+*   **Vitals Charting:** The vitals timeline now uses a local, vendored `Chart.js` library for rendering, with a simple in-project renderer as a fallback for offline functionality.
+*   **Data Cleanup:** The sample IPS data and in-code defaults have been refined for greater clinical consistency (e.g., stage-aware temperatures, unique heart rates, paired blood pressure readings).
+*   **UI Polish:** Tooltips and legends for the vitals chart have been improved to always show units and use consistent formatting.
+*   **Dynamic Flexbox Spacing (Ghost Items):** To ensure consistent wrapping and dynamic spacing with `justify-content: space-between`, implemented the "ghost item" technique. Invisible flex items are added to the container, forcing proper space distribution even on lines with fewer elements.
 *   **Dynamic Component Generation:** Refactored the main info boxes to be dynamically generated from a JavaScript configuration array. This cleans up the `index.html`, centralizes the UI structure in the script, and makes the layout more scalable and maintainable.
-*   **Fiddly Alignment Fix:** Corrected a minor alignment issue with detail components (label/value pairs) by applying a specific, asymmetrical margin (`margin: 0 2px 0 3px;`) to the container. This counteracts subtle spacing inconsistencies caused by font rendering and flexbox gaps.
-*   **GitHub Pages Deployment:** Learned the importance of including all necessary files (like `default-ips.json`) in the `build` directory and updating the `package.json` `build` script accordingly. Browser caching can also cause display issues.
-*   **CSS Flexbox for Layout:** Utilized flexbox extensively for dynamic vertical and horizontal alignment, including `flex-grow`, `align-items: stretch`, `justify-content: flex-start`, and `margin-top: auto` for pushing elements to the bottom.
-*   **CSS Variables:** Implemented `--standard-padding` and `--half-padding` for modular and consistent spacing across the design.
-*   **Box Sizing:** Confirmed the importance of `box-sizing: border-box` on elements (especially `body` and containers) to ensure padding is included within specified dimensions, preventing unwanted scrollbars.
-*   **README.md Management:** Established a pattern for distinct `README.md` files for `main` and `gh-pages` branches with cross-linking.
-*   **Refactored Header Layout:** Transitioned from absolute positioning to a flexbox-based header (`.payload-header`) for the title and controls, improving layout predictability and simplifying spacing.
-*   **Dynamic Control Sizing:** Implemented control heights and related dimensions using `calc(var(--standard-padding) * 2)` for better responsiveness and consistency with global padding variables.
-*   **Precise Horizontal Alignment:** Achieved specific horizontal alignment of the toggle switch by combining `margin-left: auto` and a calculated negative `margin-right` within a flex container.
-*   **CSS Variable Impact:** Reconfirmed the broad impact of global CSS variables like `--size-multiplier` on overall layout and spacing, emphasizing the need for careful consideration when adjusting them.
 
 ## Architectural Approaches:
 
-*   **Client-Side SPA:** The project is a single-page application (SPA) with all logic handled client-side via JavaScript, suitable for NFC URI parsing.
+*   **Client-Side SPA:** The project is a single-page application (SPA) with all logic handled client-side via JavaScript. The stack is JavaScript ES6+, HTML5, CSS3, with `protobuf.js` and `pako` for data processing.
 *   **Static Site Deployment:** Leveraged GitHub Pages for hosting, with `gh-pages` npm package for automated deployment from a `build` directory.
 *   **Modular CSS:** Organized CSS into logical sections and used variables for maintainability.
-
-## To-Dos:
-
-*   Implement IPS JSON parsing and display in the main content area.
-*   Add functionality to dynamically update other boxes based on IPS data.
-*   Consider adding a mechanism to handle Base64 encoded IPS data from the URL (re-introduce previous logic).
-*   Improve error handling and user feedback for data loading.
-*   Explore options for NFC tag encoding and testing.
-*   **Global GEMINI.md Update:** Remember to manually update the global `/.gemini/GEMINI.md` with relevant general context and learning from this project.
-*   **CLAUDE.md Update:** Cannot directly update `CLAUDE.md` as it is outside the project directory. User needs to manually update or change working directory.
+*   **Documentation Structure:** A documentation review has been conducted, identifying core reference documents (`README.md`, `CODEC.md`, etc.) and candidates for archival (legacy requirements, large asset collections).
+*   **Key Files:**
+    *   `index.html`: Main application entry point.
+    *   `script.js`: Core application logic.
+    *   `style.css`: Complete styling system.
+    *   `package.json`: Build and deployment configuration.
+    *   `payload-1.json` & `payload-2.json`: Demo payload data.
 
 ## Unresolved Issues / Bugs:
 
+*   **CRITICAL: Data Pipeline Failures:** There are major structural issues in the data processing pipeline causing critical patient information to be dropped before rendering.
+    *   **Allergy Information:** `AllergyIntolerance` resources are present in the input FHIR data but are not being rendered in the Clinical Summary section.
+    *   **Patient Identifiers:** Patient identifiers like Service Number and NHS Number are not being displayed in the Patient Demographics section, despite being present in the input data.
 *   **Bug: Excess Gap Below Detail Elements in Patient Box**
-    *   **Description:** The `div.info-box.grey` (Patient box) consistently displays an excess vertical gap below the detail elements (pill shapes), making its total height 120px when it should be closer to 90px based on content and padding. This persists despite attempts to precisely control the height of individual detail elements and remove `flex-grow` properties from parent containers.
-    *   **Impact:** Leads to inconsistent vertical spacing and a visually unappealing layout.
-    *   **Current Status:** Unresolved.
+    *   **Description:** The `div.info-box.grey` (Patient box) consistently displays an excess vertical gap below the detail elements, leading to inconsistent vertical spacing.
+    *   **Status:** Unresolved.
 
 ## Resolved Issues:
 
 *   **Bug: Persistent Flexbox Stretching Issue (textarea/pre)**
-    *   **Resolution:** Replaced `textarea` and `pre` elements with `div[contenteditable]` and adjusted parent container flex properties, successfully resolving the stretching issue.
+    *   **Resolution:** Replaced `textarea` and `pre` elements with `div[contenteditable]` and adjusted parent container flex properties.
 *   **Bug: Events Date Display Issue**
-    *   **Description:** The first "Event" pill in each chronological section was incorrectly showing only the time, not the full date and time. This was caused by a presentation-layer regex that rewrote the pill's value, ignoring pre-calculated date information.
-    *   **Resolution:** The rendering logic was fixed to use the normalized pill data directly, removing the faulty regex and date-collapsing logic. The first event in each section now correctly displays the full date and time.
+    *   **Description:** The first event pill in each OPCP stage was showing only the time instead of the full date and time (e.g., "16:00" instead of "15 Jan 24 16:00"). This was happening only for the "Events" data type.
+    *   **Root Cause:** The presentation layer rendering logic in `renderStageSections()` was incorrectly rewriting pill values using a broad regex match, ignoring the `isFirstDisplayedInRow` flag that was correctly set in the logic layer.
+    *   **Resolution:** The rendering logic was fixed to use the normalized pill data directly, removing the faulty regex-based date collapsing logic. Now, the first event pill correctly shows the full date and time, and subsequent pills show only the time.
+
+## To-Dos / Next Steps:
+
+*   **URGENT:** Fix the `AllergyIntolerance` and Patient Identifier rendering bugs.
+*   Conduct a full audit of the data pipeline to identify and fix data loss points.
+*   Add automated regression tests for vitals chart rendering and OPCP pill formatting.
+*   Rename UI components for consistency (e.g., `right-input` to `right-output`).
+*   **Global GEMINI.md Update:** Remember to manually update the global `/.gemini/GEMINI.md` with relevant general context and learning from this project.
+*   **CLAUDE.md Update:** Cannot directly update `CLAUDE.md` as it is outside the project directory. User needs to manually update or change working directory.
