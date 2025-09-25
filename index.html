@@ -5,7 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NFC IPS Viewer</title>
     <script>
-        window.location.href = 'nfc/ips/home.html';
+        (function() {
+            // Target path within the repo
+            const targetPath = "/NFC-IPS/nfc/ips/home.html";
+
+            // Only redirect if we're not already at the target
+            if (window.location.pathname !== targetPath) {
+                window.location.replace(targetPath);
+            }
+        })();
     </script>
 </head>
 <body>
