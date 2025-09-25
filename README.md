@@ -54,6 +54,17 @@ This project is intended for concept development, refinement, and distribution v
 
 For information specific to the deployed GitHub Pages branch, see its [README.md](https://github.com/ajdench/NFC-IPS/tree/gh-pages). The `Dev2` branch is used for active development and is deployed to its own `gh-pages2` branch.
 
+### GitHub Pages build & deploy overview
+
+The Pages site is produced automatically from the development branches (`mainDev`, `Test_Dev1_xxx`, etc.) using the workflow files in `.github/workflows/`.
+
+1. **Trigger:** A push to a development branch starts the paired `*_Pages` workflow (for example `Test_Dev1_eafde10` → `Test_Dev1_eafde10_Pages`).
+2. **Install:** The workflow checks out the branch, installs Node.js 20, and runs `npm ci` (falling back to `npm install`).
+3. **Build:** `npm run build` executes `scripts/build.mjs`, which now logs every file copy and prints a summary showing the total directories processed and files written. The script also verifies that both `/index.html` and `/nfc/ips/home.html` exist in the output.
+4. **Deploy:** The compiled `./build` directory is pushed to the matching Pages branch using `peaceiris/actions-gh-pages` with the repository’s `GITHUB_TOKEN`.
+
+You can monitor the workflow by visiting **GitHub → Actions → [workflow name]** and opening the latest run. The log includes the build script output so you can confirm exactly which files were deployed.
+
 ## Usage
 
 To use this viewer, you will need an NFC tag encoded with a URI that includes your Base64 encoded IPS JSON. For example:

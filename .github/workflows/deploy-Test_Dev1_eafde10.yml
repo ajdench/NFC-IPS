@@ -25,7 +25,7 @@ jobs:
         run: npm ci || npm install
 
       - name: Run build script
-        run: node scripts/build.mjs
+        run: npm run build
 
       - name: Deploy to Test_Dev1_eafde10_Pages
         uses: peaceiris/actions-gh-pages@v4
