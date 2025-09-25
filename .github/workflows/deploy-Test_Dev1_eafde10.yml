@@ -5,6 +5,9 @@ on:
     branches:
       - Test_Dev1_eafde10
 
+permissions:
+  contents: write
+
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
