@@ -10,6 +10,7 @@ const buildDir = path.join(rootDir, 'build');
 
 const FILES_TO_COPY = [
     { src: 'index.html', dest: 'index.html' },
+    { src: 'index.html', dest: 'nfc/ips/home.html' },   // 👈 added: copy index.html to nested path
     { src: 'style.css', dest: 'style.css' },
     { src: 'script.js', dest: 'script.js' },
     { src: 'README-gh-pages.md', dest: 'README.md' },
