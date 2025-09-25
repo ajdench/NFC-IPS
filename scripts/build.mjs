@@ -10,7 +10,6 @@ const buildDir = path.join(rootDir, 'build');
 
 const FILES_TO_COPY = [
     { src: 'index.html', dest: 'index.html' },
-    { src: 'index.html', dest: 'nfc/ips/home.html' },   // 👈 added: copy index.html to nested path
     { src: 'style.css', dest: 'style.css' },
     { src: 'script.js', dest: 'script.js' },
     { src: 'README-gh-pages.md', dest: 'README.md' },
@@ -29,6 +28,7 @@ async function copyStaticFiles() {
         const destPath = path.join(buildDir, dest);
         await fs.mkdir(path.dirname(destPath), { recursive: true });
         await fs.copyFile(srcPath, destPath);
+        console.log(`Copied ${src} → ${dest}`);
     }
 }
 
@@ -36,6 +36,17 @@ async function copyResources() {
     const resourcesSrc = path.join(rootDir, 'resources');
     const resourcesDest = path.join(buildDir, 'resources');
     await fs.cp(resourcesSrc, resourcesDest, { recursive: true });
+    console.log(`Copied resources/ → resources/`);
+}
+
+// ✅ Ensure /nfc/ips/home.html exists by duplicating index.html
+async function ensureNestedHome() {
+    const srcPath = path.join(rootDir, 'index.html');
+    const nestedDest = path.join(buildDir, 'nfc/ips/home.html');
+
+    await fs.mkdir(path.dirname(nestedDest), { recursive: true });
+    await fs.copyFile(srcPath, nestedDest);
+    console.log(`Created nested home at nfc/ips/home.html`);
 }
 
 async function main() {
@@ -49,9 +60,12 @@ async function main() {
         console.log('Copying resources...');
         await copyResources();
 
-        console.log('Build directory ready at', buildDir);
+        console.log('Ensuring nested home.html exists...');
+        await ensureNestedHome();
+
+        console.log('✅ Build directory ready at', buildDir);
     } catch (error) {
-        console.error('Build failed:', error);
+        console.error('❌ Build failed:', error);
         process.exit(1);
     }
 }
