@@ -1,0 +1,33 @@
+name: Deploy Test_Dev1_eafde10 to GitHub Pages
+
+on:
+  push:
+    branches:
+      - Test_Dev1_eafde10
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Deploy to Test_Dev1_eafde10_Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist   # ⬅️ Change if your build output is in /build or /docs
+          publish_branch: Test_Dev1_eafde10_Pages
+          
