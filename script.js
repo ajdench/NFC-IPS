@@ -54,7 +54,7 @@ import {
 const DUAL_TITLE_CONFIG = {
     enabled: true,
     transparency: 0.5,
-    enabledPanes: new Set(['patient', 'clinicalSummary']) // Currently enabled for Patient Demographics and Clinical Summary
+    enabledPanes: new Set(['patient', 'clinicalSummary', 'poi', 'casevac', 'axp', 'medevac', 'r1', 'fwdTacevac', 'r2', 'rearTacevac', 'r3']) // All panes enabled
 };
 
 /**
@@ -3868,21 +3868,27 @@ function createInfoBoxes() {
         const title = document.createElement('h2');
         // title.className = config.specialClass ? 'poi-title' : 'info-title';
         title.className = 'info-title';
-        title.dataset.baseTitle = config.title;
+
+        const fullTitle = config.title.replace(/\s*\(([^)]+)\)/, '');
+        const shortTitleMatch = config.title.match(/\(([^)]+)\)/);
+        const shortTitle = shortTitleMatch ? shortTitleMatch[1] : fullTitle;
+
+        title.dataset.baseTitle = fullTitle;
+        title.dataset.shortTitle = shortTitle;
 
         // Check if dual title display is enabled for this pane
         if (DUAL_TITLE_CONFIG.enabled && DUAL_TITLE_CONFIG.enabledPanes.has(config.dataKey)) {
             title.classList.add('dual-title');
 
-            // Left title (main title)
+            // Left title (short title for OPCP panes, full title for Demographics/Clinical Summary)
             const leftTitle = document.createElement('span');
             leftTitle.className = 'left-title';
-            leftTitle.textContent = config.title;
+            leftTitle.textContent = shortTitle;
 
-            // Right title (duplicate with transparency)
+            // Right title (always full title with transparency)
             const rightTitle = document.createElement('span');
             rightTitle.className = 'right-title';
-            rightTitle.textContent = config.title;
+            rightTitle.textContent = fullTitle;
             rightTitle.style.opacity = DUAL_TITLE_CONFIG.transparency;
 
             title.appendChild(leftTitle);
@@ -3902,7 +3908,11 @@ function setTitleAvailability(titleElement, hasData) {
 
     const baseTitle = titleElement.dataset.baseTitle
         || titleElement.textContent.split('•')[0].trim();
+    const shortTitle = titleElement.dataset.shortTitle
+        || titleElement.dataset.baseTitle
+        || titleElement.textContent.split('•')[0].trim();
     titleElement.dataset.baseTitle = baseTitle;
+    titleElement.dataset.shortTitle = shortTitle;
 
     const container = titleElement.parentElement;
     const isDualTitle = titleElement.classList.contains('dual-title');
@@ -3911,10 +3921,12 @@ function setTitleAvailability(titleElement, hasData) {
     titleElement.innerHTML = '';
 
     if (isDualTitle && hasData) {
+        titleElement.classList.remove('dual-title-empty');
+
         // Rebuild dual title structure for populated state
         const leftTitle = document.createElement('span');
         leftTitle.className = 'left-title';
-        leftTitle.textContent = baseTitle;
+        leftTitle.textContent = shortTitle;
 
         const rightTitle = document.createElement('span');
         rightTitle.className = 'right-title';
@@ -3924,10 +3936,12 @@ function setTitleAvailability(titleElement, hasData) {
         titleElement.appendChild(leftTitle);
         titleElement.appendChild(rightTitle);
     } else if (isDualTitle && !hasData) {
-        // Dual title empty state: left title + empty text + right title
+        titleElement.classList.add('dual-title-empty');
+
+        // Preserve dual-title layout while centering empty-state messaging
         const leftTitle = document.createElement('span');
-        leftTitle.className = 'base-title';
-        leftTitle.textContent = baseTitle;
+        leftTitle.className = 'left-title';
+        leftTitle.textContent = shortTitle;
 
         const emptySpan = document.createElement('span');
         emptySpan.className = 'empty-text';
@@ -3942,6 +3956,8 @@ function setTitleAvailability(titleElement, hasData) {
         titleElement.appendChild(emptySpan);
         titleElement.appendChild(rightTitle);
     } else {
+        titleElement.classList.remove('dual-title-empty');
+
         // Standard single title behavior
         const baseSpan = document.createElement('span');
         baseSpan.className = 'base-title';

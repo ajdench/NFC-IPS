@@ -172,8 +172,14 @@ body {
     text-align: center;
     font-style: italic;
     font-weight: normal;
-    opacity: 0.85;
+    opacity: var(--dual-title-opacity, 0.5);
     white-space: nowrap;
+    display: flex;
+    justify-content: center;
+}
+
+.info-title .empty-text > span {
+    text-align: left;
 }
 
 .info-title .empty-spacer {
@@ -195,6 +201,28 @@ body {
 .info-title.dual-title {
     justify-content: space-between;
 }
+
+.info-title.dual-title.dual-title-empty {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    column-gap: calc(var(--standard-padding) / 2);
+}
+
+.info-title.dual-title.dual-title-empty .left-title {
+    justify-self: start;
+}
+
+.info-title.dual-title.dual-title-empty .empty-text {
+    justify-self: center;
+    margin-left: 0;
+}
+
+.info-title.dual-title.dual-title-empty .right-title {
+    justify-self: end;
+}
+
+
 
 .info-title .right-title {
     flex: 0 0 auto;
