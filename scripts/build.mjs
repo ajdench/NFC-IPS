@@ -37,6 +37,12 @@ async function copyResources() {
     await fs.cp(resourcesSrc, resourcesDest, { recursive: true });
 }
 
+async function copyNfcDirectory() {
+    const nfcSrc = path.join(rootDir, 'nfc');
+    const nfcDest = path.join(buildDir, 'nfc');
+    await fs.cp(nfcSrc, nfcDest, { recursive: true });
+}
+
 async function main() {
     try {
         console.log('Cleaning build directory...');
@@ -47,6 +53,9 @@ async function main() {
 
         console.log('Copying resources...');
         await copyResources();
+
+        console.log('Copying nfc directory...');
+        await copyNfcDirectory();
 
         console.log('Build directory ready at', buildDir);
     } catch (error) {
