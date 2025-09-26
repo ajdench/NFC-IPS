@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFC IPS Viewer</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <section id="info-boxes-container">
+        <div class="info-box-wrapper">
+            <div class="info-box grey" data-key="patient">
+                <h2 class="info-title">Patient Demographics</h2>
+            </div>
+        </div>
+        <div class="info-box-wrapper">
+            <div class="info-box khaki" data-key="clinicalSummary">
+                <h2 class="info-title">Clinical Summary</h2>
+            </div>
+        </div>
+        <div class="info-box-wrapper">
+            <div class="info-box red" data-key="poi">
+                <h2 class="info-title">Point of Injury and/or Illness (POI)</h2>
+            </div>
+        </div>
+        <div class="info-box-wrapper">
+            <div class="info-box yellow" data-key="casevac">
+                <h2 class="info-title">Casualty Evacuation (CASEVAC)</h2>
+            </div>
+        </div>
+        <div class="info-box-wrapper">
+            <div class="info-box axp" data-key="axp">
+                <h2 class="info-title">Ambulance Exchange Point (AXP)</h2>
+            </div>
+        </div>
+        <div class="info-box-wrapper">
+            <div class="info-box orange" data-key="medevac">
+                <h2 class="info-title">Medical Evacuation (MEDEVAC)</h2>
+            </div>
+        </div>
+        <div class="info-box-wrapper">
+            <div class="info-box green" data-key="r1">
+                <h2 class="info-title">Role 1 Care (R1)</h2>
+            </div>
+        </div>
+        <div class="info-box-wrapper">
+            <div class="info-box fwd-tacevac" data-key="fwdTacevac">
+                <h2 class="info-title">Forward Tactical Evacuation (Fwd TACEVAC)</h2>
+            </div>
+        </div>
+        <div class="info-box-wrapper">
+            <div class="info-box blue" data-key="r2">
+                <h2 class="info-title">Role 2 Care (R2)</h2>
+            </div>
+        </div>
+        <div class="info-box-wrapper">
+            <div class="info-box rear-tacevac" data-key="rearTacevac">
+                <h2 class="info-title">Rear Tactical Evacuation (Rear TACEVAC)</h2>
+            </div>
+        </div>
+        <div class="info-box-wrapper">
+            <div class="info-box purple" data-key="r3">
+                <h2 class="info-title">Role 3 Care (R3)</h2>
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <div id="message-display" aria-live="polite"></div>
+        <div class="main-content-wrapper">
+        <section class="container vitals-container">
+            <h2 class="info-title">Vitals</h2>
+            <div class="vitals-content">
+                <canvas id="vitals-chart" aria-label="Vitals trend chart"></canvas>
+                <div id="vitals-empty" class="vitals-empty" role="status">No vitals available</div>
+            </div>
+        </section>
+
+        <section class="container payload-container">
+            <header class="payload-header">
+                <h2 class="info-title clickable-title" id="payload-title">Payload</h2>
+                <!-- <div class="payload-controls-row">
+                    <div class="payload-toggle-wrapper">
+                        <label class="switch">
+                            <input type="checkbox" id="payload-toggle" role="switch">
+                            <span class="slider round">
+                                <span class="slider-label left">1</span>
+                                <span class="slider-label right">2</span>
+                            </span>
+                        </label>
+                    </div>
+                </div> -->
+                <div id="toast-container" class="toast-container"></div>
+            </header>
+            <div class="payload-content">
+                <div class="payload-pane left-pane">
+                    <div class="pane-header">
+                        <h3 id="left-pane-title" class="pane-title clickable-title" data-mode="fragment">URL Fragment</h3>
+                        <span id="left-char-count" class="char-count">0 characters</span>
+                        <div class="preset-buttons">
+                            <button id="clear-left" class="preset-button">Clear</button>
+                            <button id="preset-1" class="preset-button">#1</button>
+                            <button id="preset-2" class="preset-button">#2</button>
+                            <button id="preset-3" class="preset-button">#3</button>
+                        </div>
+                        <button id="action-button" class="pane-button decode-mode">Decode</button>
+                    </div>
+                    <div id="left-input" contenteditable="true" placeholder="Paste Base64 encoded fragment here..."></div>
+                </div>
+                <div class="payload-pane right-pane">
+                    <div class="pane-header">
+                        <button id="parse-button" class="pane-button">Parse</button>
+                        <h3 id="right-pane-title" class="pane-title clickable-title" data-format="fhir">IPS FHIR JSON</h3>
+                        <span id="right-char-count" class="char-count">0 characters</span>
+                    </div>
+                    <div id="right-input" contenteditable="true" placeholder="Output will appear here..."></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="../../resources/vendor/chart.umd.min.js"></script>
+    <!-- Optional fallback mini-chart implementation (used if Chart.js is unavailable) -->
+    <script src="../../resources/vendor/vitals-chart-mini.js"></script>
+    <script src="../../console-logger.js"></script>
+    <script src="../../resources/vendor/pako.min.js"></script>
+    <script src="../../resources/vendor/protobuf.min.js"></script>
+    <script type="module" src="../../script.js"></script>
+</body>
+</html>

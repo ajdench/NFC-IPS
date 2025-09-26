@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFC IPS Viewer</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <main>
+        <div class="home-container">
+            <h1 id="home-title" class="clickable-title">NFC IPS Viewer</h1>
+        </div>
+    </main>
+
+    <style>
+        .home-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-color-page);
+        }
+
+        #home-title {
+            font-size: calc(var(--font-size-uniform) * 3);
+            color: black;
+            text-align: center;
+            margin: 0;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        #home-title:hover {
+            color: #2196F3;
+        }
+    </style>
+
+    <script>
+        document.getElementById('home-title').addEventListener('click', () => {
+            window.location.href = 'viewer.html';
+        });
+    </script>
+</body>
+</html>
