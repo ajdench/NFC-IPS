@@ -7,6 +7,7 @@
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
+    "deploy:ae56b83pages": "gh-pages -d build -b ae56b83pages",
     "build": "node scripts/build.mjs",
     "test": "node scripts/test-utils.mjs",
     "test:utils": "node scripts/test-utils.mjs",
