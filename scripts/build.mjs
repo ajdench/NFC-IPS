@@ -14,7 +14,8 @@ const FILES_TO_COPY = [
     { src: 'script.js', dest: 'script.js' },
     { src: 'README-gh-pages.md', dest: 'README.md' },
     { src: 'payload-1.json', dest: 'payload-1.json' },
-    { src: 'payload-2.json', dest: 'payload-2.json' }
+    { src: 'payload-2.json', dest: 'payload-2.json' },
+    { src: 'ips-fhir-json-1.json', dest: 'ips-fhir-json-1.json' }
 ];
 
 async function ensureCleanBuildDir() {
