@@ -203,17 +203,6 @@ body {
     white-space: nowrap;
 }
 
-/* Ensure empty text is truly centered in dual title layout */
-.info-title.dual-title.is-empty {
-    position: relative;
-}
-
-.info-title.dual-title.is-empty .empty-text {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    flex: none;
-}
 
 .patient-details-container {
     display: flex;
