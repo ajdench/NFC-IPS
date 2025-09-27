@@ -368,21 +368,36 @@ function normalizeRouteDisplay(routeValue) {
     return trimmed.replace(/\s*route$/i, '');
 }
 
+// Global debug control - set to false to disable all debug logging
+window.DEBUG_ENABLED = false;
+
 /**
  * Clean debug logging for MIST date display analysis
+ * Note: File logging disabled, console output controlled by DEBUG_ENABLED
  */
 function debugMIST(message, data = null) {
-    const timestamp = new Date().toISOString();
-    const logEntry = `${timestamp}: ${message}`;
-    const fullEntry = data ? `${logEntry}\n${JSON.stringify(data, null, 2)}\n---\n` : `${logEntry}\n`;
+    if (!window.DEBUG_ENABLED) return;
 
-    if (!window.mistDebugLog) window.mistDebugLog = '';
-    window.mistDebugLog += fullEntry;
+    // Auto-download logging disabled - only console output when enabled
     console.log('🔍 MIST:', message, data);
+
+    // Keep the file logging logic for future use but disable accumulation
+    // const timestamp = new Date().toISOString();
+    // const logEntry = `${timestamp}: ${message}`;
+    // const fullEntry = data ? `${logEntry}\n${JSON.stringify(data, null, 2)}\n---\n` : `${logEntry}\n`;
+    // if (!window.mistDebugLog) window.mistDebugLog = '';
+    // window.mistDebugLog += fullEntry;
 }
 
+/**
+ * Export debug log to file (manual use only)
+ * Note: Auto-download disabled. Enable with window.DEBUG_ENABLED = true first
+ */
 function exportMISTDebugLog() {
-    if (!window.mistDebugLog) return;
+    if (!window.mistDebugLog) {
+        console.log('No debug log available. Enable with window.DEBUG_ENABLED = true first.');
+        return;
+    }
     const blob = new Blob([window.mistDebugLog], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -4226,99 +4241,6 @@ function renderStageSections(stageSections = {}) {
     });
 }
 
-/**
- * Create custom right-aligned legend for vitals chart
- * Orders legend items vertically by last data point Y-value with minimum spacing
- */
-function createCustomVitalsLegend(canvas, datasets, chartInstance) {
-    // Remove any existing custom legend
-    const existingLegend = canvas.parentElement.querySelector('.custom-vitals-legend');
-    if (existingLegend) {
-        existingLegend.remove();
-    }
-
-    if (!datasets || datasets.length === 0 || !chartInstance) return;
-
-    // Calculate last point Y-values for each dataset
-    const legendItems = datasets.map(dataset => {
-        const data = dataset.data || [];
-        const lastPoint = data[data.length - 1];
-        const lastY = lastPoint ? lastPoint.y : 0;
-
-        return {
-            label: dataset.label,
-            color: dataset.borderColor || dataset.backgroundColor,
-            lastY: lastY,
-            dataset: dataset
-        };
-    });
-
-    // Sort by last Y-value (top to bottom on chart = top to bottom in legend)
-    legendItems.sort((a, b) => b.lastY - a.lastY);
-
-    // Create legend container
-    const legendContainer = document.createElement('div');
-    legendContainer.className = 'custom-vitals-legend';
-    legendContainer.style.cssText = `
-        position: absolute;
-        right: var(--standard-padding);
-        top: var(--standard-padding);
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        pointer-events: none;
-        z-index: 10;
-    `;
-
-    // Create legend items with minimum spacing
-    const minSpacing = 12; // Minimum pixels between items
-    legendItems.forEach((item, index) => {
-        const legendItem = document.createElement('div');
-        legendItem.className = 'legend-item';
-        legendItem.style.cssText = `
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 10px;
-            color: #333;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 2px 6px;
-            border-radius: 3px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        `;
-
-        // Color indicator
-        const colorBox = document.createElement('div');
-        colorBox.style.cssText = `
-            width: 12px;
-            height: 2px;
-            background-color: ${item.color};
-            border-radius: 1px;
-            flex-shrink: 0;
-        `;
-
-        // Label text
-        const labelText = document.createElement('span');
-        labelText.textContent = item.label;
-        labelText.style.cssText = `
-            white-space: nowrap;
-            font-weight: 500;
-        `;
-
-        legendItem.appendChild(colorBox);
-        legendItem.appendChild(labelText);
-        legendContainer.appendChild(legendItem);
-    });
-
-    // Position legend relative to canvas parent
-    const canvasParent = canvas.parentElement;
-    canvasParent.style.position = 'relative';
-    canvasParent.appendChild(legendContainer);
-
-    // Adjust canvas width to accommodate legend
-    const legendWidth = legendContainer.offsetWidth;
-    canvas.style.marginRight = `${legendWidth + 20}px`;
-}
 
 function renderVitalsChart(viewModel) {
     const canvas = document.getElementById('vitals-chart');
@@ -4499,7 +4421,41 @@ function renderVitalsChart(viewModel) {
                 },
                 plugins: {
                     legend: {
-                        display: false // We'll create a custom legend
+                        position: 'right',
+                        align: 'middle',
+                        labels: {
+                            boxWidth: 12,
+                            boxHeight: 2,
+                            font: {
+                                size: 10,
+                                weight: 500
+                            },
+                            padding: 8,
+                            generateLabels: function(chart) {
+                                const datasets = chart.data.datasets;
+
+                                // Create legend items with last Y-value for sorting
+                                const legendItems = datasets.map((dataset, datasetIndex) => {
+                                    const data = dataset.data || [];
+                                    const lastPoint = data[data.length - 1];
+                                    const lastY = lastPoint ? lastPoint.y : 0;
+
+                                    return {
+                                        text: dataset.label,
+                                        fillStyle: dataset.borderColor || dataset.backgroundColor,
+                                        strokeStyle: dataset.borderColor || dataset.backgroundColor,
+                                        datasetIndex: datasetIndex,
+                                        hidden: !chart.isDatasetVisible(datasetIndex),
+                                        lastY: lastY // Custom property for sorting
+                                    };
+                                });
+
+                                // Sort by last Y-value (highest to lowest for top-to-bottom ordering)
+                                legendItems.sort((a, b) => b.lastY - a.lastY);
+
+                                return legendItems;
+                            }
+                        }
                     },
                     tooltip: {
                         callbacks: {
@@ -4527,9 +4483,6 @@ function renderVitalsChart(viewModel) {
                 }
             }
         });
-
-        // Create custom right-aligned legend with Y-position ordering
-        createCustomVitalsLegend(canvas, datasets, vitalsChartInstance);
 
     } else if (typeof window !== 'undefined' && window.VitalsMiniChart) {
         vitalsChartLibrary = 'mini';

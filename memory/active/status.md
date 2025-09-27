@@ -131,3 +131,6 @@
 
 ### Update: 2025-09-26 23:04
 - Auto-JJ implementation complete - automatic Jujitsu version control system with file monitoring, build hooks, and professional commit messages
+
+### Update: 2025-09-26 23:15
+- Auto-JJ dev: Completed Patient Demographics fixes and Chart.js legend redesign: removed extra bottom padding, added Service/NHS number pills, implemented right-aligned legend with Y-position ordering and dynamic chart width
