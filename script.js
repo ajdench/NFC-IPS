@@ -4085,9 +4085,15 @@ function createPatientDetailsElement(patientData, parentColorClass) {
     detailsContainer.classList.add('patient-details-container');
 
     const name = patientData.name?.[0] || {};
-    const serviceNumber = patientData.identifier?.find(id => id.type?.coding?.some(c => c.code === 'MIL'))?.value;
+    const serviceNumber = patientData.identifier?.find(id =>
+        id.type?.coding?.some(c => c.code === 'MIL') ||
+        id.type?.text === 'Service Number'
+    )?.value;
     const nhsNumber = formatNHSNumber(
-        patientData.identifier?.find(id => id.type?.text === 'NHS Number')?.value
+        patientData.identifier?.find(id =>
+            id.type?.coding?.some(c => c.code === 'NH') ||
+            id.type?.text === 'NHS Number'
+        )?.value
     );
 
     console.log('serviceNumber found:', serviceNumber);
@@ -4218,6 +4224,100 @@ function renderStageSections(stageSections = {}) {
 
         stageBox.appendChild(container);
     });
+}
+
+/**
+ * Create custom right-aligned legend for vitals chart
+ * Orders legend items vertically by last data point Y-value with minimum spacing
+ */
+function createCustomVitalsLegend(canvas, datasets, chartInstance) {
+    // Remove any existing custom legend
+    const existingLegend = canvas.parentElement.querySelector('.custom-vitals-legend');
+    if (existingLegend) {
+        existingLegend.remove();
+    }
+
+    if (!datasets || datasets.length === 0 || !chartInstance) return;
+
+    // Calculate last point Y-values for each dataset
+    const legendItems = datasets.map(dataset => {
+        const data = dataset.data || [];
+        const lastPoint = data[data.length - 1];
+        const lastY = lastPoint ? lastPoint.y : 0;
+
+        return {
+            label: dataset.label,
+            color: dataset.borderColor || dataset.backgroundColor,
+            lastY: lastY,
+            dataset: dataset
+        };
+    });
+
+    // Sort by last Y-value (top to bottom on chart = top to bottom in legend)
+    legendItems.sort((a, b) => b.lastY - a.lastY);
+
+    // Create legend container
+    const legendContainer = document.createElement('div');
+    legendContainer.className = 'custom-vitals-legend';
+    legendContainer.style.cssText = `
+        position: absolute;
+        right: var(--standard-padding);
+        top: var(--standard-padding);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        pointer-events: none;
+        z-index: 10;
+    `;
+
+    // Create legend items with minimum spacing
+    const minSpacing = 12; // Minimum pixels between items
+    legendItems.forEach((item, index) => {
+        const legendItem = document.createElement('div');
+        legendItem.className = 'legend-item';
+        legendItem.style.cssText = `
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            color: #333;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2px 6px;
+            border-radius: 3px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        `;
+
+        // Color indicator
+        const colorBox = document.createElement('div');
+        colorBox.style.cssText = `
+            width: 12px;
+            height: 2px;
+            background-color: ${item.color};
+            border-radius: 1px;
+            flex-shrink: 0;
+        `;
+
+        // Label text
+        const labelText = document.createElement('span');
+        labelText.textContent = item.label;
+        labelText.style.cssText = `
+            white-space: nowrap;
+            font-weight: 500;
+        `;
+
+        legendItem.appendChild(colorBox);
+        legendItem.appendChild(labelText);
+        legendContainer.appendChild(legendItem);
+    });
+
+    // Position legend relative to canvas parent
+    const canvasParent = canvas.parentElement;
+    canvasParent.style.position = 'relative';
+    canvasParent.appendChild(legendContainer);
+
+    // Adjust canvas width to accommodate legend
+    const legendWidth = legendContainer.offsetWidth;
+    canvas.style.marginRight = `${legendWidth + 20}px`;
 }
 
 function renderVitalsChart(viewModel) {
@@ -4399,15 +4499,7 @@ function renderVitalsChart(viewModel) {
                 },
                 plugins: {
                     legend: {
-                        position: 'bottom',
-                        labels: {
-                            usePointStyle: false,
-                            boxWidth: 6,
-                            boxHeight: 6,
-                            font: {
-                                size: Math.max(9, Math.floor(parseFloat(getComputedStyle(document.documentElement).fontSize || '16') * 0.65))
-                            }
-                        }
+                        display: false // We'll create a custom legend
                     },
                     tooltip: {
                         callbacks: {
@@ -4435,6 +4527,10 @@ function renderVitalsChart(viewModel) {
                 }
             }
         });
+
+        // Create custom right-aligned legend with Y-position ordering
+        createCustomVitalsLegend(canvas, datasets, vitalsChartInstance);
+
     } else if (typeof window !== 'undefined' && window.VitalsMiniChart) {
         vitalsChartLibrary = 'mini';
         vitalsChartInstance = new window.VitalsMiniChart(ctx, {

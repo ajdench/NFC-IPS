@@ -426,6 +426,11 @@ body {
     margin-bottom: 0;
 }
 
+/* Fix Patient Demographics bottom spacing to match other OPCP cards */
+.info-box .info-title {
+    margin-bottom: 0;
+}
+
 .vitals-content {
     background-color: var(--bg-color-detail-value);
     border-radius: 8px;
