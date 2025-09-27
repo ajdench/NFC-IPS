@@ -137,3 +137,14 @@
 
 ### Update: 2025-09-27 09:57
 - Auto-JJ dev: Disabled auto-generated debug logs: added DEBUG_ENABLED toggle, disabled MIST debug file accumulation, kept export function for manual use - console logging now minimal and controlled
+
+### Update: 2025-09-27 10:00
+- Auto-JJ fix: Disabled console-logger auto-downloads: modified resolveEnablement to return false by default, preventing automatic log file downloads on localhost - can be re-enabled with ?consoleLogs=on or window.NfcIpsLogging.enable()
+
+### Update: 2025-09-27 10:03
+- Comprehensive memory update: Auto-JJ system implemented, Chart.js legend redesigned with native positioning, debug logging systems disabled, outstanding issues documented for Patient Demographics padding and MIL/NH identifier pipeline
+
+### Update: 2025-09-27 11:09
+- Fixed vitals chart legend positioning: reduced gap to half standard padding, aligned legend items to right edge of container - legend now conforms to chart pane padding boundaries
+
+### Update: 2025-09-27 11:23

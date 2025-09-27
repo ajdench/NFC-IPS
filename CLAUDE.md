@@ -102,91 +102,38 @@ key_files:
   - payload-2.json: Second demo payload data
 ```
 
-## 🚨 CRITICAL BUG DOCUMENTATION - Events Date Display Issue
+## 🚀 RECENT DEVELOPMENT SUMMARY
 
-### Problem Summary
-Events pills in MIST chronological display fail to show dates on the oldest (first: oldest > newest; left > right) Event pills in each OPCP pane, despite working correctly for Vitals and Conditions.
+### Auto-JJ Version Control System ✅ IMPLEMENTED - 2025-09-26
+- **Automatic Jujitsu commits**: Every code change phase gets professional commit messages
+- **File monitoring**: Real-time detection with smart debouncing (2s delay)
+- **Build integration**: Commits triggered after successful builds/tests
+- **Memory integration**: Updates project memory system automatically
+- **Usage**: `npm run dev:auto-jj` for monitoring + dev server
 
-### Bug Details
-- **Issue**: First Event pill per OPCP stage shows time-only instead of full date
-- **Expected**: "15 Jan 24 16:00" format on first pill, "16:00" on subsequent pills
-- **Actual**: All Event pills show time-only format
-- **Scope**: Events data type only; Vitals and Conditions work correctly
-- **Location**: Presentation layer rendering logic (script.js:~4064)
+### Chart.js Legend Redesign ✅ COMPLETED - 2025-09-27
+- **Native positioning**: Replaced custom DOM legend with Chart.js native `position: 'right'`, `align: 'middle'`
+- **Y-value sorting**: Custom `generateLabels` sorts by last data point Y-value (highest to lowest)
+- **Professional styling**: 10px font, 2px line indicators, 8px padding
+- **Dynamic layout**: Chart automatically adjusts width for legend space
 
-### Technical Investigation
-#### Data Layer Analysis ✅ WORKING
-- Events timestamps correctly extracted via `extractTimestamp()` helper
-- Events properly marked with `isFirstDisplayedInRow=true`
-- Events contain valid `rawData.dateTime` fields
-- Debug logs confirm: `dateDisplay: "15 Jan 24 16:00"` and `isFirstDisplayedInRow=true`
+### Debug Logging System ✅ DISABLED - 2025-09-27
+- **Global toggle**: `window.DEBUG_ENABLED = false` controls all debug output
+- **Console-logger disabled**: No more automatic log file downloads on localhost
+- **Manual control**: Can re-enable with `?consoleLogs=on` or `window.NfcIpsLogging.enable()`
+- **Export functions**: Available for manual use (`window.exportMISTDebugLog()`)
 
-#### Logic Layer Analysis ✅ WORKING
-- Chronological sorting functions correctly
-- `isFirstDisplayedInRow` marking logic works across all data types
-- Timestamp detection standardized with `extractTimestamp()` helper:
-```javascript
-function extractTimestamp(item) {
-    return item.time || item.onset || item.rawData?.dateTime || null;
-}
-```
+### Outstanding Issues 🔄 IN PROGRESS
+1. **Patient Demographics padding**: Double-gap below pills needs removal
+2. **MIL/NH identifiers**: Service Number and NHS Number pills not displaying (pipeline issue)
 
-#### Presentation Layer Analysis ❌ BROKEN
-- Issue located in `renderStageSections()` around line 4064
-- Regex pattern matching fails for Events date extraction
-- Pattern `\w+` too broad, changed to `\w{3}` for month abbreviations
-- Events differ from Conditions/Vitals in value formatting structure
+## 🚨 RESOLVED BUG - Events Date Display Issue
 
-### Failed Fix Attempts
+**Status**: RESOLVED - 2025-09-22
 
-#### Attempt 1: Timestamp Detection Enhancement
-```javascript
-// FAILED: Added rawData.dateTime support
-function extractTimestamp(item) {
-    return item.time || item.onset || item.rawData?.dateTime || null;
-}
-```
-**Result**: Logic layer working but UI still broken
-
-#### Attempt 2: Comprehensive Debugging
-```javascript
-// FAILED: Added extensive console.log debugging
-console.log('Events pill creation:', {
-    dateDisplay: pill.dateDisplay,
-    isFirstDisplayedInRow: pill.isFirstDisplayedInRow
-});
-```
-**Result**: Confirmed logic working, polluted codebase, caused syntax errors
-
-#### Attempt 3: Regex Pattern Precision
-```javascript
-// FAILED: Changed from \w+ to \w{3}
-const timeMatch = entry.value.match(/(\d{1,2} \w{3} \d{2} \d{2}:\d{2})/);
-```
-**Result**: Still not working, may need different approach
-
-#### Attempt 4: Events-Specific Treatment Logic
-```javascript
-// FAILED: Added special case for Events in Treatment sections
-if (stageName === 'Treatment' && entry.type === 'Events') {
-    // Special handling logic
-}
-```
-**Result**: Reverted due to breaking empty pane display
-
-### Code Pollution Issues
-- Multiple console.log statements added directly to production code
-- JavaScript syntax errors introduced during cleanup
-- Missing closing braces at line 4099
-- Empty pane display logic broken temporarily
-
-### Resolution
 - **Root Cause**: Presentation layer rewrote pill values via regex, ignoring `isFirstDisplayedInRow`
 - **Fix**: Renderer now uses normalized pill data directly; removed regex/date-collapsing logic
 - **Result**: First Events pill in each section shows full date/time; subsequent pills show time-only
-- **Follow-up**: Maintain pill formatting in normalization layer; renderer stays dumb
-
-**Status**: RESOLVED - 2025-09-22
 
 ## 🎯 Operating Principles
 

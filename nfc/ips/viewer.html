@@ -71,8 +71,13 @@
         <section class="container vitals-container">
             <h2 class="info-title">Vitals</h2>
             <div class="vitals-content">
-                <canvas id="vitals-chart" aria-label="Vitals trend chart"></canvas>
-                <div id="vitals-empty" class="vitals-empty" role="status">No vitals available</div>
+                <div class="vitals-chart-wrapper">
+                    <canvas id="vitals-chart" aria-label="Vitals trend chart"></canvas>
+                    <div id="vitals-empty" class="vitals-empty" role="status">No vitals available</div>
+                </div>
+                <div class="vitals-legend-wrapper" id="vitals-legend-wrapper">
+                    <!-- Legend items positioned here -->
+                </div>
             </div>
         </section>
 

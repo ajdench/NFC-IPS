@@ -29,7 +29,8 @@ import {
     DEMO_PAYLOADS,
     RESOURCES,
     FHIR_EXTENSIONS,
-    FHIR_PROFILES
+    FHIR_PROFILES,
+    CARE_STAGE_COUNT
 } from './config/constants.js';
 import {
     normaliseBase64,
@@ -116,6 +117,15 @@ function destroyVitalsChart() {
         vitalsChartInstance.destroy();
     }
     vitalsChartInstance = null;
+
+    // Clean up positioned legend
+    const legendWrapper = document.getElementById('vitals-legend-wrapper');
+    if (legendWrapper) {
+        legendWrapper.innerHTML = '';
+        legendWrapper.style.height = '';
+        legendWrapper.style.marginTop = '';
+        legendWrapper.style.marginBottom = '';
+    }
 }
 
 /**
@@ -4241,6 +4251,59 @@ function renderStageSections(stageSections = {}) {
     });
 }
 
+function createPositionedLegend(chartInstance, datasets) {
+    const legendWrapper = document.getElementById('vitals-legend-wrapper');
+    if (!legendWrapper) return;
+
+    // Clear existing legend items
+    legendWrapper.innerHTML = '';
+
+    const chartArea = chartInstance.chartArea;
+    const yScale = chartInstance.scales.y;
+
+    // Let flexbox handle the wrapper sizing naturally
+
+    // Create legend items positioned at last Y value
+    datasets.forEach(dataset => {
+        const data = dataset.data || [];
+        const lastPoint = data[data.length - 1];
+        if (!lastPoint) return;
+
+        const lastY = lastPoint.y;
+        const pixelY = yScale.getPixelForValue(lastY);
+        const relativeY = pixelY; // Use absolute position within the canvas
+
+        const legendItem = document.createElement('div');
+        legendItem.style.cssText = `
+            position: absolute;
+            top: ${relativeY}px;
+            left: 0;
+            display: flex;
+            align-items: center;
+            font-size: 10px;
+            font-weight: 500;
+            white-space: nowrap;
+            transform: translateY(-50%);
+        `;
+
+        const marker = document.createElement('div');
+        marker.style.cssText = `
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: ${dataset.borderColor};
+            margin-right: 6px;
+            flex-shrink: 0;
+        `;
+
+        const label = document.createElement('span');
+        label.textContent = dataset.label;
+
+        legendItem.appendChild(marker);
+        legendItem.appendChild(label);
+        legendWrapper.appendChild(legendItem);
+    });
+}
 
 function renderVitalsChart(viewModel) {
     const canvas = document.getElementById('vitals-chart');
@@ -4372,6 +4435,7 @@ function renderVitalsChart(viewModel) {
 
     const ctx = canvas.getContext('2d');
 
+
     if (typeof Chart !== 'undefined' && Chart !== null && typeof Chart === 'function' && typeof Chart.defaults !== 'undefined') {
         vitalsChartLibrary = 'chartjs';
         vitalsChartInstance = new Chart(ctx, {
@@ -4387,14 +4451,112 @@ function renderVitalsChart(viewModel) {
                 scales: {
                     x: {
                         type: 'linear',
-                        min: xMin,
-                        max: xMax,
                         ticks: {
                             callback(value) {
-                                return formatDateTime(new Date(Number(value)).toISOString());
+                                const date = new Date(Number(value));
+                                const time = date.toLocaleTimeString('en-GB', {
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                });
+                                const dateStr = date.toLocaleDateString('en-GB', {
+                                    day: 'numeric',
+                                    month: 'short',
+                                    year: '2-digit'
+                                });
+                                return [time, dateStr];
                             },
-                            autoSkip: false,
-                            maxTicksLimit: 8
+                            autoSkip: false
+                        },
+                        afterBuildTicks: function(scale) {
+                            const dataMin = new Date(scale.min);
+                            const dataMax = new Date(scale.max);
+
+                            console.log('Data range:', dataMin.toISOString(), 'to', dataMax.toISOString());
+
+                            // First tick: closest previous hh:00/30 to encompass first data point
+                            const firstTick = new Date(dataMin);
+                            console.log('Original dataMin minutes:', dataMin.getMinutes());
+
+                            // Round DOWN to nearest hh:00 or hh:30
+                            if (dataMin.getMinutes() >= 30) {
+                                firstTick.setMinutes(30);
+                                console.log('Set to :30');
+                            } else {
+                                firstTick.setMinutes(0);
+                                console.log('Set to :00');
+                            }
+                            firstTick.setSeconds(0);
+                            firstTick.setMilliseconds(0);
+
+                            console.log('First tick before check:', firstTick.toISOString());
+                            console.log('Data min time:', dataMin.getTime());
+                            console.log('First tick time:', firstTick.getTime());
+                            console.log('Is first tick > dataMin?', firstTick.getTime() > dataMin.getTime());
+
+                            // If rounded tick is still after data, go back 30 minutes
+                            if (firstTick.getTime() > dataMin.getTime()) {
+                                console.log('Going back 30 minutes');
+                                firstTick.setTime(firstTick.getTime() - (30 * 60 * 1000));
+                            }
+
+                            // Last tick: closest next hh:00/30 to encompass last data point
+                            const lastTick = new Date(dataMax);
+                            // Round UP to nearest hh:00 or hh:30
+                            if (dataMax.getMinutes() > 30) {
+                                lastTick.setHours(lastTick.getHours() + 1);
+                                lastTick.setMinutes(0);
+                            } else if (dataMax.getMinutes() > 0) {
+                                lastTick.setMinutes(30);
+                            } else {
+                                // Exactly on the hour, keep as is
+                                lastTick.setMinutes(0);
+                            }
+                            lastTick.setSeconds(0);
+                            lastTick.setMilliseconds(0);
+
+                            // If rounded tick is still before data, advance 30 minutes
+                            if (lastTick.getTime() < dataMax.getTime()) {
+                                lastTick.setTime(lastTick.getTime() + (30 * 60 * 1000));
+                            }
+
+                            console.log('Calculated boundaries:', firstTick.toISOString(), 'to', lastTick.toISOString());
+
+                            // Generate all possible hh:00/30 marks between first and last
+                            const allPossibleTicks = [];
+                            const current = new Date(firstTick);
+                            current.setMinutes(current.getMinutes() + 30); // Start after first tick
+
+                            while (current < lastTick) {
+                                allPossibleTicks.push(new Date(current));
+                                current.setMinutes(current.getMinutes() + 30);
+                            }
+
+                            // Select exactly 7 best intermediate ticks (CARE_STAGE_COUNT - 2)
+                            const targetCount = CARE_STAGE_COUNT - 2; // 7 intermediate ticks
+                            let selectedTicks = [];
+
+                            if (allPossibleTicks.length <= targetCount) {
+                                // Use all available ticks if we have 7 or fewer
+                                selectedTicks = allPossibleTicks;
+                            } else {
+                                // Select 7 evenly distributed ticks from available options
+                                const step = (allPossibleTicks.length - 1) / (targetCount - 1);
+                                for (let i = 0; i < targetCount; i++) {
+                                    const index = Math.round(i * step);
+                                    selectedTicks.push(allPossibleTicks[index]);
+                                }
+                            }
+
+                            // Build final tick array: first + selected + last
+                            const finalTicks = [
+                                { value: firstTick.getTime() },
+                                ...selectedTicks.map(tick => ({ value: tick.getTime() })),
+                                { value: lastTick.getTime() }
+                            ];
+
+                            scale.ticks = finalTicks;
+                            scale.min = firstTick.getTime();
+                            scale.max = lastTick.getTime();
                         },
                         adapters: {},
                         grid: {
@@ -4421,43 +4583,12 @@ function renderVitalsChart(viewModel) {
                 },
                 plugins: {
                     legend: {
-                        position: 'right',
-                        align: 'middle',
-                        labels: {
-                            boxWidth: 12,
-                            boxHeight: 2,
-                            font: {
-                                size: 10,
-                                weight: 500
-                            },
-                            padding: 8,
-                            generateLabels: function(chart) {
-                                const datasets = chart.data.datasets;
-
-                                // Create legend items with last Y-value for sorting
-                                const legendItems = datasets.map((dataset, datasetIndex) => {
-                                    const data = dataset.data || [];
-                                    const lastPoint = data[data.length - 1];
-                                    const lastY = lastPoint ? lastPoint.y : 0;
-
-                                    return {
-                                        text: dataset.label,
-                                        fillStyle: dataset.borderColor || dataset.backgroundColor,
-                                        strokeStyle: dataset.borderColor || dataset.backgroundColor,
-                                        datasetIndex: datasetIndex,
-                                        hidden: !chart.isDatasetVisible(datasetIndex),
-                                        lastY: lastY // Custom property for sorting
-                                    };
-                                });
-
-                                // Sort by last Y-value (highest to lowest for top-to-bottom ordering)
-                                legendItems.sort((a, b) => b.lastY - a.lastY);
-
-                                return legendItems;
-                            }
-                        }
+                        display: false // Disable default legend, we'll create custom positioned one
                     },
                     tooltip: {
+                        usePointStyle: true,
+                        boxWidth: 8,
+                        boxHeight: 8,
                         callbacks: {
                             title(items) {
                                 if (!items.length) return '';
@@ -4476,13 +4607,19 @@ function renderVitalsChart(viewModel) {
                                 const stage = meta.stageShort || meta.stage || 'Unknown';
                                 const value = meta.value ?? context.parsed.y;
                                 const displayValue = meta.displayValue || (trimmedUnit ? `${value} ${trimmedUnit}` : `${value}`);
-                                return `${type} • ${displayValue} • ${stage}`;
+                                return ` • ${type} • ${displayValue} • ${stage}`;
                             }
                         }
                     }
                 }
             }
         });
+
+        // Create custom positioned legend based on last data point Y positions
+        // Wait for chart to render before positioning legend
+        setTimeout(() => {
+            createPositionedLegend(vitalsChartInstance, datasets);
+        }, 100);
 
     } else if (typeof window !== 'undefined' && window.VitalsMiniChart) {
         vitalsChartLibrary = 'mini';
@@ -4770,7 +4907,8 @@ async function init() {
     const fragmentInput = document.getElementById('fragment-input');
 
     const payload1 = await fetchJson(DEMO_PAYLOADS.IPS_FHIR_JSON_1);
-    const payload2 = await fetchJson(DEMO_PAYLOADS.PAYLOAD_2);
+    const payload2 = await fetchJson(DEMO_PAYLOADS.IPS_FHIR_JSON_2);
+    const payload3 = await fetchJson(DEMO_PAYLOADS.IPS_FHIR_JSON_3);
 
     if (payload1) {
         // Add CASEVAC demo data to payload1
@@ -4799,6 +4937,12 @@ async function init() {
         appState.demos[1] = payloadService.buildViewModelFromObject(payload2, {
             label: 'Payload 2',
             rawPayload: payload2
+        });
+    }
+    if (payload3) {
+        appState.demos[2] = payloadService.buildViewModelFromObject(payload3, {
+            label: 'Payload 3',
+            rawPayload: payload3
         });
     }
 
@@ -5052,12 +5196,18 @@ async function init() {
         appState.comparisonViewModel = initialComparison;
         processAndRenderAll(initialViewModel, initialComparison);
     } else {
-        // Clear display areas when no initial data
-        renderPatientBox(null);
-        renderPayloadDisplay(null);
-        renderClinicalSummaryBox(null, null, null);
-        renderStageSections({});
-        renderVitalsChart(null);
+        if (appState.demos[0]) {
+            appState.currentViewModel = appState.demos[0];
+            appState.comparisonViewModel = null;
+            processAndRenderAll(appState.demos[0], null);
+        } else {
+            // Clear display areas when no initial data
+            renderPatientBox(null);
+            renderPayloadDisplay(null);
+            renderClinicalSummaryBox(null, null, null);
+            renderStageSections({});
+            renderVitalsChart(null);
+        }
     }
 
     // === FORMAT SWITCHING FUNCTIONS ===
@@ -5428,8 +5578,18 @@ async function init() {
                 showMessage('Preset #2 fragment is empty', 'warning');
             }
         } else {
-            // TODO: Add payload2 when available
-            showMessage('Preset #2 FHIR JSON not available', 'warning');
+            // Load FHIR JSON into left pane
+            if (payload2) {
+                const fhirJson = JSON.stringify(payload2, null, 2);
+                leftInput.textContent = fhirJson;
+                updateCharCount(leftInput, leftCharCount);
+                // Store as original FHIR to prevent round-trip loss
+                formatState.originalFhir = fhirJson;
+                console.log('Stored preset #2 as original FHIR, length:', fhirJson.length);
+                showMessage('Loaded preset #2 FHIR JSON', 'success');
+            } else {
+                showMessage('Preset #2 FHIR JSON not available', 'warning');
+            }
         }
     });
 
@@ -5444,8 +5604,18 @@ async function init() {
                 showMessage('Preset #3 fragment is empty', 'warning');
             }
         } else {
-            // TODO: Add payload3 when available
-            showMessage('Preset #3 FHIR JSON not available', 'warning');
+            // Load FHIR JSON into left pane
+            if (payload3) {
+                const fhirJson = JSON.stringify(payload3, null, 2);
+                leftInput.textContent = fhirJson;
+                updateCharCount(leftInput, leftCharCount);
+                // Store as original FHIR to prevent round-trip loss
+                formatState.originalFhir = fhirJson;
+                console.log('Stored preset #3 as original FHIR, length:', fhirJson.length);
+                showMessage('Loaded preset #3 FHIR JSON', 'success');
+            } else {
+                showMessage('Preset #3 FHIR JSON not available', 'warning');
+            }
         }
     });
 

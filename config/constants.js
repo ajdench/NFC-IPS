@@ -183,6 +183,9 @@ export const CARE_STAGES = {
     }
 };
 
+// Total OPCP stages count for chart tick calculation (includes empty stages)
+export const CARE_STAGE_COUNT = 9;
+
 // =============================================================================
 // LOCAL STORAGE KEYS
 // =============================================================================
@@ -270,7 +273,9 @@ const BASE_URL = new URL('../', import.meta.url);
 export const DEMO_PAYLOADS = {
     PAYLOAD_1: new URL('payload-1.json', BASE_URL).href,
     PAYLOAD_2: new URL('payload-2.json', BASE_URL).href,
-    IPS_FHIR_JSON_1: new URL('ips-fhir-json-1.json', BASE_URL).href
+    IPS_FHIR_JSON_1: new URL('ips-fhir-json-1.json', BASE_URL).href,
+    IPS_FHIR_JSON_2: new URL('ips-fhir-json-2.json', BASE_URL).href,
+    IPS_FHIR_JSON_3: new URL('ips-fhir-json-3.json', BASE_URL).href
 };
 
 // =============================================================================
