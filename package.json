@@ -7,10 +7,18 @@
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "build": "node scripts/build.mjs",
-    "test": "node scripts/test-utils.mjs",
+    "build": "node scripts/build.mjs && node scripts/jj-hooks.mjs build success",
+    "build:no-jj": "node scripts/build.mjs",
+    "test": "node scripts/test-utils.mjs && node scripts/jj-hooks.mjs test success",
     "test:utils": "node scripts/test-utils.mjs",
-    "dev": "live-server"
+    "test:no-jj": "node scripts/test-utils.mjs",
+    "dev": "live-server",
+    "dev:auto-jj": "node scripts/auto-jj.js & live-server",
+    "jj:start": "node scripts/auto-jj.js",
+    "jj:build": "node scripts/jj-hooks.mjs build",
+    "jj:test": "node scripts/jj-hooks.mjs test",
+    "jj:fix": "node scripts/jj-hooks.mjs fix",
+    "jj:refactor": "node scripts/jj-hooks.mjs refactor"
   },
   "keywords": [
     "NFC",

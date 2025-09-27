@@ -95,8 +95,6 @@
 
 ### Update: 2025-09-23 10:15
 - Default IPS data & in-code defaults tuned: stage-aware temperatures, consistent SpO₂/respiratory rates, medevac BP pair (baseline removed), and hemoglobin/pH additions for R1/R2
-<<<<<<< Updated upstream
-=======
 
 ### Update: 2025-09-23 10:23
 - Implemented dual title display feature with global configuration - Patient Demographics and Clinical Summary panes now show right-justified transparent duplicate titles at 50% opacity, maintaining display logic for both empty and populated states
@@ -121,7 +119,6 @@
 
 ### Update: 2025-09-23 13:29
 - JJ commit completed - dual title display system implementation committed with comprehensive commit message covering all UI changes, transparency adjustments, and empty state alignment fixes
->>>>>>> Stashed changes
 
 ### Update: 2025-09-23 13:41
 - Dual title functionality preserved and committed - JJ commit completed successfully, all dual title display features intact including 35% transparency, short/full title patterns, and empty state centering
