@@ -70,11 +70,15 @@
             return stored === 'on';
         }
 
-        const isLocalHost = host === 'localhost' || host === '127.0.0.1' || host.endsWith('.local');
-        const isFileProtocol = protocol === 'file:';
-        const isGithubPages = host.includes('github.io');
+        // Auto-download console logs disabled by default
+        // To enable: add ?consoleLogs=on to URL or use window.NfcIpsLogging.enable()
+        return false;
 
-        return !isGithubPages && (isLocalHost || isFileProtocol || host === '');
+        // Original auto-enable logic (commented out):
+        // const isLocalHost = host === 'localhost' || host === '127.0.0.1' || host.endsWith('.local');
+        // const isFileProtocol = protocol === 'file:';
+        // const isGithubPages = host.includes('github.io');
+        // return !isGithubPages && (isLocalHost || isFileProtocol || host === '');
     }
 
     function writeLogToFile(entry) {

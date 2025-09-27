@@ -134,3 +134,6 @@
 
 ### Update: 2025-09-26 23:15
 - Auto-JJ dev: Completed Patient Demographics fixes and Chart.js legend redesign: removed extra bottom padding, added Service/NHS number pills, implemented right-aligned legend with Y-position ordering and dynamic chart width
+
+### Update: 2025-09-27 09:57
+- Auto-JJ dev: Disabled auto-generated debug logs: added DEBUG_ENABLED toggle, disabled MIST debug file accumulation, kept export function for manual use - console logging now minimal and controlled
