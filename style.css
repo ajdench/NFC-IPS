@@ -103,6 +103,12 @@ body {
     margin: 0;
     background-color: var(--bg-color-page);
     padding: var(--standard-padding);
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     box-sizing: border-box;
     gap: var(--standard-padding);
 }
