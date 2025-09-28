@@ -446,7 +446,7 @@ body {
     border-radius: 8px;
     position: relative;
     overflow: visible;
-    padding: 0 var(--standard-padding);
+    padding: var(--standard-padding);
     min-height: var(--empty-pane-height);
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--legend-column-width);
