@@ -4390,8 +4390,17 @@ function renderVitalsChart(viewModel) {
 
     const ctx = canvas.getContext('2d');
 
+    const stageBands = computeStageBandData(stageSections);
+    const stageBandOpacity = getStageBandOpacity();
+    const stageBandLabelPadding = getStageBandLabelPadding();
+
 
     if (typeof Chart !== 'undefined' && Chart !== null && typeof Chart === 'function' && typeof Chart.defaults !== 'undefined') {
+        if (!stageBackgroundPluginRegistered && typeof Chart.register === 'function') {
+            Chart.register(stageBackgroundPlugin);
+            stageBackgroundPluginRegistered = true;
+        }
+
         vitalsChartLibrary = 'chartjs';
         vitalsChartInstance = new Chart(ctx, {
             type: 'line',
@@ -4544,6 +4553,11 @@ function renderVitalsChart(viewModel) {
                                 return ` • ${type} • ${displayValue} • ${stage}`;
                             }
                         }
+                    },
+                    stageBackgrounds: {
+                        bands: stageBands,
+                        opacity: stageBandOpacity,
+                        labelPadding: stageBandLabelPadding
                     }
                 }
             }
