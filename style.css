@@ -9,6 +9,7 @@
     --font-size-uniform: calc(var(--base-unit) * var(--size-multiplier));
     --slider-label-horizontal-offset: 1px;
     --toast-offset-y: -2px;
+    --stage-band-opacity: 0.7;
     --empty-pane-height: 15px;
 
     --text-color-dark: #555;
