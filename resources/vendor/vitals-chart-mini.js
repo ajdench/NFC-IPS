@@ -361,7 +361,6 @@
             this.renderDatasets();
             this.renderLegend();
         }
-        }
 
         update(newConfig) {
             this.config = newConfig || this.config;

@@ -1,6 +1,86 @@
-# CLAUDE.md - Compressed Memory System Guide v3.0
+# CLAUDE.md - NFC IPS Viewer Project Guide
 
-> **You are Claude Code, working within a 10,000 token memory budget. This document + active memory files are your persistent context. Always load these first.**
+## 🚀 **QUICK START FOR NEW CLAUDE CODE INSTANCES**
+
+**⏰ LAST UPDATED: 2025-09-28 17:34 UTC**
+**🔄 TTL: Valid until 2025-09-28 18:34 UTC** *(Auto-refresh on any Auto-JJ commit)*
+**💾 CRASH RECOVERY: If system restarted unexpectedly, check timestamps below**
+
+### **Immediate Orientation**
+**Load the files in Memory Loading Protocol section below for complete context.**
+
+### **Project Status**
+- **Type**: NFC IPS (International Patient Summary) web viewer for medical data
+- **Stack**: JavaScript ES6+, Chart.js, HTML5, CSS3, protobuf compression
+- **Status**: Active development with auto-JJ version control system
+- **Last Major Work**: Dual title system fixes, auto-loading disabled, surgical logging implemented (2025-09-28)
+
+### **Current State Summary**
+✅ **Recently Completed**:
+- Dual title initialization fixes for all OPCP panes
+- Eliminated visual blips on page load by matching HTML/JavaScript structure
+- Disabled auto-loading behavior (preset selection, URL fragments, demo rendering)
+- Implemented surgical logging process (removed 317 debug logs, added minimal targeted logging)
+- Page now loads in clean empty state requiring manual user interaction
+
+✅ **Architecture**: Dual title display, vitals chart with positioned legends, MIST chronological rendering
+✅ **Systems**: Auto-JJ commits, claude-dementia memory v3.0, surgical logging methodology
+⚠️ **Active Issue**: Content duplication in dual title text (minimal logging in place for diagnosis)
+
+### **Quick Commands**
+```bash
+npm run dev:auto-jj            # Start development server with auto-JJ monitoring
+npm run dev                    # Start development server only (no auto-commits)
+./memory/update.sh "message"   # Update memory system
+jj commit -m "message"         # Manual commit changes
+```
+
+### **Key Files**
+- `script.js` (1,183 lines): Core application logic
+- `config/constants.js`: Global constants including `CARE_STAGE_COUNT = 9`
+- `nfc/ips/viewer.html`: Main UI with dual titles and vitals chart
+- `memory/`: Claude-dementia memory system with active status
+
+### **Dynamic Update Protocol**
+**⚠️ ALWAYS UPDATE TIMESTAMPS WHEN:**
+- Starting new session
+- After any commit to JJ
+- Completing major work
+- System crash recovery
+
+```bash
+# Automated timestamp update
+./memory/update-claude-md.sh "session started"
+
+# Manual update example:
+# LAST UPDATED: 2025-09-27 23:15 UTC → current time
+# TTL: 2025-10-11 23:59 UTC → +2 weeks from now
+```
+
+### **When Taking Over (Expanded)**
+1. **Check timestamps**: If LAST UPDATED > 1 hour old, verify system state
+2. **Update timestamps**: LAST UPDATED = now, TTL = now + 2 weeks
+3. **Crash recovery**: If unexpected restart, check `jj log -n 5` for last activity
+4. **Memory sync**: Run `cat memory/active/status.md | tail -3` for latest state
+5. **System status**: Check `jj status` for uncommitted changes
+6. **Development**: Run `npm run dev` to start environment
+7. **Update memory**: `./memory/update.sh "Session started - recovered from [timestamp]"`
+
+### **🔄 HANDOFF STATUS FOR NEW INSTANCE**
+**Current Focus**: Priority 2 bug investigation and system maintenance
+
+**Active Issues**:
+1. **Priority 2 Bug**: Payload visual blip during page initialization
+2. **Auto-JJ System**: Automatic commits not occurring - needs investigation
+3. **Body margin**: Bottom margin issue visible in browser inspector
+
+**System Status**: All functionality restored, surgical logging cleared, dual title system working correctly
+
+---
+
+# Compressed Memory System Guide v3.0
+
+> **You are Claude Code, working within a 10,000 token memory budget. This document + active memory files are your persistent context.**
 
 ## 📦 Installation from GitHub
 
@@ -16,10 +96,11 @@ chmod +x memory/*.sh && rm -rf /tmp/cm
 
 ### Start Every Session
 ```bash
-# ALWAYS load these first (max 4,000 tokens)
-cat CLAUDE.md
-cat memory/active/status.md
-cat memory/active/context.md
+# Essential context (load in this order) - max 4,000 tokens
+cat CLAUDE.md                           # This guide
+cat memory/active/status.md             # Latest activities
+cat memory/active/context.md            # Current task state
+cat memory/implementations/2025-09-27-chart-tick-system.md  # Recent major work
 ```
 
 ### Load As Needed
@@ -55,6 +136,9 @@ cat memory/active/context.md
 
 ### 2. During Development
 ```bash
+# Ask clarifying questions when needed
+# Use CQ protocol (see section below) when requirements unclear
+
 # Quick updates (auto-compresses)
 ./memory/update.sh "Implemented feature X"
 
@@ -124,8 +208,13 @@ key_files:
 - **Export functions**: Available for manual use (`window.exportMISTDebugLog()`)
 
 ### Outstanding Issues 🔄 IN PROGRESS
-1. **Patient Demographics padding**: Double-gap below pills needs removal
-2. **MIL/NH identifiers**: Service Number and NHS Number pills not displaying (pipeline issue)
+1. **Priority 2 Bug - Payload Visual Blip**: Instantaneous visual blip occurs during page initialization/reload in payload panes. Investigation shows all JavaScript operations complete successfully, suggesting browser-level rendering issue (CSS transitions, Chart.js canvas operations, or layout reflow).
+2. **Patient Demographics padding**: Double-gap below pills needs removal
+3. **MIL/NH identifiers**: Service Number and NHS Number pills not displaying (pipeline issue)
+4. **Body bottom margin**: Margin issue visible in browser inspector
+
+### ✅ Recently Resolved
+- **Auto-JJ System**: Fixed - Was using `npm run dev` instead of `npm run dev:auto-jj`. Auto-commits now active.
 
 ## 🚨 RESOLVED BUG - Events Date Display Issue
 
@@ -160,6 +249,45 @@ key_files:
 - Include context and options
 - Wait for clarification
 - Record answers
+
+## 🤔 Clarifying Questions Protocol
+
+### When to Ask CQs
+- When requirements are ambiguous or unclear
+- When user says "Ask CQs" explicitly
+- When multiple valid approaches exist
+- When assumptions would be required to proceed
+
+### CQ Format
+**Structure**: Use numbered questions with lettered options
+```
+1. [Question with context]?
+
+a. [Option A]
+b. [Option B]
+c. [Option C]
+d. [Option D or open-ended]
+```
+
+### CQ Workflow
+1. **One question at a time** - wait for answer before next CQ
+2. **Dynamic ordering** - ask most foundational questions first
+3. **Document decisions** - record final choices, not questioning process
+4. **Build patterns** - create reusable CQ sets for common scenarios
+
+### CQ Pattern System
+- **Common scenarios**: `memory/patterns/cq-common-scenarios.md`
+- **Decision trees**: Structured CQ flows for frequent situations
+- **User preferences**: Learn and document in `memory/reference/user-preferences.md`
+- **Keyword triggers**: Skip obvious scenarios when context is clear
+
+### CQ Documentation
+- Final decisions → `memory/questions/YYYY-MM-DD-topic.md`
+- User preferences → `memory/reference/user-preferences.md`
+- Common patterns → `memory/patterns/cq-[scenario].md`
+- Skip process documentation, focus on outcomes
+
+---
 
 ## 📁 Memory Directory Guide
 

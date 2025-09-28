@@ -1,3 +1,4 @@
+
 /**
  * NFC IPS VIEWER - CORE APPLICATION
  *
@@ -118,14 +119,6 @@ function destroyVitalsChart() {
     }
     vitalsChartInstance = null;
 
-    // Clean up positioned legend
-    const legendWrapper = document.getElementById('vitals-legend-wrapper');
-    if (legendWrapper) {
-        legendWrapper.innerHTML = '';
-        legendWrapper.style.height = '';
-        legendWrapper.style.marginTop = '';
-        legendWrapper.style.marginBottom = '';
-    }
 }
 
 /**
@@ -389,7 +382,6 @@ function debugMIST(message, data = null) {
     if (!window.DEBUG_ENABLED) return;
 
     // Auto-download logging disabled - only console output when enabled
-    console.log('🔍 MIST:', message, data);
 
     // Keep the file logging logic for future use but disable accumulation
     // const timestamp = new Date().toISOString();
@@ -405,7 +397,6 @@ function debugMIST(message, data = null) {
  */
 function exportMISTDebugLog() {
     if (!window.mistDebugLog) {
-        console.log('No debug log available. Enable with window.DEBUG_ENABLED = true first.');
         return;
     }
     const blob = new Blob([window.mistDebugLog], { type: 'text/plain' });
@@ -1359,12 +1350,10 @@ class TerminologyValidator {
     }
 
     async validatePayloadCoverage() {
-        console.log('🔍 TERMINOLOGY VALIDATION: Starting payload coverage check...');
 
         try {
             // Extract all codes from payload-1.json
             const payloadCodes = await this.extractCodesFromPayload();
-            console.log(`📊 Found ${payloadCodes.length} unique codes in payload`);
 
             // Check coverage
             const results = this.checkCoverage(payloadCodes);
@@ -1480,36 +1469,23 @@ class TerminologyValidator {
     }
 
     reportResults(results) {
-        console.log('\n📋 TERMINOLOGY COVERAGE REPORT');
-        console.log('================================');
-        console.log(`📊 Total codes found: ${results.total}`);
-        console.log(`✅ Covered codes: ${results.covered}`);
-        console.log(`❌ Missing codes: ${results.missing}`);
-        console.log(`📈 Coverage rate: ${results.coverageRate.toFixed(1)}%`);
 
         if (results.missing > 0) {
-            console.log('\n❌ MISSING CODES:');
             results.missingCodes.forEach(code => {
-                console.log(`   - ${code}`);
             });
         }
 
-        console.log('\n📈 COVERAGE BY SYSTEM:');
         Object.entries(results.systemStats).forEach(([system, stats]) => {
             const rate = (stats.covered / stats.total) * 100;
-            console.log(`   ${system}: ${stats.covered}/${stats.total} (${rate.toFixed(1)}%)`);
         });
 
         if (results.success) {
-            console.log('\n🎉 VALIDATION PASSED: All payload codes have terminology definitions!');
         } else {
-            console.log('\n⚠️  VALIDATION FAILED: Some codes missing from terminology database');
         }
     }
 
     // API response format consistency validation
     validateResponseFormat() {
-        console.log('🔍 TERMINOLOGY VALIDATION: Checking API response format consistency...');
 
         const errors = [];
         const requiredFields = ['system', 'code', 'display', 'definition', 'status', 'version'];
@@ -1523,11 +1499,8 @@ class TerminologyValidator {
         });
 
         if (errors.length === 0) {
-            console.log('✅ Response format validation PASSED');
             return { success: true };
         } else {
-            console.log('❌ Response format validation FAILED:');
-            errors.forEach(error => console.log(`   - ${error}`));
             return { success: false, errors };
         }
     }
@@ -1725,24 +1698,6 @@ const codecPipeline = (() => {
 
     function decodeWith(payloadType, buffer, options = {}) {
         const message = payloadType.decode(buffer);
-        console.log('=== DECODE DEBUG ===');
-        console.log('Decoded protobuf message:', message);
-        console.log('Message patient:', message.patient);
-        console.log('🔍 DECODE DEBUG: Checking for original_bundle_json field in protobuf message');
-        console.log('🔍 DECODE DEBUG: message.original_bundle_json exists:', !!message.original_bundle_json);
-        console.log('🔍 DECODE DEBUG: message.originalBundleJson exists:', !!message.originalBundleJson);
-        console.log('🔍 DECODE DEBUG: message.original_bundle_json length:', message.original_bundle_json?.length);
-        console.log('🔍 DECODE DEBUG: message.originalBundleJson length:', message.originalBundleJson?.length);
-        console.log('CRITICAL DEBUG - Decoded message patient fields (checking both naming conventions):');
-        console.log('  CAMELCASE - bloodGroup:', message.patient?.bloodGroup);
-        console.log('  CAMELCASE - nhsId:', message.patient?.nhsId);
-        console.log('  CAMELCASE - serviceId:', message.patient?.serviceId);
-        console.log('  SNAKE_CASE - blood_group:', message.patient?.blood_group);
-        console.log('  SNAKE_CASE - nhs_id:', message.patient?.nhs_id);
-        console.log('  SNAKE_CASE - service_id:', message.patient?.service_id);
-        console.log('CRITICAL DEBUG - Direct protobuf message access:');
-        console.log('  Raw message.patient object:', message.patient);
-        console.log('  All patient keys:', Object.keys(message.patient || {}));
 
         // First convert without defaults to preserve actual CodeRef values
         const object = payloadType.toObject(message, {
@@ -1753,30 +1708,19 @@ const codecPipeline = (() => {
         });
 
         // Check if CodeRef fields exist in the raw message before toObject conversion
-        console.log('CRITICAL DEBUG - Raw message CodeRef fields before toObject:');
         if (message.patient) {
-            console.log('PROTOBUF DECODING - Raw message.patient keys:', Object.keys(message.patient));
             // Access fields using both snake_case and camelCase to see what exists
-            console.log('  Raw message.patient.blood_group:', message.patient.blood_group);
-            console.log('  Raw message.patient.bloodGroup:', message.patient.bloodGroup);
-            console.log('  Raw message.patient.nhs_id:', message.patient.nhs_id);
-            console.log('  Raw message.patient.nhsId:', message.patient.nhsId);
-            console.log('  Raw message.patient.service_id:', message.patient.service_id);
-            console.log('  Raw message.patient.serviceId:', message.patient.serviceId);
 
             // If CodeRef fields exist in raw message but are null in object, manually copy them
             if (message.patient.blood_group && !object.patient?.blood_group) {
-                console.log('Manually fixing blood_group from raw message');
                 object.patient = object.patient || {};
                 object.patient.blood_group = message.patient.blood_group;
             }
             if (message.patient.nhs_id && !object.patient?.nhs_id) {
-                console.log('Manually fixing nhs_id from raw message');
                 object.patient = object.patient || {};
                 object.patient.nhs_id = message.patient.nhs_id;
             }
             if (message.patient.service_id && !object.patient?.service_id) {
-                console.log('Manually fixing service_id from raw message');
                 object.patient = object.patient || {};
                 object.patient.service_id = message.patient.service_id;
             }
@@ -1785,29 +1729,13 @@ const codecPipeline = (() => {
         // 🚨 CRITICAL FIX: Preserve original_bundle_json field if it exists in the protobuf message
         const originalBundle = message.original_bundle_json || message.originalBundleJson;
         if (originalBundle && !object.original_bundle_json && !object.originalBundleJson) {
-            console.log('🚨 DECODE FIX: Manually preserving original_bundle_json from protobuf message');
-            console.log('🚨 DECODE FIX: Found field as:', message.original_bundle_json ? 'original_bundle_json' : 'originalBundleJson');
-            console.log('🚨 DECODE FIX: original bundle length:', originalBundle.length);
             object.originalBundleJson = originalBundle;
         }
 
-        console.log('Converted to object:', object);
-        console.log('Object patient:', object.patient);
-        console.log('🔍 DECODE DEBUG: Final object.original_bundle_json exists:', !!object.original_bundle_json);
 
         // Convert camelCase back to snake_case for consistency
         const normalizedObject = convertFromProtobufNaming(object);
-        console.log('Normalized patient fields:', normalizedObject.patient);
-        console.log('🔍 DECODE DEBUG: Final normalizedObject.original_bundle_json exists:', !!normalizedObject.original_bundle_json);
-        console.log('🔍 DECODE DEBUG: Final normalizedObject.original_bundle_json length:', normalizedObject.original_bundle_json?.length);
 
-        console.log('CRITICAL DEBUG - Object patient fields (checking both naming conventions):');
-        console.log('  CAMELCASE - bloodGroup:', object.patient?.bloodGroup);
-        console.log('  CAMELCASE - nhsId:', object.patient?.nhsId);
-        console.log('  CAMELCASE - serviceId:', object.patient?.serviceId);
-        console.log('  SNAKE_CASE - blood_group:', object.patient?.blood_group);
-        console.log('  SNAKE_CASE - nhs_id:', object.patient?.nhs_id);
-        console.log('  SNAKE_CASE - service_id:', object.patient?.service_id);
         if (options.schemaVersion) {
             Object.defineProperty(object, '__schemaVersion', {
                 value: options.schemaVersion,
@@ -1853,23 +1781,17 @@ const codecPipeline = (() => {
     }
 
     function convertFhirToCodeRef(fhirPayload) {
-        console.log('=== FHIR BUNDLE CONVERSION START ===');
-        console.log('Input payload type:', fhirPayload.resourceType);
-        console.log('resourceType check:', fhirPayload.resourceType === 'Bundle');
 
         // Handle case where payload is just a FHIR Patient resource
         if (fhirPayload.resourceType === 'Patient') {
-            console.log('Detected single FHIR Patient resource');
             fhirPayload = { patient: fhirPayload };
         }
 
         // Handle FHIR Bundle (IPS format)
         if (fhirPayload.resourceType === 'Bundle') {
-            console.log('Detected FHIR Bundle - calling convertFhirBundleToCodeRef');
             return convertFhirBundleToCodeRef(fhirPayload);
         }
 
-        console.log('No FHIR format detected, continuing with standard conversion');
 
         if (!fhirPayload.patient) return fhirPayload;
 
@@ -1923,19 +1845,11 @@ const codecPipeline = (() => {
             patient.blood_group = { sys: 'sct', code: '278152006' }; // A- blood group
         }
 
-        console.log('=== FHIR TO CODEREF CONVERSION ===');
-        console.log('Converted patient:', patient);
-        console.log('CodeRef fields:');
-        console.log('  blood_group:', patient.blood_group);
-        console.log('  nhs_id:', patient.nhs_id);
-        console.log('  service_id:', patient.service_id);
-        console.log('  gender:', patient.gender);
 
         return converted;
     }
 
     function convertFhirBundleToCodeRef(bundle) {
-        console.log('Converting FHIR Bundle to CodeRef format');
 
         // Find patient resource
         const patientEntry = bundle.entry?.find(entry =>
@@ -1947,7 +1861,6 @@ const codecPipeline = (() => {
         }
 
         const patient = patientEntry.resource;
-        console.log('Found patient:', patient.name?.[0]);
 
         // Convert patient demographics
         const convertedPatient = {
@@ -1960,25 +1873,15 @@ const codecPipeline = (() => {
         };
 
         // Convert identifiers
-        console.log('Processing patient identifiers:', patient.identifier);
         if (patient.identifier) {
             patient.identifier.forEach(identifier => {
-                console.log('Processing identifier:', identifier);
-                console.log('  type.coding[0].code:', identifier.type?.coding?.[0]?.code);
-                console.log('  value:', identifier.value);
                 if (identifier.type?.coding?.[0]?.code === 'NH') {
                     convertedPatient.nhs_id = { sys: 'nhs', code: identifier.value };
-                    console.log('  Set nhs_id:', convertedPatient.nhs_id);
                 } else if (identifier.type?.coding?.[0]?.code === 'MIL') {
                     convertedPatient.service_id = { sys: 'mil', code: identifier.value };
-                    console.log('  Set service_id:', convertedPatient.service_id);
                 }
             });
         }
-        console.log('Final convertedPatient identifiers:');
-        console.log('  nhs_id:', convertedPatient.nhs_id);
-        console.log('  service_id:', convertedPatient.service_id);
-        console.log('  blood_group:', convertedPatient.blood_group);
 
         // Convert gender
         if (patient.gender) {
@@ -1997,7 +1900,6 @@ const codecPipeline = (() => {
             if (bloodGroupExt?.valueCodeableConcept?.coding?.[0]) {
                 const coding = bloodGroupExt.valueCodeableConcept.coding[0];
                 convertedPatient.blood_group = { sys: 'sct', code: coding.code };
-                console.log('  Set blood_group:', convertedPatient.blood_group);
             }
         }
 
@@ -2013,7 +1915,6 @@ const codecPipeline = (() => {
             entries_json: JSON.stringify(bundle.entry || [])
         };
 
-        console.log('BUNDLE PRESERVATION - Storing bundleMetadata:', bundleMetadata);
 
         // Initialize payload structure with care stages
         const payload = {
@@ -2033,7 +1934,6 @@ const codecPipeline = (() => {
         };
 
         // Process all clinical resources and categorize by care-stage extension
-        console.log('Processing', bundle.entry.length, 'bundle entries');
         bundle.entry.forEach(entry => {
             if (!entry.resource) return;
 
@@ -2061,30 +1961,10 @@ const codecPipeline = (() => {
             }
         });
 
-        console.log('=== CONVERTED CODEREF PAYLOAD ===');
-        console.log('Patient:', payload.patient);
-        console.log('Allergies:', payload.allergies);
-        console.log('POI stage:', payload.poi);
-        console.log('CASEVAC stage:', payload.casevac);
-        console.log('MEDEVAC stage:', payload.medevac);
 
         // Focus on proper CodeRef compression - no duplication needed
 
-        console.log('=== CONVERSION RESULT SUMMARY ===');
-        console.log('Patient converted:', !!payload.patient);
-        console.log('Allergies:', payload.allergies.length);
-        console.log('POI vitals:', payload.poi.vitals.length, 'conditions:', payload.poi.conditions.length, 'events:', payload.poi.events.length);
-        console.log('CASEVAC vitals:', payload.casevac.vitals.length, 'conditions:', payload.casevac.conditions.length, 'events:', payload.casevac.events.length);
-        console.log('MEDEVAC vitals:', payload.medevac.vitals.length, 'conditions:', payload.medevac.conditions.length, 'events:', payload.medevac.events.length);
-        console.log('R1 vitals:', payload.r1.vitals.length, 'conditions:', payload.r1.conditions.length, 'events:', payload.r1.events.length);
-        console.log('R2 vitals:', payload.r2?.vitals?.length || 0, 'conditions:', payload.r2?.conditions?.length || 0, 'events:', payload.r2?.events?.length || 0);
-        console.log('R3 vitals:', payload.r3?.vitals?.length || 0, 'conditions:', payload.r3?.conditions?.length || 0, 'events:', payload.r3?.events?.length || 0);
 
-        console.log('=== FINAL PAYLOAD PATIENT BEFORE RETURN ===');
-        console.log('Final payload.patient:', JSON.stringify(payload.patient, null, 2));
-        console.log('Patient has blood_group:', !!payload.patient.blood_group);
-        console.log('Patient has nhs_id:', !!payload.patient.nhs_id);
-        console.log('Patient has service_id:', !!payload.patient.service_id);
 
         return payload;
     }
@@ -2229,9 +2109,6 @@ const codecPipeline = (() => {
     }
 
     function convertCodeRefToFhirBundle(codeRefPayload) {
-        console.log('=== CODEREF TO FHIR CONVERSION START ===');
-        console.log('Input CodeRef payload character length:', JSON.stringify(codeRefPayload).length);
-        console.log('Converting CodeRef format back to FHIR Bundle');
 
         // PERFECT RESTORATION: Use preserved original Bundle entries for exact reconstruction
         const bundleMetadata = codeRefPayload.bundleMetadata;
@@ -2341,9 +2218,6 @@ const codecPipeline = (() => {
             }
         });
 
-        console.log('Converted CodeRef to FHIR Bundle with', bundle.entry.length, 'entries');
-        console.log('Output FHIR Bundle character length:', JSON.stringify(bundle).length);
-        console.log('=== CODEREF TO FHIR CONVERSION END ===');
         return bundle;
     }
 
@@ -2614,15 +2488,11 @@ const codecPipeline = (() => {
 
     async function encodeToFragment(payload) {
         try {
-            console.log('🔍 ENCODE START: Payload keys:', Object.keys(payload));
-            console.log('🔍 ENCODE START: original_bundle_json exists:', !!payload.original_bundle_json);
             if (payload.original_bundle_json) {
-                console.log('🔍 ENCODE START: original_bundle_json length:', payload.original_bundle_json.length);
             }
 
             // Convert FHIR format to CodeRef format if needed
             if (payload.resourceType === 'Patient' || payload.resourceType === 'Bundle' || payload.patient?.resourceType === 'Patient') {
-                console.log('🔍 ENCODE: FHIR conversion path triggered');
                 const originalBundleJson = payload.original_bundle_json; // Try to preserve if it exists
                 const rawFhirJson = JSON.stringify(payload); // Always preserve the raw FHIR as backup
                 payload = convertFhirToCodeRef(payload);
@@ -2630,42 +2500,18 @@ const codecPipeline = (() => {
                 // The convertFhirToCodeRef already adds original_bundle_json, but ensure it's preserved
                 if (!payload.originalBundleJson) {
                     payload.originalBundleJson = originalBundleJson || rawFhirJson;
-                    console.log('✅ UNIVERSAL: Added originalBundleJson in encodeToFragment, length:', payload.originalBundleJson.length);
                 } else {
-                    console.log('✅ UNIVERSAL: originalBundleJson already present from conversion, length:', payload.originalBundleJson.length);
                 }
             } else {
-                console.log('🔍 ENCODE: CodeRef payload path (no FHIR conversion)');
-                console.log('🔍 ENCODE: Payload original_bundle_json before protobuf:', !!payload.original_bundle_json);
             }
 
             // Use current schema (coderef) for encoding
             const payloadType = await ensurePayloadType();
 
-            console.log('=== ENCODING DEBUG ===');
-            console.log('Source payload.patient:', payload.patient);
-            console.log('Patient CodeRef fields:');
-            console.log('  blood_group:', payload.patient?.blood_group);
-            console.log('  nhs_id:', payload.patient?.nhs_id);
-            console.log('  service_id:', payload.patient?.service_id);
 
-            console.log('Full payload structure:', JSON.stringify(payload, null, 2));
-            console.log('CRITICAL DEBUG - Patient fields before protobuf create:');
-            console.log('  payload.patient.blood_group:', payload.patient?.blood_group);
-            console.log('  payload.patient.nhs_id:', payload.patient?.nhs_id);
-            console.log('  payload.patient.service_id:', payload.patient?.service_id);
 
             // Create protobuf message from payload
             const message = payloadType.create(payload);
-            console.log('Created protobuf message:', message);
-            console.log('Message patient:', message.patient);
-            console.log('CRITICAL DEBUG - Message patient fields after protobuf create:');
-            console.log('  message.patient.bloodGroup:', message.patient?.bloodGroup);
-            console.log('  message.patient.blood_group:', message.patient?.blood_group);
-            console.log('  message.patient.nhsId:', message.patient?.nhsId);
-            console.log('  message.patient.nhs_id:', message.patient?.nhs_id);
-            console.log('  message.patient.serviceId:', message.patient?.serviceId);
-            console.log('  message.patient.service_id:', message.patient?.service_id);
 
             // Encode to binary
             const buffer = payloadType.encode(message).finish();
@@ -2689,12 +2535,8 @@ const codecPipeline = (() => {
     }
 
     function convertFromProtobufNaming(object) {
-        console.log('🔍 NAMING DEBUG: Input object.original_bundle_json exists:', !!object.original_bundle_json);
-        console.log('🔍 NAMING DEBUG: Input object.originalBundleJson exists:', !!object.originalBundleJson);
         // Safe deep clone preserving large strings like original_bundle_json
         const normalizedObject = safeDeepClone(object);
-        console.log('🔍 NAMING DEBUG: After clone, normalizedObject.original_bundle_json exists:', !!normalizedObject.original_bundle_json);
-        console.log('🔍 NAMING DEBUG: After clone, normalizedObject.originalBundleJson exists:', !!normalizedObject.originalBundleJson);
 
         // Convert patient field names from camelCase back to snake_case
         if (normalizedObject.patient) {
@@ -2717,12 +2559,9 @@ const codecPipeline = (() => {
 
         // Ensure original_bundle_json field is in snake_case format
         if (normalizedObject.originalBundleJson && !normalizedObject.original_bundle_json) {
-            console.log('🔍 NAMING DEBUG: Converting originalBundleJson to original_bundle_json');
             // Keep field in camelCase for protobuf.js compatibility
         }
 
-        console.log('🔍 NAMING DEBUG: Final normalizedObject.original_bundle_json exists:', !!normalizedObject.original_bundle_json);
-        console.log('🔍 NAMING DEBUG: Final normalizedObject.originalBundleJson exists:', !!normalizedObject.originalBundleJson);
         return normalizedObject;
     }
 
@@ -2762,7 +2601,6 @@ const codecPipeline = (() => {
             const payloadType = await ensurePayloadType();
 
             // Essential debug: Confirm universal solution is active
-            console.log('🔄 UNIVERSAL: Encoding with original Bundle preservation');
 
             // CRITICAL FIX: Create protobuf instances for all nested message types
             const root = payloadType.root;
@@ -2818,13 +2656,9 @@ const codecPipeline = (() => {
 
             // Log original Bundle JSON storage for universal restoration
             if (protoPayload.originalBundleJson) {
-                console.log('🔄 UNIVERSAL: Bundle JSON → Protobuf, length:', protoPayload.originalBundleJson.length);
             } else {
-                console.log('❌ UNIVERSAL: originalBundleJson field missing before protobuf creation');
-                console.log('❌ UNIVERSAL: protoPayload keys:', Object.keys(protoPayload));
 
                 // FINAL FAILSAFE: Create originalBundleJson from the current payload data
-                console.log('🚨 FINAL FAILSAFE: Creating originalBundleJson from payload data');
                 protoPayload.originalBundleJson = JSON.stringify({
                     resourceType: "Bundle",
                     id: protoPayload.bundleMetadata?.id || "restored-bundle",
@@ -2833,58 +2667,33 @@ const codecPipeline = (() => {
                     entry: [], // Reconstructed from payload data - minimal structure for character preservation
                     restored: true // Flag to indicate this was reconstructed
                 });
-                console.log('🚨 FINAL FAILSAFE: Added fallback originalBundleJson, length:', protoPayload.originalBundleJson.length);
             }
 
-            console.log('🔧 PROTOBUF CREATION DEBUG');
-            console.log('🔧 protoPayload.original_bundle_json exists:', !!protoPayload.original_bundle_json);
-            console.log('🔧 protoPayload.originalBundleJson exists:', !!protoPayload.originalBundleJson);
-            console.log('🔧 protoPayload.originalBundleJson length:', protoPayload.originalBundleJson?.length);
-            console.log('🔧 Creating protobuf message with keys:', Object.keys(protoPayload));
 
             // CRITICAL: Check schema fields
-            console.log('🔧 SCHEMA DEBUG: payloadType fields:', Object.keys(payloadType.fields));
-            console.log('🔧 SCHEMA DEBUG: field 11 info:', payloadType.fields['original_bundle_json']);
-            console.log('🔧 SCHEMA DEBUG: field 11 name:', payloadType.fields[11]?.name);
 
             const message = payloadType.create(protoPayload);
 
-            console.log('🔧 Created message.original_bundle_json exists:', !!message.original_bundle_json);
-            console.log('🔧 Created message.originalBundleJson exists:', !!message.originalBundleJson);
-            console.log('🔧 Created message keys:', Object.keys(message));
-            console.log('🔧 Created message field 11 value:', message[Object.keys(payloadType.fields)[10]]);
 
             // CRITICAL: Check if field 11 exists with different name
             for (let i = 0; i < 15; i++) {
                 const field = payloadType.fields[i];
                 if (field) {
-                    console.log(`🔧 Field ${i}: ${field.name} = ${message[field.name]?.length || message[field.name]}`);
                 }
             }
 
             const buffer = payloadType.encode(message).finish();
 
-            console.log('🔧 PROTOBUF ENCODING COMPLETE');
-            console.log('🔧 Buffer size:', buffer.length, 'bytes');
-            console.log('🔧 Testing immediate decode to verify field preservation...');
 
             // CRITICAL TEST: Immediately decode to verify field preservation
             const testDecode = payloadType.decode(buffer);
-            console.log('🔧 IMMEDIATE DECODE TEST: original_bundle_json exists:', !!testDecode.original_bundle_json);
-            console.log('🔧 IMMEDIATE DECODE TEST: originalBundleJson exists:', !!testDecode.originalBundleJson);
-            console.log('🔧 IMMEDIATE DECODE TEST: originalBundleJson length:', testDecode.originalBundleJson?.length);
             if (!testDecode.originalBundleJson) {
-                console.log('🚨 CRITICAL FAILURE: Field lost during protobuf encode/decode cycle!');
-                console.log('🚨 Available fields in decoded message:', Object.keys(testDecode));
 
                 // Test with smaller string to verify if it's a size issue
-                console.log('🔧 SIZE TEST: Testing encode/decode with small string...');
                 const testPayload = { ...protoPayload, originalBundleJson: 'test123' };
                 const testMessage = payloadType.create(testPayload);
                 const testBuffer = payloadType.encode(testMessage).finish();
                 const testDecodeSmall = payloadType.decode(testBuffer);
-                console.log('🔧 SIZE TEST: Small string survived:', !!testDecodeSmall.originalBundleJson);
-                console.log('🔧 SIZE TEST: Small string value:', testDecodeSmall.originalBundleJson);
             }
 
             // Convert binary to hex representation for display
@@ -3018,14 +2827,10 @@ const payloadService = (() => {
     }
 
     function buildFromCodeRef(nfcPayload, options = {}) {
-        console.log('=== buildFromCodeRef DEBUG ===');
-        console.log('nfcPayload:', nfcPayload);
-        console.log('nfcPayload.patient:', nfcPayload.patient);
 
         const codebook = gatherCodeRefs(nfcPayload);
         const patientResource = buildCodeRefPatient(nfcPayload.patient || {});
 
-        console.log('patientResource built:', patientResource);
         const stageResult = buildCodeRefStageSections(nfcPayload);
         // Pass the full payload to buildSummary to get the 't' timestamp
         const summary = buildSummary(nfcPayload, stageResult.totals);
@@ -3377,17 +3182,8 @@ const payloadService = (() => {
     }
 
     function buildCodeRefPatient(patientData = {}) {
-        console.log('buildCodeRefPatient called with:', patientData);
-        console.log('Raw CodeRef objects:');
-        console.log('  blood_group:', patientData.blood_group);
-        console.log('  nhs_id:', patientData.nhs_id);
-        console.log('  service_id:', patientData.service_id);
-        console.log('  bloodGroup (camelCase):', patientData.bloodGroup);
-        console.log('  nhsId (camelCase):', patientData.nhsId);
-        console.log('  serviceId (camelCase):', patientData.serviceId);
 
         // CRITICAL FIX: Use camelCase field names from protobuf decoded object
-        console.log('=== USING CAMELCASE FIELDS FROM PROTOBUF ===');
         const bloodGroup = patientData.bloodGroup || patientData.blood_group;
         const nhsId = patientData.nhsId || patientData.nhs_id;
         const serviceId = patientData.serviceId || patientData.service_id;
@@ -3479,16 +3275,11 @@ const payloadService = (() => {
         const extensions = [];
 
         // Blood Group Extension with fallback
-        console.log('=== BLOOD GROUP DEBUG ===');
-        console.log('patientData.blood_group raw:', patientData.blood_group);
-        console.log('typeof patientData.blood_group:', typeof patientData.blood_group);
-        console.log('JSON.stringify(patientData.blood_group):', JSON.stringify(patientData.blood_group));
 
         // Check both snake_case and camelCase field names
         let bloodGroupData = patientData.blood_group || patientData.bloodGroup;
 
         const normalizedBloodGroup = normaliseCodeRef(bloodGroupData);
-        console.log('normalised blood group:', normalizedBloodGroup);
         if (normalizedBloodGroup.code && normalizedBloodGroup.code !== 'Unknown code') {
             const displayName = resolveCodeDisplay(normalizedBloodGroup.system, normalizedBloodGroup.code);
             extensions.push({
@@ -3523,7 +3314,6 @@ const payloadService = (() => {
             patient.extension = extensions;
         }
 
-        console.log('buildCodeRefPatient returning:', patient);
         return patient;
     }
 
@@ -3885,7 +3675,7 @@ function createInfoBoxes() {
         wrapper.className = 'info-box-wrapper';
 
         const box = document.createElement('div');
-        box.className = `info-box ${config.colorClass}`;
+        box.className = `info-box ${config.colorClass} empty`;
         if (config.dataKey) {
             box.dataset.key = config.dataKey;
         }
@@ -3894,29 +3684,54 @@ function createInfoBoxes() {
         // title.className = config.specialClass ? 'poi-title' : 'info-title';
         title.className = 'info-title';
 
-        const fullTitle = config.title.replace(/\s*\(([^)]+)\)/, '');
+        const fullTitle = config.title;
         const shortTitleMatch = config.title.match(/\(([^)]+)\)/);
-        const shortTitle = shortTitleMatch ? shortTitleMatch[1] : fullTitle;
+        let shortTitle;
+
+        if (shortTitleMatch) {
+            shortTitle = shortTitleMatch[1];
+        } else {
+            // Create short titles for panes without parentheses
+            const shortTitleMap = {
+                'patient': 'Patient',
+                'clinicalSummary': 'Clinical',
+                'casevac': 'CASEVAC',
+                'axp': 'AXP',
+                'medevac': 'MEDEVAC',
+                'r1': 'R1',
+                'fwdTacevac': 'Fwd TACEVAC',
+                'r2': 'R2',
+                'rearTacevac': 'Rear TACEVAC',
+                'r3': 'R3'
+            };
+            shortTitle = shortTitleMap[config.dataKey] || fullTitle;
+        }
 
         title.dataset.baseTitle = fullTitle;
         title.dataset.shortTitle = shortTitle;
 
         // Check if dual title display is enabled for this pane
         if (DUAL_TITLE_CONFIG.enabled && DUAL_TITLE_CONFIG.enabledPanes.has(config.dataKey)) {
-            title.classList.add('dual-title');
+            title.classList.add('dual-title', 'dual-title-empty');
 
-            // Left title (short title for OPCP panes, full title for Demographics/Clinical Summary)
+            // Left title (short title)
             const leftTitle = document.createElement('span');
             leftTitle.className = 'left-title';
             leftTitle.textContent = shortTitle;
 
-            // Right title (always full title with transparency)
+            // Empty state text
+            const emptySpan = document.createElement('span');
+            emptySpan.className = 'empty-text';
+            emptySpan.textContent = 'No data available';
+
+            // Right title (full title with transparency)
             const rightTitle = document.createElement('span');
             rightTitle.className = 'right-title';
             rightTitle.textContent = fullTitle;
             rightTitle.style.opacity = DUAL_TITLE_CONFIG.transparency;
 
             title.appendChild(leftTitle);
+            title.appendChild(emptySpan);
             title.appendChild(rightTitle);
         } else {
             title.textContent = config.title;
@@ -3931,11 +3746,25 @@ function createInfoBoxes() {
 function setTitleAvailability(titleElement, hasData) {
     if (!titleElement) return;
 
-    const baseTitle = titleElement.dataset.baseTitle
-        || titleElement.textContent.split('•')[0].trim();
-    const shortTitle = titleElement.dataset.shortTitle
-        || titleElement.dataset.baseTitle
-        || titleElement.textContent.split('•')[0].trim();
+    // Extract titles from existing structure if present, otherwise fallback to textContent
+    let baseTitle = titleElement.dataset.baseTitle;
+    let shortTitle = titleElement.dataset.shortTitle;
+
+    if (!baseTitle || !shortTitle) {
+        const leftTitleSpan = titleElement.querySelector('.left-title');
+        const rightTitleSpan = titleElement.querySelector('.right-title');
+
+        if (leftTitleSpan && rightTitleSpan) {
+            // Extract from existing dual title structure
+            shortTitle = shortTitle || leftTitleSpan.textContent.trim();
+            baseTitle = baseTitle || rightTitleSpan.textContent.trim();
+        } else {
+            // Fallback to textContent for non-dual-title elements
+            const fallbackTitle = titleElement.textContent.split('•')[0].trim();
+            baseTitle = baseTitle || fallbackTitle;
+            shortTitle = shortTitle || fallbackTitle;
+        }
+    }
     titleElement.dataset.baseTitle = baseTitle;
     titleElement.dataset.shortTitle = shortTitle;
 
@@ -4079,7 +3908,6 @@ function addGhostItems(container, count) {
  * Example: Displays 'John Doe, DOB: 15 January 1990, NHS: 123 456 7890'
  */
 function renderPatientBox(patientResource) {
-    console.log('renderPatientBox called with:', patientResource);
     const patientBox = document.querySelector('[data-key="patient"]');
     if (!patientBox) return;
 
@@ -4101,10 +3929,6 @@ function renderPatientBox(patientResource) {
 }
 
 function createPatientDetailsElement(patientData, parentColorClass) {
-    console.log('=== createPatientDetailsElement DEBUG ===');
-    console.log('patientData:', patientData);
-    console.log('patientData.identifier:', patientData.identifier);
-    console.log('patientData.extension:', patientData.extension);
 
     const detailsContainer = document.createElement('div');
     detailsContainer.classList.add('patient-details-container');
@@ -4121,8 +3945,6 @@ function createPatientDetailsElement(patientData, parentColorClass) {
         )?.value
     );
 
-    console.log('serviceNumber found:', serviceNumber);
-    console.log('nhsNumber found:', nhsNumber);
 
     // Extract title and rank from prefix array
     const titleValue = name.prefix?.[0]; // First prefix is title (Mr, Mrs, etc.)
@@ -4139,17 +3961,13 @@ function createPatientDetailsElement(patientData, parentColorClass) {
             label: 'Blood Group',
             value: (() => {
                 const bloodExt = patientData.extension?.find(ext => ext.url?.includes('bloodGroup'));
-                console.log('Blood Group Extension found:', bloodExt);
                 if (!bloodExt) return undefined;
 
                 const coding = bloodExt?.valueCodeableConcept?.coding?.[0];
-                console.log('Blood Group Coding:', coding);
                 if (coding) {
                     // Check for SNOMED CT system
                     if (coding.system?.includes('snomed.info/sct') && coding.code) {
-                        console.log('Looking up SNOMED code:', coding.code);
                         const bloodGroupName = resolveCodeDisplay('sct', coding.code);
-                        console.log('Resolved blood group name:', bloodGroupName);
                         // Ensure we show the complete blood type with antigen and Rh factor
                         return bloodGroupName || coding.display || bloodExt?.valueCodeableConcept?.text;
                     }
@@ -4251,59 +4069,6 @@ function renderStageSections(stageSections = {}) {
     });
 }
 
-function createPositionedLegend(chartInstance, datasets) {
-    const legendWrapper = document.getElementById('vitals-legend-wrapper');
-    if (!legendWrapper) return;
-
-    // Clear existing legend items
-    legendWrapper.innerHTML = '';
-
-    const chartArea = chartInstance.chartArea;
-    const yScale = chartInstance.scales.y;
-
-    // Let flexbox handle the wrapper sizing naturally
-
-    // Create legend items positioned at last Y value
-    datasets.forEach(dataset => {
-        const data = dataset.data || [];
-        const lastPoint = data[data.length - 1];
-        if (!lastPoint) return;
-
-        const lastY = lastPoint.y;
-        const pixelY = yScale.getPixelForValue(lastY);
-        const relativeY = pixelY; // Use absolute position within the canvas
-
-        const legendItem = document.createElement('div');
-        legendItem.style.cssText = `
-            position: absolute;
-            top: ${relativeY}px;
-            left: 0;
-            display: flex;
-            align-items: center;
-            font-size: 10px;
-            font-weight: 500;
-            white-space: nowrap;
-            transform: translateY(-50%);
-        `;
-
-        const marker = document.createElement('div');
-        marker.style.cssText = `
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background-color: ${dataset.borderColor};
-            margin-right: 6px;
-            flex-shrink: 0;
-        `;
-
-        const label = document.createElement('span');
-        label.textContent = dataset.label;
-
-        legendItem.appendChild(marker);
-        legendItem.appendChild(label);
-        legendWrapper.appendChild(legendItem);
-    });
-}
 
 function renderVitalsChart(viewModel) {
     const canvas = document.getElementById('vitals-chart');
@@ -4471,31 +4236,22 @@ function renderVitalsChart(viewModel) {
                             const dataMin = new Date(scale.min);
                             const dataMax = new Date(scale.max);
 
-                            console.log('Data range:', dataMin.toISOString(), 'to', dataMax.toISOString());
 
                             // First tick: closest previous hh:00/30 to encompass first data point
                             const firstTick = new Date(dataMin);
-                            console.log('Original dataMin minutes:', dataMin.getMinutes());
 
                             // Round DOWN to nearest hh:00 or hh:30
                             if (dataMin.getMinutes() >= 30) {
                                 firstTick.setMinutes(30);
-                                console.log('Set to :30');
                             } else {
                                 firstTick.setMinutes(0);
-                                console.log('Set to :00');
                             }
                             firstTick.setSeconds(0);
                             firstTick.setMilliseconds(0);
 
-                            console.log('First tick before check:', firstTick.toISOString());
-                            console.log('Data min time:', dataMin.getTime());
-                            console.log('First tick time:', firstTick.getTime());
-                            console.log('Is first tick > dataMin?', firstTick.getTime() > dataMin.getTime());
 
                             // If rounded tick is still after data, go back 30 minutes
                             if (firstTick.getTime() > dataMin.getTime()) {
-                                console.log('Going back 30 minutes');
                                 firstTick.setTime(firstTick.getTime() - (30 * 60 * 1000));
                             }
 
@@ -4519,7 +4275,6 @@ function renderVitalsChart(viewModel) {
                                 lastTick.setTime(lastTick.getTime() + (30 * 60 * 1000));
                             }
 
-                            console.log('Calculated boundaries:', firstTick.toISOString(), 'to', lastTick.toISOString());
 
                             // Generate all possible hh:00/30 marks between first and last
                             const allPossibleTicks = [];
@@ -4583,7 +4338,47 @@ function renderVitalsChart(viewModel) {
                 },
                 plugins: {
                     legend: {
-                        display: false // Disable default legend, we'll create custom positioned one
+                        display: true,
+                        position: 'right',
+                        align: 'middle',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            boxWidth: 6,
+                            boxHeight: 6,
+                            padding: 8,
+                            font: {
+                                size: 10,
+                                weight: 500
+                            },
+                            generateLabels: function(chart) {
+                                const datasets = chart.data.datasets;
+                                const labels = [];
+
+                                // Create label objects with last Y-value for sorting
+                                datasets.forEach((dataset, index) => {
+                                    const data = dataset.data || [];
+                                    const lastPoint = data[data.length - 1];
+                                    const lastY = lastPoint ? lastPoint.y : 0;
+
+                                    labels.push({
+                                        text: dataset.label,
+                                        fillStyle: dataset.borderColor,
+                                        strokeStyle: dataset.borderColor,
+                                        pointStyle: 'circle',
+                                        lineWidth: 0,
+                                        hidden: !chart.isDatasetVisible(index),
+                                        datasetIndex: index,
+                                        lastY: lastY
+                                    });
+                                });
+
+                                // Sort by last Y-value (highest to lowest)
+                                labels.sort((a, b) => b.lastY - a.lastY);
+
+                                return labels;
+                            }
+                        }
                     },
                     tooltip: {
                         usePointStyle: true,
@@ -4615,11 +4410,13 @@ function renderVitalsChart(viewModel) {
             }
         });
 
-        // Create custom positioned legend based on last data point Y positions
-        // Wait for chart to render before positioning legend
+        // Chart.js native legend with post-render Y-positioning
         setTimeout(() => {
-            createPositionedLegend(vitalsChartInstance, datasets);
+            applyYAxisLegendPositioning(vitalsChartInstance, datasets);
         }, 100);
+
+        // Chart.js native legend with circle markers and Y-value sorting
+        // Custom Y-positioning disabled due to UI issues - using stable Chart.js positioning
 
     } else if (typeof window !== 'undefined' && window.VitalsMiniChart) {
         vitalsChartLibrary = 'mini';
@@ -4869,17 +4666,16 @@ const formatState = {
  * Flow: Create UI → Setup Events → Process URL Fragment → Load Demo Data
  */
 async function init() {
-    console.log('=== INIT DEBUG ===');
-    console.log('Creating info boxes...');
-    createInfoBoxes();
 
-    // Check if boxes were created
+    // Only rebuild info boxes if HTML structure is incomplete
+    const firstBox = document.querySelector('.info-box .info-title');
+    const hasCorrectStructure = firstBox && firstBox.querySelector('.left-title') && firstBox.querySelector('.empty-text');
+
+    if (!hasCorrectStructure) {
+        createInfoBoxes();
+    }
+
     const container = document.getElementById('info-boxes-container');
-    console.log('Info boxes container:', container);
-    console.log('Container children count:', container ? container.children.length : 'null');
-
-    const patientBox = document.querySelector('[data-key="patient"]');
-    console.log('Patient box found:', !!patientBox);
 
     // New enhanced UI elements
     const parseButton = document.getElementById('parse-button');
@@ -5081,16 +4877,9 @@ async function init() {
     // Function to regenerate fragment from ips-fhir-json-1.json
     async function updateFragmentFromPayload1() {
         try {
-            console.log('=== PAYLOAD-1 ENCODING START ===');
-            console.log('payload1 type:', typeof payload1);
-            console.log('payload1 resourceType:', payload1?.resourceType);
-            console.log('payload1 entry count:', payload1?.entry?.length);
 
             const newFragment = await codecPipeline.encodeToFragment(payload1);
             presetFragments[1] = newFragment;
-            console.log('Fragment updated successfully with ips-fhir-json-1.json');
-            console.log('New fragment length:', newFragment.length);
-            console.log('New fragment:', newFragment.substring(0, 100) + '...');
             return newFragment;
         } catch (error) {
             console.error('ERROR encoding ips-fhir-json-1.json to fragment:', error);
@@ -5104,46 +4893,28 @@ async function init() {
 
     // Force regeneration function for debugging
     window.forceRegenerateFragment = async () => {
-        console.log('=== FORCING FRAGMENT REGENERATION ===');
         presetFragments[1] = ''; // Clear cached fragment
         const newFragment = await updateFragmentFromPayload1();
-        console.log('Fragment regenerated successfully');
         return newFragment;
     };
 
     // Expose comprehensive test function for debugging
     window.debugPatientPipeline = async function() {
-        console.log('=== COMPREHENSIVE PATIENT DATA PIPELINE DEBUG ===');
 
         // Step 1: Source data
-        console.log('1. SOURCE DATA:');
-        console.log('   enhancedIpsData.patient:', enhancedIpsData.patient);
 
         // Step 2: Blood group code lookup
-        console.log('\n2. BLOOD GROUP CODE LOOKUP:');
         const bgCode = enhancedIpsData.patient.blood_group;
-        console.log('   blood_group object:', bgCode);
-        console.log('   resolveCodeDisplay("sct", "278152006"):', resolveCodeDisplay('sct', '278152006'));
-        console.log('   medicalCodeMap["sct:278152006"]:', medicalCodeMap['sct:278152006']);
 
         // Step 3: Protobuf encoding
-        console.log('\n3. PROTOBUF ENCODING:');
         try {
             const fragment = await codecPipeline.encodeToFragment(enhancedIpsData);
-            console.log('   Generated fragment:', fragment ? fragment.substring(0, 100) + '...' : 'FAILED');
 
             // Step 4: Protobuf decoding
-            console.log('\n4. PROTOBUF DECODING:');
             const decoded = await codecPipeline.decodeFragment(fragment);
-            console.log('   Decoded payload:', decoded);
-            console.log('   Decoded patient:', decoded.patient);
 
             // Step 5: Patient resource building
-            console.log('\n5. PATIENT RESOURCE BUILDING:');
             const patientResource = payloadService.buildViewModelFromObject(decoded).patientResource;
-            console.log('   Built patient resource:', patientResource);
-            console.log('   Patient identifiers:', patientResource?.identifier);
-            console.log('   Patient extensions:', patientResource?.extension);
 
             return {
                 source: enhancedIpsData.patient,
@@ -5173,51 +4944,24 @@ async function init() {
         presetFragments[1] = defaultFragment;
     }
 
-    const fragment = window.location.hash.slice(1);
+    // URL fragment processing disabled - user must manually trigger decode
+    // const fragment = window.location.hash.slice(1);
+    // if (fragment) { ... } // Auto-processing removed
 
-    if (fragment) {
-        // URL fragment provided
-        try {
-            const fragmentViewModel = await payloadService.loadFromFragment(fragment);
-            appState.fragmentViewModel = fragmentViewModel;
-            initialViewModel = fragmentViewModel;
-            initialComparison = appState.demos[0] || null;
-            showMessage('Loaded payload from NFC fragment', 'success');
-        } catch (error) {
-            console.error('Failed to decode fragment payload:', error);
-            showMessage('Failed to decode fragment', 'warning');
-        }
-    }
+    // Page starts in empty state - user must manually trigger parsing
+    // Auto-rendering disabled to ensure clean initialization
+    // Skip render calls since HTML already has correct empty structure
+    // renderPatientBox(null);
+    // renderPayloadDisplay(null);
+    // renderClinicalSummaryBox(null, null, null);
+    // renderStageSections({});
+    renderVitalsChart(null);
 
-    // If no fragment payload, default to first demo bundle for initial render
-    // Only render if we have a URL fragment with valid data
-    if (initialViewModel) {
-        appState.currentViewModel = initialViewModel;
-        appState.comparisonViewModel = initialComparison;
-        processAndRenderAll(initialViewModel, initialComparison);
-    } else {
-        if (appState.demos[0]) {
-            appState.currentViewModel = appState.demos[0];
-            appState.comparisonViewModel = null;
-            processAndRenderAll(appState.demos[0], null);
-        } else {
-            // Clear display areas when no initial data
-            renderPatientBox(null);
-            renderPayloadDisplay(null);
-            renderClinicalSummaryBox(null, null, null);
-            renderStageSections({});
-            renderVitalsChart(null);
-        }
-    }
 
     // === FORMAT SWITCHING FUNCTIONS ===
 
     async function updateLeftPaneMode(newMode) {
         const currentContent = leftInput.textContent.trim();
-        console.log('=== LEFT PANE MODE SWITCH ===');
-        console.log('From mode:', formatState.leftMode, 'to mode:', newMode);
-        console.log('Current content length:', currentContent.length);
-        console.log('Content starts with:', currentContent.substring(0, 100));
         formatState.leftMode = newMode;
 
         if (newMode === 'fragment') {
@@ -5228,7 +4972,6 @@ async function init() {
 
             // If we have original fragment stored, restore it instead of encoding FHIR
             if (formatState.originalFragment) {
-                console.log('Restoring original fragment length:', formatState.originalFragment.length);
                 leftInput.textContent = formatState.originalFragment;
                 if (!formatState.suppressMessages) {
                     showMessage('Restored original fragment data', 'success');
@@ -5237,7 +4980,6 @@ async function init() {
             // Otherwise, if switching from FHIR to fragment and we have FHIR content, encode it
             else if (currentContent && looksLikeJson(currentContent)) {
                 try {
-                    console.log('No original fragment stored, encoding FHIR');
                     const fhirData = JSON.parse(currentContent);
                     const fragment = await codecPipeline.encodeToFragment(fhirData);
                     leftInput.textContent = fragment;
@@ -5256,9 +4998,7 @@ async function init() {
 
             // If we have original FHIR stored, restore it instead of decoding fragment
             if (formatState.originalFhir) {
-                console.log('🔍 FINAL RESULT: Restoring original FHIR length:', formatState.originalFhir.length);
                 leftInput.textContent = formatState.originalFhir;
-                console.log('🔍 FINAL RESULT: Displayed FHIR character count:', leftInput.textContent.length);
                 if (!formatState.suppressMessages) {
                     showMessage('Restored original FHIR data', 'success');
                 }
@@ -5266,17 +5006,11 @@ async function init() {
             // Otherwise, if switching from fragment to FHIR and we have fragment content, decode it
             else if (currentContent && !looksLikeJson(currentContent)) {
                 try {
-                    console.log('🔍 CRITICAL: No original FHIR stored, decoding fragment for final result');
-                    console.log('🔍 CRITICAL: Fragment being decoded length:', currentContent.length);
                     const parsedViewModel = await payloadService.parseUserInput(currentContent);
                     if (parsedViewModel && parsedViewModel.rawPayload) {
-                        console.log('🔍 CRITICAL: Parsed payload, calling convertCodeRefToFhirBundle');
                         const fhirBundle = codecPipeline.convertCodeRefToFhirBundle(parsedViewModel.rawPayload);
                         const fhirJson = JSON.stringify(fhirBundle, null, 2);
-                        console.log('🔍 FINAL RESULT: Generated FHIR JSON character count:', fhirJson.length);
                         leftInput.textContent = fhirJson;
-                        console.log('🔍 FINAL RESULT: Displayed FHIR character count:', leftInput.textContent.length);
-                        console.log('🔍 FINAL RESULT: First 200 chars:', fhirJson.substring(0, 200));
                         if (!formatState.suppressMessages) {
                             showMessage('Converted fragment to FHIR', 'success');
                         }
@@ -5293,7 +5027,6 @@ async function init() {
     }
 
     function updateRightPaneFormat(newFormat) {
-        console.log('🔍 RIGHT PANE FORMAT UPDATE: Switching to format:', newFormat);
         formatState.rightFormat = newFormat;
 
         const formatNames = {
@@ -5309,14 +5042,10 @@ async function init() {
 
         // Show the appropriate format if available
         if (formatState.conversionResults[newFormat]) {
-            console.log('🔍 RIGHT PANE: Displaying cached', newFormat, 'result, length:', formatState.conversionResults[newFormat].length);
             rightInput.textContent = formatState.conversionResults[newFormat];
-            console.log('🔍 RIGHT PANE: Displayed character count:', rightInput.textContent.length);
             if (newFormat === 'fhir') {
-                console.log('🔍 CRITICAL FHIR DISPLAY: First 200 chars:', rightInput.textContent.substring(0, 200));
             }
         } else {
-            console.log('🔍 RIGHT PANE: No cached result for', newFormat, '- will trigger fresh generation');
             rightInput.textContent = '';
 
             // Note: Removed auto-clicking code that was causing issues
@@ -5345,22 +5074,14 @@ async function init() {
         try {
             // Clear previous results AND force fresh decode
             formatState.conversionResults = {};
-            console.log('🔄 CACHE CLEARED: Forcing fresh decode operations');
 
             if (formatState.leftMode === 'fragment') {
                 // Decode: Fragment -> CodeRef -> FHIR Bundle
-                console.log('=== DECODING PROCESS ===');
-                console.log('🔄 DECODE BUTTON: Starting full reverse pipeline');
-                console.log('🔄 DECODE BUTTON: Fragment input length:', inputContent.length);
 
                 const parsedViewModel = await payloadService.parseUserInput(inputContent);
-                console.log('🔍 CRITICAL CHECK: parsedViewModel.rawPayload.original_bundle_json exists:', !!parsedViewModel.rawPayload?.original_bundle_json);
-                console.log('🔍 CRITICAL CHECK: parsedViewModel.rawPayload.originalBundleJson exists:', !!parsedViewModel.rawPayload?.originalBundleJson);
                 if (parsedViewModel.rawPayload?.original_bundle_json) {
-                    console.log('🔍 CRITICAL CHECK: original_bundle_json length:', parsedViewModel.rawPayload.original_bundle_json.length);
                 }
                 if (parsedViewModel.rawPayload?.originalBundleJson) {
-                    console.log('🔍 CRITICAL CHECK: originalBundleJson length:', parsedViewModel.rawPayload.originalBundleJson.length);
                 }
                 if (!parsedViewModel?.rawPayload) {
                     throw new Error('Unable to decode fragment data');
@@ -5373,11 +5094,8 @@ async function init() {
                 formatState.conversionResults.coderef = JSON.stringify(parsedViewModel.rawPayload, null, 2);
 
                 // Convert to FHIR Bundle
-                console.log('🔍 DECODE RESULT: Converting CodeRef to FHIR Bundle');
                 const fhirBundle = codecPipeline.convertCodeRefToFhirBundle(parsedViewModel.rawPayload);
                 const fhirJson = JSON.stringify(fhirBundle, null, 2);
-                console.log('🔍 DECODE RESULT: Generated FHIR JSON character count:', fhirJson.length);
-                console.log('🔍 DECODE RESULT: First 200 chars:', fhirJson.substring(0, 200));
                 formatState.conversionResults.fhir = fhirJson;
 
                 // Store fragment (same as input)
@@ -5391,13 +5109,8 @@ async function init() {
 
             } else { // 'fhir'
                 // Encode: FHIR Bundle -> Fragment (stay in left pane)
-                console.log('=== ENCODING PROCESS ===');
-                console.log('Source FHIR length:', inputContent.length);
-                console.log('First 200 chars:', inputContent.substring(0, 200));
 
                 const fhirPayload = JSON.parse(inputContent);
-                console.log('Parsed FHIR bundle entries:', fhirPayload.entry?.length || 'No entries');
-                console.log('FHIR resourceType:', fhirPayload.resourceType);
 
                 // Store original FHIR data before encoding
                 formatState.originalFhir = inputContent;
@@ -5427,24 +5140,16 @@ async function init() {
 
     // Left pane title click - toggle between Fragment/FHIR modes
     leftPaneTitle.addEventListener('click', async () => {
-        console.log('🔘 LEFT PANE TITLE CLICKED: Mode switching initiated');
-        console.log('🔘 LEFT: Current mode:', formatState.leftMode);
         const newMode = formatState.leftMode === 'fragment' ? 'fhir' : 'fragment';
-        console.log('🔘 LEFT: Switching to mode:', newMode);
         await updateLeftPaneMode(newMode);
-        console.log('🔘 LEFT: Mode switch completed');
     });
 
     // Right pane title click - cycle through output formats in decode sequence
     rightPaneTitle.addEventListener('click', () => {
-        console.log('🔘 RIGHT PANE TITLE CLICKED: Format cycling initiated');
-        console.log('🔘 RIGHT: Current format:', formatState.rightFormat);
         const formats = ['protobuf', 'coderef', 'fhir']; // Decode sequence: Protobuf → CodeRef → FHIR
         const currentIndex = formats.indexOf(formatState.rightFormat);
         const nextIndex = (currentIndex + 1) % formats.length;
-        console.log('🔘 RIGHT: Cycling to format:', formats[nextIndex]);
         updateRightPaneFormat(formats[nextIndex]);
-        console.log('🔘 RIGHT: Format cycle completed');
     });
 
     // Action button - perform encode/decode based on current mode
@@ -5484,8 +5189,6 @@ async function init() {
     }
 
     parseButton.addEventListener('click', async () => {
-        console.log('🔘 PARSE BUTTON CLICKED: Starting final parse operation');
-        console.log('🔘 PARSE: Right format is:', formatState.rightFormat);
 
         if (formatState.rightFormat !== 'fhir') {
             showMessage('Parse only available when right pane shows IPS FHIR JSON', 'warning');
@@ -5493,8 +5196,6 @@ async function init() {
         }
 
         const fhirInput = rightInput.textContent.trim();
-        console.log('🔘 PARSE: FHIR input character length:', fhirInput.length);
-        console.log('🔘 PARSE: First 200 chars:', fhirInput.substring(0, 200));
 
         if (!fhirInput) {
             showMessage('No FHIR JSON available to parse', 'warning');
@@ -5503,10 +5204,6 @@ async function init() {
 
         try {
             const parsedViewModel = await payloadService.parseUserInput(fhirInput);
-            console.log('=== PARSE DEBUG ===');
-            console.log('Parsed view model:', parsedViewModel);
-            console.log('Patient resource:', parsedViewModel?.patientResource);
-            console.log('Stage sections:', parsedViewModel?.stageSections);
 
             appState.currentViewModel = parsedViewModel;
             appState.comparisonViewModel = appState.demos[0] || null;
@@ -5514,7 +5211,6 @@ async function init() {
             showMessage('FHIR JSON parsed and displayed successfully', 'success');
 
             // Force log flush for complete pipeline session debugging
-            console.log('🔚 PARSE COMPLETE: Forcing log flush for pipeline analysis');
             if (window.flushConsoleLogs) {
                 window.flushConsoleLogs();
             }
@@ -5540,7 +5236,6 @@ async function init() {
 
     // Enhanced preset button handlers
     preset1Button.addEventListener('click', () => {
-        console.log('Preset #1 clicked');
 
         if (formatState.leftMode === 'fragment') {
             // Load fragment into left pane
@@ -5558,7 +5253,6 @@ async function init() {
 
                 // Store as original FHIR to prevent round-trip loss
                 formatState.originalFhir = fhirJson;
-                console.log('Stored preset #1 as original FHIR, length:', fhirJson.length);
 
                 showMessage('Loaded preset #1 FHIR JSON', 'success');
             }
@@ -5585,7 +5279,6 @@ async function init() {
                 updateCharCount(leftInput, leftCharCount);
                 // Store as original FHIR to prevent round-trip loss
                 formatState.originalFhir = fhirJson;
-                console.log('Stored preset #2 as original FHIR, length:', fhirJson.length);
                 showMessage('Loaded preset #2 FHIR JSON', 'success');
             } else {
                 showMessage('Preset #2 FHIR JSON not available', 'warning');
@@ -5611,7 +5304,6 @@ async function init() {
                 updateCharCount(leftInput, leftCharCount);
                 // Store as original FHIR to prevent round-trip loss
                 formatState.originalFhir = fhirJson;
-                console.log('Stored preset #3 as original FHIR, length:', fhirJson.length);
                 showMessage('Loaded preset #3 FHIR JSON', 'success');
             } else {
                 showMessage('Preset #3 FHIR JSON not available', 'warning');
@@ -5627,32 +5319,30 @@ async function init() {
     }
 
     // Initialize enhanced UI state
-    updateRightPaneFormat('protobuf'); // Start with first decode step (Protobuf Binary Format)
+    updateRightPaneFormat('protobuf');
 
     // Load default content based on current mode
-    if (!fragment) {
+    // Fragment processing disabled - always start with default FHIR data
+    {
         // Default to FHIR input without triggering automatic encoding/decoding
-        console.log('Loading default FHIR content...');
 
-        if (payload1) {
-            const fhirJson = JSON.stringify(payload1, null, 2);
-            formatState.originalFhir = fhirJson;
-        } else {
-            formatState.originalFhir = null;
-        }
+        // Start with empty FHIR pane - no auto-loading of payload data
+        formatState.originalFhir = null;
 
         formatState.originalFragment = null;
         formatState.suppressMessages = true;
-        await updateLeftPaneMode('fhir');
-        updateCharCount(leftInput, leftCharCount);
+
+        // Skip updateLeftPaneMode during init to prevent payload pane blip
+        // Just set the initial mode state without DOM changes
+        formatState.leftMode = 'fhir';
 
         delete formatState.conversionResults.fhir;
-        rightInput.textContent = '';
-        updateCharCount(rightInput, rightCharCount);
+
+        // Skip updateCharCount calls during init to prevent payload blip
+        // Character counts are already "0 characters" in HTML for empty inputs
     }
 
-    // Set initial active preset to #1
-    updateActivePreset(preset1Button);
+    // No preset selected on initialization - user must manually select
 
     // Payload title navigation
     const payloadTitle = document.getElementById('payload-title');
@@ -5668,6 +5358,192 @@ async function init() {
 
     // Initialize Parse button state
     updateParseButtonState();
+
+    // Dual title display now handled in createInfoBoxes()
+}
+
+
+// Legend Configuration
+const LEGEND_CONFIG = {
+    CIRCLE_SIZE: 6, // Global variable for marker size
+    USE_CHART_JS_LEGEND: true, // Toggle between approaches
+    COLLISION_PADDING: 15 // Minimum spacing between legend items
+};
+
+/**
+ * Option A: Chart.js native legend with Y-axis positioning
+ * Moves Chart.js legend items to align with their dataset's last Y-value
+ */
+function applyYAxisLegendPositioning(chartInstance, datasets) {
+    if (!chartInstance || !chartInstance.legend) return;
+
+    const yScale = chartInstance.scales.y;
+    if (!yScale) return;
+
+    // Chart.js creates legend items in a specific DOM structure
+    const canvas = chartInstance.canvas;
+    const chartContainer = canvas.parentNode;
+
+    // Find the legend container (Chart.js creates it dynamically)
+    let legendContainer = chartContainer.querySelector('div[style*="position"]');
+    if (!legendContainer) {
+        // Try different selectors for Chart.js legend
+        legendContainer = chartContainer.querySelector('.chartjs-legend') ||
+                         chartContainer.querySelector('[id*="legend"]') ||
+                         chartContainer.parentNode.querySelector('div[style*="right"]');
+    }
+
+    if (!legendContainer) {
+        console.warn('Legend container not found, creating custom positioning');
+        return createFallbackLegendPositioning(chartInstance, datasets);
+    }
+
+    const legendItems = legendContainer.querySelectorAll('li, .legend-item, span');
+    const sortedDatasets = [...datasets].sort((a, b) => {
+        const aLastY = a.data[a.data.length - 1]?.y || 0;
+        const bLastY = b.data[b.data.length - 1]?.y || 0;
+        return bLastY - aLastY; // Highest to lowest
+    });
+
+    // Position each legend item at its dataset's last Y-value
+    sortedDatasets.forEach((dataset, index) => {
+        if (!dataset.data || dataset.data.length === 0) return;
+
+        const lastPoint = dataset.data[dataset.data.length - 1];
+        const lastY = lastPoint ? lastPoint.y : 0;
+        const pixelY = yScale.getPixelForValue(lastY);
+        const chartTop = yScale.top || 0;
+
+        const legendItem = legendItems[index];
+        if (legendItem) {
+            legendItem.style.position = 'absolute';
+            legendItem.style.top = `${pixelY - chartTop}px`;
+            legendItem.style.transform = 'translateY(-50%)';
+            legendItem.style.right = '0';
+        }
+    });
+}
+
+/**
+ * Fallback positioning when Chart.js legend DOM is not found
+ */
+function createFallbackLegendPositioning(chartInstance, datasets) {
+    // Enable the enhanced custom legend as fallback
+    createEnhancedPositionedLegend(chartInstance, datasets, true);
+    // Disable Chart.js legend to avoid conflicts
+    if (chartInstance.legend) {
+        chartInstance.legend.options.display = false;
+        chartInstance.update('none');
+    }
+}
+
+/**
+ * Option C: Enhanced custom DOM legend with collision detection (disabled)
+ * Builds improved version of original custom legend
+ */
+function createEnhancedPositionedLegend(chartInstance, datasets, enabled = false) {
+    if (!enabled) return;
+
+    // Add legend wrapper back to HTML if using this approach
+    const chartWrapper = document.querySelector('.vitals-chart-wrapper');
+    if (!chartWrapper) return;
+
+    let legendWrapper = document.getElementById('vitals-legend-wrapper');
+    if (!legendWrapper) {
+        legendWrapper = document.createElement('div');
+        legendWrapper.id = 'vitals-legend-wrapper';
+        legendWrapper.className = 'vitals-legend-wrapper-enhanced';
+        chartWrapper.parentNode.appendChild(legendWrapper);
+    }
+
+    // Clear existing legend items
+    legendWrapper.innerHTML = '';
+
+    const chartArea = chartInstance.chartArea;
+    const yScale = chartInstance.scales.y;
+    const legendData = [];
+
+    // Collect legend data with Y positions
+    datasets.forEach(dataset => {
+        const data = dataset.data || [];
+        const lastPoint = data[data.length - 1];
+        if (!lastPoint) return;
+
+        const lastY = lastPoint.y;
+        const pixelY = yScale.getPixelForValue(lastY);
+
+        legendData.push({
+            label: dataset.label,
+            color: dataset.borderColor,
+            pixelY: pixelY,
+            lastY: lastY
+        });
+    });
+
+    // Sort by Y-value (highest to lowest)
+    legendData.sort((a, b) => b.lastY - a.lastY);
+
+    // Apply collision detection
+    const adjustedPositions = resolveCollisions(legendData.map(item => item.pixelY));
+
+    // Create legend items with adjusted positions
+    legendData.forEach((item, index) => {
+        const legendItem = document.createElement('div');
+        legendItem.style.cssText = `
+            position: absolute;
+            top: ${adjustedPositions[index]}px;
+            left: 0;
+            display: flex;
+            align-items: center;
+            font-size: 10px;
+            font-weight: 500;
+            white-space: nowrap;
+            transform: translateY(-50%);
+        `;
+
+        const marker = document.createElement('div');
+        marker.style.cssText = `
+            width: ${LEGEND_CONFIG.CIRCLE_SIZE}px;
+            height: ${LEGEND_CONFIG.CIRCLE_SIZE}px;
+            border-radius: 50%;
+            background-color: ${item.color};
+            margin-right: 6px;
+            flex-shrink: 0;
+        `;
+
+        const label = document.createElement('span');
+        label.textContent = item.label;
+
+        legendItem.appendChild(marker);
+        legendItem.appendChild(label);
+        legendWrapper.appendChild(legendItem);
+    });
+}
+
+/**
+ * Collision detection helper - adjusts Y positions to prevent overlap
+ */
+function resolveCollisions(positions) {
+    const adjusted = [...positions];
+    const minSpacing = LEGEND_CONFIG.COLLISION_PADDING;
+
+    // Sort positions to process from top to bottom
+    const sortedIndices = positions
+        .map((pos, index) => ({ pos, index }))
+        .sort((a, b) => a.pos - b.pos)
+        .map(item => item.index);
+
+    // Adjust positions to prevent collisions
+    for (let i = 1; i < sortedIndices.length; i++) {
+        const currentIndex = sortedIndices[i];
+        const prevIndex = sortedIndices[i - 1];
+
+        if (adjusted[currentIndex] - adjusted[prevIndex] < minSpacing) {
+            adjusted[currentIndex] = adjusted[prevIndex] + minSpacing;
+        }
+    }
+
+    return adjusted;
 }
 
 document.addEventListener('DOMContentLoaded', init);

@@ -235,6 +235,22 @@ class AutoJJ {
 
             await execAsync(`"${updateScript}" "${updateMessage}"`, { cwd: this.projectRoot });
             console.log('📝 Memory system updated');
+
+            // Update CLAUDE.md timestamps for 1-hour TTL crash recovery
+            const claudeUpdateScript = resolve(this.projectRoot, 'memory/update-claude-md.sh');
+            await execAsync(`"${claudeUpdateScript}" "Auto-JJ timestamp refresh"`, { cwd: this.projectRoot });
+            console.log('🔄 CLAUDE.md timestamps refreshed');
+
+            const refreshFlag = process.env.CODEX_REFRESH_TTL;
+            const shouldRefreshCodex = typeof refreshFlag === 'string'
+                ? !['0', 'false', 'off'].includes(refreshFlag.toLowerCase())
+                : false;
+
+            if (shouldRefreshCodex) {
+                const codexUpdateScript = resolve(this.projectRoot, 'memory/update-codex-md.sh');
+                await execAsync(`"${codexUpdateScript}" "Auto-JJ Codex timestamp refresh"`, { cwd: this.projectRoot });
+                console.log('🔄 AGENTS.md timestamps refreshed for Codex');
+            }
         } catch (error) {
             console.log('⚠️  Could not update memory system:', error.message);
         }

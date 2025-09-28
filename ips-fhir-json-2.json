@@ -14,6 +14,472 @@
         "id": "org-1",
         "name": "British Army Medical Services"
       }
+    },
+    {
+      "fullUrl": "urn:uuid:pract-1",
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "pract-1",
+        "name": [{ "family": "McKay", "given": ["Alex"] }]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:patient-1",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-1",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/uv/ips/StructureDefinition/Patient-uv-ips",
+            "https://fhir.hl7.org.uk/StructureDefinition/UKCore-Patient"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9434765919"
+          },
+          {
+            "type": {
+              "coding": [
+                { "system": "http://terminology.hl7.org/CodeSystem/v2-0203", "code": "MIL", "display": "Military ID number" }
+              ]
+            },
+            "system": "https://fhir.nato.int/Id/service-number",
+            "value": "A1234567"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "prefix": ["Drummer"],
+            "given": ["Thomas"],
+            "family": "Hodge"
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1998-03-15",
+        "extension": [
+          {
+            "url": "https://fhir.nato.int/StructureDefinition/military-rank",
+            "valueCodeableConcept": {
+              "coding": [
+                { "system": "https://nato.int/CodeSystem/stanag-2116", "code": "OR1", "display": "Private (OR-1)" }
+              ],
+              "text": "Drummer"
+            }
+          },
+          {
+            "url": "https://fhir.nato.int/StructureDefinition/military-service",
+            "valueCodeableConcept": {
+              "coding": [
+                { "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode", "code": "ARMY", "display": "Army" }
+              ],
+              "text": "British Army"
+            }
+          },
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/patient-nationality",
+            "valueCodeableConcept": {
+              "coding": [{ "system": "urn:iso:std:iso:3166", "code": "GB", "display": "United Kingdom" }]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:allergy-1",
+      "resource": {
+        "resourceType": "AllergyIntolerance",
+        "id": "allergy-1",
+        "meta": { "profile": ["http://hl7.org/fhir/uv/ips/StructureDefinition/AllergyIntolerance-uv-ips"] },
+        "clinicalStatus": { "coding": [{ "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical", "code": "active" }] },
+        "verificationStatus": { "coding": [{ "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification", "code": "confirmed" }] },
+        "type": "allergy",
+        "category": ["food"],
+        "code": { "coding": [{ "system": "http://snomed.info/sct", "code": "300913006", "display": "Allergy to shellfish" }] },
+        "patient": { "reference": "urn:uuid:patient-1" },
+        "onsetDateTime": "2015-05-01"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:medstatement-1",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "medstatement-1",
+        "meta": { "profile": ["http://hl7.org/fhir/uv/ips/StructureDefinition/MedicationStatement-uv-ips"] },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            { "system": "http://snomed.info/sct", "code": "372729009", "display": "Cetirizine hydrochloride" },
+            { "system": "https://dmd.nhs.uk", "code": "32118011000001102", "display": "Cetirizine 10mg tablets" }
+          ],
+          "text": "Cetirizine 10 mg tablet once daily"
+        },
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "effectivePeriod": { "start": "2023-04-01" },
+        "reasonCode": [{ "coding": [{ "system": "http://snomed.info/sct", "code": "418689008", "display": "Hay fever" }] }]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-bloodgroup",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-bloodgroup",
+        "status": "final",
+        "meta": { "profile": ["http://hl7.org/fhir/uv/ips/StructureDefinition/Observation-results-uv-ips"] },
+        "code": { "coding": [{ "system": "http://loinc.org", "code": "882-1", "display": "ABO and Rh group" }] },
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "effectiveDateTime": "2024-06-01",
+        "valueCodeableConcept": { "coding": [{ "system": "http://snomed.info/sct", "code": "112144000", "display": "Blood group O positive" }] }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:condition-gsw",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-gsw",
+        "meta": { "profile": ["http://hl7.org/fhir/uv/ips/StructureDefinition/Condition-uv-ips"] },
+        "clinicalStatus": { "coding": [{ "system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active" }] },
+        "verificationStatus": { "coding": [{ "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status", "code": "confirmed" }] },
+        "category": [{ "coding": [{ "system": "http://terminology.hl7.org/CodeSystem/condition-category", "code": "encounter-diagnosis" }] }],
+        "code": { "coding": [{ "system": "http://snomed.info/sct", "code": "283371005", "display": "Gunshot wound" }], "text": "GSW right thigh, through-and-through" },
+        "bodySite": [
+          { "coding": [{ "system": "http://snomed.info/sct", "code": "61396006", "display": "Thigh structure (right)" }] }
+        ],
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "onsetDateTime": "2025-09-26T10:15:00-04:00",
+        "note": [
+          { "text": "Through-and-through; missed femur; no major vessel involvement; neurovascular intact." }
+        ]
+      }
+    },
+
+    {
+      "fullUrl": "urn:uuid:enc-poi",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-poi",
+        "status": "finished",
+        "class": { "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "AMB", "display": "ambulatory" },
+        "type": [{ "coding": [{ "system": "http://snomed.info/sct", "code": "108290001", "display": "Accident and emergency service" }] }],
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "period": { "start": "2025-09-26T10:16:00-04:00", "end": "2025-09-26T10:30:00-04:00" },
+        "reasonReference": [{ "reference": "urn:uuid:condition-gsw" }],
+        "serviceProvider": { "reference": "urn:uuid:org-1" }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:proc-poi",
+      "resource": {
+        "resourceType": "Procedure",
+        "id": "proc-poi",
+        "status": "completed",
+        "code": { "coding": [{ "system": "http://snomed.info/sct", "code": "225362002", "display": "Application of pressure dressing" }] },
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "performedDateTime": "2025-09-26T10:18:00-04:00",
+        "encounter": { "reference": "urn:uuid:enc-poi" },
+        "reasonReference": [{ "reference": "urn:uuid:condition-gsw" }]
+      }
+    },
+
+    {
+      "fullUrl": "urn:uuid:enc-casevac",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-casevac",
+        "status": "finished",
+        "class": { "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "EMER", "display": "emergency" },
+        "type": [{ "coding": [{ "system": "http://snomed.info/sct", "code": "440654001", "display": "Transport by ground ambulance" }] }],
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "period": { "start": "2025-09-26T10:30:00-04:00", "end": "2025-09-26T10:45:00-04:00" },
+        "reasonReference": [{ "reference": "urn:uuid:condition-gsw" }]
+      }
+    },
+
+    {
+      "fullUrl": "urn:uuid:enc-axp",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-axp",
+        "status": "finished",
+        "class": { "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "VR", "display": "virtual" },
+        "type": [{ "coding": [{ "system": "http://snomed.info/sct", "code": "306689006", "display": "Handover of care" }] }],
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "period": { "start": "2025-09-26T10:45:00-04:00", "end": "2025-09-26T10:50:00-04:00" },
+        "reasonReference": [{ "reference": "urn:uuid:condition-gsw" }]
+      }
+    },
+
+    {
+      "fullUrl": "urn:uuid:enc-medevac",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-medevac",
+        "status": "finished",
+        "class": { "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "EMER", "display": "emergency" },
+        "type": [{ "coding": [{ "system": "http://snomed.info/sct", "code": "440655000", "display": "Transport by air ambulance" }] }],
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "period": { "start": "2025-09-26T10:52:00-04:00", "end": "2025-09-26T11:20:00-04:00" },
+        "reasonReference": [{ "reference": "urn:uuid:condition-gsw" }]
+      }
+    },
+
+    {
+      "fullUrl": "urn:uuid:enc-r1-phec",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-r1-phec",
+        "status": "finished",
+        "class": { "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "EMER", "display": "emergency" },
+        "type": [{ "coding": [{ "system": "http://snomed.info/sct", "code": "11429006", "display": "Emergency department admission" }] }],
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "period": { "start": "2025-09-26T11:20:00-04:00", "end": "2025-09-26T12:00:00-04:00" },
+        "reasonReference": [{ "reference": "urn:uuid:condition-gsw" }]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:medadmin-abx-1",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "medadmin-abx-1",
+        "status": "completed",
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "encounter": { "reference": "urn:uuid:enc-r1-phec" },
+        "medicationCodeableConcept": {
+          "coding": [
+            { "system": "http://snomed.info/sct", "code": "108596001", "display": "Co-amoxiclav" }
+          ],
+          "text": "Co-amoxiclav 1.2 g IV"
+        },
+        "effectiveDateTime": "2025-09-26T11:35:00-04:00",
+        "dosage": { "text": "1.2 g IV bolus" }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:proc-r1-phec-dress",
+      "resource": {
+        "resourceType": "Procedure",
+        "id": "proc-r1-phec-dress",
+        "status": "completed",
+        "code": { "coding": [{ "system": "http://snomed.info/sct", "code": "225358003", "display": "Change of dressing" }] },
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "encounter": { "reference": "urn:uuid:enc-r1-phec" },
+        "performedDateTime": "2025-09-26T11:30:00-04:00",
+        "reasonReference": [{ "reference": "urn:uuid:condition-gsw" }]
+      }
+    },
+
+    {
+      "fullUrl": "urn:uuid:enc-r1-phc",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-r1-phc",
+        "status": "finished",
+        "class": { "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "AMB", "display": "ambulatory" },
+        "type": [{ "coding": [{ "system": "http://snomed.info/sct", "code": "408467006", "display": "Primary medical care" }] }],
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "period": { "start": "2025-09-26T12:00:00-04:00", "end": "2025-09-26T12:20:00-04:00" }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:proc-r1-phc-irrig",
+      "resource": {
+        "resourceType": "Procedure",
+        "id": "proc-r1-phc-irrig",
+        "status": "completed",
+        "code": { "coding": [{ "system": "http://snomed.info/sct", "code": "310293003", "display": "Irrigation of wound" }] },
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "encounter": { "reference": "urn:uuid:enc-r1-phc" },
+        "performedDateTime": "2025-09-26T12:10:00-04:00",
+        "reasonReference": [{ "reference": "urn:uuid:condition-gsw" }]
+      }
+    },
+
+    {
+      "fullUrl": "urn:uuid:enc-fwd-tacevac",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-fwd-tacevac",
+        "status": "finished",
+        "class": { "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "EMER", "display": "emergency" },
+        "type": [{ "coding": [{ "system": "http://snomed.info/sct", "code": "428311008", "display": "Inter-facility transfer" }] }],
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "period": { "start": "2025-09-26T12:30:00-04:00", "end": "2025-09-26T13:10:00-04:00" }
+      }
+    },
+
+    {
+      "fullUrl": "urn:uuid:enc-r2",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-r2",
+        "status": "finished",
+        "class": { "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "IMP", "display": "inpatient encounter" },
+        "type": [{ "coding": [{ "system": "http://snomed.info/sct", "code": "183452005", "display": "Hospital admission" }] }],
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "period": { "start": "2025-09-26T13:10:00-04:00", "end": "2025-09-26T16:00:00-04:00" },
+        "reasonReference": [{ "reference": "urn:uuid:condition-gsw" }]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:proc-r2-explore",
+      "resource": {
+        "resourceType": "Procedure",
+        "id": "proc-r2-explore",
+        "status": "completed",
+        "code": { "coding": [{ "system": "http://snomed.info/sct", "code": "35637008", "display": "Exploration of wound" }] },
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "encounter": { "reference": "urn:uuid:enc-r2" },
+        "performedDateTime": "2025-09-26T14:00:00-04:00",
+        "reasonReference": [{ "reference": "urn:uuid:condition-gsw" }]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:proc-r2-debride",
+      "resource": {
+        "resourceType": "Procedure",
+        "id": "proc-r2-debride",
+        "status": "completed",
+        "code": { "coding": [{ "system": "http://snomed.info/sct", "code": "128304006", "display": "Debridement of wound" }] },
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "encounter": { "reference": "urn:uuid:enc-r2" },
+        "performedDateTime": "2025-09-26T14:20:00-04:00",
+        "reasonReference": [{ "reference": "urn:uuid:condition-gsw" }]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-r2-xray",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-r2-xray",
+        "status": "final",
+        "code": { "coding": [{ "system": "http://snomed.info/sct", "code": "168731009", "display": "X-ray of femur" }] },
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "effectiveDateTime": "2025-09-26T13:30:00-04:00",
+        "valueCodeableConcept": { "coding": [{ "system": "http://snomed.info/sct", "code": "260413007", "display": "Normal" }], "text": "No fracture" }
+      }
+    },
+
+    {
+      "fullUrl": "urn:uuid:enc-rear-tacevac",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-rear-tacevac",
+        "status": "finished",
+        "class": { "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "EMER", "display": "emergency" },
+        "type": [{ "coding": [{ "system": "http://snomed.info/sct", "code": "371883000", "display": "Air transport" }] }],
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "period": { "start": "2025-09-26T16:15:00-04:00", "end": "2025-09-26T18:00:00-04:00" }
+      }
+    },
+
+    {
+      "fullUrl": "urn:uuid:enc-r3",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-r3",
+        "status": "finished",
+        "class": { "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "IMP", "display": "inpatient encounter" },
+        "type": [{ "coding": [{ "system": "http://snomed.info/sct", "code": "183452005", "display": "Hospital admission" }] }],
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "period": { "start": "2025-09-26T18:10:00-04:00", "end": "2025-09-27T10:00:00-04:00" }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:proc-r3-closure",
+      "resource": {
+        "resourceType": "Procedure",
+        "id": "proc-r3-closure",
+        "status": "completed",
+        "code": { "coding": [{ "system": "http://snomed.info/sct", "code": "359733006", "display": "Closure of wound" }] },
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "encounter": { "reference": "urn:uuid:enc-r3" },
+        "performedDateTime": "2025-09-26T19:00:00-04:00",
+        "reasonReference": [{ "reference": "urn:uuid:condition-gsw" }]
+      }
+    },
+
+    {
+      "fullUrl": "urn:uuid:enc-stratevac",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-stratevac",
+        "status": "finished",
+        "class": { "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "EMER", "display": "emergency" },
+        "type": [{ "coding": [{ "system": "http://snomed.info/sct", "code": "429157001", "display": "Aeromedical evacuation" }] }],
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "period": { "start": "2025-09-27T12:00:00-04:00", "end": "2025-09-27T20:00:00-04:00" }
+      }
+    },
+
+    {
+      "fullUrl": "urn:uuid:composition-ips",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "composition-ips",
+        "meta": { "profile": ["http://hl7.org/fhir/uv/ips/StructureDefinition/Composition-uv-ips"] },
+        "status": "final",
+        "type": { "coding": [{ "system": "http://loinc.org", "code": "60591-5", "display": "Patient summary Document" }] },
+        "date": "2025-09-26T14:00:00Z",
+        "title": "International Patient Summary – OPCP Gunshot Wound (Right Thigh)",
+        "subject": { "reference": "urn:uuid:patient-1" },
+        "author": [{ "reference": "urn:uuid:pract-1" }, { "reference": "urn:uuid:org-1" }],
+        "section": [
+          {
+            "title": "Demographics & Identifiers",
+            "code": { "coding": [{ "system": "http://loinc.org", "code": "48765-2", "display": "Demographics" }] },
+            "entry": [{ "reference": "urn:uuid:patient-1" }]
+          },
+          {
+            "title": "Allergies",
+            "code": { "coding": [{ "system": "http://loinc.org", "code": "48765-2", "display": "Allergies and intolerances" }] },
+            "entry": [{ "reference": "urn:uuid:allergy-1" }]
+          },
+            {
+            "title": "Problem/Diagnosis",
+            "code": { "coding": [{ "system": "http://loinc.org", "code": "11450-4", "display": "Problem list" }] },
+            "entry": [{ "reference": "urn:uuid:condition-gsw" }]
+          },
+          {
+            "title": "Medications (Maintenance)",
+            "code": { "coding": [{ "system": "http://loinc.org", "code": "10160-0", "display": "History of medication use" }] },
+            "entry": [{ "reference": "urn:uuid:medstatement-1" }]
+          },
+          {
+            "title": "Laboratory/Results",
+            "code": { "coding": [{ "system": "http://loinc.org", "code": "30954-2", "display": "Relevant diagnostic tests/laboratory data" }] },
+            "entry": [{ "reference": "urn:uuid:obs-bloodgroup" }, { "reference": "urn:uuid:obs-r2-xray" }]
+          },
+
+          { "title": "Point of Injury (POI)", "entry": [{ "reference": "urn:uuid:enc-poi" }, { "reference": "urn:uuid:proc-poi" }] },
+          { "title": "Casualty Evacuation (CASEVAC)", "entry": [{ "reference": "urn:uuid:enc-casevac" }] },
+          { "title": "Ambulance Exchange Point (AXP)", "entry": [{ "reference": "urn:uuid:enc-axp" }] },
+          { "title": "Medical Evacuation (MEDEVAC)", "entry": [{ "reference": "urn:uuid:enc-medevac" }] },
+          { "title": "Role 1 Pre-Hospital Emergency Care (R1 PHEC)", "entry": [
+              { "reference": "urn:uuid:enc-r1-phec" },
+              { "reference": "urn:uuid:proc-r1-phec-dress" },
+              { "reference": "urn:uuid:medadmin-abx-1" }
+          ]},
+          { "title": "Role 1 Primary Healthcare (R1 PHC)", "entry": [
+              { "reference": "urn:uuid:enc-r1-phc" },
+              { "reference": "urn:uuid:proc-r1-phc-irrig" }
+          ]},
+          { "title": "Forward Tactical Evacuation (Fwd TACEVAC)", "entry": [{ "reference": "urn:uuid:enc-fwd-tacevac" }] },
+          { "title": "Role 2 Hospital Care (R2)", "entry": [
+              { "reference": "urn:uuid:enc-r2" },
+              { "reference": "urn:uuid:proc-r2-explore" },
+              { "reference": "urn:uuid:proc-r2-debride" },
+              { "reference": "urn:uuid:obs-r2-xray" }
+          ]},
+          { "title": "Rear Tactical Evacuation (Rear TACEVAC)", "entry": [{ "reference": "urn:uuid:enc-rear-tacevac" }] },
+          { "title": "Role 3 Hospital Care (R3)", "entry": [
+              { "reference": "urn:uuid:enc-r3" },
+              { "reference": "urn:uuid:proc-r3-closure" }
+          ]},
+          { "title": "Strategic Evacuation (STRATEVAC)", "entry": [{ "reference": "urn:uuid:enc-stratevac" }] }
+        ]
+      }
     }
   ]
 }
