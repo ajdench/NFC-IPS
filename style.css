@@ -973,7 +973,8 @@ input:checked + .slider .slider-label.right {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: calc(var(--standard-padding) / 2) var(--standard-padding);
+    padding: calc(var(--standard-padding) / 3) calc(var(--standard-padding) * 0.75);
+    height: 19px;
     border-radius: calc(var(--standard-padding) * 2);
     border: 1px solid;
     background: transparent;
