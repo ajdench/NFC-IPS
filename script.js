@@ -5372,13 +5372,15 @@ function renderCustomLegend(chartInstance) {
     const canvas = chartInstance.canvas;
     if (!canvas) return;
 
-    const { container, legendWrapper } = ensureLegendWrapper(canvas);
-    if (!container || !legendWrapper) return;
+    const { chartWrapper, legendWrapper } = ensureLegendWrapper(canvas);
+    if (!chartWrapper || !legendWrapper) return;
+
+    const vitalsContent = chartWrapper.closest('.vitals-content');
 
     const datasets = chartInstance.data?.datasets || [];
     const yScale = chartInstance.scales?.y;
     if (!datasets.length || !yScale) {
-        resetLegendLayout(container);
+        resetLegendLayout(chartWrapper);
         return;
     }
 
@@ -5407,13 +5409,13 @@ function renderCustomLegend(chartInstance) {
     visibleItems.sort((a, b) => a.pixelY - b.pixelY);
 
     if (!visibleItems.length) {
-        resetLegendLayout(container);
+        resetLegendLayout(chartWrapper);
         return;
     }
 
     const chartArea = chartInstance.chartArea;
     if (!chartArea) {
-        resetLegendLayout(container);
+        resetLegendLayout(chartWrapper);
         return;
     }
 
@@ -5429,9 +5431,14 @@ function renderCustomLegend(chartInstance) {
 
     legendWrapper.classList.add('is-visible');
     legendWrapper.innerHTML = '';
-    legendWrapper.style.marginTop = `${Math.max(areaTopCss, 0)}px`;
-    legendWrapper.style.marginBottom = `${Math.max(areaBottomCss, 0)}px`;
+
+    const wrapperStyles = getComputedStyle(chartWrapper);
+    const paddingTop = Number.parseFloat(wrapperStyles.paddingTop) || 0;
+    const paddingBottom = Number.parseFloat(wrapperStyles.paddingBottom) || 0;
+
+    legendWrapper.style.top = `${Math.max(areaTopCss + paddingTop, 0)}px`;
     legendWrapper.style.height = `${Math.max(areaHeightCss, 0)}px`;
+    legendWrapper.style.bottom = '';
 
     const availableHeight = Math.max(areaHeightCss, 0);
     const minSpacing = visibleItems.length > 1
@@ -5450,6 +5457,10 @@ function renderCustomLegend(chartInstance) {
         availableHeight,
         minSpacing
     );
+
+    if (vitalsContent) {
+        vitalsContent.classList.add('has-data');
+    }
 
     visibleItems.forEach((item, index) => {
         const legendItem = document.createElement('div');
@@ -5471,23 +5482,21 @@ function renderCustomLegend(chartInstance) {
     const legendWidth = measureLegendWidth(legendWrapper);
     legendWrapper.style.width = `${legendWidth}px`;
     legendWrapper.style.minWidth = `${legendWidth}px`;
-    container.style.setProperty('--legend-column-width', `${legendWidth}px`);
-    container.style.setProperty('--legend-column-gap', 'calc(var(--standard-padding) / 2)');
 }
 
 function ensureLegendWrapper(canvas) {
-    const container = canvas.closest('.vitals-content');
-    if (!container) return { container: null, legendWrapper: null };
+    const chartWrapper = canvas.closest('.vitals-chart-wrapper');
+    if (!chartWrapper) return { chartWrapper: null, legendWrapper: null };
 
-    let legendWrapper = container.querySelector('#vitals-legend-wrapper');
+    let legendWrapper = chartWrapper.querySelector('#vitals-legend-wrapper');
     if (!legendWrapper) {
         legendWrapper = document.createElement('div');
         legendWrapper.id = 'vitals-legend-wrapper';
         legendWrapper.className = 'vitals-legend-wrapper';
-        container.appendChild(legendWrapper);
+        chartWrapper.appendChild(legendWrapper);
     }
 
-    return { container, legendWrapper };
+    return { chartWrapper, legendWrapper };
 }
 
 function measureLegendWidth(wrapper) {
