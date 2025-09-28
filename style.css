@@ -443,7 +443,7 @@ body {
     --legend-overlap: 40px;
     background-color: var(--bg-color-detail-value);
     border-radius: 8px;
-    min-height: calc(var(--standard-padding) * 3);
+    min-height: 0;
     position: relative;
     overflow: visible;
     padding: var(--standard-padding);
