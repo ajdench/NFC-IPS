@@ -4398,6 +4398,18 @@ function renderVitalsChart(viewModel) {
             setTimeout(syncLegend, 0);
         }
 
+        const animationOptions = vitalsChartInstance.options.animation || {};
+        const originalOnComplete = animationOptions.onComplete;
+        animationOptions.onComplete = (...args) => {
+            if (typeof originalOnComplete === 'function') {
+                originalOnComplete(...args);
+            }
+            renderCustomLegend(vitalsChartInstance);
+        };
+
+        vitalsChartInstance.options.animation = animationOptions;
+        vitalsChartInstance.options.onResize = () => renderCustomLegend(vitalsChartInstance);
+
     } else if (typeof window !== 'undefined' && window.VitalsMiniChart) {
         vitalsChartLibrary = 'mini';
         vitalsChartInstance = new window.VitalsMiniChart(ctx, {
