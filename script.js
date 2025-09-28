@@ -4301,38 +4301,26 @@ function renderVitalsChart(viewModel) {
                             }
 
 
-                            // Generate all possible hh:00/30 marks between first and last
-                            const allPossibleTicks = [];
-                            const current = new Date(firstTick);
-                            current.setMinutes(current.getMinutes() + 30); // Start after first tick
+                            // Generate tick marks constrained to hh:00 / hh:30 with max 10 total
+                            const maxTotalTicks = 10;
+                            const totalIntervals = Math.max(1, Math.round((lastTick.getTime() - firstTick.getTime()) / thirtyMinutesMs));
+                            const maxInternalTicks = Math.max(1, maxTotalTicks - 1);
+                            const skipFactor = Math.max(1, Math.ceil((totalIntervals + 1) / maxInternalTicks));
 
-                            while (current < lastTick) {
-                                allPossibleTicks.push(new Date(current));
-                                current.setMinutes(current.getMinutes() + 30);
+                            const tickValues = [];
+                            let cursor = firstTick.getTime();
+                            while (cursor < lastTick.getTime()) {
+                                tickValues.push(cursor);
+                                cursor += thirtyMinutesMs * skipFactor;
+                            }
+                            tickValues.push(lastTick.getTime());
+
+                            const uniqueTickValues = Array.from(new Set(tickValues)).sort((a, b) => a - b);
+                            while (uniqueTickValues.length > maxTotalTicks) {
+                                uniqueTickValues.splice(uniqueTickValues.length - 2, 1);
                             }
 
-                            // Select exactly 7 best intermediate ticks (CARE_STAGE_COUNT - 2)
-                            const targetCount = CARE_STAGE_COUNT - 2; // 7 intermediate ticks
-                            let selectedTicks = [];
-
-                            if (allPossibleTicks.length <= targetCount) {
-                                // Use all available ticks if we have 7 or fewer
-                                selectedTicks = allPossibleTicks;
-                            } else {
-                                // Select 7 evenly distributed ticks from available options
-                                const step = (allPossibleTicks.length - 1) / (targetCount - 1);
-                                for (let i = 0; i < targetCount; i++) {
-                                    const index = Math.round(i * step);
-                                    selectedTicks.push(allPossibleTicks[index]);
-                                }
-                            }
-
-                            // Build final tick array: first + selected + last
-                            const finalTicks = [
-                                { value: firstTick.getTime() },
-                                ...selectedTicks.map(tick => ({ value: tick.getTime() })),
-                                { value: lastTick.getTime() }
-                            ];
+                            const finalTicks = uniqueTickValues.map(value => ({ value }));
 
                             scale.ticks = finalTicks;
                             scale.min = firstTick.getTime();
