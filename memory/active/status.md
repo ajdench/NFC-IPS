@@ -148,3 +148,6 @@
 - Fixed vitals chart legend positioning: reduced gap to half standard padding, aligned legend items to right edge of container - legend now conforms to chart pane padding boundaries
 
 ### Update: 2025-09-27 11:23
+
+### Update: 2025-09-28 16:28
+- Toast badges now 19px with balanced padding/box-sizing, payload header grid columns aligned; vitals empty state keeps standard padding; chart ticks now enforce 30-minute pre-buffer (first tick no earlier than data - 30). 
