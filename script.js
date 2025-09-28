@@ -5365,9 +5365,9 @@ async function init() {
 
 // Legend Configuration
 const LEGEND_CONFIG = {
-    CIRCLE_SIZE: 6, // Global variable for marker size
-    USE_CHART_JS_LEGEND: true, // Toggle between approaches
-    COLLISION_PADDING: 15 // Minimum spacing between legend items
+    MARKER_SIZE: 6,
+    MIN_ROW_GAP: 14,
+    EXTRA_WIDTH_PADDING: 12
 };
 
 /**
