@@ -65,6 +65,8 @@
     --detail-label-text-blue: var(--text-color-blue);
     --detail-label-bg-rear-tacevac: var(--bg-color-rear-tacevac-darker);
     --detail-label-text-rear-tacevac: var(--text-color-rear-tacevac);
+    --detail-label-bg-stratevac: var(--bg-color-stratevac-darker);
+    --detail-label-text-stratevac: var(--text-color-stratevac);
     --detail-label-bg-purple: var(--bg-color-purple-darker);
     --detail-label-text-purple: var(--text-color-r3);
     --detail-label-bg-khaki: var(--bg-color-khaki-darker);
