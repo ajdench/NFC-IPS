@@ -472,11 +472,12 @@ body {
     pointer-events: none;
     display: none;
     width: max-content;
-    margin-left: calc(var(--legend-overlap) * -1);
+    margin-left: 0;
 }
 
 .vitals-legend-wrapper.is-visible {
     display: block;
+    margin-left: calc(var(--legend-overlap) * -1);
 }
 
 .vitals-legend-wrapper .vitals-legend-item {
