@@ -1607,20 +1607,6 @@ function showMessage(message, type = 'info') {
     // Add to container
     toastContainer.appendChild(toast);
 
-    // Position toast centred on the payload title text
-    const payloadHeader = document.querySelector('.payload-header');
-    const payloadTitle = document.querySelector('.payload-header .info-title');
-    if (payloadHeader && payloadTitle) {
-        const headerRect = payloadHeader.getBoundingClientRect();
-        const titleRect = payloadTitle.getBoundingClientRect();
-        const titleCenter = titleRect.top + (titleRect.height / 2);
-        const toastRect = toast.getBoundingClientRect();
-        const offsetWithinHeader = titleCenter - headerRect.top - (toastRect.height / 2);
-        toastContainer.style.top = `${offsetWithinHeader}px`;
-    } else {
-        toastContainer.style.top = '';
-    }
-
     // Auto-remove after animation completes (3 seconds total)
     setTimeout(() => {
         if (toast.parentNode === toastContainer) {
