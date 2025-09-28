@@ -446,16 +446,18 @@ body {
     border-radius: 8px;
     position: relative;
     overflow: visible;
-    padding: var(--standard-padding);
-    min-height: calc((var(--standard-padding) * 2) + var(--empty-pane-height));
+    padding: 0 var(--standard-padding);
+    min-height: var(--empty-pane-height);
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--legend-column-width);
     gap: var(--legend-column-gap);
-    align-items: stretch;
+    align-items: center;
 }
 
 .vitals-content.has-data {
     min-height: calc(var(--standard-padding) * 10);
+    padding: var(--standard-padding);
+    align-items: stretch;
 }
 
 .vitals-chart-wrapper {
