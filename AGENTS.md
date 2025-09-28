@@ -25,6 +25,7 @@
 ### Additional Observations
 - Dual-title system is fully wired for all panes but `config.specialClass` hook remains commented out per 2025-09-21 note; confirm whether future styling variations still require that knob.
 - Memory system (`memory/active/context.md`) lists follow-up tasks (make scripts executable, tag v3.0, etc.) that appear stale relative to current UI priorities; coordinate with maintainers before pruning.
+- STRATEVAC pane appended post-R3 with refreshed R3 palette; chart now renders stage background bands at 70% opacity (skip empty stages) — monitor for UI feedback.
 
 ## Dependency Snapshot (Treating Vendors as Given)
 - `pako` ^2.1.0 (package.json) – last known stable release (still current as of 2024-10); re-check upstream for security patches when online.
@@ -37,6 +38,7 @@
 - Vitals Chart: verify legend overlap/spacing against latest UX feedback once data set is available.
 - Events Pills: ensure first item in each OPCP row displays full datetime (`15 Jan 24 16:00`) while subsequent pills show time-only, without relying on regex against `entry.value`.
 - Validate POI pane empty-state styling (known bug: full-height empty state using condensed style).
+- Stage bands: validate midpoint boundaries across multi-day datasets to ensure contiguous colouring remains accurate.
 
 ## Clarifications & Decisions Logged
 - ✅ Scope confirmed with user: concentrate on custom code; dependencies treated as given—only report versions/status.
