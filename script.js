@@ -141,6 +141,7 @@ function resetLegendLayout(targetWrapper = null) {
     if (vitalsContent) {
         vitalsContent.classList.remove('has-data');
         vitalsContent.style.setProperty('--legend-column-width', '0px');
+        vitalsContent.style.setProperty('--legend-column-gap', `calc(var(--standard-padding) / 2)`);
     }
 }
 
