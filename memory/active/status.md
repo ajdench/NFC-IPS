@@ -148,3 +148,6 @@
 - Fixed vitals chart legend positioning: reduced gap to half standard padding, aligned legend items to right edge of container - legend now conforms to chart pane padding boundaries
 
 ### Update: 2025-09-27 11:23
+
+### Update: 2025-09-28 18:50
+- Added DEBUG logging for stage pipeline (stageKeys, createInfoBoxes, renderStageSections, chart bands); normalised stage export to include STRATEVAC across conversions; default stage band opacity reduced to 35%.
