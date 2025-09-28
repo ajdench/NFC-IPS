@@ -9,6 +9,7 @@
     --font-size-uniform: calc(var(--base-unit) * var(--size-multiplier));
     --slider-label-horizontal-offset: 1px;
     --toast-offset-y: -2px;
+    --empty-pane-height: 15px;
 
     --text-color-dark: #555;
     --text-color-poi: red;
@@ -443,18 +444,20 @@ body {
     --legend-overlap: 40px;
     background-color: var(--bg-color-detail-value);
     border-radius: 8px;
-    min-height: calc(var(--standard-padding) * 3);
+    min-height: var(--empty-pane-height);
     position: relative;
     overflow: visible;
-    padding: var(--standard-padding);
+    padding: 0 var(--standard-padding);
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--legend-column-width);
     gap: var(--legend-column-gap);
-    align-items: stretch;
+    align-items: center;
 }
 
 .vitals-content.has-data {
     min-height: calc(var(--standard-padding) * 10);
+    padding: var(--standard-padding);
+    align-items: stretch;
 }
 
 .vitals-chart-wrapper {
