@@ -5352,178 +5352,167 @@ const LEGEND_CONFIG = {
     EXTRA_WIDTH_PADDING: 12
 };
 
-/**
- * Option A: Chart.js native legend with Y-axis positioning
- * Moves Chart.js legend items to align with their dataset's last Y-value
- */
-function applyYAxisLegendPositioning(chartInstance, datasets) {
-    if (!chartInstance || !chartInstance.legend) return;
+function renderCustomLegend(chartInstance) {
+    if (!chartInstance || vitalsChartLibrary !== 'chartjs') return;
 
-    const yScale = chartInstance.scales.y;
-    if (!yScale) return;
-
-    // Chart.js creates legend items in a specific DOM structure
     const canvas = chartInstance.canvas;
-    const chartContainer = canvas.parentNode;
+    if (!canvas) return;
 
-    // Find the legend container (Chart.js creates it dynamically)
-    let legendContainer = chartContainer.querySelector('div[style*="position"]');
-    if (!legendContainer) {
-        // Try different selectors for Chart.js legend
-        legendContainer = chartContainer.querySelector('.chartjs-legend') ||
-                         chartContainer.querySelector('[id*="legend"]') ||
-                         chartContainer.parentNode.querySelector('div[style*="right"]');
+    const { container, legendWrapper } = ensureLegendWrapper(canvas);
+    if (!container || !legendWrapper) return;
+
+    const datasets = chartInstance.data?.datasets || [];
+    const yScale = chartInstance.scales?.y;
+    if (!datasets.length || !yScale) {
+        resetLegendLayout(container);
+        return;
     }
 
-    if (!legendContainer) {
-        console.warn('Legend container not found, creating custom positioning');
-        return createFallbackLegendPositioning(chartInstance, datasets);
+    const visibleItems = datasets
+        .map((dataset, index) => {
+            if (chartInstance.isDatasetVisible && !chartInstance.isDatasetVisible(index)) {
+                return null;
+            }
+
+            const data = dataset.data || [];
+            const lastPoint = data[data.length - 1];
+            if (!lastPoint || typeof lastPoint.y !== 'number') return null;
+
+            const pixelY = yScale.getPixelForValue(lastPoint.y);
+            if (!Number.isFinite(pixelY)) return null;
+
+            return {
+                dataset,
+                label: dataset.label || 'Dataset',
+                color: dataset.borderColor || '#000',
+                pixelY
+            };
+        })
+        .filter(Boolean);
+
+    if (!visibleItems.length) {
+        resetLegendLayout(container);
+        return;
     }
 
-    const legendItems = legendContainer.querySelectorAll('li, .legend-item, span');
-    const sortedDatasets = [...datasets].sort((a, b) => {
-        const aLastY = a.data[a.data.length - 1]?.y || 0;
-        const bLastY = b.data[b.data.length - 1]?.y || 0;
-        return bLastY - aLastY; // Highest to lowest
+    const chartArea = chartInstance.chartArea;
+    if (!chartArea) {
+        resetLegendLayout(container);
+        return;
+    }
+
+    const canvasBounds = canvas.getBoundingClientRect();
+    const cssHeight = canvasBounds.height || canvas.offsetHeight || chartInstance.height || 1;
+    const internalHeight = chartInstance.height || cssHeight || 1;
+    const pixelRatio = internalHeight ? cssHeight / internalHeight : 1;
+
+    const areaHeightInternal = Math.max(chartArea.bottom - chartArea.top, 0);
+    const areaHeightCss = areaHeightInternal * pixelRatio;
+    const areaTopCss = chartArea.top * pixelRatio;
+    const areaBottomCss = cssHeight - (areaTopCss + areaHeightCss);
+
+    legendWrapper.classList.add('is-visible');
+    legendWrapper.innerHTML = '';
+    legendWrapper.style.marginTop = `${Math.max(areaTopCss, 0)}px`;
+    legendWrapper.style.marginBottom = `${Math.max(areaBottomCss, 0)}px`;
+    legendWrapper.style.height = `${Math.max(areaHeightCss, 0)}px`;
+
+    const desiredPositions = visibleItems.map(item => {
+        const pixel = item.pixelY * pixelRatio;
+        const relative = pixel - areaTopCss;
+        return Math.min(Math.max(relative, 0), Math.max(areaHeightCss, 0));
     });
 
-    // Position each legend item at its dataset's last Y-value
-    sortedDatasets.forEach((dataset, index) => {
-        if (!dataset.data || dataset.data.length === 0) return;
+    const adjustedPositions = resolveLegendPositions(
+        desiredPositions,
+        0,
+        Math.max(areaHeightCss, 0),
+        LEGEND_CONFIG.MIN_ROW_GAP
+    );
 
-        const lastPoint = dataset.data[dataset.data.length - 1];
-        const lastY = lastPoint ? lastPoint.y : 0;
-        const pixelY = yScale.getPixelForValue(lastY);
-        const chartTop = yScale.top || 0;
+    visibleItems
+        .sort((a, b) => a.pixelY - b.pixelY)
+        .forEach((item, index) => {
+            const legendItem = document.createElement('div');
+            legendItem.className = 'vitals-legend-item';
+            legendItem.style.top = `${adjustedPositions[index]}px`;
 
-        const legendItem = legendItems[index];
-        if (legendItem) {
-            legendItem.style.position = 'absolute';
-            legendItem.style.top = `${pixelY - chartTop}px`;
-            legendItem.style.transform = 'translateY(-50%)';
-            legendItem.style.right = '0';
-        }
-    });
+            const marker = document.createElement('div');
+            marker.className = 'vitals-legend-marker';
+            marker.style.backgroundColor = item.color;
+
+            const label = document.createElement('span');
+            label.textContent = item.label;
+
+            legendItem.appendChild(marker);
+            legendItem.appendChild(label);
+            legendWrapper.appendChild(legendItem);
+        });
+
+    const legendWidth = measureLegendWidth(legendWrapper);
+    legendWrapper.style.width = `${legendWidth}px`;
+    legendWrapper.style.minWidth = `${legendWidth}px`;
+    container.style.setProperty('--legend-column-width', `${legendWidth}px`);
+    container.style.setProperty('--legend-column-gap', 'calc(var(--standard-padding) / 2)');
 }
 
-/**
- * Fallback positioning when Chart.js legend DOM is not found
- */
-function createFallbackLegendPositioning(chartInstance, datasets) {
-    // Enable the enhanced custom legend as fallback
-    createEnhancedPositionedLegend(chartInstance, datasets, true);
-    // Disable Chart.js legend to avoid conflicts
-    if (chartInstance.legend) {
-        chartInstance.legend.options.display = false;
-        chartInstance.update('none');
-    }
-}
+function ensureLegendWrapper(canvas) {
+    const container = canvas.closest('.vitals-content');
+    if (!container) return { container: null, legendWrapper: null };
 
-/**
- * Option C: Enhanced custom DOM legend with collision detection (disabled)
- * Builds improved version of original custom legend
- */
-function createEnhancedPositionedLegend(chartInstance, datasets, enabled = false) {
-    if (!enabled) return;
-
-    // Add legend wrapper back to HTML if using this approach
-    const chartWrapper = document.querySelector('.vitals-chart-wrapper');
-    if (!chartWrapper) return;
-
-    let legendWrapper = document.getElementById('vitals-legend-wrapper');
+    let legendWrapper = container.querySelector('#vitals-legend-wrapper');
     if (!legendWrapper) {
         legendWrapper = document.createElement('div');
         legendWrapper.id = 'vitals-legend-wrapper';
-        legendWrapper.className = 'vitals-legend-wrapper-enhanced';
-        chartWrapper.parentNode.appendChild(legendWrapper);
+        legendWrapper.className = 'vitals-legend-wrapper';
+        container.appendChild(legendWrapper);
     }
 
-    // Clear existing legend items
-    legendWrapper.innerHTML = '';
-
-    const chartArea = chartInstance.chartArea;
-    const yScale = chartInstance.scales.y;
-    const legendData = [];
-
-    // Collect legend data with Y positions
-    datasets.forEach(dataset => {
-        const data = dataset.data || [];
-        const lastPoint = data[data.length - 1];
-        if (!lastPoint) return;
-
-        const lastY = lastPoint.y;
-        const pixelY = yScale.getPixelForValue(lastY);
-
-        legendData.push({
-            label: dataset.label,
-            color: dataset.borderColor,
-            pixelY: pixelY,
-            lastY: lastY
-        });
-    });
-
-    // Sort by Y-value (highest to lowest)
-    legendData.sort((a, b) => b.lastY - a.lastY);
-
-    // Apply collision detection
-    const adjustedPositions = resolveCollisions(legendData.map(item => item.pixelY));
-
-    // Create legend items with adjusted positions
-    legendData.forEach((item, index) => {
-        const legendItem = document.createElement('div');
-        legendItem.style.cssText = `
-            position: absolute;
-            top: ${adjustedPositions[index]}px;
-            left: 0;
-            display: flex;
-            align-items: center;
-            font-size: 10px;
-            font-weight: 500;
-            white-space: nowrap;
-            transform: translateY(-50%);
-        `;
-
-        const marker = document.createElement('div');
-        marker.style.cssText = `
-            width: ${LEGEND_CONFIG.CIRCLE_SIZE}px;
-            height: ${LEGEND_CONFIG.CIRCLE_SIZE}px;
-            border-radius: 50%;
-            background-color: ${item.color};
-            margin-right: 6px;
-            flex-shrink: 0;
-        `;
-
-        const label = document.createElement('span');
-        label.textContent = item.label;
-
-        legendItem.appendChild(marker);
-        legendItem.appendChild(label);
-        legendWrapper.appendChild(legendItem);
-    });
+    return { container, legendWrapper };
 }
 
-/**
- * Collision detection helper - adjusts Y positions to prevent overlap
- */
-function resolveCollisions(positions) {
-    const adjusted = [...positions];
-    const minSpacing = LEGEND_CONFIG.COLLISION_PADDING;
+function measureLegendWidth(wrapper) {
+    const widths = Array.from(wrapper.children).map(child => child.getBoundingClientRect().width);
+    const widest = widths.length ? Math.max(...widths) : 0;
+    return Math.ceil(widest + LEGEND_CONFIG.EXTRA_WIDTH_PADDING);
+}
 
-    // Sort positions to process from top to bottom
-    const sortedIndices = positions
+function resolveLegendPositions(positions, minY, maxY, minSpacing) {
+    if (!positions.length) return [];
+
+    const sorted = positions
         .map((pos, index) => ({ pos, index }))
-        .sort((a, b) => a.pos - b.pos)
-        .map(item => item.index);
+        .sort((a, b) => a.pos - b.pos);
 
-    // Adjust positions to prevent collisions
-    for (let i = 1; i < sortedIndices.length; i++) {
-        const currentIndex = sortedIndices[i];
-        const prevIndex = sortedIndices[i - 1];
+    const adjusted = new Array(positions.length);
+    adjusted[sorted[0].index] = clamp(positions[sorted[0].index], minY, maxY);
 
-        if (adjusted[currentIndex] - adjusted[prevIndex] < minSpacing) {
-            adjusted[currentIndex] = adjusted[prevIndex] + minSpacing;
+    for (let i = 1; i < sorted.length; i += 1) {
+        const { index, pos } = sorted[i];
+        const previousIndex = sorted[i - 1].index;
+        const minAllowed = adjusted[previousIndex] + minSpacing;
+        adjusted[index] = Math.max(pos, minAllowed);
+    }
+
+    const lastIndex = sorted[sorted.length - 1].index;
+    if (adjusted[lastIndex] > maxY) {
+        const overflow = adjusted[lastIndex] - maxY;
+        sorted.forEach(({ index }) => {
+            adjusted[index] -= overflow;
+        });
+
+        const firstIndex = sorted[0].index;
+        if (adjusted[firstIndex] < minY) {
+            const underflow = minY - adjusted[firstIndex];
+            sorted.forEach(({ index }) => {
+                adjusted[index] += underflow;
+            });
         }
     }
+
+    sorted.forEach(({ index }) => {
+        adjusted[index] = clamp(adjusted[index], minY, maxY);
+    });
 
     return adjusted;
 }
