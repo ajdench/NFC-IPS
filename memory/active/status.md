@@ -148,8 +148,3 @@
 - Fixed vitals chart legend positioning: reduced gap to half standard padding, aligned legend items to right edge of container - legend now conforms to chart pane padding boundaries
 
 ### Update: 2025-09-27 11:23
-### Update: 2025-09-28 14:30
-- Added QUICK-START-CQ-LOGIC.md capturing Claude quick-start workflow and CQ protocol logic for Codex replication; confirmed memory documentation in place.
-
-### Update: 2025-09-28 14:46
-- Refreshed AGENTS.md with Codex ops log, TTL header, quick-start and CQ sections; created memory/update-codex-md.sh and wired optional CODEX_REFRESH_TTL hook into scripts/auto-jj.js.
