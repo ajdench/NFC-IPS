@@ -1607,6 +1607,18 @@ function showMessage(message, type = 'info') {
     // Add to container
     toastContainer.appendChild(toast);
 
+    // Position toast midway between payload header and pane header
+    const payloadHeader = document.querySelector('.payload-header');
+    const payloadPane = document.querySelector('.payload-pane');
+    if (payloadHeader && payloadPane) {
+        const headerRect = payloadHeader.getBoundingClientRect();
+        const paneRect = payloadPane.getBoundingClientRect();
+        const midpointOffset = (paneRect.top - headerRect.top) / 2;
+        toastContainer.style.top = `${midpointOffset}px`;
+    } else {
+        toastContainer.style.top = '';
+    }
+
     // Auto-remove after animation completes (3 seconds total)
     setTimeout(() => {
         if (toast.parentNode === toastContainer) {
