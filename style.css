@@ -401,6 +401,10 @@ body {
     color: white;
 }
 
+.detail-box.stratevac .detail-value {
+    color: var(--text-color-stratevac);
+}
+
 .detail-box.khaki .detail-label {
     background-color: var(--bg-color-khaki-darker);
     color: white;
