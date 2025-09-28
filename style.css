@@ -440,7 +440,7 @@ body {
 .vitals-content {
     --legend-column-width: 0px;
     --legend-column-gap: calc(var(--standard-padding) / 2);
-    --legend-overlap: 20px;
+    --legend-overlap: 40px;
     background-color: var(--bg-color-detail-value);
     border-radius: 8px;
     min-height: calc(var(--standard-padding) * 3);
