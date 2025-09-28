@@ -960,7 +960,7 @@ input:checked + .slider .slider-label.right {
     align-items: center;
     z-index: 100;
     pointer-events: none;
-    top: var(--toast-offset-y, -2px);
+    top: var(--toast-offset-y, 2px);
 }
 
 .toast-message {
