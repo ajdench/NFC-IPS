@@ -122,22 +122,24 @@ function destroyVitalsChart() {
     resetLegendLayout();
 }
 
-function resetLegendLayout(targetContainer = null) {
-    const container = targetContainer || document.querySelector('.vitals-content');
-    if (!container) return;
+function resetLegendLayout(targetWrapper = null) {
+    const chartWrapper = targetWrapper || document.querySelector('.vitals-chart-wrapper');
+    if (!chartWrapper) return;
 
-    container.style.setProperty('--legend-column-width', '0px');
-    container.style.setProperty('--legend-column-gap', '0px');
-
-    const legendWrapper = container.querySelector('#vitals-legend-wrapper');
+    const legendWrapper = chartWrapper.querySelector('#vitals-legend-wrapper');
     if (legendWrapper) {
         legendWrapper.classList.remove('is-visible');
         legendWrapper.innerHTML = '';
-        legendWrapper.style.width = '0px';
-        legendWrapper.style.minWidth = '0px';
+        legendWrapper.style.width = '';
+        legendWrapper.style.minWidth = '';
+        legendWrapper.style.top = '';
+        legendWrapper.style.bottom = '';
         legendWrapper.style.height = '';
-        legendWrapper.style.marginTop = '';
-        legendWrapper.style.marginBottom = '';
+    }
+
+    const vitalsContent = chartWrapper.closest('.vitals-content');
+    if (vitalsContent) {
+        vitalsContent.classList.remove('has-data');
     }
 }
 
