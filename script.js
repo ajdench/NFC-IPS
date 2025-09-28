@@ -5485,7 +5485,7 @@ function resolveLegendPositions(positions, minY, maxY, minSpacing) {
         .sort((a, b) => a.pos - b.pos);
 
     const adjusted = new Array(positions.length);
-    adjusted[sorted[0].index] = clamp(positions[sorted[0].index], minY, maxY);
+    adjusted[sorted[0].index] = Math.min(Math.max(positions[sorted[0].index], minY), maxY);
 
     for (let i = 1; i < sorted.length; i += 1) {
         const { index, pos } = sorted[i];
@@ -5511,7 +5511,7 @@ function resolveLegendPositions(positions, minY, maxY, minSpacing) {
     }
 
     sorted.forEach(({ index }) => {
-        adjusted[index] = clamp(adjusted[index], minY, maxY);
+        adjusted[index] = Math.min(Math.max(adjusted[index], minY), maxY);
     });
 
     return adjusted;
