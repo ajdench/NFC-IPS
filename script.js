@@ -4390,13 +4390,13 @@ function renderVitalsChart(viewModel) {
             }
         });
 
-        // Chart.js native legend with post-render Y-positioning
-        setTimeout(() => {
-            applyYAxisLegendPositioning(vitalsChartInstance, datasets);
-        }, 100);
-
-        // Chart.js native legend with circle markers and Y-value sorting
-        // Custom Y-positioning disabled due to UI issues - using stable Chart.js positioning
+        const syncLegend = () => renderCustomLegend(vitalsChartInstance);
+        syncLegend();
+        if (typeof requestAnimationFrame === 'function') {
+            requestAnimationFrame(syncLegend);
+        } else {
+            setTimeout(syncLegend, 0);
+        }
 
     } else if (typeof window !== 'undefined' && window.VitalsMiniChart) {
         vitalsChartLibrary = 'mini';
