@@ -990,17 +990,17 @@ input:checked + .slider .slider-label.right {
 }
 
 .toast-message.success {
-    border-color: #90EE90;
+    border-color: #5cb85c;
     color: #5cb85c;
 }
 
 .toast-message.warning {
-    border-color: #FFE4B5;
+    border-color: #d2973d;
     color: #d2973d;
 }
 
 .toast-message.error {
-    border-color: #FFB6C1;
+    border-color: #d9534f;
     color: #c9302c;
 }
 
