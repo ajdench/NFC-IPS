@@ -444,20 +444,17 @@ body {
     --legend-overlap: 40px;
     background-color: var(--bg-color-detail-value);
     border-radius: 8px;
-    min-height: var(--empty-pane-height);
     position: relative;
     overflow: visible;
-    padding: 0 var(--standard-padding);
+    padding: var(--standard-padding);
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--legend-column-width);
     gap: var(--legend-column-gap);
-    align-items: center;
+    align-items: stretch;
 }
 
 .vitals-content.has-data {
     min-height: calc(var(--standard-padding) * 10);
-    padding: var(--standard-padding);
-    align-items: stretch;
 }
 
 .vitals-chart-wrapper {
