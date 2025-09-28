@@ -2,7 +2,7 @@
 
 ## Current Focus
 - Patient Demographics card: remove extra bottom gap from pill layout and ensure Service Number / NHS Number pills always render with explicit fallback text.
-- Vitals legend redesign: align legend to the right of the chart, order entries by final data-point position with minimum spacing, and resize the canvas to respect pane padding.
+- Vitals legend redesign: new grid layout and custom legend positioning shipped; await UX confirmation before closing.
 - Events first-pill date display: rework presentation layer so the first pill in each stage shows full datetime without relying on regex matching inside `entry.value`.
 - POI pane empty state: confirm condensed empty-state styling matches other OPCP panes.
 
