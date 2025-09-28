@@ -5496,7 +5496,9 @@ function ensureLegendWrapper(canvas) {
         vitalsContent.appendChild(legendWrapper);
     }
 
-    vitalsContent.style.setProperty('--legend-column-width', vitalsContent.classList.contains('has-data') ? vitalsContent.style.getPropertyValue('--legend-column-width') || '0px' : '0px');
+    if (!vitalsContent.style.getPropertyValue('--legend-column-width')) {
+        vitalsContent.style.setProperty('--legend-column-width', '0px');
+    }
 
     return { vitalsContent, legendWrapper };
 }
