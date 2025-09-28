@@ -5504,34 +5504,95 @@ function resolveLegendPositions(positions, minY, maxY, minSpacing) {
         .sort((a, b) => a.pos - b.pos);
 
     const adjusted = new Array(positions.length);
-    adjusted[sorted[0].index] = Math.min(Math.max(positions[sorted[0].index], minY), maxY);
+    const clampValue = (value, lower, upper) => Math.min(Math.max(value, lower), upper);
 
-    for (let i = 1; i < sorted.length; i += 1) {
-        const { index, pos } = sorted[i];
-        const previousIndex = sorted[i - 1].index;
-        const minAllowed = adjusted[previousIndex] + minSpacing;
-        adjusted[index] = Math.max(pos, minAllowed);
-    }
+    let cluster = [];
+    let prevLast = minY - minSpacing;
 
-    const lastIndex = sorted[sorted.length - 1].index;
-    if (adjusted[lastIndex] > maxY) {
-        const overflow = adjusted[lastIndex] - maxY;
-        sorted.forEach(({ index }) => {
-            adjusted[index] -= overflow;
+    const distributeCluster = () => {
+        if (!cluster.length) return;
+
+        const n = cluster.length;
+        let lowerBound = Math.max(minY, prevLast + minSpacing);
+        let upperBound = Math.max(minY, maxY);
+        if (lowerBound > upperBound) lowerBound = upperBound;
+        const availableSpan = Math.max(upperBound - lowerBound, 0);
+
+        if (n === 1 || minSpacing <= 0) {
+            const value = clampValue(cluster[0].pos, lowerBound, upperBound);
+            adjusted[cluster[0].index] = value;
+            prevLast = value;
+            cluster = [];
+            return;
+        }
+
+        const center = cluster.reduce((sum, item) => sum + item.pos, 0) / n;
+        const offsets = new Array(n);
+        if (n % 2 === 1) {
+            const mid = Math.floor(n / 2);
+            for (let i = 0; i < n; i += 1) {
+                offsets[i] = (i - mid) * minSpacing;
+            }
+        } else {
+            const mid = n / 2;
+            for (let i = 0; i < n; i += 1) {
+                offsets[i] = (i - mid + 0.5) * minSpacing;
+            }
+        }
+
+        let clusterPositions = offsets.map(offset => center + offset);
+        const span = clusterPositions[n - 1] - clusterPositions[0];
+
+        const createDistributedPositions = () => {
+            const step = n > 1 ? (availableSpan / Math.max(n - 1, 1)) : 0;
+            return clusterPositions.map((_, i) => lowerBound + step * i);
+        };
+
+        if (span > availableSpan + 0.001) {
+            clusterPositions = createDistributedPositions();
+        } else {
+            const minShift = lowerBound - clusterPositions[0];
+            const maxShift = upperBound - clusterPositions[n - 1];
+
+            if (minShift > maxShift) {
+                clusterPositions = createDistributedPositions();
+            } else {
+                let shift = 0;
+                if (minShift > 0) {
+                    shift = Math.min(minShift, maxShift);
+                } else if (maxShift < 0) {
+                    shift = Math.max(maxShift, minShift);
+                }
+                clusterPositions = clusterPositions.map(pos => pos + shift);
+            }
+        }
+
+        cluster.forEach((item, idx) => {
+            const value = clampValue(clusterPositions[idx], lowerBound, upperBound);
+            adjusted[item.index] = value;
         });
 
-        const firstIndex = sorted[0].index;
-        if (adjusted[firstIndex] < minY) {
-            const underflow = minY - adjusted[firstIndex];
-            sorted.forEach(({ index }) => {
-                adjusted[index] += underflow;
-            });
-        }
-    }
+        const clusterLast = adjusted[cluster[cluster.length - 1].index];
+        prevLast = clusterLast;
+        cluster = [];
+    };
 
-    sorted.forEach(({ index }) => {
-        adjusted[index] = Math.min(Math.max(adjusted[index], minY), maxY);
+    sorted.forEach(item => {
+        if (!cluster.length) {
+            cluster.push(item);
+            return;
+        }
+
+        const previous = cluster[cluster.length - 1];
+        if (item.pos - previous.pos < minSpacing) {
+            cluster.push(item);
+        } else {
+            distributeCluster();
+            cluster.push(item);
+        }
     });
+
+    distributeCluster();
 
     return adjusted;
 }
