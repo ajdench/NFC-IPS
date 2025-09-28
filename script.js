@@ -5479,7 +5479,9 @@ function ensureLegendWrapper(canvas) {
 function measureLegendWidth(wrapper) {
     const widths = Array.from(wrapper.children).map(child => child.getBoundingClientRect().width);
     const widest = widths.length ? Math.max(...widths) : 0;
-    return Math.ceil(widest + LEGEND_CONFIG.EXTRA_WIDTH_PADDING);
+    const baseWidth = Math.ceil(widest + LEGEND_CONFIG.EXTRA_WIDTH_PADDING);
+    const minimum = LEGEND_CONFIG.MARKER_SIZE + 24;
+    return Math.max(minimum, baseWidth);
 }
 
 function resolveLegendPositions(positions, minY, maxY, minSpacing) {
