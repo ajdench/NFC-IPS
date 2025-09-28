@@ -447,6 +447,7 @@ body {
     position: relative;
     overflow: visible;
     padding: var(--standard-padding);
+    min-height: calc((var(--standard-padding) * 2) + var(--empty-pane-height));
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--legend-column-width);
     gap: var(--legend-column-gap);
