@@ -322,12 +322,17 @@ body {
 
 .info-box.rear-tacevac {
     background-color: var(--bg-color-rear-tacevac);
-    color: var(--text-color-purple);
+    color: var(--text-color-rear-tacevac);
 }
 
 .info-box.purple {
     background-color: var(--bg-color-purple);
     color: var(--text-color-r3);
+}
+
+.info-box.stratevac {
+    background-color: var(--bg-color-stratevac);
+    color: var(--text-color-stratevac);
 }
 
 .info-box.khaki {
@@ -388,6 +393,11 @@ body {
 
 .detail-box.purple .detail-label {
     background-color: var(--bg-color-purple-darker);
+    color: white;
+}
+
+.detail-box.stratevac .detail-label {
+    background-color: var(--bg-color-stratevac-darker);
     color: white;
 }
 
