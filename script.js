@@ -4257,8 +4257,8 @@ function renderVitalsChart(viewModel) {
                             autoSkip: false
                         },
                         afterBuildTicks: function(scale) {
-                            const dataMin = new Date(scale.min);
-                            const dataMax = new Date(scale.max);
+                            const dataMin = Number.isFinite(minTime) ? new Date(minTime) : new Date(scale.min);
+                            const dataMax = Number.isFinite(maxTime) ? new Date(maxTime) : new Date(scale.max);
 
 
                             // First tick: closest previous hh:00/30 to encompass first data point
