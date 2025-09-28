@@ -5366,7 +5366,7 @@ async function init() {
 const LEGEND_CONFIG = {
     MARKER_SIZE: 7,
     MIN_ROW_GAP: 14,
-    EXTRA_WIDTH_PADDING: 12
+    EXTRA_WIDTH_PADDING: 4
 };
 
 function renderCustomLegend(chartInstance) {
