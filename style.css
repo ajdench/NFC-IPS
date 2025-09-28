@@ -448,7 +448,7 @@ body {
 
 .vitals-content.has-data {
     min-height: calc(var(--standard-padding) * 10);
-    padding: var(--standard-padding) calc(var(--standard-padding) * 1.75) var(--standard-padding) var(--standard-padding);
+    padding: var(--standard-padding);
 }
 
 .vitals-chart-wrapper {
