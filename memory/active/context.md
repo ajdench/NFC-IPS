@@ -1,78 +1,31 @@
-# Active Context - Session Handoff
+# Working Context
 
-## Current Priority Issue: Content Duplication in Dual Titles
+## Current Focus
+- Patient Demographics card: remove extra bottom gap from pill layout and ensure Service Number / NHS Number pills always render with explicit fallback text.
+- Vitals legend redesign: align legend to the right of the chart, order entries by final data-point position with minimum spacing, and resize the canvas to respect pane padding.
+- Events first-pill date display: rework presentation layer so the first pill in each stage shows full datetime without relying on regex matching inside `entry.value`.
+- POI pane empty state: confirm condensed empty-state styling matches other OPCP panes.
 
-**Problem**: Dual title elements showing duplicated text:
-```
-Patient Demographics No data available Patient Demographics
-```
+## Recent Work
+- Added Codex TTL management: `memory/update-codex-md.sh` refreshes `AGENTS.md` timestamps; Auto-JJ optionally invokes it when `CODEX_REFRESH_TTL=1`.
+- Updated `AGENTS.md` with Codex quick-start guidance, CQ protocol summary, and dependency snapshot.
+- Verified dependencies via `npm outdated` (no updates required) and confirmed network access workflow.
 
-**Status**: Surgical logging implemented, ready for diagnosis
+## Key Files Updated
+- `AGENTS.md` – new TTL header plus Codex quick-start/CQ protocol sections.
+- `memory/update-codex-md.sh` – timestamp refresh script for Codex ops log.
+- `scripts/auto-jj.js` – optional Codex TTL refresh hook controlled by `CODEX_REFRESH_TTL` env var.
 
-## Work Completed This Session
+## Open Questions / Dependencies
+- UX decisions needed for minimum spacing rules in the vitals legend when multiple datasets end at similar Y values.
+- Confirm desired fallback copy for missing Service/NHS identifiers (e.g., "Not provided" vs. a blank pill value).
 
-### ✅ Dual Title System Fixes
-- Fixed all OPCP panes to have proper dual title structure in HTML
-- Added correct CSS classes (`dual-title dual-title-empty`) to prevent sizing issues
-- Ensured HTML structure matches JavaScript-generated output exactly
+## Next Actions
+1. Adjust Patient Demographics CSS/JS to normalize spacing and render identifier pills unconditionally.
+2. Prototype legend positioning logic and coordinate chart/legend widths to satisfy layout requirements.
+3. Refactor Events rendering to use structured datetime fields for first-pill formatting; validate across payloads.
+4. Re-test POI empty-state styling after layout changes.
 
-### ✅ Visual Blip Elimination
-- Root cause: `createInfoBoxes()` was clearing and rebuilding entire container
-- Solution: Made HTML structure complete so JavaScript rebuild skipped
-- Result: No more flash/blip during page initialization
-
-### ✅ Auto-Loading Behavior Disabled
-- Removed auto-selection of preset #1 on page load
-- Disabled URL fragment auto-processing
-- Disabled auto-rendering of demo data
-- Page now starts in clean empty state requiring manual user interaction
-
-### ✅ Surgical Logging Process Implemented
-- Removed ALL 317 existing console.log statements from script.js
-- Added minimal 2-statement logging to track duplication issue
-- Established process: remove irrelevant logs, add targeted logs, clean up when done
-
-## Current Code State
-
-### JavaScript (script.js)
-- `createInfoBoxes()` is conditionally called (only if HTML structure incomplete)
-- Minimal surgical logging in `init()` function tracks dual title text content
-- All auto-loading behaviors disabled
-- Clean initialization that renders empty state
-
-### HTML (nfc/ips/viewer.html)
-- All panes have complete dual title structure with proper spans
-- Structure exactly matches what JavaScript would create
-- No visual blips on load due to structural consistency
-
-### Surgical Logging Active
-Located in `script.js` around lines 4654 and 4956:
-```javascript
-console.log('🔍 DUPLICATION: Initial state');
-console.log('Initial text:', patientTitle.textContent);
-// ... later ...
-console.log('🔍 DUPLICATION: Final state');
-console.log('Final text:', finalPatientTitle.textContent);
-```
-
-## Next Steps for New Claude Instance
-
-1. **Investigate Duplication**: Check console output to see exactly where text duplication occurs
-2. **Root Cause Analysis**: Determine if duplication is from HTML, CSS rendering, or JavaScript manipulation
-3. **Implement Fix**: Based on logging evidence, fix the duplication source
-4. **Clean Up**: Remove surgical logging once issue resolved
-5. **Test**: Verify all dual title panes display correctly
-
-## Development Environment
-
-- Server: `npm run dev` running at http://127.0.0.1:61351
-- Main page: `/nfc/ips/viewer.html`
-- Memory system: claude-dementia v3.0 with 10k token budget
-- Version control: Auto-JJ system active
-
-## Key Files Modified This Session
-
-- `/nfc/ips/viewer.html` - Complete dual title structure
-- `/script.js` - Disabled auto-loading, added surgical logging
-- `/CLAUDE.md` - Updated Quick Start with handoff status
-- `/memory/active/status.md` - Session progress tracking
+## Environment Notes
+- Auto-JJ active; set `CODEX_REFRESH_TTL=1` before `npm run dev:auto-jj` to keep Codex TTL updated automatically.
+- Memory budget remains below 4k tokens; continue pruning legacy context as new work lands.

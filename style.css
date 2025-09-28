@@ -437,19 +437,23 @@ body {
 
 
 .vitals-content {
+    --legend-column-width: 0px;
+    --legend-column-gap: calc(var(--standard-padding) / 2);
     background-color: var(--bg-color-detail-value);
     border-radius: 8px;
-    min-height: 15px;
+    min-height: calc(var(--standard-padding) * 3);
     position: relative;
     overflow: visible;
     padding: var(--standard-padding);
-    display: flex;
-    gap: calc(var(--standard-padding) / 2);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--legend-column-width);
+    align-items: stretch;
+    gap: var(--legend-column-gap);
 }
 
 .vitals-chart-wrapper {
-    flex: 1;
     position: relative;
+    min-width: 0;
 }
 
 
