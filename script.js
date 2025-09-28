@@ -5443,9 +5443,6 @@ function renderCustomLegend(chartInstance) {
     legendWrapper.style.marginTop = `${Math.max(areaTopCss, 0)}px`;
     legendWrapper.style.marginBottom = `${Math.max(areaBottomCss, 0)}px`;
     legendWrapper.style.height = `${availableHeight}px`;
-    legendWrapper.style.marginTop = `${Math.max(areaTopCss, 0)}px`;
-    legendWrapper.style.marginBottom = `${Math.max(areaBottomCss, 0)}px`;
-    legendWrapper.style.height = `${availableHeight}px`;
     const minSpacing = visibleItems.length > 1
         ? Math.max(0, Math.min(LEGEND_CONFIG.MIN_ROW_GAP, availableHeight / (visibleItems.length - 1)))
         : 0;
