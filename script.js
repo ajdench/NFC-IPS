@@ -4275,15 +4275,8 @@ function renderVitalsChart(viewModel) {
 
 
                             // If rounded tick is still after data, go back 30 minutes
-                            const thirtyMinutesMs = 30 * 60 * 1000;
                             if (firstTick.getTime() > dataMin.getTime()) {
-                                firstTick.setTime(firstTick.getTime() - thirtyMinutesMs);
-                            }
-
-                            // Always provide a 30 minute pre-buffer when possible
-                            const bufferedTime = firstTick.getTime() - thirtyMinutesMs;
-                            if (bufferedTime >= 0) {
-                                firstTick.setTime(bufferedTime);
+                                firstTick.setTime(firstTick.getTime() - (30 * 60 * 1000));
                             }
 
                             // Last tick: closest next hh:00/30 to encompass last data point

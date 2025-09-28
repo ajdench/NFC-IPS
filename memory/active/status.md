@@ -148,3 +148,6 @@
 - Fixed vitals chart legend positioning: reduced gap to half standard padding, aligned legend items to right edge of container - legend now conforms to chart pane padding boundaries
 
 ### Update: 2025-09-27 11:23
+
+### Update: 2025-09-28 16:45
+- Toast typography aligned with payload preset buttons (lighter weight, smaller size); chart x-axis now anchors first tick to nearest prior hh:00/30 without extra buffer.
