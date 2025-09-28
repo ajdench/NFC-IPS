@@ -34,7 +34,7 @@
 
 ## Outstanding Work Items (Custom Layers)
 - Patient Demographics: remove excess bottom gap and render Service Number / NHS Number pills regardless of data presence (explicit fallback copy required).
-- Vitals Chart: honour user requirements for right-aligned, vertically ordered legend keyed to last data points with enforced minimum spacing; shrink chart canvas to respect internal padding alongside legend width.
+- Vitals Chart: custom legend reposition implemented (grid layout + collision handling); seek UX validation on spacing/ordering before closing.
 - Events Pills: ensure first item in each OPCP row displays full datetime (`15 Jan 24 16:00`) while subsequent pills show time-only, without relying on regex against `entry.value`.
 - Validate POI pane empty-state styling (known bug: full-height empty state using condensed style).
 
