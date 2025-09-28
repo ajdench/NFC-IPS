@@ -5483,6 +5483,12 @@ function renderCustomLegend(chartInstance) {
     legendWrapper.style.width = `${legendWidth}px`;
     legendWrapper.style.minWidth = `${legendWidth}px`;
     vitalsContent.style.setProperty('--legend-column-width', `${legendWidth}px`);
+
+    const computedStyles = getComputedStyle(vitalsContent);
+    const standardPadding = Number.parseFloat(computedStyles.getPropertyValue('--standard-padding')) || 0;
+    const legendOverlap = Number.parseFloat(computedStyles.getPropertyValue('--legend-overlap')) || 0;
+    const gapValue = Math.max((standardPadding / 2) - legendOverlap, 0);
+    vitalsContent.style.setProperty('--legend-column-gap', `${gapValue}px`);
 }
 
 function ensureLegendWrapper(canvas) {
