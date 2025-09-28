@@ -5374,10 +5374,16 @@ function renderCustomLegend(chartInstance) {
     const { vitalsContent, legendWrapper } = ensureLegendWrapper(canvas);
     if (!vitalsContent || !legendWrapper) return;
 
+    const chartWrapper = vitalsContent.querySelector('.vitals-chart-wrapper');
+    if (!chartWrapper) {
+        resetLegendLayout();
+        return;
+    }
+
     const datasets = chartInstance.data?.datasets || [];
     const yScale = chartInstance.scales?.y;
     if (!datasets.length || !yScale) {
-        resetLegendLayout(vitalsContent.querySelector('.vitals-chart-wrapper'));
+        resetLegendLayout(chartWrapper);
         return;
     }
 
@@ -5406,13 +5412,13 @@ function renderCustomLegend(chartInstance) {
     visibleItems.sort((a, b) => a.pixelY - b.pixelY);
 
     if (!visibleItems.length) {
-        resetLegendLayout(vitalsContent.querySelector('.vitals-chart-wrapper'));
+        resetLegendLayout(chartWrapper);
         return;
     }
 
     const chartArea = chartInstance.chartArea;
     if (!chartArea) {
-        resetLegendLayout(vitalsContent.querySelector('.vitals-chart-wrapper'));
+        resetLegendLayout(chartWrapper);
         return;
     }
 
