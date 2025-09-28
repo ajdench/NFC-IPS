@@ -4358,47 +4358,7 @@ function renderVitalsChart(viewModel) {
                 },
                 plugins: {
                     legend: {
-                        display: true,
-                        position: 'right',
-                        align: 'middle',
-                        labels: {
-                            usePointStyle: true,
-                            pointStyle: 'circle',
-                            boxWidth: 6,
-                            boxHeight: 6,
-                            padding: 8,
-                            font: {
-                                size: 10,
-                                weight: 500
-                            },
-                            generateLabels: function(chart) {
-                                const datasets = chart.data.datasets;
-                                const labels = [];
-
-                                // Create label objects with last Y-value for sorting
-                                datasets.forEach((dataset, index) => {
-                                    const data = dataset.data || [];
-                                    const lastPoint = data[data.length - 1];
-                                    const lastY = lastPoint ? lastPoint.y : 0;
-
-                                    labels.push({
-                                        text: dataset.label,
-                                        fillStyle: dataset.borderColor,
-                                        strokeStyle: dataset.borderColor,
-                                        pointStyle: 'circle',
-                                        lineWidth: 0,
-                                        hidden: !chart.isDatasetVisible(index),
-                                        datasetIndex: index,
-                                        lastY: lastY
-                                    });
-                                });
-
-                                // Sort by last Y-value (highest to lowest)
-                                labels.sort((a, b) => b.lastY - a.lastY);
-
-                                return labels;
-                            }
-                        }
+                        display: false
                     },
                     tooltip: {
                         usePointStyle: true,
