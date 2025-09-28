@@ -960,6 +960,7 @@ input:checked + .slider .slider-label.right {
 
 .toast-container {
     position: relative;
+    grid-column: 2;
     justify-self: center;
     display: flex;
     justify-content: center;
