@@ -119,6 +119,7 @@ function destroyVitalsChart() {
     }
     vitalsChartInstance = null;
 
+    resetLegendLayout();
 }
 
 /**
