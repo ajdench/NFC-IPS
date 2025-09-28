@@ -5439,7 +5439,7 @@ function renderCustomLegend(chartInstance) {
     const desiredPositions = visibleItems.map(item => {
         const pixel = item.pixelY * pixelRatio;
         const relative = pixel - areaTopCss;
-        return Math.min(Math.max(relative, 0), Math.max(areaHeightCss, 0));
+        return Math.min(Math.max(relative, 0), availableHeight);
     });
 
     const adjustedPositions = resolveLegendPositions(
