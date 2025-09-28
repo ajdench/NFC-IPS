@@ -538,14 +538,16 @@ body {
 
 .payload-header {
     position: relative;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     align-items: center;
     width: 100%;
-    margin-bottom: calc(var(--standard-padding) * 0.75);
+    margin-bottom: var(--standard-padding);
 }
 
 .payload-header .info-title {
+    grid-column: 2;
+    justify-self: center;
     margin-bottom: 0;
 }
 
@@ -955,9 +957,8 @@ input:checked + .slider .slider-label.right {
 }
 
 .toast-container {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    position: relative;
+    justify-self: center;
     display: flex;
     justify-content: center;
     align-items: center;
