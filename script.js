@@ -4409,10 +4409,12 @@ function renderVitalsChart(viewModel) {
                 legendFontSize: Math.max(10, Math.floor(parseFloat(getComputedStyle(document.documentElement).fontSize || '16') * 0.75))
             }
         });
+        resetLegendLayout(canvas.closest('.vitals-content'));
     } else {
         // No charting library available
         canvas.style.display = 'none';
         if (emptyState) emptyState.style.display = 'flex';
+        resetLegendLayout(canvas.closest('.vitals-content'));
     }
 }
 
