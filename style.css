@@ -8,7 +8,7 @@
     --detail-vertical-padding: calc(var(--base-unit) * 0.55);
     --font-size-uniform: calc(var(--base-unit) * var(--size-multiplier));
     --slider-label-horizontal-offset: 1px;
-    --toast-offset-y: -2px;
+    --toast-offset-y: 2px;
 
     --text-color-dark: #555;
     --text-color-poi: red;
