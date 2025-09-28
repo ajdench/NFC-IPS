@@ -132,14 +132,12 @@ function resetLegendLayout(targetWrapper = null) {
         legendWrapper.innerHTML = '';
         legendWrapper.style.width = '';
         legendWrapper.style.minWidth = '';
-        legendWrapper.style.top = '';
-        legendWrapper.style.bottom = '';
-        legendWrapper.style.height = '';
     }
 
     const vitalsContent = chartWrapper.closest('.vitals-content');
     if (vitalsContent) {
         vitalsContent.classList.remove('has-data');
+        vitalsContent.style.setProperty('--legend-column-width', '0px');
     }
 }
 
