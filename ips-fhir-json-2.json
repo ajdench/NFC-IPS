@@ -55,6 +55,9 @@
             "entry": [
               {
                 "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
+              },
+              {
+                "reference": "urn:uuid:333a7c6d-e1e0-5ff9-ad7e-2cf0d48313da"
               }
             ]
           },
@@ -106,26 +109,6 @@
             "entry": [
               {
                 "reference": "urn:uuid:d825cd00-06ce-5539-82df-d08ae786d8cf"
-              }
-            ]
-          },
-          {
-            "title": "Laboratory/Results",
-            "code": {
-              "coding": [
-                {
-                  "system": "http://loinc.org",
-                  "code": "30954-2",
-                  "display": "Relevant diagnostic tests/laboratory data"
-                }
-              ]
-            },
-            "entry": [
-              {
-                "reference": "urn:uuid:333a7c6d-e1e0-5ff9-ad7e-2cf0d48313da"
-              },
-              {
-                "reference": "urn:uuid:ad6a3d91-d64b-5296-94fd-441b1477b3fe"
               }
             ]
           },
@@ -241,11 +224,7 @@
               }
             ]
           }
-        ],
-        "identifier": {
-          "system": "urn:ietf:rfc:3986",
-          "value": "urn:uuid:49d3a03d-6a12-5ffc-b658-48be7d175fbe"
-        }
+        ]
       }
     },
     {

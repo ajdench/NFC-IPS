@@ -2369,7 +2369,7 @@ const codecPipeline = (() => {
         }
 
         // Convert clinical data from each stage back to FHIR resources
-        const stageKeys = ['poi', 'casevac', 'axp', 'medevac', 'r1', 'fwdTacevac', 'r2', 'rearTacevac', 'r3'];
+        const stageKeys = ['poi', 'casevac', 'axp', 'medevac', 'r1', 'fwdTacevac', 'r2', 'rearTacevac', 'r3', 'stratevac'];
         stageKeys.forEach(stageKey => {
             const stage = codeRefPayload[stageKey];
             if (!stage) return;

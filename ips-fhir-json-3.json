@@ -55,6 +55,9 @@
             "entry": [
               {
                 "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
+              },
+              {
+                "reference": "urn:uuid:333a7c6d-e1e0-5ff9-ad7e-2cf0d48313da"
               }
             ]
           },
@@ -117,51 +120,6 @@
                 "reference": "urn:uuid:d825cd00-06ce-5539-82df-d08ae786d8cf"
               }
             ]
-          },
-          {
-            "title": "Laboratory/Results",
-            "code": {
-              "coding": [
-                {
-                  "system": "http://loinc.org",
-                  "code": "30954-2",
-                  "display": "Relevant diagnostic tests/laboratory data"
-                }
-              ]
-            },
-            "entry": [
-              {
-                "reference": "urn:uuid:333a7c6d-e1e0-5ff9-ad7e-2cf0d48313da"
-              },
-              {
-                "reference": "urn:uuid:4dc1c734-57ca-5a00-8158-22d5e28c2971"
-              },
-              {
-                "reference": "urn:uuid:59e8154d-5d22-575b-8ab3-f493abb1f1b5"
-              },
-              {
-                "reference": "urn:uuid:15cc9118-d741-5129-9b04-61734d784a23"
-              },
-              {
-                "reference": "urn:uuid:b90e23aa-45fa-51a7-9991-318ead337225"
-              }
-            ]
-          },
-          {
-            "title": "Imaging",
-            "entry": [
-              {
-                "reference": "urn:uuid:09dd69c7-5d71-5213-9158-84cc7e3a3aea"
-              },
-              {
-                "reference": "urn:uuid:c84198c4-954b-5599-858c-334a66902141"
-              }
-            ],
-            "code": {
-              "coding": [
-                {}
-              ]
-            }
           },
           {
             "title": "Point of Injury (POI)",
@@ -280,6 +238,12 @@
               },
               {
                 "reference": "urn:uuid:6a2b80c5-31c3-5184-ba98-be5a19bd3ca7"
+              },
+              {
+                "reference": "urn:uuid:09dd69c7-5d71-5213-9158-84cc7e3a3aea"
+              },
+              {
+                "reference": "urn:uuid:c84198c4-954b-5599-858c-334a66902141"
               }
             ],
             "code": {
@@ -327,6 +291,15 @@
               },
               {
                 "reference": "urn:uuid:b9304498-eff3-5f5f-8ff6-49b6ee223724"
+              },
+              {
+                "reference": "urn:uuid:15cc9118-d741-5129-9b04-61734d784a23"
+              },
+              {
+                "reference": "urn:uuid:59e8154d-5d22-575b-8ab3-f493abb1f1b5"
+              },
+              {
+                "reference": "urn:uuid:b90e23aa-45fa-51a7-9991-318ead337225"
               }
             ],
             "code": {
@@ -348,11 +321,7 @@
               ]
             }
           }
-        ],
-        "identifier": {
-          "system": "urn:ietf:rfc:3986",
-          "value": "urn:uuid:6f097af5-7802-5489-a166-224bf582d757"
-        }
+        ]
       }
     },
     {

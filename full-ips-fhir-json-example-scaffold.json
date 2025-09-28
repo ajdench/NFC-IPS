@@ -1,1393 +1,627 @@
 {
-    "resourceType": "Bundle",
-    "id": "ips-scaffold-example",
-    "meta": {
-        "lastUpdated": "2025-09-21T18:00:00Z",
-        "profile": [
-            "http://hl7.org/fhir/uv/ips/StructureDefinition/Bundle-uv-ips"
-        ]
-    },
-    "identifier": {
-        "system": "urn:oid:2.16.840.1.113883.4.3.2.1",
-        "value": "IPS-SCAFFOLD-001"
-    },
-    "type": "document",
-    "timestamp": "2025-09-21T18:00:00Z",
-    "entry": [
-        {
-            "fullUrl": "urn:uuid:comp-ips-scaffold",
-            "resource": {
-                "resourceType": "Composition",
-                "id": "composition-ips-scaffold",
-                "status": "final",
-                "type": {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "60591-5",
-                            "display": "Patient summary Document"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "date": "2025-09-21T18:00:00Z",
-                "author": [
-                    {
-                        "reference": "urn:uuid:prac-ips-scaffold"
-                    }
-                ],
-                "title": "International Patient Summary (Scaffold)",
-                "attester": [
-                    {
-                        "mode": "professional",
-                        "time": "2025-09-21T18:05:00Z",
-                        "party": {
-                            "reference": "urn:uuid:prac-ips-scaffold"
-                        }
-                    }
-                ],
-                "custodian": {
-                    "reference": "urn:uuid:org-ips-scaffold"
-                },
-                "section": [
-                    {
-                        "title": "Patient Demographics",
-                        "code": {
-                            "coding": [
-                                {
-                                    "system": "http://loinc.org",
-                                    "code": "48765-2",
-                                    "display": "Summary of episode note"
-                                }
-                            ]
-                        },
-                        "entry": [
-                            {
-                                "reference": "urn:uuid:patient-ips-scaffold"
-                            }
-                        ]
-                    },
-                    {
-                        "title": "Allergies",
-                        "code": {
-                            "coding": [
-                                {
-                                    "system": "http://loinc.org",
-                                    "code": "48765-2",
-                                    "display": "Allergies and adverse reactions"
-                                }
-                            ]
-                        },
-                        "entry": [
-                            {
-                                "reference": "urn:uuid:allergy-penicillin"
-                            },
-                            {
-                                "reference": "urn:uuid:allergy-shellfish"
-                            }
-                        ]
-                    },
-                    {
-                        "title": "Point of Injury (POI)",
-                        "entry": [
-                            {
-                                "reference": "urn:uuid:poi-vital-temp"
-                            },
-                            {
-                                "reference": "urn:uuid:poi-condition-hemorrhage"
-                            },
-                            {
-                                "reference": "urn:uuid:poi-procedure-tourniquet"
-                            }
-                        ]
-                    },
-                    {
-                        "title": "Casualty Evacuation (CASEVAC)",
-                        "entry": [
-                            {
-                                "reference": "urn:uuid:casevac-vital-hr"
-                            },
-                            {
-                                "reference": "urn:uuid:casevac-medication-fentanyl"
-                            }
-                        ]
-                    },
-                    {
-                        "title": "Ambulance Exchange Point (AXP)",
-                        "entry": [
-                            {
-                                "reference": "urn:uuid:axp-vital-bp"
-                            },
-                            {
-                                "reference": "urn:uuid:axp-procedure-airway"
-                            }
-                        ]
-                    },
-                    {
-                        "title": "Medical Evacuation (MEDEVAC)",
-                        "entry": [
-                            {
-                                "reference": "urn:uuid:medevac-vital-spo2"
-                            },
-                            {
-                                "reference": "urn:uuid:medevac-medication-saline"
-                            },
-                            {
-                                "reference": "urn:uuid:medevac-procedure-intubation"
-                            }
-                        ]
-                    },
-                    {
-                        "title": "Role 1 Care (R1)",
-                        "entry": [
-                            {
-                                "reference": "urn:uuid:r1-observation-baseexam"
-                            },
-                            {
-                                "reference": "urn:uuid:r1-condition-shock"
-                            },
-                            {
-                                "reference": "urn:uuid:r1-procedure-ultrasound"
-                            }
-                        ]
-                    },
-                    {
-                        "title": "Forward Tactical Evacuation (Fwd TACEVAC)",
-                        "entry": [
-                            {
-                                "reference": "urn:uuid:fwd-tacevac-vital-lactate"
-                            },
-                            {
-                                "reference": "urn:uuid:fwd-tacevac-medication-tranexamic"
-                            }
-                        ]
-                    },
-                    {
-                        "title": "Role 2 Care (R2)",
-                        "entry": [
-                            {
-                                "reference": "urn:uuid:r2-vital-temp"
-                            },
-                            {
-                                "reference": "urn:uuid:r2-procedure-ct"
-                            },
-                            {
-                                "reference": "urn:uuid:r2-medication-antibiotic"
-                            }
-                        ]
-                    },
-                    {
-                        "title": "Rear Tactical Evacuation (Rear TACEVAC)",
-                        "entry": [
-                            {
-                                "reference": "urn:uuid:rear-tacevac-vital-hr"
-                            },
-                            {
-                                "reference": "urn:uuid:rear-tacevac-procedure-monitoring"
-                            }
-                        ]
-                    },
-                    {
-                        "title": "Role 3 Care (R3)",
-                        "entry": [
-                            {
-                                "reference": "urn:uuid:r3-vital-temp"
-                            },
-                            {
-                                "reference": "urn:uuid:r3-procedure-surgery"
-                            },
-                            {
-                                "reference": "urn:uuid:r3-medication-opioid"
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:patient-ips-scaffold",
-            "resource": {
-                "resourceType": "Patient",
-                "id": "patient-ips-scaffold",
-                "identifier": [
-                    {
-                        "use": "official",
-                        "type": {
-                            "coding": [
-                                {
-                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
-                                    "code": "NH",
-                                    "display": "National Health Service Number"
-                                }
-                            ],
-                            "text": "NHS Number"
-                        },
-                        "value": "9998887776"
-                    },
-                    {
-                        "use": "secondary",
-                        "type": {
-                            "coding": [
-                                {
-                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
-                                    "code": "MIL",
-                                    "display": "Military ID number"
-                                }
-                            ],
-                            "text": "Service Number"
-                        },
-                        "value": "BRAVO-1234"
-                    }
-                ],
-                "name": [
-                    {
-                        "use": "official",
-                        "prefix": [
-                            "Capt",
-                            "Dr"
-                        ],
-                        "given": [
-                            "Alex"
-                        ],
-                        "family": "Morrison"
-                    }
-                ],
-                "birthDate": "1990-04-12",
-                "gender": "male",
-                "extension": [
-                    {
-                        "url": "http://hl7.org/fhir/StructureDefinition/patient-nationality",
-                        "valueCodeableConcept": {
-                            "coding": [
-                                {
-                                    "system": "urn:iso:std:iso:3166",
-                                    "code": "GB",
-                                    "display": "United Kingdom"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "url": "http://hl7.org/fhir/StructureDefinition/patient-bloodGroup",
-                        "valueCodeableConcept": {
-                            "coding": [
-                                {
-                                    "system": "http://snomed.info/sct",
-                                    "code": "278152006",
-                                    "display": "Blood group A Rh(D) negative (A-)"
-                                }
-                            ]
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:org-ips-scaffold",
-            "resource": {
-                "resourceType": "Organization",
-                "id": "org-ips-scaffold",
-                "name": "Combined Joint Medical Unit",
-                "type": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/organization-type",
-                                "code": "prov",
-                                "display": "Healthcare Provider"
-                            }
-                        ]
-                    }
-                ],
-                "address": [
-                    {
-                        "text": "Forward Operating Base, Secure Perimeter"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:prac-ips-scaffold",
-            "resource": {
-                "resourceType": "Practitioner",
-                "id": "prac-ips-scaffold",
-                "name": [
-                    {
-                        "text": "Lt Col Maya Singh"
-                    }
-                ],
-                "qualification": [
-                    {
-                        "code": {
-                            "coding": [
-                                {
-                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0360/2.7",
-                                    "code": "MD",
-                                    "display": "Doctor of Medicine"
-                                }
-                            ]
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:allergy-penicillin",
-            "resource": {
-                "resourceType": "AllergyIntolerance",
-                "id": "allergy-penicillin",
-                "clinicalStatus": {
-                    "coding": [
-                        {
-                            "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
-                            "code": "active"
-                        }
-                    ]
-                },
-                "verificationStatus": {
-                    "coding": [
-                        {
-                            "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
-                            "code": "confirmed"
-                        }
-                    ]
-                },
-                "category": [
-                    "medication"
-                ],
-                "criticality": "high",
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://snomed.info/sct",
-                            "code": "764146007",
-                            "display": "Penicillin"
-                        }
-                    ]
-                },
-                "patient": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "recordedDate": "2025-09-18",
-                "reaction": [
-                    {
-                        "manifestation": [
-                            {
-                                "coding": [
-                                    {
-                                        "system": "http://snomed.info/sct",
-                                        "code": "271807003",
-                                        "display": "Rash"
-                                    }
-                                ]
-                            }
-                        ],
-                        "severity": "moderate"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:allergy-shellfish",
-            "resource": {
-                "resourceType": "AllergyIntolerance",
-                "id": "allergy-shellfish",
-                "clinicalStatus": {
-                    "coding": [
-                        {
-                            "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
-                            "code": "active"
-                        }
-                    ]
-                },
-                "verificationStatus": {
-                    "coding": [
-                        {
-                            "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
-                            "code": "confirmed"
-                        }
-                    ]
-                },
-                "category": [
-                    "food"
-                ],
-                "criticality": "high",
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://snomed.info/sct",
-                            "code": "44027008",
-                            "display": "Shellfish"
-                        }
-                    ]
-                },
-                "patient": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "recordedDate": "2020-08-12",
-                "reaction": [
-                    {
-                        "manifestation": [
-                            {
-                                "coding": [
-                                    {
-                                        "system": "http://snomed.info/sct",
-                                        "code": "39579001",
-                                        "display": "Anaphylaxis"
-                                    }
-                                ]
-                            }
-                        ],
-                        "severity": "severe"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:poi-vital-temp",
-            "resource": {
-                "resourceType": "Observation",
-                "id": "poi-vital-temp",
-                "status": "final",
-                "category": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                "code": "vital-signs"
-                            }
-                        ]
-                    }
-                ],
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "8310-5",
-                            "display": "Body temperature"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "effectiveDateTime": "2025-09-21T13:05:00Z",
-                "valueQuantity": {
-                    "value": 37.2,
-                    "unit": "°C",
-                    "system": "http://unitsofmeasure.org",
-                    "code": "Cel"
-                },
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "poi"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:poi-condition-hemorrhage",
-            "resource": {
-                "resourceType": "Condition",
-                "id": "poi-condition-hemorrhage",
-                "clinicalStatus": {
-                    "coding": [
-                        {
-                            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
-                            "code": "active"
-                        }
-                    ]
-                },
-                "verificationStatus": {
-                    "coding": [
-                        {
-                            "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
-                            "code": "confirmed"
-                        }
-                    ]
-                },
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://snomed.info/sct",
-                            "code": "59282003",
-                            "display": "Hemorrhage"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "onsetDateTime": "2025-09-21T13:04:00Z",
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "poi"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:poi-procedure-tourniquet",
-            "resource": {
-                "resourceType": "Procedure",
-                "id": "poi-procedure-tourniquet",
-                "status": "completed",
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://snomed.info/sct",
-                            "code": "385763009",
-                            "display": "Application of tourniquet"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "performedDateTime": "2025-09-21T13:06:00Z",
-                "note": [
-                    {
-                        "text": "Tourniquet applied to left femoral region"
-                    }
-                ],
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "poi"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:casevac-vital-hr",
-            "resource": {
-                "resourceType": "Observation",
-                "id": "casevac-vital-hr",
-                "status": "final",
-                "category": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                "code": "vital-signs"
-                            }
-                        ]
-                    }
-                ],
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "8867-4",
-                            "display": "Heart rate"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "effectiveDateTime": "2025-09-21T13:30:00Z",
-                "valueQuantity": {
-                    "value": 88,
-                    "unit": "bpm",
-                    "system": "http://unitsofmeasure.org",
-                    "code": "/min"
-                },
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "casevac"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:casevac-medication-fentanyl",
-            "resource": {
-                "resourceType": "MedicationAdministration",
-                "id": "casevac-medication-fentanyl",
-                "status": "completed",
-                "medicationCodeableConcept": {
-                    "coding": [
-                        {
-                            "system": "http://snomed.info/sct",
-                            "code": "373522006",
-                            "display": "Fentanyl"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "effectiveDateTime": "2025-09-21T13:32:00Z",
-                "dosage": {
-                    "dose": {
-                        "value": 50,
-                        "unit": "mcg",
-                        "system": "http://unitsofmeasure.org",
-                        "code": "ug"
-                    },
-                    "route": {
-                        "coding": [
-                            {
-                                "system": "http://snomed.info/sct",
-                                "code": "72607000",
-                                "display": "Intravenous route"
-                            }
-                        ]
-                    }
-                },
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "casevac"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:axp-vital-bp",
-            "resource": {
-                "resourceType": "Observation",
-                "id": "axp-vital-bp",
-                "status": "final",
-                "category": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                "code": "vital-signs"
-                            }
-                        ]
-                    }
-                ],
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "85354-9",
-                            "display": "Blood pressure panel"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "effectiveDateTime": "2025-09-21T14:00:00Z",
-                "component": [
-                    {
-                        "code": {
-                            "coding": [
-                                {
-                                    "system": "http://loinc.org",
-                                    "code": "8480-6",
-                                    "display": "Systolic blood pressure"
-                                }
-                            ]
-                        },
-                        "valueQuantity": {
-                            "value": 118,
-                            "unit": "mmHg",
-                            "system": "http://unitsofmeasure.org",
-                            "code": "mm[Hg]"
-                        }
-                    },
-                    {
-                        "code": {
-                            "coding": [
-                                {
-                                    "system": "http://loinc.org",
-                                    "code": "8462-4",
-                                    "display": "Diastolic blood pressure"
-                                }
-                            ]
-                        },
-                        "valueQuantity": {
-                            "value": 78,
-                            "unit": "mmHg",
-                            "system": "http://unitsofmeasure.org",
-                            "code": "mm[Hg]"
-                        }
-                    }
-                ],
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "axp"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:axp-procedure-airway",
-            "resource": {
-                "resourceType": "Procedure",
-                "id": "axp-procedure-airway",
-                "status": "completed",
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://snomed.info/sct",
-                            "code": "230040002",
-                            "display": "Airway management"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "performedDateTime": "2025-09-21T14:05:00Z",
-                "note": [
-                    {
-                        "text": "Advanced airway assessed and secured"
-                    }
-                ],
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "axp"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:medevac-vital-spo2",
-            "resource": {
-                "resourceType": "Observation",
-                "id": "medevac-vital-spo2",
-                "status": "final",
-                "category": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                "code": "vital-signs"
-                            }
-                        ]
-                    }
-                ],
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "2708-6"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "effectiveDateTime": "2025-09-21T14:45:00Z",
-                "valueQuantity": {
-                    "value": 94,
-                    "unit": "%",
-                    "system": "http://unitsofmeasure.org",
-                    "code": "%"
-                },
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "medevac"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:medevac-medication-saline",
-            "resource": {
-                "resourceType": "MedicationAdministration",
-                "id": "medevac-medication-saline",
-                "status": "in-progress",
-                "medicationCodeableConcept": {
-                    "coding": [
-                        {
-                            "system": "http://snomed.info/sct",
-                            "code": "333919005",
-                            "display": "0.9% sodium chloride solution"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "effectiveDateTime": "2025-09-21T14:47:00Z",
-                "dosage": {
-                    "dose": {
-                        "value": 500,
-                        "unit": "mL",
-                        "system": "http://unitsofmeasure.org",
-                        "code": "mL"
-                    },
-                    "route": {
-                        "coding": [
-                            {
-                                "system": "http://snomed.info/sct",
-                                "code": "47625008",
-                                "display": "Intravenous route"
-                            }
-                        ]
-                    }
-                },
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "medevac"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:medevac-procedure-intubation",
-            "resource": {
-                "resourceType": "Procedure",
-                "id": "medevac-procedure-intubation",
-                "status": "completed",
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://snomed.info/sct",
-                            "code": "40617009",
-                            "display": "Endotracheal intubation"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "performedDateTime": "2025-09-21T14:50:00Z",
-                "note": [
-                    {
-                        "text": "Performed during in-flight deterioration"
-                    }
-                ],
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "medevac"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:r1-observation-baseexam",
-            "resource": {
-                "resourceType": "Observation",
-                "id": "r1-observation-baseexam",
-                "status": "final",
-                "category": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                "code": "vital-signs"
-                            }
-                        ]
-                    }
-                ],
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "9279-1",
-                            "display": "Respiratory rate"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "effectiveDateTime": "2025-09-21T15:10:00Z",
-                "valueQuantity": {
-                    "value": 20,
-                    "unit": "breaths/min",
-                    "system": "http://unitsofmeasure.org",
-                    "code": "/min"
-                },
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "r1"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:r1-condition-shock",
-            "resource": {
-                "resourceType": "Condition",
-                "id": "r1-condition-shock",
-                "clinicalStatus": {
-                    "coding": [
-                        {
-                            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
-                            "code": "active"
-                        }
-                    ]
-                },
-                "verificationStatus": {
-                    "coding": [
-                        {
-                            "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
-                            "code": "confirmed"
-                        }
-                    ]
-                },
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://snomed.info/sct",
-                            "code": "82272006",
-                            "display": "Hypovolemic shock"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "onsetDateTime": "2025-09-21T15:05:00Z",
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "r1"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:r1-procedure-ultrasound",
-            "resource": {
-                "resourceType": "Procedure",
-                "id": "r1-procedure-ultrasound",
-                "status": "completed",
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://snomed.info/sct",
-                            "code": "168537006",
-                            "display": "Focused assessment with sonography"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "performedDateTime": "2025-09-21T15:15:00Z",
-                "note": [
-                    {
-                        "text": "FAST scan negative for abdominal bleed"
-                    }
-                ],
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "r1"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:fwd-tacevac-vital-lactate",
-            "resource": {
-                "resourceType": "Observation",
-                "id": "fwd-tacevac-vital-lactate",
-                "status": "final",
-                "category": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                "code": "laboratory"
-                            }
-                        ]
-                    }
-                ],
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "19240-0",
-                            "display": "Lactate [Moles/volume] in Blood"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "effectiveDateTime": "2025-09-21T15:45:00Z",
-                "valueQuantity": {
-                    "value": 3.2,
-                    "unit": "mmol/L",
-                    "system": "http://unitsofmeasure.org",
-                    "code": "mmol/L"
-                },
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "fwd-tacevac"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:fwd-tacevac-medication-tranexamic",
-            "resource": {
-                "resourceType": "MedicationAdministration",
-                "id": "fwd-tacevac-medication-tranexamic",
-                "status": "completed",
-                "medicationCodeableConcept": {
-                    "coding": [
-                        {
-                            "system": "http://snomed.info/sct",
-                            "code": "372729009",
-                            "display": "Tranexamic acid"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "effectiveDateTime": "2025-09-21T15:48:00Z",
-                "dosage": {
-                    "dose": {
-                        "value": 1,
-                        "unit": "g",
-                        "system": "http://unitsofmeasure.org",
-                        "code": "g"
-                    },
-                    "route": {
-                        "coding": [
-                            {
-                                "system": "http://snomed.info/sct",
-                                "code": "72607000",
-                                "display": "Intravenous route"
-                            }
-                        ]
-                    }
-                },
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "fwd-tacevac"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:r2-vital-temp",
-            "resource": {
-                "resourceType": "Observation",
-                "id": "r2-vital-temp",
-                "status": "final",
-                "category": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                "code": "vital-signs"
-                            }
-                        ]
-                    }
-                ],
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "8310-5",
-                            "display": "Body temperature"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "effectiveDateTime": "2025-09-21T16:20:00Z",
-                "valueQuantity": {
-                    "value": 37.8,
-                    "unit": "°C",
-                    "system": "http://unitsofmeasure.org",
-                    "code": "Cel"
-                },
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "r2"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:r2-procedure-ct",
-            "resource": {
-                "resourceType": "Procedure",
-                "id": "r2-procedure-ct",
-                "status": "completed",
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://snomed.info/sct",
-                            "code": "168537006",
-                            "display": "CT of whole body"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "performedDateTime": "2025-09-21T16:35:00Z",
-                "note": [
-                    {
-                        "text": "Whole-body CT performed at Role 2 surgical facility"
-                    }
-                ],
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "r2"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:r2-medication-antibiotic",
-            "resource": {
-                "resourceType": "MedicationAdministration",
-                "id": "r2-medication-antibiotic",
-                "status": "completed",
-                "medicationCodeableConcept": {
-                    "coding": [
-                        {
-                            "system": "http://snomed.info/sct",
-                            "code": "372687004",
-                            "display": "Amoxicillin"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "effectiveDateTime": "2025-09-21T16:50:00Z",
-                "dosage": {
-                    "dose": {
-                        "value": 500,
-                        "unit": "mg",
-                        "system": "http://unitsofmeasure.org",
-                        "code": "mg"
-                    },
-                    "route": {
-                        "coding": [
-                            {
-                                "system": "http://snomed.info/sct",
-                                "code": "422145002",
-                                "display": "Oral route"
-                            }
-                        ]
-                    }
-                },
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "r2"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:rear-tacevac-vital-hr",
-            "resource": {
-                "resourceType": "Observation",
-                "id": "rear-tacevac-vital-hr",
-                "status": "final",
-                "category": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                "code": "vital-signs"
-                            }
-                        ]
-                    }
-                ],
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "8867-4",
-                            "display": "Heart rate"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "effectiveDateTime": "2025-09-21T17:20:00Z",
-                "valueQuantity": {
-                    "value": 76,
-                    "unit": "bpm",
-                    "system": "http://unitsofmeasure.org",
-                    "code": "/min"
-                },
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "rear-tacevac"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:rear-tacevac-procedure-monitoring",
-            "resource": {
-                "resourceType": "Procedure",
-                "id": "rear-tacevac-procedure-monitoring",
-                "status": "completed",
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://snomed.info/sct",
-                            "code": "225358003",
-                            "display": "Monitoring of patient"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "performedDateTime": "2025-09-21T17:25:00Z",
-                "note": [
-                    {
-                        "text": "Continuous monitoring during rear tactical evacuation"
-                    }
-                ],
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "rear-tacevac"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:r3-vital-temp",
-            "resource": {
-                "resourceType": "Observation",
-                "id": "r3-vital-temp",
-                "status": "final",
-                "category": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                "code": "vital-signs"
-                            }
-                        ]
-                    }
-                ],
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "8310-5",
-                            "display": "Body temperature"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "effectiveDateTime": "2025-09-21T18:10:00Z",
-                "valueQuantity": {
-                    "value": 37.0,
-                    "unit": "°C",
-                    "system": "http://unitsofmeasure.org",
-                    "code": "Cel"
-                },
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "r3"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:r3-procedure-surgery",
-            "resource": {
-                "resourceType": "Procedure",
-                "id": "r3-procedure-surgery",
-                "status": "completed",
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://snomed.info/sct",
-                            "code": "241644003",
-                            "display": "Exploratory laparotomy"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "performedDateTime": "2025-09-21T18:30:00Z",
-                "note": [
-                    {
-                        "text": "Definitive surgical exploration performed at Role 3 hospital"
-                    }
-                ],
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "r3"
-                    }
-                ]
-            }
-        },
-        {
-            "fullUrl": "urn:uuid:r3-medication-opioid",
-            "resource": {
-                "resourceType": "MedicationAdministration",
-                "id": "r3-medication-opioid",
-                "status": "completed",
-                "medicationCodeableConcept": {
-                    "coding": [
-                        {
-                            "system": "http://snomed.info/sct",
-                            "code": "116602009",
-                            "display": "Morphine sulfate"
-                        }
-                    ]
-                },
-                "subject": {
-                    "reference": "urn:uuid:patient-ips-scaffold"
-                },
-                "effectiveDateTime": "2025-09-21T18:45:00Z",
-                "dosage": {
-                    "dose": {
-                        "value": 4,
-                        "unit": "mg",
-                        "system": "http://unitsofmeasure.org",
-                        "code": "mg"
-                    },
-                    "route": {
-                        "coding": [
-                            {
-                                "system": "http://snomed.info/sct",
-                                "code": "72607000",
-                                "display": "Intravenous route"
-                            }
-                        ]
-                    }
-                },
-                "extension": [
-                    {
-                        "url": "http://example.org/fhir/StructureDefinition/care-stage",
-                        "valueCode": "r3"
-                    }
-                ]
-            }
-        }
+  "resourceType": "Bundle",
+  "id": "ips-bundle-scaffold",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/uv/ips/StructureDefinition/Bundle-uv-ips"
     ]
+  },
+  "type": "document",
+  "timestamp": "2025-10-01T06:28:00-04:00",
+  "identifier": {
+    "system": "urn:ietf:rfc:3986",
+    "value": "urn:uuid:716c1aa1-086e-4231-a62b-43c6d1b0b69c"
+  },
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:8b7c68ee-5be6-4ac0-bef8-36b1fe30bca6",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "composition-ips",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/uv/ips/StructureDefinition/Composition-uv-ips"
+          ]
+        },
+        "identifier": {
+          "system": "urn:ietf:rfc:3986",
+          "value": "urn:uuid:c00cdb09-5765-44df-a894-84f1e012df81"
+        },
+        "status": "final",
+        "type": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "60591-5",
+              "display": "Patient summary Document"
+            }
+          ]
+        },
+        "date": "2025-10-01T06:26:00-04:00",
+        "title": "International Patient Summary — OPCP (Scaffold)",
+        "subject": {
+          "reference": "urn:uuid:ac01b5e4-7282-47d4-80c6-a9f855655bf4"
+        },
+        "author": [
+          {
+            "reference": "urn:uuid:bad34e8c-e6fa-4240-ae73-d6111339a4c8"
+          }
+        ],
+        "section": [
+          {
+            "title": "Demographics & Identifiers",
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "45970-1",
+                  "display": "Demographic information section"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "urn:uuid:ac01b5e4-7282-47d4-80c6-a9f855655bf4"
+              },
+              {
+                "reference": "urn:uuid:d66b810a-612f-42e9-ab6b-9913c1d3ea7f"
+              }
+            ]
+          },
+          {
+            "title": "Allergies",
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "48765-2",
+                  "display": "Allergies and adverse reactions Document"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "urn:uuid:b526fdce-da80-422d-bdca-1c8770d93331"
+              }
+            ]
+          },
+          {
+            "title": "Problem/Diagnosis",
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "11450-4",
+                  "display": "Problem list - Reported"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "urn:uuid:ee7ceaa8-5bf8-44e2-b805-518f0f06c2a3"
+              }
+            ]
+          },
+          {
+            "title": "Medications (Maintenance)",
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "10160-0",
+                  "display": "History of medication use"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "urn:uuid:5a5b5855-d668-4e01-8aab-cd44e606dad4"
+              }
+            ]
+          },
+          {
+            "title": "Point of Injury (POI)",
+            "entry": [
+              {
+                "reference": "urn:uuid:86d8cc8a-98e2-4798-bdc3-62e35b7806ee"
+              }
+            ]
+          },
+          {
+            "title": "Casualty Evacuation (CASEVAC)",
+            "entry": [
+              {
+                "reference": "urn:uuid:6ee8a716-3940-4e90-a70a-4da882b012db"
+              }
+            ]
+          },
+          {
+            "title": "Ambulance Exchange Point (AXP)",
+            "entry": [
+              {
+                "reference": "urn:uuid:8628e401-ec09-48df-9eea-ccfe17bda16b"
+              }
+            ]
+          },
+          {
+            "title": "Medical Evacuation (MEDEVAC)",
+            "entry": [
+              {
+                "reference": "urn:uuid:3bb7536e-5cb7-4c50-a222-5be19eaaa56e"
+              }
+            ]
+          },
+          {
+            "title": "Role 1 PHEC",
+            "entry": [
+              {
+                "reference": "urn:uuid:5dec9770-2fc8-4059-9f79-6ac879aebf60"
+              }
+            ]
+          },
+          {
+            "title": "Role 1 PHC",
+            "entry": [
+              {
+                "reference": "urn:uuid:c7fd58ab-b5da-4fb3-a2a7-dd99059fb9ed"
+              }
+            ]
+          },
+          {
+            "title": "Forward TACEVAC",
+            "entry": [
+              {
+                "reference": "urn:uuid:80068898-9284-4662-bfce-567f43c772f7"
+              }
+            ]
+          },
+          {
+            "title": "Role 2",
+            "entry": [
+              {
+                "reference": "urn:uuid:325c83c7-b48f-4acf-a8b4-fb15eadfc393"
+              }
+            ]
+          },
+          {
+            "title": "Rear TACEVAC",
+            "entry": [
+              {
+                "reference": "urn:uuid:37fc465b-5fc1-4c0b-9fee-3d317e125b04"
+              }
+            ]
+          },
+          {
+            "title": "Role 3",
+            "entry": [
+              {
+                "reference": "urn:uuid:58b61cd3-4941-4c72-9df1-f67633f4311d"
+              }
+            ]
+          },
+          {
+            "title": "STRATEVAC",
+            "entry": [
+              {
+                "reference": "urn:uuid:d23c5ad6-fd0f-46a0-9c7c-85c30011fa37"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:ac01b5e4-7282-47d4-80c6-a9f855655bf4",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-1",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/uv/ips/StructureDefinition/Patient-uv-ips"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "urn:national:mrn",
+            "value": "REPLACE-MRN"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "REPLACE-FAMILY",
+            "given": [
+              "REPLACE-GIVEN"
+            ]
+          }
+        ],
+        "gender": "unknown",
+        "birthDate": "1990-01-01"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:bad34e8c-e6fa-4240-ae73-d6111339a4c8",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "org-1",
+        "name": "REPLACE Organization / Unit",
+        "address": [
+          {
+            "text": "REPLACE Address"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:b526fdce-da80-422d-bdca-1c8770d93331",
+      "resource": {
+        "resourceType": "AllergyIntolerance",
+        "id": "alg-1",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "type": "allergy",
+        "category": [
+          "food"
+        ],
+        "code": {
+          "text": "REPLACE allergy (e.g., Peanut)"
+        },
+        "patient": {
+          "reference": "urn:uuid:ac01b5e4-7282-47d4-80c6-a9f855655bf4"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:ee7ceaa8-5bf8-44e2-b805-518f0f06c2a3",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-1",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "code": {
+          "text": "REPLACE primary diagnosis (e.g., GSW right thigh)"
+        },
+        "subject": {
+          "reference": "urn:uuid:ac01b5e4-7282-47d4-80c6-a9f855655bf4"
+        },
+        "onsetDateTime": "2025-10-01T06:16:00-04:00"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:5a5b5855-d668-4e01-8aab-cd44e606dad4",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "medstmt-maint-1",
+        "status": "active",
+        "medicationCodeableConcept": {
+          "text": "REPLACE maintenance medication (e.g., Tetanus toxoid)"
+        },
+        "subject": {
+          "reference": "urn:uuid:ac01b5e4-7282-47d4-80c6-a9f855655bf4"
+        },
+        "effectiveDateTime": "2025-10-01T06:16:00-04:00"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:d66b810a-612f-42e9-ab6b-9913c1d3ea7f",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-abo-rh",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "882-1",
+              "display": "ABO and Rh group"
+            }
+          ]
+        },
+        "effectiveDateTime": "2024-06-01T00:00:00-04:00",
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "112144000",
+              "display": "Blood group O positive (finding)"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:ac01b5e4-7282-47d4-80c6-a9f855655bf4"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:86d8cc8a-98e2-4798-bdc3-62e35b7806ee",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-poi",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "type": [
+          {
+            "text": "Poi (set SNOMED code here)"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:ac01b5e4-7282-47d4-80c6-a9f855655bf4"
+        },
+        "period": {
+          "start": "2025-10-01T06:16:00-04:00",
+          "end": "2025-10-01T06:36:00-04:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:6ee8a716-3940-4e90-a70a-4da882b012db",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-casevac",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "EMER"
+        },
+        "type": [
+          {
+            "text": "Casevac (set SNOMED code here)"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:ac01b5e4-7282-47d4-80c6-a9f855655bf4"
+        },
+        "period": {
+          "start": "2025-10-01T06:36:00-04:00",
+          "end": "2025-10-01T07:16:00-04:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:8628e401-ec09-48df-9eea-ccfe17bda16b",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-axp",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "type": [
+          {
+            "text": "Axp (set SNOMED code here)"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:ac01b5e4-7282-47d4-80c6-a9f855655bf4"
+        },
+        "period": {
+          "start": "2025-10-01T07:36:00-04:00",
+          "end": "2025-10-01T07:56:00-04:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:3bb7536e-5cb7-4c50-a222-5be19eaaa56e",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-medevac",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "EMER"
+        },
+        "type": [
+          {
+            "text": "Medevac (set SNOMED code here)"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:ac01b5e4-7282-47d4-80c6-a9f855655bf4"
+        },
+        "period": {
+          "start": "2025-10-01T08:16:00-04:00",
+          "end": "2025-10-01T09:16:00-04:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:5dec9770-2fc8-4059-9f79-6ac879aebf60",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-r1_phec",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "EMER"
+        },
+        "type": [
+          {
+            "text": "R1 Phec (set SNOMED code here)"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:ac01b5e4-7282-47d4-80c6-a9f855655bf4"
+        },
+        "period": {
+          "start": "2025-10-01T09:21:00-04:00",
+          "end": "2025-10-01T10:21:00-04:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c7fd58ab-b5da-4fb3-a2a7-dd99059fb9ed",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-r1_phc",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "type": [
+          {
+            "text": "R1 Phc (set SNOMED code here)"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:ac01b5e4-7282-47d4-80c6-a9f855655bf4"
+        },
+        "period": {
+          "start": "2025-10-01T10:36:00-04:00",
+          "end": "2025-10-01T12:16:00-04:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:80068898-9284-4662-bfce-567f43c772f7",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-fwd_tacevac",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "EMER"
+        },
+        "type": [
+          {
+            "text": "Fwd Tacevac (set SNOMED code here)"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:ac01b5e4-7282-47d4-80c6-a9f855655bf4"
+        },
+        "period": {
+          "start": "2025-10-01T12:56:00-04:00",
+          "end": "2025-10-01T13:56:00-04:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:325c83c7-b48f-4acf-a8b4-fb15eadfc393",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-r2",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP"
+        },
+        "type": [
+          {
+            "text": "R2 (set SNOMED code here)"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:ac01b5e4-7282-47d4-80c6-a9f855655bf4"
+        },
+        "period": {
+          "start": "2025-10-01T14:16:00-04:00",
+          "end": "2025-10-01T18:16:00-04:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:37fc465b-5fc1-4c0b-9fee-3d317e125b04",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-rear_tacevac",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "EMER"
+        },
+        "type": [
+          {
+            "text": "Rear Tacevac (set SNOMED code here)"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:ac01b5e4-7282-47d4-80c6-a9f855655bf4"
+        },
+        "period": {
+          "start": "2025-10-01T18:56:00-04:00",
+          "end": "2025-10-01T19:56:00-04:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:58b61cd3-4941-4c72-9df1-f67633f4311d",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-r3",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP"
+        },
+        "type": [
+          {
+            "text": "R3 (set SNOMED code here)"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:ac01b5e4-7282-47d4-80c6-a9f855655bf4"
+        },
+        "period": {
+          "start": "2025-10-01T20:16:00-04:00",
+          "end": "2025-10-03T06:16:00-04:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:d23c5ad6-fd0f-46a0-9c7c-85c30011fa37",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-stratevac",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "EMER"
+        },
+        "type": [
+          {
+            "text": "Stratevac (set SNOMED code here)"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:ac01b5e4-7282-47d4-80c6-a9f855655bf4"
+        },
+        "period": {
+          "start": "2025-10-03T07:16:00-04:00",
+          "end": "2025-10-03T09:16:00-04:00"
+        }
+      }
+    }
+  ]
 }
