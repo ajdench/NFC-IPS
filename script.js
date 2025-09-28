@@ -1607,14 +1607,16 @@ function showMessage(message, type = 'info') {
     // Add to container
     toastContainer.appendChild(toast);
 
-    // Position toast midway between payload header and pane header
+    // Position toast centred on the payload title text
     const payloadHeader = document.querySelector('.payload-header');
-    const payloadPane = document.querySelector('.payload-pane');
-    if (payloadHeader && payloadPane) {
+    const payloadTitle = document.querySelector('.payload-header .info-title');
+    if (payloadHeader && payloadTitle) {
         const headerRect = payloadHeader.getBoundingClientRect();
-        const paneRect = payloadPane.getBoundingClientRect();
-        const midpointOffset = ((paneRect.top + headerRect.top) / 2) - headerRect.top;
-        toastContainer.style.top = `${midpointOffset}px`;
+        const titleRect = payloadTitle.getBoundingClientRect();
+        const titleCenter = titleRect.top + (titleRect.height / 2);
+        const toastRect = toast.getBoundingClientRect();
+        const offsetWithinHeader = titleCenter - headerRect.top - (toastRect.height / 2);
+        toastContainer.style.top = `${offsetWithinHeader}px`;
     } else {
         toastContainer.style.top = '';
     }
