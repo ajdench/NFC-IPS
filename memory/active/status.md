@@ -148,6 +148,3 @@
 - Fixed vitals chart legend positioning: reduced gap to half standard padding, aligned legend items to right edge of container - legend now conforms to chart pane padding boundaries
 
 ### Update: 2025-09-27 11:23
-
-### Update: 2025-09-28 16:15
-- Restored vitals empty state padding + 15px line, expanded legend overlap to 40px with measured width, and reworked payload header grid so centred 19px toast aligns with the title text.

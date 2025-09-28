@@ -2,8 +2,8 @@
 
 ## 🚀 **QUICK START FOR NEW CLAUDE CODE INSTANCES**
 
-**⏰ LAST UPDATED: 2025-09-28 21:08 UTC**
-**🔄 TTL: Valid until 2025-09-28 22:08 UTC** *(Auto-refresh on any Auto-JJ commit)*
+**⏰ LAST UPDATED: 2025-09-28 21:16 UTC**
+**🔄 TTL: Valid until 2025-09-28 22:16 UTC** *(Auto-refresh on any Auto-JJ commit)*
 **💾 CRASH RECOVERY: If system restarted unexpectedly, check timestamps below**
 
 ### **Immediate Orientation**
