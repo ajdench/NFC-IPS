@@ -469,7 +469,7 @@ body {
 
 .vitals-legend-wrapper .vitals-legend-item {
     position: absolute;
-    right: 0;
+    left: 0;
     display: flex;
     align-items: center;
     font-size: 10px;
@@ -479,8 +479,8 @@ body {
 }
 
 .vitals-legend-wrapper .vitals-legend-marker {
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     margin-right: 6px;
     flex-shrink: 0;

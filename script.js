@@ -5359,7 +5359,7 @@ async function init() {
 
 // Legend Configuration
 const LEGEND_CONFIG = {
-    MARKER_SIZE: 6,
+    MARKER_SIZE: 7,
     MIN_ROW_GAP: 14,
     EXTRA_WIDTH_PADDING: 12
 };
