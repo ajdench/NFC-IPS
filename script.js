@@ -132,6 +132,9 @@ function resetLegendLayout(targetWrapper = null) {
         legendWrapper.innerHTML = '';
         legendWrapper.style.width = '';
         legendWrapper.style.minWidth = '';
+        legendWrapper.style.marginTop = '';
+        legendWrapper.style.marginBottom = '';
+        legendWrapper.style.height = '';
     }
 
     const vitalsContent = chartWrapper.closest('.vitals-content');
