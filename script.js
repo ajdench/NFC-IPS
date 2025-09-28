@@ -56,7 +56,7 @@ import {
 const DUAL_TITLE_CONFIG = {
     enabled: true,
     transparency: 0.5,
-    enabledPanes: new Set(['patient', 'clinicalSummary', 'poi', 'casevac', 'axp', 'medevac', 'r1', 'fwdTacevac', 'r2', 'rearTacevac', 'r3']) // All panes enabled
+    enabledPanes: new Set(['patient', 'clinicalSummary', 'poi', 'casevac', 'axp', 'medevac', 'r1', 'fwdTacevac', 'r2', 'rearTacevac', 'r3', 'stratevac']) // All panes enabled
 };
 
 /**
@@ -75,7 +75,8 @@ const infoBoxConfig = [
     { title: 'Forward Tactical Evacuation (Fwd TACEVAC)', colorClass: 'fwd-tacevac', dataKey: 'fwdTacevac' },
     { title: 'Role 2 Care (R2)', colorClass: 'blue', dataKey: 'r2' },
     { title: 'Rear Tactical Evacuation (Rear TACEVAC)', colorClass: 'rear-tacevac', dataKey: 'rearTacevac' },
-    { title: 'Role 3 Care (R3)', colorClass: 'purple', dataKey: 'r3' }
+    { title: 'Role 3 Care (R3)', colorClass: 'purple', dataKey: 'r3' },
+    { title: 'Strategic Evacuation (STRATEVAC)', colorClass: 'stratevac', dataKey: 'stratevac' }
 ];
 
 const stageTitleLookup = infoBoxConfig.reduce((acc, config) => {

@@ -46,7 +46,8 @@ export const COLORS = {
     STAGE_YELLOW: '#ffe899',
     STAGE_GREEN: '#c8e6c9',
     STAGE_BLUE: '#a8d2ff',
-    STAGE_PURPLE: '#e1bee7'
+    STAGE_PURPLE: '#d7c7f5',
+    STAGE_STRATEVAC: '#c3c5ff'
 };
 
 // =============================================================================
@@ -180,11 +181,17 @@ export const CARE_STAGES = {
         shortName: 'R3',
         color: COLORS.STAGE_PURPLE,
         order: 6
+    },
+    STRATEVAC: {
+        name: 'Strategic Evacuation',
+        shortName: 'STRATEVAC',
+        color: COLORS.STAGE_STRATEVAC,
+        order: 7
     }
 };
 
 // Total OPCP stages count for chart tick calculation (includes empty stages)
-export const CARE_STAGE_COUNT = 9;
+export const CARE_STAGE_COUNT = 10;
 
 // =============================================================================
 // LOCAL STORAGE KEYS
