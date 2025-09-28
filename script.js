@@ -3717,18 +3717,19 @@ function createInfoBoxes() {
             shortTitle = shortTitleMatch[1];
         } else {
             // Create short titles for panes without parentheses
-            const shortTitleMap = {
-                'patient': 'Patient',
-                'clinicalSummary': 'Clinical',
-                'casevac': 'CASEVAC',
-                'axp': 'AXP',
-                'medevac': 'MEDEVAC',
-                'r1': 'R1',
-                'fwdTacevac': 'Fwd TACEVAC',
-                'r2': 'R2',
-                'rearTacevac': 'Rear TACEVAC',
-                'r3': 'R3'
-            };
+                const shortTitleMap = {
+                    'patient': 'Patient',
+                    'clinicalSummary': 'Clinical',
+                    'casevac': 'CASEVAC',
+                    'axp': 'AXP',
+                    'medevac': 'MEDEVAC',
+                    'r1': 'R1',
+                    'fwdTacevac': 'Fwd TACEVAC',
+                    'r2': 'R2',
+                    'rearTacevac': 'Rear TACEVAC',
+                    'r3': 'R3',
+                    'stratevac': 'STRATEVAC'
+                };
             shortTitle = shortTitleMap[config.dataKey] || fullTitle;
         }
 
