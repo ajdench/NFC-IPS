@@ -5439,7 +5439,7 @@ function renderCustomLegend(chartInstance) {
 
     legendWrapper.style.top = `${Math.max(areaTopCss + paddingTop, 0)}px`;
     legendWrapper.style.height = `${Math.max(areaHeightCss, 0)}px`;
-    legendWrapper.style.bottom = '';
+    legendWrapper.style.bottom = 'auto';
 
     const availableHeight = Math.max(areaHeightCss, 0);
     const minSpacing = visibleItems.length > 1
