@@ -448,7 +448,7 @@ body {
     overflow: visible;
     padding: var(--standard-padding);
     display: grid;
-    grid-template-columns: minmax(0, 1fr) calc(var(--legend-column-width) - var(--legend-overlap));
+    grid-template-columns: minmax(0, 1fr) var(--legend-column-width);
     gap: var(--legend-column-gap);
     align-items: stretch;
 }
@@ -471,6 +471,8 @@ body {
     min-width: 0;
     pointer-events: none;
     display: none;
+    width: max-content;
+    margin-left: calc(var(--legend-overlap) * -1);
 }
 
 .vitals-legend-wrapper.is-visible {
