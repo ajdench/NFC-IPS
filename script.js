@@ -5435,7 +5435,6 @@ function renderCustomLegend(chartInstance) {
 
     const wrapperStyles = getComputedStyle(chartWrapper);
     const paddingTop = Number.parseFloat(wrapperStyles.paddingTop) || 0;
-    const paddingBottom = Number.parseFloat(wrapperStyles.paddingBottom) || 0;
 
     legendWrapper.style.top = `${Math.max(areaTopCss + paddingTop, 0)}px`;
     legendWrapper.style.height = `${Math.max(areaHeightCss, 0)}px`;
