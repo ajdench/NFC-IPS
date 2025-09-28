@@ -5159,6 +5159,7 @@ async function init() {
     clearLeftButton.addEventListener('click', () => {
         leftInput.textContent = '';
         updateCharCount(leftInput, leftCharCount);
+        updateActivePreset(null);
     });
 
     // clearRightButton removed - right pane is output only
