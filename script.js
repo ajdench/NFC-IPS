@@ -4402,6 +4402,7 @@ function renderVitalsChart(viewModel) {
     const ctx = canvas.getContext('2d');
 
     const stageBands = computeStageBandData(stageSections);
+    console.log('[STRATEVAC] stageBandData computed:', stageBands);
     const stageBandOpacity = getStageBandOpacity();
     const stageBandLabelPadding = getStageBandLabelPadding();
 
