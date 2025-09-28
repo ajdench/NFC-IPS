@@ -5373,15 +5373,13 @@ function renderCustomLegend(chartInstance) {
     const canvas = chartInstance.canvas;
     if (!canvas) return;
 
-    const { chartWrapper, legendWrapper } = ensureLegendWrapper(canvas);
-    if (!chartWrapper || !legendWrapper) return;
-
-    const vitalsContent = chartWrapper.closest('.vitals-content');
+    const { vitalsContent, legendWrapper } = ensureLegendWrapper(canvas);
+    if (!vitalsContent || !legendWrapper) return;
 
     const datasets = chartInstance.data?.datasets || [];
     const yScale = chartInstance.scales?.y;
     if (!datasets.length || !yScale) {
-        resetLegendLayout(chartWrapper);
+        resetLegendLayout(vitalsContent.querySelector('.vitals-chart-wrapper'));
         return;
     }
 
@@ -5410,13 +5408,13 @@ function renderCustomLegend(chartInstance) {
     visibleItems.sort((a, b) => a.pixelY - b.pixelY);
 
     if (!visibleItems.length) {
-        resetLegendLayout(chartWrapper);
+        resetLegendLayout(vitalsContent.querySelector('.vitals-chart-wrapper'));
         return;
     }
 
     const chartArea = chartInstance.chartArea;
     if (!chartArea) {
-        resetLegendLayout(chartWrapper);
+        resetLegendLayout(vitalsContent.querySelector('.vitals-chart-wrapper'));
         return;
     }
 
@@ -5432,13 +5430,6 @@ function renderCustomLegend(chartInstance) {
 
     legendWrapper.classList.add('is-visible');
     legendWrapper.innerHTML = '';
-
-    const wrapperStyles = getComputedStyle(chartWrapper);
-    const paddingTop = Number.parseFloat(wrapperStyles.paddingTop) || 0;
-
-    legendWrapper.style.top = `${Math.max(areaTopCss + paddingTop, 0)}px`;
-    legendWrapper.style.height = `${Math.max(areaHeightCss, 0)}px`;
-    legendWrapper.style.bottom = 'auto';
 
     const availableHeight = Math.max(areaHeightCss, 0);
     const minSpacing = visibleItems.length > 1
@@ -5458,9 +5449,7 @@ function renderCustomLegend(chartInstance) {
         minSpacing
     );
 
-    if (vitalsContent) {
-        vitalsContent.classList.add('has-data');
-    }
+    vitalsContent.classList.add('has-data');
 
     visibleItems.forEach((item, index) => {
         const legendItem = document.createElement('div');
@@ -5482,21 +5471,22 @@ function renderCustomLegend(chartInstance) {
     const legendWidth = measureLegendWidth(legendWrapper);
     legendWrapper.style.width = `${legendWidth}px`;
     legendWrapper.style.minWidth = `${legendWidth}px`;
+    vitalsContent.style.setProperty('--legend-column-width', `${legendWidth}px`);
 }
 
 function ensureLegendWrapper(canvas) {
-    const chartWrapper = canvas.closest('.vitals-chart-wrapper');
-    if (!chartWrapper) return { chartWrapper: null, legendWrapper: null };
+    const vitalsContent = canvas.closest('.vitals-content');
+    if (!vitalsContent) return { vitalsContent: null, legendWrapper: null };
 
-    let legendWrapper = chartWrapper.querySelector('#vitals-legend-wrapper');
+    let legendWrapper = vitalsContent.querySelector('#vitals-legend-wrapper');
     if (!legendWrapper) {
         legendWrapper = document.createElement('div');
         legendWrapper.id = 'vitals-legend-wrapper';
         legendWrapper.className = 'vitals-legend-wrapper';
-        chartWrapper.appendChild(legendWrapper);
+        vitalsContent.appendChild(legendWrapper);
     }
 
-    return { chartWrapper, legendWrapper };
+    return { vitalsContent, legendWrapper };
 }
 
 function measureLegendWidth(wrapper) {
