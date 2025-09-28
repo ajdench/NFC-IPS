@@ -1613,7 +1613,7 @@ function showMessage(message, type = 'info') {
     if (payloadHeader && payloadPane) {
         const headerRect = payloadHeader.getBoundingClientRect();
         const paneRect = payloadPane.getBoundingClientRect();
-        const midpointOffset = (paneRect.top - headerRect.top) / 2;
+        const midpointOffset = ((paneRect.top + headerRect.top) / 2) - headerRect.top;
         toastContainer.style.top = `${midpointOffset}px`;
     } else {
         toastContainer.style.top = '';
