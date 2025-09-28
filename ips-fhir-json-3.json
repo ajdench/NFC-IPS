@@ -5,21 +5,365 @@
     "system": "https://medis.org.uk/ips",
     "value": "ips-opcp-hodge-20250926-case2"
   },
-  "timestamp": "2025-10-05T12:00:00Z",
+  "timestamp": "2025-10-11T04:15:00-04:00",
   "entry": [
     {
-      "fullUrl": "urn:uuid:org-1",
+      "fullUrl": "urn:uuid:1fa07ffa-bc05-5e62-8554-8f522090552a",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "1fa07ffa-bc05-5e62-8554-8f522090552a",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/uv/ips/StructureDefinition/Composition-uv-ips"
+          ]
+        },
+        "status": "final",
+        "type": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "60591-5",
+              "display": "Patient summary Document"
+            }
+          ]
+        },
+        "date": "2025-10-11T04:15:00-04:00",
+        "title": "International Patient Summary – OPCP GSW Left Lower Leg with Amputation",
+        "subject": {
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
+        },
+        "author": [
+          {
+            "reference": "urn:uuid:6b355d14-0a7c-5e44-9eca-e752d665badb"
+          },
+          {
+            "reference": "urn:uuid:6b66aea3-107a-5242-90e8-98d74caa83e0"
+          }
+        ],
+        "section": [
+          {
+            "title": "Demographics & Identifiers",
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "45970-1",
+                  "display": "Demographic information section"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
+              }
+            ]
+          },
+          {
+            "title": "Allergies",
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "48765-2",
+                  "display": "Allergies and intolerances"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "urn:uuid:dab83d87-5ddb-50f9-ab9b-7d228555b8ec"
+              }
+            ]
+          },
+          {
+            "title": "Problem/Diagnoses",
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "11450-4",
+                  "display": "Problem list"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "urn:uuid:85cca479-b58d-5495-8bfc-64a7cbc32505"
+              },
+              {
+                "reference": "urn:uuid:c255d170-24f6-567a-a054-cde03415f233"
+              },
+              {
+                "reference": "urn:uuid:6ebad64a-542e-5254-b7c9-416f90e00ca4"
+              },
+              {
+                "reference": "urn:uuid:aee9199e-3a1f-5de5-a10b-d76b23bbb0b1"
+              }
+            ]
+          },
+          {
+            "title": "Medications (Maintenance)",
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "10160-0",
+                  "display": "History of medication use"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "urn:uuid:d825cd00-06ce-5539-82df-d08ae786d8cf"
+              }
+            ]
+          },
+          {
+            "title": "Laboratory/Results",
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "30954-2",
+                  "display": "Relevant diagnostic tests/laboratory data"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "urn:uuid:333a7c6d-e1e0-5ff9-ad7e-2cf0d48313da"
+              },
+              {
+                "reference": "urn:uuid:4dc1c734-57ca-5a00-8158-22d5e28c2971"
+              },
+              {
+                "reference": "urn:uuid:59e8154d-5d22-575b-8ab3-f493abb1f1b5"
+              },
+              {
+                "reference": "urn:uuid:15cc9118-d741-5129-9b04-61734d784a23"
+              },
+              {
+                "reference": "urn:uuid:b90e23aa-45fa-51a7-9991-318ead337225"
+              }
+            ]
+          },
+          {
+            "title": "Imaging",
+            "entry": [
+              {
+                "reference": "urn:uuid:09dd69c7-5d71-5213-9158-84cc7e3a3aea"
+              },
+              {
+                "reference": "urn:uuid:c84198c4-954b-5599-858c-334a66902141"
+              }
+            ],
+            "code": {
+              "coding": [
+                {}
+              ]
+            }
+          },
+          {
+            "title": "Point of Injury (POI)",
+            "entry": [
+              {
+                "reference": "urn:uuid:e9db60d4-fdfc-59d6-92f3-0893fb39d1e7"
+              },
+              {
+                "reference": "urn:uuid:5d2ac439-90f9-51a3-9d2f-5fe6fd913ffa"
+              },
+              {
+                "reference": "urn:uuid:9c155319-45bc-5898-b088-a451ecf1eb41"
+              }
+            ],
+            "code": {
+              "coding": [
+                {}
+              ]
+            }
+          },
+          {
+            "title": "Casualty Evacuation (CASEVAC)",
+            "entry": [
+              {
+                "reference": "urn:uuid:091bcae3-9f74-561b-be25-c16f5f40d0f5"
+              }
+            ],
+            "code": {
+              "coding": [
+                {}
+              ]
+            }
+          },
+          {
+            "title": "Ambulance Exchange Point (AXP)",
+            "entry": [
+              {
+                "reference": "urn:uuid:9e190ac1-d3c0-5251-81e7-13dc44a0a8ff"
+              }
+            ],
+            "code": {
+              "coding": [
+                {}
+              ]
+            }
+          },
+          {
+            "title": "Medical Evacuation (MEDEVAC)",
+            "entry": [
+              {
+                "reference": "urn:uuid:876eee38-abbc-5454-80d1-a2d2c3c8f773"
+              }
+            ],
+            "code": {
+              "coding": [
+                {}
+              ]
+            }
+          },
+          {
+            "title": "Role 1 Pre-Hospital Emergency Care (R1 PHEC)",
+            "entry": [
+              {
+                "reference": "urn:uuid:c3ab4e1b-aad7-519f-b60e-6570a33efe1a"
+              },
+              {
+                "reference": "urn:uuid:012035a5-3a17-5d22-9aad-8094eb373fab"
+              },
+              {
+                "reference": "urn:uuid:ff2cf981-960c-5fc1-9fcf-0da36cb2d12f"
+              }
+            ],
+            "code": {
+              "coding": [
+                {}
+              ]
+            }
+          },
+          {
+            "title": "Role 1 Primary Healthcare (R1 PHC)",
+            "entry": [
+              {
+                "reference": "urn:uuid:8798508a-48b0-5788-8b15-7562189a53b8"
+              }
+            ],
+            "code": {
+              "coding": [
+                {}
+              ]
+            }
+          },
+          {
+            "title": "Forward Tactical Evacuation (Fwd TACEVAC)",
+            "entry": [
+              {
+                "reference": "urn:uuid:b3d75664-4438-5eff-8c42-9a127ed085c6"
+              }
+            ],
+            "code": {
+              "coding": [
+                {}
+              ]
+            }
+          },
+          {
+            "title": "Role 2 Hospital Care (R2)",
+            "entry": [
+              {
+                "reference": "urn:uuid:4fbd0cf8-8269-57fc-8ad0-c05c4d9cf07b"
+              },
+              {
+                "reference": "urn:uuid:1062d2be-9674-5486-9fa9-f0a8299ee089"
+              },
+              {
+                "reference": "urn:uuid:a57ef214-b998-58ea-aed1-fdf64be93abe"
+              },
+              {
+                "reference": "urn:uuid:6a2b80c5-31c3-5184-ba98-be5a19bd3ca7"
+              }
+            ],
+            "code": {
+              "coding": [
+                {}
+              ]
+            }
+          },
+          {
+            "title": "Rear Tactical Evacuation (Rear TACEVAC)",
+            "entry": [
+              {
+                "reference": "urn:uuid:6ab7e412-859f-5226-a044-6db5815e8749"
+              }
+            ],
+            "code": {
+              "coding": [
+                {}
+              ]
+            }
+          },
+          {
+            "title": "Role 3 Hospital Care (R3)",
+            "entry": [
+              {
+                "reference": "urn:uuid:bfd65cdd-c838-536c-af88-fc0d5f5e5494"
+              },
+              {
+                "reference": "urn:uuid:29c022a5-5dfd-56bc-a007-eb273417dc2e"
+              },
+              {
+                "reference": "urn:uuid:4bcf50f9-89e9-5d98-a916-350887933419"
+              },
+              {
+                "reference": "urn:uuid:a3101a97-4a4d-5932-9ebe-6683ca23191a"
+              },
+              {
+                "reference": "urn:uuid:1326ccda-cc32-5cc5-9151-cfea0aef7f25"
+              },
+              {
+                "reference": "urn:uuid:64d4b0b8-7d9d-5285-bd36-d3728cfbcea5"
+              },
+              {
+                "reference": "urn:uuid:4e8db20c-c161-520a-863f-dc42d2ac6c2e"
+              },
+              {
+                "reference": "urn:uuid:b9304498-eff3-5f5f-8ff6-49b6ee223724"
+              }
+            ],
+            "code": {
+              "coding": [
+                {}
+              ]
+            }
+          },
+          {
+            "title": "Strategic Evacuation (STRATEVAC)",
+            "entry": [
+              {
+                "reference": "urn:uuid:8e6f6b5a-5faf-5cff-9159-9410198af0d6"
+              }
+            ],
+            "code": {
+              "coding": [
+                {}
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:6b66aea3-107a-5242-90e8-98d74caa83e0",
       "resource": {
         "resourceType": "Organization",
-        "id": "org-1",
+        "id": "6b66aea3-107a-5242-90e8-98d74caa83e0",
         "name": "British Army Medical Services"
       }
     },
     {
-      "fullUrl": "urn:uuid:pract-1",
+      "fullUrl": "urn:uuid:6b355d14-0a7c-5e44-9eca-e752d665badb",
       "resource": {
         "resourceType": "Practitioner",
-        "id": "pract-1",
+        "id": "6b355d14-0a7c-5e44-9eca-e752d665badb",
         "name": [
           {
             "family": "McKay",
@@ -31,10 +375,10 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:patient-1",
+      "fullUrl": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452",
       "resource": {
         "resourceType": "Patient",
-        "id": "patient-1",
+        "id": "5ed15fe2-7f5f-5f52-a1f6-0991ff75f452",
         "meta": {
           "profile": [
             "http://hl7.org/fhir/uv/ips/StructureDefinition/Patient-uv-ips",
@@ -117,10 +461,10 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:allergy-1",
+      "fullUrl": "urn:uuid:dab83d87-5ddb-50f9-ab9b-7d228555b8ec",
       "resource": {
         "resourceType": "AllergyIntolerance",
-        "id": "allergy-1",
+        "id": "dab83d87-5ddb-50f9-ab9b-7d228555b8ec",
         "meta": {
           "profile": [
             "http://hl7.org/fhir/uv/ips/StructureDefinition/AllergyIntolerance-uv-ips"
@@ -156,15 +500,15 @@
           ]
         },
         "patient": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         }
       }
     },
     {
-      "fullUrl": "urn:uuid:medstatement-1",
+      "fullUrl": "urn:uuid:d825cd00-06ce-5539-82df-d08ae786d8cf",
       "resource": {
         "resourceType": "MedicationStatement",
-        "id": "medstatement-1",
+        "id": "d825cd00-06ce-5539-82df-d08ae786d8cf",
         "meta": {
           "profile": [
             "http://hl7.org/fhir/uv/ips/StructureDefinition/MedicationStatement-uv-ips"
@@ -187,7 +531,7 @@
           "text": "Cetirizine 10 mg tablet once daily"
         },
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "effectivePeriod": {
           "start": "2023-04-01"
@@ -206,10 +550,10 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:obs-bloodgroup",
+      "fullUrl": "urn:uuid:333a7c6d-e1e0-5ff9-ad7e-2cf0d48313da",
       "resource": {
         "resourceType": "Observation",
-        "id": "obs-bloodgroup",
+        "id": "333a7c6d-e1e0-5ff9-ad7e-2cf0d48313da",
         "status": "final",
         "meta": {
           "profile": [
@@ -226,7 +570,7 @@
           ]
         },
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "effectiveDateTime": "2024-06-01",
         "valueCodeableConcept": {
@@ -241,10 +585,10 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:cond-gsw",
+      "fullUrl": "urn:uuid:85cca479-b58d-5495-8bfc-64a7cbc32505",
       "resource": {
         "resourceType": "Condition",
-        "id": "cond-gsw",
+        "id": "85cca479-b58d-5495-8bfc-64a7cbc32505",
         "meta": {
           "profile": [
             "http://hl7.org/fhir/uv/ips/StructureDefinition/Condition-uv-ips"
@@ -298,16 +642,16 @@
           }
         ],
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "onsetDateTime": "2025-09-26T10:15:00-04:00"
       }
     },
     {
-      "fullUrl": "urn:uuid:cond-open-fracture",
+      "fullUrl": "urn:uuid:c255d170-24f6-567a-a054-cde03415f233",
       "resource": {
         "resourceType": "Condition",
-        "id": "cond-open-fracture",
+        "id": "c255d170-24f6-567a-a054-cde03415f233",
         "clinicalStatus": {
           "coding": [
             {
@@ -356,10 +700,10 @@
           }
         ],
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "asserter": {
-          "reference": "urn:uuid:pract-1"
+          "reference": "urn:uuid:6b355d14-0a7c-5e44-9eca-e752d665badb"
         },
         "note": [
           {
@@ -369,10 +713,10 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:cond-artery",
+      "fullUrl": "urn:uuid:6ebad64a-542e-5254-b7c9-416f90e00ca4",
       "resource": {
         "resourceType": "Condition",
-        "id": "cond-artery",
+        "id": "6ebad64a-542e-5254-b7c9-416f90e00ca4",
         "clinicalStatus": {
           "coding": [
             {
@@ -421,15 +765,15 @@
           }
         ],
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         }
       }
     },
     {
-      "fullUrl": "urn:uuid:cond-infection",
+      "fullUrl": "urn:uuid:aee9199e-3a1f-5de5-a10b-d76b23bbb0b1",
       "resource": {
         "resourceType": "Condition",
-        "id": "cond-infection",
+        "id": "aee9199e-3a1f-5de5-a10b-d76b23bbb0b1",
         "clinicalStatus": {
           "coding": [
             {
@@ -467,16 +811,16 @@
           "text": "Severe deep surgical site infection of left lower leg; osteomyelitis suspected"
         },
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "onsetDateTime": "2025-09-29T18:15:00-04:00"
       }
     },
     {
-      "fullUrl": "urn:uuid:enc-poi",
+      "fullUrl": "urn:uuid:e9db60d4-fdfc-59d6-92f3-0893fb39d1e7",
       "resource": {
         "resourceType": "Encounter",
-        "id": "enc-poi",
+        "id": "e9db60d4-fdfc-59d6-92f3-0893fb39d1e7",
         "status": "finished",
         "class": {
           "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
@@ -495,24 +839,24 @@
           }
         ],
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "period": {
-          "start": "2025-09-26T10:16:00-04:00",
-          "end": "2025-09-26T10:35:00-04:00"
+          "start": "2025-10-01T10:16:00-04:00",
+          "end": "2025-10-01T10:35:00-04:00"
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:cond-gsw"
+            "reference": "urn:uuid:85cca479-b58d-5495-8bfc-64a7cbc32505"
           }
         ]
       }
     },
     {
-      "fullUrl": "urn:uuid:proc-tourniquet",
+      "fullUrl": "urn:uuid:5d2ac439-90f9-51a3-9d2f-5fe6fd913ffa",
       "resource": {
         "resourceType": "Procedure",
-        "id": "proc-tourniquet",
+        "id": "5d2ac439-90f9-51a3-9d2f-5fe6fd913ffa",
         "status": "completed",
         "code": {
           "coding": [
@@ -524,15 +868,15 @@
           ]
         },
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
-        "performedDateTime": "2025-09-26T10:20:00-04:00",
+        "performedDateTime": "2025-10-01T10:20:00-04:00",
         "encounter": {
-          "reference": "urn:uuid:enc-poi"
+          "reference": "urn:uuid:e9db60d4-fdfc-59d6-92f3-0893fb39d1e7"
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:cond-artery"
+            "reference": "urn:uuid:6ebad64a-542e-5254-b7c9-416f90e00ca4"
           }
         ],
         "note": [
@@ -543,16 +887,16 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:medadmin-txa",
+      "fullUrl": "urn:uuid:9c155319-45bc-5898-b088-a451ecf1eb41",
       "resource": {
         "resourceType": "MedicationAdministration",
-        "id": "medadmin-txa",
+        "id": "9c155319-45bc-5898-b088-a451ecf1eb41",
         "status": "completed",
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "encounter": {
-          "reference": "urn:uuid:enc-poi"
+          "reference": "urn:uuid:e9db60d4-fdfc-59d6-92f3-0893fb39d1e7"
         },
         "medicationCodeableConcept": {
           "coding": [
@@ -564,17 +908,17 @@
           ],
           "text": "Tranexamic acid 1 g IV"
         },
-        "effectiveDateTime": "2025-09-26T10:23:00-04:00",
+        "effectiveDateTime": "2025-10-01T10:23:00-04:00",
         "dosage": {
           "text": "1 g IV bolus"
         }
       }
     },
     {
-      "fullUrl": "urn:uuid:enc-casevac",
+      "fullUrl": "urn:uuid:091bcae3-9f74-561b-be25-c16f5f40d0f5",
       "resource": {
         "resourceType": "Encounter",
-        "id": "enc-casevac",
+        "id": "091bcae3-9f74-561b-be25-c16f5f40d0f5",
         "status": "finished",
         "class": {
           "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
@@ -593,19 +937,19 @@
           }
         ],
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "period": {
-          "start": "2025-09-26T10:35:00-04:00",
-          "end": "2025-09-26T10:55:00-04:00"
+          "start": "2025-10-01T10:35:00-04:00",
+          "end": "2025-10-01T10:55:00-04:00"
         }
       }
     },
     {
-      "fullUrl": "urn:uuid:enc-axp",
+      "fullUrl": "urn:uuid:9e190ac1-d3c0-5251-81e7-13dc44a0a8ff",
       "resource": {
         "resourceType": "Encounter",
-        "id": "enc-axp",
+        "id": "9e190ac1-d3c0-5251-81e7-13dc44a0a8ff",
         "status": "finished",
         "class": {
           "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
@@ -624,19 +968,19 @@
           }
         ],
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "period": {
-          "start": "2025-09-26T10:55:00-04:00",
-          "end": "2025-09-26T11:00:00-04:00"
+          "start": "2025-10-01T10:55:00-04:00",
+          "end": "2025-10-01T11:00:00-04:00"
         }
       }
     },
     {
-      "fullUrl": "urn:uuid:enc-medevac",
+      "fullUrl": "urn:uuid:876eee38-abbc-5454-80d1-a2d2c3c8f773",
       "resource": {
         "resourceType": "Encounter",
-        "id": "enc-medevac",
+        "id": "876eee38-abbc-5454-80d1-a2d2c3c8f773",
         "status": "finished",
         "class": {
           "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
@@ -655,19 +999,19 @@
           }
         ],
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "period": {
-          "start": "2025-09-26T11:02:00-04:00",
-          "end": "2025-09-26T11:35:00-04:00"
+          "start": "2025-10-01T11:02:00-04:00",
+          "end": "2025-10-01T11:35:00-04:00"
         }
       }
     },
     {
-      "fullUrl": "urn:uuid:enc-r1-phec",
+      "fullUrl": "urn:uuid:c3ab4e1b-aad7-519f-b60e-6570a33efe1a",
       "resource": {
         "resourceType": "Encounter",
-        "id": "enc-r1-phec",
+        "id": "c3ab4e1b-aad7-519f-b60e-6570a33efe1a",
         "status": "finished",
         "class": {
           "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
@@ -686,19 +1030,19 @@
           }
         ],
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "period": {
-          "start": "2025-09-26T11:35:00-04:00",
-          "end": "2025-09-26T12:35:00-04:00"
+          "start": "2025-10-01T11:35:00-04:00",
+          "end": "2025-10-01T12:35:00-04:00"
         }
       }
     },
     {
-      "fullUrl": "urn:uuid:proc-transfusion",
+      "fullUrl": "urn:uuid:012035a5-3a17-5d22-9aad-8094eb373fab",
       "resource": {
         "resourceType": "Procedure",
-        "id": "proc-transfusion",
+        "id": "012035a5-3a17-5d22-9aad-8094eb373fab",
         "status": "completed",
         "code": {
           "coding": [
@@ -710,30 +1054,30 @@
           ]
         },
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "encounter": {
-          "reference": "urn:uuid:enc-r1-phec"
+          "reference": "urn:uuid:c3ab4e1b-aad7-519f-b60e-6570a33efe1a"
         },
-        "performedDateTime": "2025-09-26T11:55:00-04:00",
+        "performedDateTime": "2025-10-01T11:55:00-04:00",
         "reasonReference": [
           {
-            "reference": "urn:uuid:cond-artery"
+            "reference": "urn:uuid:6ebad64a-542e-5254-b7c9-416f90e00ca4"
           }
         ]
       }
     },
     {
-      "fullUrl": "urn:uuid:medadmin-piptaz",
+      "fullUrl": "urn:uuid:ff2cf981-960c-5fc1-9fcf-0da36cb2d12f",
       "resource": {
         "resourceType": "MedicationAdministration",
-        "id": "medadmin-piptaz",
+        "id": "ff2cf981-960c-5fc1-9fcf-0da36cb2d12f",
         "status": "completed",
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "encounter": {
-          "reference": "urn:uuid:enc-r1-phec"
+          "reference": "urn:uuid:c3ab4e1b-aad7-519f-b60e-6570a33efe1a"
         },
         "medicationCodeableConcept": {
           "coding": [
@@ -745,17 +1089,17 @@
           ],
           "text": "Piperacillin/Tazobactam 4.5 g IV"
         },
-        "effectiveDateTime": "2025-09-26T12:05:00-04:00",
+        "effectiveDateTime": "2025-10-01T12:05:00-04:00",
         "dosage": {
           "text": "4.5 g IV q6h, first dose now"
         }
       }
     },
     {
-      "fullUrl": "urn:uuid:enc-r1-phc",
+      "fullUrl": "urn:uuid:8798508a-48b0-5788-8b15-7562189a53b8",
       "resource": {
         "resourceType": "Encounter",
-        "id": "enc-r1-phc",
+        "id": "8798508a-48b0-5788-8b15-7562189a53b8",
         "status": "finished",
         "class": {
           "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
@@ -774,19 +1118,19 @@
           }
         ],
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "period": {
-          "start": "2025-09-26T12:35:00-04:00",
-          "end": "2025-09-26T12:55:00-04:00"
+          "start": "2025-10-01T12:35:00-04:00",
+          "end": "2025-10-01T12:55:00-04:00"
         }
       }
     },
     {
-      "fullUrl": "urn:uuid:enc-fwd-tacevac",
+      "fullUrl": "urn:uuid:b3d75664-4438-5eff-8c42-9a127ed085c6",
       "resource": {
         "resourceType": "Encounter",
-        "id": "enc-fwd-tacevac",
+        "id": "b3d75664-4438-5eff-8c42-9a127ed085c6",
         "status": "finished",
         "class": {
           "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
@@ -805,19 +1149,19 @@
           }
         ],
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "period": {
-          "start": "2025-09-26T13:00:00-04:00",
-          "end": "2025-09-26T14:15:00-04:00"
+          "start": "2025-10-01T13:00:00-04:00",
+          "end": "2025-10-01T14:15:00-04:00"
         }
       }
     },
     {
-      "fullUrl": "urn:uuid:enc-r2",
+      "fullUrl": "urn:uuid:4fbd0cf8-8269-57fc-8ad0-c05c4d9cf07b",
       "resource": {
         "resourceType": "Encounter",
-        "id": "enc-r2",
+        "id": "4fbd0cf8-8269-57fc-8ad0-c05c4d9cf07b",
         "status": "finished",
         "class": {
           "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
@@ -836,24 +1180,24 @@
           }
         ],
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "period": {
-          "start": "2025-09-26T14:15:00-04:00",
-          "end": "2025-09-27T16:15:00-04:00"
+          "start": "2025-10-01T14:15:00-04:00",
+          "end": "2025-10-02T16:15:00-04:00"
         },
         "reasonReference": [
           {
-            "reference": "urn:uuid:cond-gsw"
+            "reference": "urn:uuid:85cca479-b58d-5495-8bfc-64a7cbc32505"
           }
         ]
       }
     },
     {
-      "fullUrl": "urn:uuid:proc-vascular-repair",
+      "fullUrl": "urn:uuid:1062d2be-9674-5486-9fa9-f0a8299ee089",
       "resource": {
         "resourceType": "Procedure",
-        "id": "proc-vascular-repair",
+        "id": "1062d2be-9674-5486-9fa9-f0a8299ee089",
         "status": "completed",
         "code": {
           "coding": [
@@ -865,15 +1209,15 @@
           ]
         },
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "encounter": {
-          "reference": "urn:uuid:enc-r2"
+          "reference": "urn:uuid:4fbd0cf8-8269-57fc-8ad0-c05c4d9cf07b"
         },
-        "performedDateTime": "2025-09-26T15:15:00-04:00",
+        "performedDateTime": "2025-10-01T15:15:00-04:00",
         "reasonReference": [
           {
-            "reference": "urn:uuid:cond-artery"
+            "reference": "urn:uuid:6ebad64a-542e-5254-b7c9-416f90e00ca4"
           }
         ],
         "note": [
@@ -884,10 +1228,10 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:proc-exfix",
+      "fullUrl": "urn:uuid:a57ef214-b998-58ea-aed1-fdf64be93abe",
       "resource": {
         "resourceType": "Procedure",
-        "id": "proc-exfix",
+        "id": "a57ef214-b998-58ea-aed1-fdf64be93abe",
         "status": "completed",
         "code": {
           "coding": [
@@ -899,24 +1243,24 @@
           ]
         },
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "encounter": {
-          "reference": "urn:uuid:enc-r2"
+          "reference": "urn:uuid:4fbd0cf8-8269-57fc-8ad0-c05c4d9cf07b"
         },
-        "performedDateTime": "2025-09-26T16:15:00-04:00",
+        "performedDateTime": "2025-10-01T16:15:00-04:00",
         "reasonReference": [
           {
-            "reference": "urn:uuid:cond-open-fracture"
+            "reference": "urn:uuid:c255d170-24f6-567a-a054-cde03415f233"
           }
         ]
       }
     },
     {
-      "fullUrl": "urn:uuid:proc-fasciotomy",
+      "fullUrl": "urn:uuid:6a2b80c5-31c3-5184-ba98-be5a19bd3ca7",
       "resource": {
         "resourceType": "Procedure",
-        "id": "proc-fasciotomy",
+        "id": "6a2b80c5-31c3-5184-ba98-be5a19bd3ca7",
         "status": "completed",
         "code": {
           "coding": [
@@ -928,15 +1272,15 @@
           ]
         },
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "encounter": {
-          "reference": "urn:uuid:enc-r2"
+          "reference": "urn:uuid:4fbd0cf8-8269-57fc-8ad0-c05c4d9cf07b"
         },
-        "performedDateTime": "2025-09-26T17:15:00-04:00",
+        "performedDateTime": "2025-10-01T17:15:00-04:00",
         "reasonReference": [
           {
-            "reference": "urn:uuid:cond-artery"
+            "reference": "urn:uuid:6ebad64a-542e-5254-b7c9-416f90e00ca4"
           }
         ],
         "note": [
@@ -947,13 +1291,13 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:imaging-xray-tibfib",
+      "fullUrl": "urn:uuid:09dd69c7-5d71-5213-9158-84cc7e3a3aea",
       "resource": {
         "resourceType": "ImagingStudy",
-        "id": "imaging-xray-tibfib",
+        "id": "09dd69c7-5d71-5213-9158-84cc7e3a3aea",
         "status": "available",
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "started": "2025-09-26T14:15:00-04:00",
         "modality": [
@@ -966,13 +1310,13 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:imaging-cta",
+      "fullUrl": "urn:uuid:c84198c4-954b-5599-858c-334a66902141",
       "resource": {
         "resourceType": "ImagingStudy",
-        "id": "imaging-cta",
+        "id": "c84198c4-954b-5599-858c-334a66902141",
         "status": "available",
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "started": "2025-09-26T14:45:00-04:00",
         "modality": [
@@ -985,10 +1329,10 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:enc-rear-tacevac",
+      "fullUrl": "urn:uuid:6ab7e412-859f-5226-a044-6db5815e8749",
       "resource": {
         "resourceType": "Encounter",
-        "id": "enc-rear-tacevac",
+        "id": "6ab7e412-859f-5226-a044-6db5815e8749",
         "status": "finished",
         "class": {
           "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
@@ -1007,19 +1351,19 @@
           }
         ],
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "period": {
-          "start": "2025-09-27T17:15:00-04:00",
-          "end": "2025-09-27T23:15:00-04:00"
+          "start": "2025-10-02T17:15:00-04:00",
+          "end": "2025-10-02T23:15:00-04:00"
         }
       }
     },
     {
-      "fullUrl": "urn:uuid:enc-r3",
+      "fullUrl": "urn:uuid:bfd65cdd-c838-536c-af88-fc0d5f5e5494",
       "resource": {
         "resourceType": "Encounter",
-        "id": "enc-r3",
+        "id": "bfd65cdd-c838-536c-af88-fc0d5f5e5494",
         "status": "finished",
         "class": {
           "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
@@ -1038,19 +1382,19 @@
           }
         ],
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "period": {
-          "start": "2025-09-27T23:45:00-04:00",
-          "end": "2025-10-05T10:15:00-04:00"
+          "start": "2025-10-02T23:45:00-04:00",
+          "end": "2025-10-10T10:15:00-04:00"
         }
       }
     },
     {
-      "fullUrl": "urn:uuid:obs-wbc",
+      "fullUrl": "urn:uuid:4dc1c734-57ca-5a00-8158-22d5e28c2971",
       "resource": {
         "resourceType": "Observation",
-        "id": "obs-wbc",
+        "id": "4dc1c734-57ca-5a00-8158-22d5e28c2971",
         "status": "final",
         "code": {
           "coding": [
@@ -1062,9 +1406,9 @@
           ]
         },
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
-        "effectiveDateTime": "2025-09-29T10:15:00-04:00",
+        "effectiveDateTime": "2025-10-04T10:15:00-04:00",
         "valueQuantity": {
           "value": 17.8,
           "unit": "10^3/uL",
@@ -1084,10 +1428,10 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:obs-crp",
+      "fullUrl": "urn:uuid:59e8154d-5d22-575b-8ab3-f493abb1f1b5",
       "resource": {
         "resourceType": "Observation",
-        "id": "obs-crp",
+        "id": "59e8154d-5d22-575b-8ab3-f493abb1f1b5",
         "status": "final",
         "code": {
           "coding": [
@@ -1099,9 +1443,9 @@
           ]
         },
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
-        "effectiveDateTime": "2025-09-29T10:15:00-04:00",
+        "effectiveDateTime": "2025-10-04T10:15:00-04:00",
         "valueQuantity": {
           "value": 176.0,
           "unit": "mg/L",
@@ -1121,10 +1465,10 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:obs-lactate",
+      "fullUrl": "urn:uuid:15cc9118-d741-5129-9b04-61734d784a23",
       "resource": {
         "resourceType": "Observation",
-        "id": "obs-lactate",
+        "id": "15cc9118-d741-5129-9b04-61734d784a23",
         "status": "final",
         "code": {
           "coding": [
@@ -1136,9 +1480,9 @@
           ]
         },
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
-        "effectiveDateTime": "2025-09-28T04:15:00-04:00",
+        "effectiveDateTime": "2025-10-03T04:15:00-04:00",
         "valueQuantity": {
           "value": 3.1,
           "unit": "mmol/L",
@@ -1158,10 +1502,10 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:obs-culture",
+      "fullUrl": "urn:uuid:b90e23aa-45fa-51a7-9991-318ead337225",
       "resource": {
         "resourceType": "Observation",
-        "id": "obs-culture",
+        "id": "b90e23aa-45fa-51a7-9991-318ead337225",
         "status": "final",
         "code": {
           "coding": [
@@ -1173,9 +1517,9 @@
           ]
         },
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
-        "effectiveDateTime": "2025-09-30T10:15:00-04:00",
+        "effectiveDateTime": "2025-10-05T10:15:00-04:00",
         "valueCodeableConcept": {
           "coding": [
             {
@@ -1193,16 +1537,16 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:medadmin-vanco",
+      "fullUrl": "urn:uuid:4e8db20c-c161-520a-863f-dc42d2ac6c2e",
       "resource": {
         "resourceType": "MedicationAdministration",
-        "id": "medadmin-vanco",
+        "id": "4e8db20c-c161-520a-863f-dc42d2ac6c2e",
         "status": "completed",
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "encounter": {
-          "reference": "urn:uuid:enc-r3"
+          "reference": "urn:uuid:bfd65cdd-c838-536c-af88-fc0d5f5e5494"
         },
         "medicationCodeableConcept": {
           "coding": [
@@ -1213,17 +1557,17 @@
             }
           ]
         },
-        "effectiveDateTime": "2025-09-29T16:15:00-04:00",
+        "effectiveDateTime": "2025-10-04T16:15:00-04:00",
         "dosage": {
           "text": "Vancomycin IV per protocol"
         }
       }
     },
     {
-      "fullUrl": "urn:uuid:proc-debride-1",
+      "fullUrl": "urn:uuid:29c022a5-5dfd-56bc-a007-eb273417dc2e",
       "resource": {
         "resourceType": "Procedure",
-        "id": "proc-debride-1",
+        "id": "29c022a5-5dfd-56bc-a007-eb273417dc2e",
         "status": "completed",
         "code": {
           "coding": [
@@ -1235,24 +1579,24 @@
           ]
         },
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "encounter": {
-          "reference": "urn:uuid:enc-r3"
+          "reference": "urn:uuid:bfd65cdd-c838-536c-af88-fc0d5f5e5494"
         },
-        "performedDateTime": "2025-09-28T12:15:00-04:00",
+        "performedDateTime": "2025-10-03T12:15:00-04:00",
         "reasonReference": [
           {
-            "reference": "urn:uuid:cond-infection"
+            "reference": "urn:uuid:aee9199e-3a1f-5de5-a10b-d76b23bbb0b1"
           }
         ]
       }
     },
     {
-      "fullUrl": "urn:uuid:proc-debride-2",
+      "fullUrl": "urn:uuid:a3101a97-4a4d-5932-9ebe-6683ca23191a",
       "resource": {
         "resourceType": "Procedure",
-        "id": "proc-debride-2",
+        "id": "a3101a97-4a4d-5932-9ebe-6683ca23191a",
         "status": "completed",
         "code": {
           "coding": [
@@ -1264,24 +1608,24 @@
           ]
         },
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "encounter": {
-          "reference": "urn:uuid:enc-r3"
+          "reference": "urn:uuid:bfd65cdd-c838-536c-af88-fc0d5f5e5494"
         },
-        "performedDateTime": "2025-09-30T13:15:00-04:00",
+        "performedDateTime": "2025-10-05T13:15:00-04:00",
         "reasonReference": [
           {
-            "reference": "urn:uuid:cond-infection"
+            "reference": "urn:uuid:aee9199e-3a1f-5de5-a10b-d76b23bbb0b1"
           }
         ]
       }
     },
     {
-      "fullUrl": "urn:uuid:proc-vac",
+      "fullUrl": "urn:uuid:4bcf50f9-89e9-5d98-a916-350887933419",
       "resource": {
         "resourceType": "Procedure",
-        "id": "proc-vac",
+        "id": "4bcf50f9-89e9-5d98-a916-350887933419",
         "status": "completed",
         "code": {
           "coding": [
@@ -1293,24 +1637,24 @@
           ]
         },
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "encounter": {
-          "reference": "urn:uuid:enc-r3"
+          "reference": "urn:uuid:bfd65cdd-c838-536c-af88-fc0d5f5e5494"
         },
-        "performedDateTime": "2025-09-28T14:15:00-04:00",
+        "performedDateTime": "2025-10-03T14:15:00-04:00",
         "reasonReference": [
           {
-            "reference": "urn:uuid:cond-open-fracture"
+            "reference": "urn:uuid:c255d170-24f6-567a-a054-cde03415f233"
           }
         ]
       }
     },
     {
-      "fullUrl": "urn:uuid:proc-bka",
+      "fullUrl": "urn:uuid:1326ccda-cc32-5cc5-9151-cfea0aef7f25",
       "resource": {
         "resourceType": "Procedure",
-        "id": "proc-bka",
+        "id": "1326ccda-cc32-5cc5-9151-cfea0aef7f25",
         "status": "completed",
         "code": {
           "coding": [
@@ -1322,18 +1666,18 @@
           ]
         },
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "encounter": {
-          "reference": "urn:uuid:enc-r3"
+          "reference": "urn:uuid:bfd65cdd-c838-536c-af88-fc0d5f5e5494"
         },
-        "performedDateTime": "2025-10-02T15:15:00-04:00",
+        "performedDateTime": "2025-10-07T15:15:00-04:00",
         "reasonReference": [
           {
-            "reference": "urn:uuid:cond-infection"
+            "reference": "urn:uuid:aee9199e-3a1f-5de5-a10b-d76b23bbb0b1"
           },
           {
-            "reference": "urn:uuid:cond-open-fracture"
+            "reference": "urn:uuid:c255d170-24f6-567a-a054-cde03415f233"
           }
         ],
         "note": [
@@ -1344,10 +1688,10 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:proc-nerveblock",
+      "fullUrl": "urn:uuid:64d4b0b8-7d9d-5285-bd36-d3728cfbcea5",
       "resource": {
         "resourceType": "Procedure",
-        "id": "proc-nerveblock",
+        "id": "64d4b0b8-7d9d-5285-bd36-d3728cfbcea5",
         "status": "completed",
         "code": {
           "coding": [
@@ -1359,25 +1703,25 @@
           ]
         },
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "encounter": {
-          "reference": "urn:uuid:enc-r3"
+          "reference": "urn:uuid:bfd65cdd-c838-536c-af88-fc0d5f5e5494"
         },
-        "performedDateTime": "2025-10-02T16:15:00-04:00"
+        "performedDateTime": "2025-10-07T16:15:00-04:00"
       }
     },
     {
-      "fullUrl": "urn:uuid:medadmin-lmwh",
+      "fullUrl": "urn:uuid:b9304498-eff3-5f5f-8ff6-49b6ee223724",
       "resource": {
         "resourceType": "MedicationAdministration",
-        "id": "medadmin-lmwh",
+        "id": "b9304498-eff3-5f5f-8ff6-49b6ee223724",
         "status": "completed",
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "encounter": {
-          "reference": "urn:uuid:enc-r3"
+          "reference": "urn:uuid:bfd65cdd-c838-536c-af88-fc0d5f5e5494"
         },
         "medicationCodeableConcept": {
           "coding": [
@@ -1388,17 +1732,17 @@
             }
           ]
         },
-        "effectiveDateTime": "2025-10-02T20:15:00-04:00",
+        "effectiveDateTime": "2025-10-07T20:15:00-04:00",
         "dosage": {
           "text": "Enoxaparin 40 mg SC daily"
         }
       }
     },
     {
-      "fullUrl": "urn:uuid:enc-stratevac",
+      "fullUrl": "urn:uuid:8e6f6b5a-5faf-5cff-9159-9410198af0d6",
       "resource": {
         "resourceType": "Encounter",
-        "id": "enc-stratevac",
+        "id": "8e6f6b5a-5faf-5cff-9159-9410198af0d6",
         "status": "finished",
         "class": {
           "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
@@ -1417,297 +1761,18 @@
           }
         ],
         "subject": {
-          "reference": "urn:uuid:patient-1"
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
         },
         "period": {
-          "start": "2025-10-05T16:15:00-04:00",
-          "end": "2025-10-06T04:15:00-04:00"
+          "start": "2025-10-10T16:15:00-04:00",
+          "end": "2025-10-11T04:15:00-04:00"
         }
       }
-    },
-    {
-      "fullUrl": "urn:uuid:composition-ips",
-      "resource": {
-        "resourceType": "Composition",
-        "id": "composition-ips",
-        "meta": {
-          "profile": [
-            "http://hl7.org/fhir/uv/ips/StructureDefinition/Composition-uv-ips"
-          ]
-        },
-        "status": "final",
-        "type": {
-          "coding": [
-            {
-              "system": "http://loinc.org",
-              "code": "60591-5",
-              "display": "Patient summary Document"
-            }
-          ]
-        },
-        "date": "2025-10-05T12:00:00Z",
-        "title": "International Patient Summary \u2013 OPCP GSW Left Lower Leg with Amputation",
-        "subject": {
-          "reference": "urn:uuid:patient-1"
-        },
-        "author": [
-          {
-            "reference": "urn:uuid:pract-1"
-          },
-          {
-            "reference": "urn:uuid:org-1"
-          }
-        ],
-        "section": [
-          {
-            "title": "Demographics & Identifiers",
-            "code": {
-              "coding": [
-                {
-                  "system": "http://loinc.org",
-                  "code": "48765-2",
-                  "display": "Demographics"
-                }
-              ]
-            },
-            "entry": [
-              {
-                "reference": "urn:uuid:patient-1"
-              }
-            ]
-          },
-          {
-            "title": "Allergies",
-            "code": {
-              "coding": [
-                {
-                  "system": "http://loinc.org",
-                  "code": "48765-2",
-                  "display": "Allergies and intolerances"
-                }
-              ]
-            },
-            "entry": [
-              {
-                "reference": "urn:uuid:allergy-1"
-              }
-            ]
-          },
-          {
-            "title": "Problem/Diagnoses",
-            "code": {
-              "coding": [
-                {
-                  "system": "http://loinc.org",
-                  "code": "11450-4",
-                  "display": "Problem list"
-                }
-              ]
-            },
-            "entry": [
-              {
-                "reference": "urn:uuid:cond-gsw"
-              },
-              {
-                "reference": "urn:uuid:cond-open-fracture"
-              },
-              {
-                "reference": "urn:uuid:cond-artery"
-              },
-              {
-                "reference": "urn:uuid:cond-infection"
-              }
-            ]
-          },
-          {
-            "title": "Medications (Maintenance)",
-            "code": {
-              "coding": [
-                {
-                  "system": "http://loinc.org",
-                  "code": "10160-0",
-                  "display": "History of medication use"
-                }
-              ]
-            },
-            "entry": [
-              {
-                "reference": "urn:uuid:medstatement-1"
-              }
-            ]
-          },
-          {
-            "title": "Laboratory/Results",
-            "code": {
-              "coding": [
-                {
-                  "system": "http://loinc.org",
-                  "code": "30954-2",
-                  "display": "Relevant diagnostic tests/laboratory data"
-                }
-              ]
-            },
-            "entry": [
-              {
-                "reference": "urn:uuid:obs-bloodgroup"
-              },
-              {
-                "reference": "urn:uuid:obs-wbc"
-              },
-              {
-                "reference": "urn:uuid:obs-crp"
-              },
-              {
-                "reference": "urn:uuid:obs-lactate"
-              },
-              {
-                "reference": "urn:uuid:obs-culture"
-              }
-            ]
-          },
-          {
-            "title": "Imaging",
-            "entry": [
-              {
-                "reference": "urn:uuid:imaging-xray-tibfib"
-              },
-              {
-                "reference": "urn:uuid:imaging-cta"
-              }
-            ]
-          },
-          {
-            "title": "Point of Injury (POI)",
-            "entry": [
-              {
-                "reference": "urn:uuid:enc-poi"
-              },
-              {
-                "reference": "urn:uuid:proc-tourniquet"
-              },
-              {
-                "reference": "urn:uuid:medadmin-txa"
-              }
-            ]
-          },
-          {
-            "title": "Casualty Evacuation (CASEVAC)",
-            "entry": [
-              {
-                "reference": "urn:uuid:enc-casevac"
-              }
-            ]
-          },
-          {
-            "title": "Ambulance Exchange Point (AXP)",
-            "entry": [
-              {
-                "reference": "urn:uuid:enc-axp"
-              }
-            ]
-          },
-          {
-            "title": "Medical Evacuation (MEDEVAC)",
-            "entry": [
-              {
-                "reference": "urn:uuid:enc-medevac"
-              }
-            ]
-          },
-          {
-            "title": "Role 1 Pre-Hospital Emergency Care (R1 PHEC)",
-            "entry": [
-              {
-                "reference": "urn:uuid:enc-r1-phec"
-              },
-              {
-                "reference": "urn:uuid:proc-transfusion"
-              },
-              {
-                "reference": "urn:uuid:medadmin-piptaz"
-              }
-            ]
-          },
-          {
-            "title": "Role 1 Primary Healthcare (R1 PHC)",
-            "entry": [
-              {
-                "reference": "urn:uuid:enc-r1-phc"
-              }
-            ]
-          },
-          {
-            "title": "Forward Tactical Evacuation (Fwd TACEVAC)",
-            "entry": [
-              {
-                "reference": "urn:uuid:enc-fwd-tacevac"
-              }
-            ]
-          },
-          {
-            "title": "Role 2 Hospital Care (R2)",
-            "entry": [
-              {
-                "reference": "urn:uuid:enc-r2"
-              },
-              {
-                "reference": "urn:uuid:proc-vascular-repair"
-              },
-              {
-                "reference": "urn:uuid:proc-exfix"
-              },
-              {
-                "reference": "urn:uuid:proc-fasciotomy"
-              }
-            ]
-          },
-          {
-            "title": "Rear Tactical Evacuation (Rear TACEVAC)",
-            "entry": [
-              {
-                "reference": "urn:uuid:enc-rear-tacevac"
-              }
-            ]
-          },
-          {
-            "title": "Role 3 Hospital Care (R3)",
-            "entry": [
-              {
-                "reference": "urn:uuid:enc-r3"
-              },
-              {
-                "reference": "urn:uuid:proc-debride-1"
-              },
-              {
-                "reference": "urn:uuid:proc-vac"
-              },
-              {
-                "reference": "urn:uuid:proc-debride-2"
-              },
-              {
-                "reference": "urn:uuid:proc-bka"
-              },
-              {
-                "reference": "urn:uuid:proc-nerveblock"
-              },
-              {
-                "reference": "urn:uuid:medadmin-vanco"
-              },
-              {
-                "reference": "urn:uuid:medadmin-lmwh"
-              }
-            ]
-          },
-          {
-            "title": "Strategic Evacuation (STRATEVAC)",
-            "entry": [
-              {
-                "reference": "urn:uuid:enc-stratevac"
-              }
-            ]
-          }
-        ]
-      }
     }
-  ]
+  ],
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/uv/ips/StructureDefinition/Bundle-uv-ips"
+    ]
+  }
 }
