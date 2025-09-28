@@ -438,18 +438,17 @@ body {
 
 
 .vitals-content {
-    --legend-column-width: 0px;
-    --legend-column-gap: calc(var(--standard-padding) / 2);
     background-color: var(--bg-color-detail-value);
     border-radius: 8px;
-    min-height: calc(var(--standard-padding) * 3);
+    min-height: 0;
     position: relative;
     overflow: visible;
-    padding: var(--standard-padding);
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) var(--legend-column-width);
-    align-items: stretch;
-    gap: var(--legend-column-gap);
+    padding: calc(var(--standard-padding) * 0.5) var(--standard-padding);
+}
+
+.vitals-content.has-data {
+    min-height: calc(var(--standard-padding) * 10);
+    padding: var(--standard-padding) calc(var(--standard-padding) * 1.75) var(--standard-padding) var(--standard-padding);
 }
 
 .vitals-chart-wrapper {
@@ -457,10 +456,18 @@ body {
     min-width: 0;
 }
 
+.vitals-content.has-data .vitals-chart-wrapper {
+    min-height: calc(var(--standard-padding) * 8);
+}
 
 .vitals-legend-wrapper {
-    position: relative;
+    position: absolute;
+    top: var(--standard-padding);
+    right: var(--standard-padding);
+    bottom: var(--standard-padding);
     min-width: 0;
+    width: max-content;
+    pointer-events: none;
     display: none;
 }
 
