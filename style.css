@@ -983,6 +983,7 @@ input:checked + .slider .slider-label.right {
     font-weight: normal;
     white-space: nowrap;
     margin: 0;
+    box-sizing: border-box;
     animation: toastFadeIn 0.3s ease-out, toastFadeOut 0.3s ease-out 2.7s forwards;
     pointer-events: auto;
 }
