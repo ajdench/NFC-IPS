@@ -223,7 +223,7 @@ const stageBackgroundPlugin = {
         const scaleMax = xScale.max;
         if (!Number.isFinite(scaleMin) || !Number.isFinite(scaleMax)) return;
 
-        const opacity = typeof config.opacity === 'number' ? config.opacity : 0.7;
+        const opacity = typeof config.opacity === 'number' ? config.opacity : 0.35;
         const labelPadding = config.labelPadding ?? 10;
         const bands = [...config.bands].filter(band => Number.isFinite(band.startTime) && Number.isFinite(band.endTime));
         if (!bands.length) return;
@@ -231,7 +231,7 @@ const stageBackgroundPlugin = {
         bands.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
         const ctx = chart.ctx;
-        const font = config.font || chart.options.font?.string || Chart.defaults.font.string;
+        const baseFont = config.font || chart.options.font?.string || Chart.defaults.font?.string || '12px sans-serif';
 
         bands.forEach((band, index) => {
             const prev = bands[index - 1];
@@ -262,8 +262,9 @@ const stageBackgroundPlugin = {
             ctx.restore();
 
             ctx.save();
+            ctx.globalAlpha = 0.5;
             ctx.fillStyle = band.textColor || '#333333';
-            ctx.font = font;
+            ctx.font = `bold ${baseFont}`;
             ctx.textAlign = 'left';
             ctx.textBaseline = 'top';
             ctx.fillText(band.label, left + labelPadding, top + labelPadding);
