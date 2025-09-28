@@ -144,7 +144,7 @@ function getCssVariableValue(variableName) {
 
 function getStageBandOpacity() {
     const value = parseFloat(getCssVariableValue('--stage-band-opacity'));
-    return Number.isFinite(value) ? value : 0.7;
+    return Number.isFinite(value) ? value : 0.35;
 }
 
 function getStageBandLabelPadding() {
