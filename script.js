@@ -5390,6 +5390,8 @@ function renderCustomLegend(chartInstance) {
         })
         .filter(Boolean);
 
+    visibleItems.sort((a, b) => a.pixelY - b.pixelY);
+
     if (!visibleItems.length) {
         resetLegendLayout(container);
         return;
@@ -5430,24 +5432,22 @@ function renderCustomLegend(chartInstance) {
         LEGEND_CONFIG.MIN_ROW_GAP
     );
 
-    visibleItems
-        .sort((a, b) => a.pixelY - b.pixelY)
-        .forEach((item, index) => {
-            const legendItem = document.createElement('div');
-            legendItem.className = 'vitals-legend-item';
-            legendItem.style.top = `${adjustedPositions[index]}px`;
+    visibleItems.forEach((item, index) => {
+        const legendItem = document.createElement('div');
+        legendItem.className = 'vitals-legend-item';
+        legendItem.style.top = `${adjustedPositions[index]}px`;
 
-            const marker = document.createElement('div');
-            marker.className = 'vitals-legend-marker';
-            marker.style.backgroundColor = item.color;
+        const marker = document.createElement('div');
+        marker.className = 'vitals-legend-marker';
+        marker.style.backgroundColor = item.color;
 
-            const label = document.createElement('span');
-            label.textContent = item.label;
+        const label = document.createElement('span');
+        label.textContent = item.label;
 
-            legendItem.appendChild(marker);
-            legendItem.appendChild(label);
-            legendWrapper.appendChild(legendItem);
-        });
+        legendItem.appendChild(marker);
+        legendItem.appendChild(label);
+        legendWrapper.appendChild(legendItem);
+    });
 
     const legendWidth = measureLegendWidth(legendWrapper);
     legendWrapper.style.width = `${legendWidth}px`;
