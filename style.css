@@ -979,8 +979,9 @@ input:checked + .slider .slider-label.right {
     border-radius: calc(var(--standard-padding) * 2);
     border: 1px solid;
     background: transparent;
-    font-size: calc(var(--font-size-uniform) * 0.9);
+    font-size: calc(var(--font-size-uniform) * 0.85);
     font-weight: normal;
+    letter-spacing: 0.3px;
     white-space: nowrap;
     margin: 0;
     box-sizing: border-box;
