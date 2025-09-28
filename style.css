@@ -569,6 +569,7 @@ body {
     border-radius: 8px;
     background-color: var(--bg-color-container);
     overflow: hidden;
+    position: relative;
 }
 
 #left-input, #right-input,
