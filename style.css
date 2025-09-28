@@ -438,17 +438,23 @@ body {
 
 
 .vitals-content {
+    --legend-column-width: 0px;
+    --legend-column-gap: calc(var(--standard-padding) / 2);
+    --legend-overlap: 20px;
     background-color: var(--bg-color-detail-value);
     border-radius: 8px;
-    min-height: 0;
+    min-height: calc(var(--standard-padding) * 3);
     position: relative;
     overflow: visible;
-    padding: calc(var(--standard-padding) * 0.5) var(--standard-padding);
+    padding: var(--standard-padding);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) calc(var(--legend-column-width) - var(--legend-overlap));
+    gap: var(--legend-column-gap);
+    align-items: stretch;
 }
 
 .vitals-content.has-data {
     min-height: calc(var(--standard-padding) * 10);
-    padding: var(--standard-padding);
 }
 
 .vitals-chart-wrapper {
@@ -461,12 +467,8 @@ body {
 }
 
 .vitals-legend-wrapper {
-    position: absolute;
-    top: var(--standard-padding);
-    right: var(--standard-padding);
-    bottom: var(--standard-padding);
+    position: relative;
     min-width: 0;
-    width: max-content;
     pointer-events: none;
     display: none;
 }
