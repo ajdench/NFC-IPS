@@ -108,6 +108,170 @@ const stageKeys = infoBoxConfig
     .map(config => config.dataKey)
     .filter(key => key && !['patient', 'clinicalSummary'].includes(key));
 
+const STAGE_SHORT_TITLES = {
+    poi: 'POI',
+    casevac: 'CASEVAC',
+    axp: 'AXP',
+    medevac: 'MEDEVAC',
+    r1: 'R1',
+    fwdTacevac: 'Fwd TACEVAC',
+    r2: 'R2',
+    rearTacevac: 'Rear TACEVAC',
+    r3: 'R3',
+    stratevac: 'STRATEVAC'
+};
+
+const stageColorVarMap = {
+    poi: { background: '--bg-color-poi', text: '--text-color-poi' },
+    casevac: { background: '--bg-color-yellow', text: '--text-color-yellow' },
+    axp: { background: '--bg-color-axp', text: '--text-color-axp' },
+    medevac: { background: '--bg-color-orange', text: '--text-color-orange' },
+    r1: { background: '--bg-color-green', text: '--text-color-green' },
+    fwdTacevac: { background: '--bg-color-fwd-tacevac', text: '--text-color-fwd-tacevac' },
+    r2: { background: '--bg-color-blue', text: '--text-color-blue' },
+    rearTacevac: { background: '--bg-color-rear-tacevac', text: '--text-color-rear-tacevac' },
+    r3: { background: '--bg-color-purple', text: '--text-color-r3' },
+    stratevac: { background: '--bg-color-stratevac', text: '--text-color-stratevac' }
+};
+
+let stageBackgroundPluginRegistered = false;
+
+function getCssVariableValue(variableName) {
+    if (typeof window === 'undefined') return '';
+    const computedStyle = getComputedStyle(document.documentElement);
+    return computedStyle.getPropertyValue(variableName)?.trim() || '';
+}
+
+function getStageBandOpacity() {
+    const value = parseFloat(getCssVariableValue('--stage-band-opacity'));
+    return Number.isFinite(value) ? value : 0.7;
+}
+
+function getStageBandLabelPadding() {
+    const value = parseFloat(getCssVariableValue('--standard-padding'));
+    return Number.isFinite(value) ? value : 10;
+}
+
+function collectStageTimestamps(stageData = {}) {
+    const timestamps = [];
+    ['vitals', 'conditions', 'events'].forEach(type => {
+        const items = stageData[type];
+        if (!Array.isArray(items)) return;
+        items.forEach(item => {
+            const timestamp = extractTimestamp(item);
+            if (!timestamp) return;
+            const timeValue = new Date(timestamp).getTime();
+            if (Number.isFinite(timeValue)) {
+                timestamps.push(timeValue);
+            }
+        });
+    });
+    timestamps.sort((a, b) => a - b);
+    return timestamps;
+}
+
+function computeStageBandData(stageSections = {}) {
+    const bands = [];
+    stageKeys.forEach((key, index) => {
+        const timestamps = collectStageTimestamps(stageSections[key]);
+        if (!timestamps.length) return;
+
+        const colorVars = stageColorVarMap[key];
+        if (!colorVars) return;
+
+        const baseColor = getCssVariableValue(colorVars.background) || '#cccccc';
+        const textColor = getCssVariableValue(colorVars.text) || '#333333';
+        const label = STAGE_SHORT_TITLES[key] || stageTitleLookup[key] || key.toUpperCase();
+
+        bands.push({
+            key,
+            label,
+            baseColor,
+            textColor,
+            startTime: timestamps[0],
+            endTime: timestamps[timestamps.length - 1],
+            order: index
+        });
+    });
+    return bands;
+}
+
+function midpoint(a, b) {
+    if (Number.isFinite(a) && Number.isFinite(b)) {
+        return a + (b - a) / 2;
+    }
+    if (Number.isFinite(a)) return a;
+    if (Number.isFinite(b)) return b;
+    return 0;
+}
+
+function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+}
+
+const stageBackgroundPlugin = {
+    id: 'stageBackgrounds',
+    beforeDatasetsDraw(chart) {
+        const config = chart.options.plugins?.stageBackgrounds;
+        if (!config || !Array.isArray(config.bands) || !config.bands.length) return;
+
+        const xScale = chart.scales.x;
+        const chartArea = chart.chartArea;
+        if (!xScale || !chartArea) return;
+
+        const scaleMin = xScale.min;
+        const scaleMax = xScale.max;
+        if (!Number.isFinite(scaleMin) || !Number.isFinite(scaleMax)) return;
+
+        const opacity = typeof config.opacity === 'number' ? config.opacity : 0.7;
+        const labelPadding = config.labelPadding ?? 10;
+        const bands = [...config.bands].filter(band => Number.isFinite(band.startTime) && Number.isFinite(band.endTime));
+        if (!bands.length) return;
+
+        bands.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+        const ctx = chart.ctx;
+        const font = config.font || chart.options.font?.string || Chart.defaults.font.string;
+
+        bands.forEach((band, index) => {
+            const prev = bands[index - 1];
+            const next = bands[index + 1];
+
+            const prevEnd = prev ? (Number.isFinite(prev.endTime) ? prev.endTime : prev.startTime) : null;
+            const currentStart = Number.isFinite(band.startTime) ? band.startTime : band.endTime;
+            const currentEnd = Number.isFinite(band.endTime) ? band.endTime : band.startTime;
+            const nextStart = next ? (Number.isFinite(next.startTime) ? next.startTime : next.endTime) : null;
+
+            let start = index === 0 ? scaleMin : midpoint(prevEnd, currentStart);
+            let end = index === bands.length - 1 ? scaleMax : midpoint(currentEnd, nextStart);
+
+            start = clamp(start, scaleMin, scaleMax);
+            end = clamp(end, scaleMin, scaleMax);
+            if (!(end > start)) return;
+
+            const left = xScale.getPixelForValue(start);
+            const right = xScale.getPixelForValue(end);
+            const width = right - left;
+            const top = chartArea.top;
+            const height = chartArea.bottom - chartArea.top;
+
+            ctx.save();
+            ctx.globalAlpha = opacity;
+            ctx.fillStyle = band.baseColor || '#cccccc';
+            ctx.fillRect(left, top, width, height);
+            ctx.restore();
+
+            ctx.save();
+            ctx.fillStyle = band.textColor || '#333333';
+            ctx.font = font;
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            ctx.fillText(band.label, left + labelPadding, top + labelPadding);
+            ctx.restore();
+        });
+    }
+};
+
 let vitalsChartInstance = null;
 let vitalsChartLibrary = 'chartjs';
 
