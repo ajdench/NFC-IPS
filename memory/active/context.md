@@ -22,7 +22,7 @@
 
 ## Next Actions
 1. Adjust Patient Demographics CSS/JS to normalize spacing and render identifier pills unconditionally.
-2. Prototype legend positioning logic and coordinate chart/legend widths to satisfy layout requirements.
+2. Gather UX feedback on legend spacing/ordering after latest alignment tweaks.
 3. Refactor Events rendering to use structured datetime fields for first-pill formatting; validate across payloads.
 4. Re-test POI empty-state styling after layout changes.
 
