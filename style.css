@@ -396,6 +396,10 @@ body {
     color: white;
 }
 
+.detail-box.purple .detail-value {
+    color: var(--text-color-r3);
+}
+
 .detail-box.stratevac .detail-label {
     background-color: var(--bg-color-stratevac-darker);
     color: white;
