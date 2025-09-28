@@ -5419,6 +5419,11 @@ function renderCustomLegend(chartInstance) {
     legendWrapper.style.marginBottom = `${Math.max(areaBottomCss, 0)}px`;
     legendWrapper.style.height = `${Math.max(areaHeightCss, 0)}px`;
 
+    const availableHeight = Math.max(areaHeightCss, 0);
+    const minSpacing = visibleItems.length > 1
+        ? Math.max(0, Math.min(LEGEND_CONFIG.MIN_ROW_GAP, availableHeight / (visibleItems.length - 1)))
+        : 0;
+
     const desiredPositions = visibleItems.map(item => {
         const pixel = item.pixelY * pixelRatio;
         const relative = pixel - areaTopCss;
@@ -5428,8 +5433,8 @@ function renderCustomLegend(chartInstance) {
     const adjustedPositions = resolveLegendPositions(
         desiredPositions,
         0,
-        Math.max(areaHeightCss, 0),
-        LEGEND_CONFIG.MIN_ROW_GAP
+        availableHeight,
+        minSpacing
     );
 
     visibleItems.forEach((item, index) => {
