@@ -2,7 +2,7 @@
 
 ## Current Focus
 - Patient Demographics card: remove extra bottom gap from pill layout and ensure Service Number / NHS Number pills always render with explicit fallback text.
-- Vitals legend: overlap/spacing changes landed (40px overlap, 7px markers, 19px toast); awaiting UX sign-off after integrating payload header grid + centered toast.
+- Vitals legend: overlap/spacing changes landed (15px overlap, 7px markers) with first tick now forced 30-minute pre-buffer; awaiting UX sign-off after integrating payload header grid + centered toast badges.
 - Events first-pill date display: rework presentation layer so the first pill in each stage shows full datetime without relying on regex matching inside `entry.value`.
 - POI pane empty state: confirm condensed empty-state styling matches other OPCP panes.
 
