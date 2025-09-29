@@ -4849,8 +4849,9 @@ async function init() {
     // Only rebuild info boxes if HTML structure is incomplete
     const firstBox = document.querySelector('.info-box .info-title');
     const hasCorrectStructure = firstBox && firstBox.querySelector('.left-title') && firstBox.querySelector('.empty-text');
+    const hasStratevac = document.querySelector('[data-key="stratevac"]');
 
-    if (!hasCorrectStructure) {
+    if (!hasCorrectStructure || !hasStratevac) {
         createInfoBoxes();
     }
 
