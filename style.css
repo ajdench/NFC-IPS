@@ -102,7 +102,7 @@ body {
     min-height: 100vh;
     margin: 0;
     background-color: var(--bg-color-page);
-    padding: 15px;
+    padding: calc(var(--standard-padding) + 2.5px) var(--standard-padding) calc((var(--standard-padding) * 2) + 5px);
 }
 
 main {
@@ -451,8 +451,12 @@ main {
     flex-grow: 1;
     box-sizing: border-box;
     display: grid;
-    grid-template-rows: 15px 45px;
+    grid-template-rows: 15px minmax(45px, 1fr);
     gap: var(--standard-padding);
+}
+
+.vitals-container:not(:has(.vitals-content.has-data)) {
+    grid-template-rows: 15px 45px;
 }
 
 .vitals-container .info-title {

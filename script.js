@@ -4861,6 +4861,7 @@ async function init() {
     const rightCharCount = document.getElementById('right-char-count');
 
     // Preset and clear buttons
+    const preset0Button = document.getElementById('preset-0');
     const preset1Button = document.getElementById('preset-1');
     const preset2Button = document.getElementById('preset-2');
     const preset3Button = document.getElementById('preset-3');
