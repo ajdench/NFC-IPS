@@ -2177,7 +2177,11 @@ const codecPipeline = (() => {
         'reartacevac': 'rearTacevac',
         'rear-tacevac': 'rearTacevac',
         'rear tacevac': 'rearTacevac',
-        r3: 'r3'
+        r3: 'r3',
+        stratevac: 'stratevac',
+        'strategic evacuation': 'stratevac',
+        'strategic-evacuation': 'stratevac',
+        'strategic_evacuati': 'stratevac'
     };
 
     function normaliseCareStageValue(rawValue) {
