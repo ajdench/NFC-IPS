@@ -102,7 +102,7 @@ body {
     min-height: 100vh;
     margin: 0;
     background-color: var(--bg-color-page);
-    padding: var(--standard-padding);
+    padding: 15px;
 }
 
 main {

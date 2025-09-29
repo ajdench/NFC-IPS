@@ -108,8 +108,6 @@ const stageKeys = infoBoxConfig
     .map(config => config.dataKey)
     .filter(key => key && !['patient', 'clinicalSummary'].includes(key));
 
-console.log('[STRATEVAC] stageKeys initialised:', stageKeys);
-
 const STAGE_SHORT_TITLES = {
     poi: 'POI',
     casevac: 'CASEVAC',

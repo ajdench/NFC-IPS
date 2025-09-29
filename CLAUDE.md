@@ -209,9 +209,9 @@ key_files:
 
 ### Outstanding Issues 🔄 IN PROGRESS
 1. **Priority 2 Bug - Payload Visual Blip**: Instantaneous visual blip occurs during page initialization/reload in payload panes. Investigation shows all JavaScript operations complete successfully, suggesting browser-level rendering issue (CSS transitions, Chart.js canvas operations, or layout reflow).
-2. **Patient Demographics padding**: Double-gap below pills needs removal
-3. **MIL/NH identifiers**: Service Number and NHS Number pills not displaying (pipeline issue)
-4. **Body bottom margin**: Margin issue visible in browser inspector
+2. **Priority 2 Bug - Body Padding Missing**: Main page/window top and bottom padding not being applied despite explicit `padding: 15px` in body CSS rule. CSS appears correct but padding not visible in browser.
+3. **Patient Demographics padding**: Double-gap below pills needs removal
+4. **MIL/NH identifiers**: Service Number and NHS Number pills not displaying (pipeline issue)
 
 ### ✅ Recently Resolved
 - **Auto-JJ System**: Fixed - Was using `npm run dev` instead of `npm run dev:auto-jj`. Auto-commits now active.
