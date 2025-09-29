@@ -20,7 +20,7 @@ This project provides a single-page web application designed to display Internat
 ### ✅ Recently Completed
 *   **Advanced Payload Processing:** Comprehensive support for multiple payload formats including FHIR Patient resources, legacy indexed payloads, and CodeRef protobuf schemas
 *   **Protobuf Integration:** Full codec pipeline with automatic schema detection, compression handling (pako), and legacy format support
-*   **Medical Data Visualization:** Color-coded care stages from POI through Role 3 care with detailed vitals, conditions, and events
+*   **Medical Data Visualization:** Color-coded care stages from POI through STRATEVAC with detailed vitals, conditions, and events
 *   **Interactive Payload Management:** Toggle between demo payloads with custom input parsing and real-time display updates
 *   **Resolved: Payload Text Area Stretching:** Layout issues resolved by replacing textarea/pre elements with contenteditable divs
 
