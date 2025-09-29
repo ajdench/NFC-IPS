@@ -148,6 +148,9 @@ const LEGEND_ABBREVIATIONS = new Map([
     ['oxygen saturation', 'SpO₂'],
     ['respiratory rate', 'RR'],
     ['glucose', 'Glu'],
+    ['hemoglobin', 'Hgb'],
+    ['ph of blood', 'pH'],
+    ['blood ph', 'pH'],
     ['spo2', 'SpO₂'],
     ['sao2', 'SpO₂'],
     ['map', 'MAP']
