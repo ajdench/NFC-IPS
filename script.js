@@ -4205,7 +4205,6 @@ function createPatientDetailsElement(patientData, parentColorClass) {
  * Example: Displays POI vitals (red), CASEVAC treatments (orange), R1 assessments (green)
  */
 function renderStageSections(stageSections = {}) {
-    console.log('[STRATEVAC] renderStageSections invoked. Keys:', Object.keys(stageSections || {}));
     stageKeys.forEach(stageKey => {
         const stageBox = document.querySelector(`[data-key="${stageKey}"]`);
         if (!stageBox) return;
@@ -4216,8 +4215,6 @@ function renderStageSections(stageSections = {}) {
         const config = infoBoxConfig.find(item => item.dataKey === stageKey);
         const stageColor = config ? config.colorClass : null;
         const stageData = stageSections[stageKey] || { vitals: [], conditions: [], events: [] };
-
-        console.log('[STRATEVAC] Stage', stageKey, 'has data?', stageData);
 
         const mistSections = [
             { type: 'Mechanism/Injury', items: stageData.conditions || [] },
