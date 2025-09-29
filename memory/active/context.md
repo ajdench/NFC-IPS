@@ -1,15 +1,17 @@
 # Working Context
 
-## ✅ COMPLETED - Preset #0 Button Implementation (2025-09-28)
-- Added preset #0 button positioned between Clear and #1 buttons
-- Configured complete JavaScript event handling for fragment/FHIR modes
-- Fixed file loading by adding IPS_FHIR_JSON_0 constant to config/constants.js
-- Updated demo state array with proper index shifting (payload0→demos[0])
-- All preset buttons (#0-#3) now fully functional with correct file mappings
+## ✅ COMPLETED - Major Recovery and Integration (2025-09-29)
+- **Version Control Recovery**: Comprehensive JJ-to-Git integration with proper conflict resolution
+- **JJ Protection Configuration**: Implemented anti-destructive git settings (auto-squash=false, auto-local-bookmark=false, push=false)
+- **Feature Consolidation**: Successfully merged chart/axis work with preset #0 and OPCP title improvements
+- **Medical Terminology**: Recovered and validated LEGEND_ABBREVIATIONS with proper medical abbreviations (Hgb, pH)
+- **Architecture Integration**: CSS Grid vitals layout with spacer columns and Chart.js positioned legends
+- **Preset #0 Complete**: Full implementation including event handling, constants, and file mapping
+- **Branch Synchronization**: recovery_main branch updated with all integrated features
 
 ## Outstanding Issues (Lower Priority)
 - Patient Demographics card: remove extra bottom gap from pill layout and ensure Service Number / NHS Number pills always render with explicit fallback text.
-- Vitals legend + stage bands: overlap/spacing changes landed (15px overlap, 7px markers) with new background shading, STRATEVAC palette, legend abbreviations, and custom tick labelling; awaiting UX sign-off and multi-day validation.
+- Vitals legend: evaluate collision handling once multi-series datasets arrive; current layout uses fixed spacer column and right-aligned legend text.
 - Events first-pill date display: rework presentation layer so the first pill in each stage shows full datetime without relying on regex matching inside `entry.value`.
 - POI pane empty state: confirm condensed empty-state styling matches other OPCP panes.
 
@@ -19,9 +21,9 @@
 - Verified dependencies via `npm outdated` (no updates required) and confirmed network access workflow.
 
 ## Key Files Updated
-- `AGENTS.md` – new TTL header plus Codex quick-start/CQ protocol sections.
-- `memory/update-codex-md.sh` – timestamp refresh script for Codex ops log.
-- `scripts/auto-jj.js` – optional Codex TTL refresh hook controlled by `CODEX_REFRESH_TTL` env var.
+- `script.js` – restored custom x-axis plugin, spacer-aware legend layout, dynamic OPCP title handling, and updated legend abbreviations.
+- `style.css` – vitals grid now uses chart/spacer/legend columns with configurable gap.
+- `AGENTS.md` – TTL refreshed and outstanding legend task reframed.
 
 ## Open Questions / Dependencies
 - UX decisions needed for minimum spacing rules in the vitals legend when multiple datasets end at similar Y values.
@@ -29,7 +31,7 @@
 
 ## Next Actions
 1. Adjust Patient Demographics CSS/JS to normalize spacing and render identifier pills unconditionally.
-2. Gather UX feedback on legend spacing/ordering after latest overlap tweaks, stage bands, and payload header toast alignment.
+2. Stress-test vitals legend with dense datasets to confirm spacer + right alignment prevents collisions.
 3. Refactor Events rendering to use structured datetime fields for first-pill formatting; validate across payloads.
 4. Re-test POI empty-state styling after layout changes.
 

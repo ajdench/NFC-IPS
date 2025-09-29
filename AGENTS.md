@@ -1,7 +1,7 @@
 # Codex Ops Log – NFC IPS Viewer
 
-**⏰ LAST UPDATED: 2025-09-28 14:46 UTC**
-**🔄 TTL: Valid until 2025-09-28 15:46 UTC** *(Auto-refresh via Codex timestamp script)*
+**⏰ LAST UPDATED: 2025-09-29 06:58 UTC**
+**🔄 TTL: Valid until 2025-09-29 07:58 UTC** *(Auto-refresh via Codex timestamp script)*
 
 ## Current Mandate
 - Conduct end-to-end documentation/code review with focus on custom application surface; treat third-party dependencies as fixed inputs.
@@ -35,7 +35,7 @@
 
 ## Outstanding Work Items (Custom Layers)
 - Patient Demographics: remove excess bottom gap and render Service Number / NHS Number pills regardless of data presence (explicit fallback copy required).
-- Vitals Chart: verify legend overlap/spacing against latest UX feedback once data set is available.
+- Vitals Chart: monitor legend collision handling for densely packed datasets; current layout uses fixed spacer column with right-aligned legend.
 - Events Pills: ensure first item in each OPCP row displays full datetime (`15 Jan 24 16:00`) while subsequent pills show time-only, without relying on regex against `entry.value`.
 - Validate POI pane empty-state styling (known bug: full-height empty state using condensed style).
 - Stage bands: validate midpoint boundaries across multi-day datasets to ensure contiguous colouring remains accurate; confirm STRATEVAC colouring holds across payload sources.

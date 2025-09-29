@@ -482,8 +482,9 @@ main {
 
 .vitals-content {
     --legend-column-width: 0px;
-    --legend-column-gap: calc(var(--standard-padding) / 2);
-    --legend-overlap: 15px;
+    --legend-spacer-width: var(--standard-padding);
+    --vitals-chart-body-height: calc(var(--standard-padding) * 9);
+    --vitals-axis-label-height: calc(var(--standard-padding) * 2.5);
     background-color: var(--bg-color-detail-value);
     border-radius: 8px;
     position: relative;
@@ -491,24 +492,27 @@ main {
     padding: var(--standard-padding);
     min-height: var(--empty-pane-height);
     display: grid;
-    grid-template-columns: minmax(0, 1fr) var(--legend-column-width);
-    gap: var(--legend-column-gap);
+    grid-template-columns: minmax(0, 1fr) var(--legend-spacer-width) var(--legend-column-width);
+    column-gap: 0;
     align-items: center;
 }
 
 .vitals-content.has-data {
-    min-height: calc(var(--standard-padding) * 10);
+    min-height: calc(var(--vitals-chart-body-height) + var(--vitals-axis-label-height));
     padding: var(--standard-padding);
     align-items: stretch;
+    grid-template-columns: minmax(0, 1fr) var(--legend-spacer-width) var(--legend-column-width);
+    column-gap: 0;
 }
 
 .vitals-chart-wrapper {
     position: relative;
     min-width: 0;
+    display: flex;
 }
 
-.vitals-content.has-data .vitals-chart-wrapper {
-    min-height: calc(var(--standard-padding) * 8);
+.vitals-chart-wrapper {
+    min-height: calc(var(--vitals-chart-body-height) + var(--vitals-axis-label-height));
 }
 
 .vitals-legend-wrapper {
@@ -522,7 +526,22 @@ main {
 
 .vitals-legend-wrapper.is-visible {
     display: block;
-    margin-left: calc(var(--legend-overlap) * -1);
+}
+
+.vitals-content .vitals-chart-wrapper {
+    grid-column: 1;
+}
+
+.vitals-content .vitals-legend-wrapper {
+    grid-column: 3;
+    align-self: start;
+}
+
+.vitals-content .vitals-spacer {
+    grid-column: 2;
+    width: var(--legend-spacer-width);
+    min-width: var(--legend-spacer-width);
+    pointer-events: none;
 }
 
 .vitals-legend-wrapper .vitals-legend-item {

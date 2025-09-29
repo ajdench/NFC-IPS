@@ -73,9 +73,9 @@ const infoBoxConfig = [
     { title: 'Medical Evacuation (MEDEVAC)', colorClass: 'orange', dataKey: 'medevac' },
     { title: 'Role 1 Care (R1)', colorClass: 'green', dataKey: 'r1' },
     { title: 'Forward Tactical Evacuation (Fwd TACEVAC)', colorClass: 'fwd-tacevac', dataKey: 'fwdTacevac' },
-    { title: 'Role 2 Care (R2)', colorClass: 'blue', dataKey: 'r2' },
+    { title: 'Role 2 Deployed Hospital Care', colorClass: 'blue', dataKey: 'r2' },
     { title: 'Rear Tactical Evacuation (Rear TACEVAC)', colorClass: 'rear-tacevac', dataKey: 'rearTacevac' },
-    { title: 'Role 3 Care (R3)', colorClass: 'purple', dataKey: 'r3' },
+    { title: 'Role 3 Deployed Hospital Care', colorClass: 'purple', dataKey: 'r3' },
     { title: 'Strategic Evacuation (STRATEVAC)', colorClass: 'stratevac', dataKey: 'stratevac' }
 ];
 
@@ -115,9 +115,9 @@ const STAGE_SHORT_TITLES = {
     medevac: 'MEDEVAC',
     r1: 'R1',
     fwdTacevac: 'Fwd TACEVAC',
-    r2: 'R2',
+    r2: 'R2 DHC',
     rearTacevac: 'Rear TACEVAC',
-    r3: 'R3',
+    r3: 'R3 DHC',
     stratevac: 'STRATEVAC'
 };
 
@@ -135,24 +135,28 @@ const stageColorVarMap = {
 };
 
 let stageBackgroundPluginRegistered = false;
+let customXAxisPluginRegistered = false;
 
 const LEGEND_ABBREVIATIONS = new Map([
-    ['body temperature', 'Temp'],
-    ['temperature', 'Temp'],
+    ['body temperature', 'BT'],
+    ['temperature', 'BT'],
     ['heart rate', 'HR'],
     ['pulse', 'HR'],
     ['systolic blood pressure', 'SBP'],
     ['diastolic blood pressure', 'DBP'],
     ['blood pressure (systolic)', 'SBP'],
     ['blood pressure (diastolic)', 'DBP'],
-    ['oxygen saturation', 'SpO₂'],
+    ['oxygen saturation', 'SpO2'],
     ['respiratory rate', 'RR'],
     ['glucose', 'Glu'],
     ['hemoglobin', 'Hgb'],
-    ['ph of blood', 'pH'],
-    ['blood ph', 'pH'],
-    ['spo2', 'SpO₂'],
-    ['sao2', 'SpO₂'],
+    ['ph of blood', 'Blood pH'],
+    ['blood ph', 'Blood pH'],
+    ['blood gas ph', 'Blood pH'],
+    ['arterial blood ph', 'Blood pH'],
+    ['venous blood ph', 'Blood pH'],
+    ['spo2', 'SpO2'],
+    ['sao2', 'SpO2'],
     ['map', 'MAP']
 ]);
 
@@ -299,6 +303,50 @@ const stageBackgroundPlugin = {
     }
 };
 
+const customXAxisLabelPlugin = {
+    id: 'customXAxisLabels',
+    afterDraw(chart, args, options = {}) {
+        const xScale = chart.scales.x;
+        const chartArea = chart.chartArea;
+        if (!xScale || !chartArea || !xScale.ticks?.length) return;
+
+        const ctx = chart.ctx;
+        if (!ctx) return;
+
+        const padding = options.padding ?? 8;
+        const fontSpec = options.font || Chart.defaults.font;
+        const font = Chart.helpers?.toFont ? Chart.helpers.toFont(fontSpec) : fontSpec;
+        const color = options.color || xScale.options.ticks?.color || Chart.defaults.color || '#666';
+
+        const lineHeight = font.lineHeight || (font.size * 1.2);
+        const baseY = chartArea.bottom + padding;
+
+        ctx.save();
+        ctx.font = font.string || `${font.size}px ${font.family}`;
+        ctx.fillStyle = color;
+        ctx.textBaseline = 'top';
+
+        xScale.ticks.forEach((tick, index) => {
+            if (!tick) return;
+            const lines = Array.isArray(tick.labelLines) && tick.labelLines.length
+                ? tick.labelLines
+                : (tick.label != null ? [tick.label] : []);
+            if (!lines.length) return;
+
+            const x = xScale.getPixelForValue(tick.value);
+            const align = tick.textAlign || (index === xScale.ticks.length - 1 ? 'right' : 'left');
+            ctx.textAlign = align;
+            const offsetX = align === 'right' ? -padding : padding;
+
+            lines.forEach((line, lineIndex) => {
+                ctx.fillText(line, x + offsetX, baseY + lineIndex * lineHeight);
+            });
+        });
+
+        ctx.restore();
+    }
+};
+
 let vitalsChartInstance = null;
 let vitalsChartLibrary = 'chartjs';
 
@@ -333,7 +381,7 @@ function resetLegendLayout(targetWrapper = null) {
     if (vitalsContent) {
         vitalsContent.classList.remove('has-data');
         vitalsContent.style.setProperty('--legend-column-width', '0px');
-        vitalsContent.style.setProperty('--legend-column-gap', `calc(var(--standard-padding) / 2)`);
+        vitalsContent.style.setProperty('--legend-spacer-width', 'var(--standard-padding)');
     }
 }
 
@@ -3913,17 +3961,17 @@ function createInfoBoxes() {
         } else {
             // Create short titles for panes without parentheses
                 const shortTitleMap = {
-                    'patient': 'Patient',
-                    'clinicalSummary': 'Clinical',
-                    'casevac': 'CASEVAC',
-                    'axp': 'AXP',
-                    'medevac': 'MEDEVAC',
-                    'r1': 'R1',
-                    'fwdTacevac': 'Fwd TACEVAC',
-                    'r2': 'R2',
-                    'rearTacevac': 'Rear TACEVAC',
-                    'r3': 'R3',
-                    'stratevac': 'STRATEVAC'
+                    patient: 'Patient',
+                    clinicalSummary: 'Clinical',
+                    casevac: 'CASEVAC',
+                    axp: 'AXP',
+                    medevac: 'MEDEVAC',
+                    r1: 'R1',
+                    fwdTacevac: 'Fwd TACEVAC',
+                    r2: 'R2 DHC',
+                    rearTacevac: 'Rear TACEVAC',
+                    r3: 'R3 DHC',
+                    stratevac: 'STRATEVAC'
                 };
             shortTitle = shortTitleMap[config.dataKey] || fullTitle;
         }
@@ -4065,6 +4113,90 @@ function setTitleAvailability(titleElement, hasData) {
             container.classList.add('empty');
         }
     }
+}
+
+function updateDualTitleText(titleElement, leftText, rightText) {
+    if (!titleElement) return;
+
+    const leftTitleSpan = titleElement.querySelector('.left-title');
+    const rightTitleSpan = titleElement.querySelector('.right-title');
+
+    if (leftTitleSpan) {
+        leftTitleSpan.textContent = leftText;
+    }
+    if (rightTitleSpan) {
+        rightTitleSpan.textContent = rightText;
+        rightTitleSpan.style.opacity = DUAL_TITLE_CONFIG.transparency;
+    }
+
+    titleElement.dataset.shortTitle = leftText;
+    titleElement.dataset.baseTitle = rightText;
+}
+
+function resetR1Title() {
+    const r1Box = document.querySelector('[data-key="r1"]');
+    const titleElement = r1Box?.querySelector('.info-title');
+    if (!titleElement) return;
+    updateDualTitleText(titleElement, 'R1', 'Role 1 Care');
+}
+
+function updateR1TitleBasedOnData(stageData) {
+    const r1Box = document.querySelector('[data-key="r1"]');
+    const titleElement = r1Box?.querySelector('.info-title');
+    if (!titleElement) return;
+
+    const hasEntries = Boolean(stageData && (
+        (Array.isArray(stageData.events) && stageData.events.length)
+        || (Array.isArray(stageData.vitals) && stageData.vitals.length)
+        || (Array.isArray(stageData.conditions) && stageData.conditions.length)
+    ));
+
+    if (!hasEntries) {
+        resetR1Title();
+        return;
+    }
+
+    const containsPhcIndicator = Boolean(stageData && (
+        (Array.isArray(stageData.events) && stageData.events.some(event =>
+            event?.careSettingType === 'PHC'
+            || event?.setting === 'PHC'
+            || (event?.code?.display && event.code.display.includes('Primary Healthcare'))
+        ))
+        || (Array.isArray(stageData.vitals) && stageData.vitals.some(vital =>
+            vital?.careSettingType === 'PHC' || vital?.setting === 'PHC'
+        ))
+        || (Array.isArray(stageData.conditions) && stageData.conditions.some(condition =>
+            condition?.careSettingType === 'PHC' || condition?.setting === 'PHC'
+        ))
+    ));
+
+    if (containsPhcIndicator) {
+        updateDualTitleText(titleElement, 'R1 PHC', 'Role 1 Primary Healthcare');
+        return;
+    }
+
+    updateDualTitleText(titleElement, 'R1 PHEC', 'Role 1 Pre Hospital Emergency Care');
+}
+
+function applyStaticOcpTitleOverrides() {
+    const overrides = {
+        r2: {
+            left: 'R2 DHC',
+            right: 'Role 2 Deployed Hospital Care'
+        },
+        r3: {
+            left: 'R3 DHC',
+            right: 'Role 3 Deployed Hospital Care'
+        }
+    };
+
+    Object.entries(overrides).forEach(([key, texts]) => {
+        const box = document.querySelector(`[data-key="${key}"]`);
+        if (!box) return;
+        const titleElement = box.querySelector('.info-title');
+        if (!titleElement) return;
+        updateDualTitleText(titleElement, texts.left, texts.right);
+    });
 }
 
 /**
@@ -4241,6 +4373,10 @@ function renderStageSections(stageSections = {}) {
         const config = infoBoxConfig.find(item => item.dataKey === stageKey);
         const stageColor = config ? config.colorClass : null;
         const stageData = stageSections[stageKey] || { vitals: [], conditions: [], events: [] };
+
+        if (stageKey === 'r1') {
+            updateR1TitleBasedOnData(stageData);
+        }
 
         const mistSections = [
             { type: 'Mechanism/Injury', items: stageData.conditions || [] },
@@ -4421,6 +4557,7 @@ function renderVitalsChart(viewModel) {
     if (!hasData) return;
 
     const ctx = canvas.getContext('2d');
+    const axisLabelPaddingPx = getVitalsAxisPadding(canvas);
 
     const stageBands = computeStageBandData(stageSections);
     const stageBandOpacity = getStageBandOpacity();
@@ -4432,6 +4569,10 @@ function renderVitalsChart(viewModel) {
             Chart.register(stageBackgroundPlugin);
             stageBackgroundPluginRegistered = true;
         }
+        if (!customXAxisPluginRegistered && typeof Chart.register === 'function') {
+            Chart.register(customXAxisLabelPlugin);
+            customXAxisPluginRegistered = true;
+        }
 
         vitalsChartLibrary = 'chartjs';
         vitalsChartInstance = new Chart(ctx, {
@@ -4440,6 +4581,11 @@ function renderVitalsChart(viewModel) {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        bottom: axisLabelPaddingPx
+                    }
+                },
                 interaction: {
                     mode: 'nearest',
                     intersect: false
@@ -4448,6 +4594,7 @@ function renderVitalsChart(viewModel) {
                     x: {
                         type: 'linear',
                         ticks: {
+                            display: false,
                             callback(value, index, ticks) {
                                 const tick = ticks && ticks[index];
                                 if (tick && Array.isArray(tick.labelLines)) {
@@ -4457,7 +4604,7 @@ function renderVitalsChart(viewModel) {
                                 return value;
                             },
                             align(context) {
-                                return context.tick?.align || 'center';
+                                return context.tick?.align || 'inner';
                             },
                             crossAlign: 'near',
                             autoSkip: false
@@ -4544,12 +4691,16 @@ function renderVitalsChart(viewModel) {
                                     labelLines = [timeLabel, dateLabel];
                                 }
 
-                                const align = index === array.length - 1 ? 'outer' : 'inner';
+                                const isLast = index === array.length - 1;
+                                const isSecondLast = array.length >= 3 && index === array.length - 2;
+                                const align = (isLast || isSecondLast) ? 'outer' : 'inner';
+                                const textAlign = (isLast || isSecondLast) ? 'right' : 'left';
 
                                 return {
                                     value,
                                     labelLines,
-                                    align
+                                    align,
+                                    textAlign
                                 };
                             });
 
@@ -4614,6 +4765,11 @@ function renderVitalsChart(viewModel) {
                         bands: stageBands,
                         opacity: stageBandOpacity,
                         labelPadding: stageBandLabelPadding
+                    },
+                    customXAxisLabels: {
+                        padding: 8,
+                        font: Chart.defaults.font,
+                        color: Chart.defaults.color
                     }
                 }
             }
@@ -4898,6 +5054,9 @@ async function init() {
     if (!hasCorrectStructure || !hasStratevac) {
         createInfoBoxes();
     }
+
+    applyStaticOcpTitleOverrides();
+    resetR1Title();
 
     const container = document.getElementById('info-boxes-container');
 
@@ -5744,15 +5903,30 @@ function renderCustomLegend(chartInstance) {
     vitalsContent.style.setProperty('--legend-column-width', `${legendWidth}px`);
 
     const computedStyles = getComputedStyle(vitalsContent);
-    const standardPadding = Number.parseFloat(computedStyles.getPropertyValue('--standard-padding')) || 0;
-    const legendOverlap = Number.parseFloat(computedStyles.getPropertyValue('--legend-overlap')) || 0;
-    const gapValue = Math.max((standardPadding / 2) - legendOverlap, 0);
-    vitalsContent.style.setProperty('--legend-column-gap', `${gapValue}px`);
+    vitalsContent.style.setProperty('--legend-spacer-width', 'var(--standard-padding)');
+}
+
+function getVitalsAxisPadding(canvas) {
+    const fallbackPadding = 36;
+    if (!canvas) return fallbackPadding;
+    const vitalsContent = canvas.closest('.vitals-content');
+    if (!vitalsContent) return fallbackPadding;
+    const styles = getComputedStyle(vitalsContent);
+    const rawValue = styles.getPropertyValue('--vitals-axis-label-height');
+    const parsed = Number.parseFloat(rawValue);
+    return Number.isFinite(parsed) && parsed > 0 ? Math.max(parsed, fallbackPadding) : fallbackPadding;
 }
 
 function ensureLegendWrapper(canvas) {
     const vitalsContent = canvas.closest('.vitals-content');
     if (!vitalsContent) return { vitalsContent: null, legendWrapper: null };
+
+    let spacer = vitalsContent.querySelector('.vitals-spacer');
+    if (!spacer) {
+        spacer = document.createElement('div');
+        spacer.className = 'vitals-spacer';
+        vitalsContent.appendChild(spacer);
+    }
 
     let legendWrapper = vitalsContent.querySelector('#vitals-legend-wrapper');
     if (!legendWrapper) {
