@@ -23,6 +23,7 @@ This project provides a single-page web application designed to display Internat
 *   **Medical Data Visualization:** Color-coded care stages from POI through STRATEVAC with detailed vitals, conditions, and events
 *   **Interactive Payload Management:** Toggle between demo payloads with custom input parsing and real-time display updates
 *   **Resolved: Payload Text Area Stretching:** Layout issues resolved by replacing textarea/pre elements with contenteditable divs
+*   **Stage Bands & STRATEVAC Palette:** STRATEVAC stage now renders after R3 with refreshed colour palette, and the vitals chart overlays background bands for each operational stage
 
 ### 🚧 Current Architecture
 *   **Modular JavaScript Design:** Separated concerns with codec pipeline, payload service, and rendering functions
