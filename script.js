@@ -4876,6 +4876,7 @@ async function init() {
     const ipsInput = document.getElementById('ips-input');
     const fragmentInput = document.getElementById('fragment-input');
 
+    const payload0 = await fetchJson(DEMO_PAYLOADS.IPS_FHIR_JSON_0);
     const payload1 = await fetchJson(DEMO_PAYLOADS.IPS_FHIR_JSON_1);
     const payload2 = await fetchJson(DEMO_PAYLOADS.IPS_FHIR_JSON_2);
     const payload3 = await fetchJson(DEMO_PAYLOADS.IPS_FHIR_JSON_3);
@@ -4898,19 +4899,25 @@ async function init() {
             };
         }
 
-        appState.demos[0] = payloadService.buildViewModelFromObject(payload1, {
+        appState.demos[1] = payloadService.buildViewModelFromObject(payload1, {
             label: 'Payload 1',
             rawPayload: payload1
         });
     }
+    if (payload0) {
+        appState.demos[0] = payloadService.buildViewModelFromObject(payload0, {
+            label: 'Payload 0',
+            rawPayload: payload0
+        });
+    }
     if (payload2) {
-        appState.demos[1] = payloadService.buildViewModelFromObject(payload2, {
+        appState.demos[2] = payloadService.buildViewModelFromObject(payload2, {
             label: 'Payload 2',
             rawPayload: payload2
         });
     }
     if (payload3) {
-        appState.demos[2] = payloadService.buildViewModelFromObject(payload3, {
+        appState.demos[3] = payloadService.buildViewModelFromObject(payload3, {
             label: 'Payload 3',
             rawPayload: payload3
         });
@@ -5399,7 +5406,7 @@ async function init() {
 
     // Preset button functionality
     function updateActivePreset(activeButton) {
-        [preset1Button, preset2Button, preset3Button].forEach(btn => {
+        [preset0Button, preset1Button, preset2Button, preset3Button].forEach(btn => {
             btn.classList.remove('active');
         });
         if (activeButton) {
@@ -5410,6 +5417,31 @@ async function init() {
     // Legacy clear buttons removed - functionality now handled by new clear buttons
 
     // Enhanced preset button handlers
+    preset0Button.addEventListener('click', () => {
+        if (formatState.leftMode === 'fragment') {
+            // Load fragment into left pane
+            if (presetFragments[0]) {
+                leftInput.textContent = presetFragments[0];
+                updateCharCount(leftInput, leftCharCount);
+                showMessage('Loaded preset #0 fragment', 'success');
+            }
+        } else {
+            // Load FHIR JSON into left pane
+            if (payload0) {
+                const fhirJson = JSON.stringify(payload0, null, 2);
+                leftInput.textContent = fhirJson;
+                updateCharCount(leftInput, leftCharCount);
+                // Store as original FHIR to prevent round-trip loss
+                formatState.originalFhir = fhirJson;
+                showMessage('Loaded preset #0', 'success');
+            } else {
+                showMessage('Preset #0 not available', 'warning');
+            }
+        }
+
+        updateActivePreset(preset0Button);
+    });
+
     preset1Button.addEventListener('click', () => {
 
         if (formatState.leftMode === 'fragment') {

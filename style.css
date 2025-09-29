@@ -11,6 +11,7 @@
     --toast-offset-y: -2px;
     --stage-band-opacity: 0.35;
     --empty-pane-height: 15px;
+    --pane-button-text-offset: 1px;
 
     --text-color-dark: #555;
     --text-color-poi: red;
@@ -803,6 +804,7 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
+    padding-top: var(--pane-button-text-offset);
     cursor: pointer;
     border: none;
     transition: background-color .4s;
