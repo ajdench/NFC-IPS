@@ -136,6 +136,23 @@ const stageColorVarMap = {
 
 let stageBackgroundPluginRegistered = false;
 
+const LEGEND_ABBREVIATIONS = new Map([
+    ['body temperature', 'Temp'],
+    ['temperature', 'Temp'],
+    ['heart rate', 'HR'],
+    ['pulse', 'HR'],
+    ['systolic blood pressure', 'SBP'],
+    ['diastolic blood pressure', 'DBP'],
+    ['blood pressure (systolic)', 'SBP'],
+    ['blood pressure (diastolic)', 'DBP'],
+    ['oxygen saturation', 'SpO₂'],
+    ['respiratory rate', 'RR'],
+    ['glucose', 'Glu'],
+    ['spo2', 'SpO₂'],
+    ['sao2', 'SpO₂'],
+    ['map', 'MAP']
+]);
+
 function getCssVariableValue(variableName) {
     if (typeof window === 'undefined') return '';
     const computedStyle = getComputedStyle(document.documentElement);
@@ -207,6 +224,12 @@ function midpoint(a, b) {
 
 function clamp(value, min, max) {
     return Math.min(Math.max(value, min), max);
+}
+
+function abbreviateLegendLabel(label) {
+    if (!label) return label;
+    const key = label.toLowerCase().trim();
+    return LEGEND_ABBREVIATIONS.get(key) || label;
 }
 
 const stageBackgroundPlugin = {
@@ -4347,6 +4370,7 @@ function renderVitalsChart(viewModel) {
     const datasets = Array.from(datasetsMap.entries()).map(([label, points]) => {
         points.sort((a, b) => a.x - b.x);
         const color = getVitalColor(label);
+        const displayLabel = abbreviateLegendLabel(label);
 
         if (points.length) {
             minTime = Math.min(minTime, points[0].x);
@@ -4354,7 +4378,7 @@ function renderVitalsChart(viewModel) {
         }
 
         return {
-            label,
+            label: displayLabel,
             data: points,
             borderColor: color,
             backgroundColor: color,
@@ -4421,19 +4445,18 @@ function renderVitalsChart(viewModel) {
                     x: {
                         type: 'linear',
                         ticks: {
-                            callback(value) {
-                                const date = new Date(Number(value));
-                                const time = date.toLocaleTimeString('en-GB', {
-                                    hour: '2-digit',
-                                    minute: '2-digit'
-                                });
-                                const dateStr = date.toLocaleDateString('en-GB', {
-                                    day: 'numeric',
-                                    month: 'short',
-                                    year: '2-digit'
-                                });
-                                return [time, dateStr];
+                            callback(value, index, ticks) {
+                                const tick = ticks && ticks[index];
+                                if (tick && Array.isArray(tick.labelLines)) {
+                                    return tick.labelLines;
+                                }
+                                if (tick && tick.label != null) return tick.label;
+                                return value;
                             },
+                            align(context) {
+                                return context.tick?.align || 'center';
+                            },
+                            crossAlign: 'near',
                             autoSkip: false
                         },
                         afterBuildTicks: function(scale) {
@@ -4500,7 +4523,32 @@ function renderVitalsChart(viewModel) {
                                 uniqueTickValues.splice(uniqueTickValues.length - 2, 1);
                             }
 
-                            const finalTicks = uniqueTickValues.map(value => ({ value }));
+                            const finalTicks = uniqueTickValues.map((value, index, array) => {
+                                const prev = index > 0 ? array[index - 1] : null;
+                                const currentDate = new Date(value);
+                                const timeLabel = currentDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+                                let labelLines = [timeLabel];
+
+                                const shouldShowDate = (() => {
+                                    if (index === 0 || index === array.length - 1) return true;
+                                    if (!prev) return true;
+                                    const prevDate = new Date(prev);
+                                    return currentDate.toDateString() !== prevDate.toDateString();
+                                })();
+
+                                if (shouldShowDate) {
+                                    const dateLabel = currentDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' });
+                                    labelLines = [timeLabel, dateLabel];
+                                }
+
+                                const align = index === array.length - 1 ? 'outer' : 'inner';
+
+                                return {
+                                    value,
+                                    labelLines,
+                                    align
+                                };
+                            });
 
                             scale.ticks = finalTicks;
                             scale.min = firstTick.getTime();

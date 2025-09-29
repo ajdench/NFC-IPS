@@ -36,7 +36,7 @@ This project provides a single-page web application designed to display Internat
 *   **Compression Handling:** Automatic inflation attempts with pako for compressed payloads
 *   **Patient Comparison:** IPS changes visualization comparing reference and current patient data
 *   **Error Boundaries:** Comprehensive error handling with user-friendly messaging
-*   **Stage-Aware Charting:** Vitals chart overlays stage background bands (opacity via `--stage-band-opacity`, default 0.35) and enforces half-hour tick alignment all the way to STRATEVAC
+*   **Stage-Aware Charting:** Vitals chart overlays stage background bands (opacity via `--stage-band-opacity`, default 0.35), enforces half-hour tick alignment, and abbreviates vitals in the legend for quicker scanning
 *   **Page Spacing Tokens:** Top/side/bottom gutters configurable via `--page-padding-top`, `--page-padding-side`, and `--page-padding-bottom`
 
 ## How it Works

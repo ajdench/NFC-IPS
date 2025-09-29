@@ -148,6 +148,8 @@
 - Fixed vitals chart legend positioning: reduced gap to half standard padding, aligned legend items to right edge of container - legend now conforms to chart pane padding boundaries
 
 ### Update: 2025-09-27 11:23
-
 ### Update: 2025-09-28 19:45
 - Promoted body spacing to CSS variables (`--page-padding-top/side/bottom`) and documented spacing tokens in README for future tuning.
+
+### Update: 2025-09-28 20:10
+- Legend abbreviations applied for vitals datasets; x-axis ticks now use custom half-hour labels with date rollover and capped tick count of 10.

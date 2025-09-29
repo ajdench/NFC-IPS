@@ -9,7 +9,7 @@
 
 ## Outstanding Issues (Lower Priority)
 - Patient Demographics card: remove extra bottom gap from pill layout and ensure Service Number / NHS Number pills always render with explicit fallback text.
-- Vitals legend + stage bands: overlap/spacing changes landed (15px overlap, 7px markers) with new background shading and STRATEVAC palette; awaiting UX sign-off and multi-day validation.
+- Vitals legend + stage bands: overlap/spacing changes landed (15px overlap, 7px markers) with new background shading, STRATEVAC palette, legend abbreviations, and custom tick labelling; awaiting UX sign-off and multi-day validation.
 - Events first-pill date display: rework presentation layer so the first pill in each stage shows full datetime without relying on regex matching inside `entry.value`.
 - POI pane empty state: confirm condensed empty-state styling matches other OPCP panes.
 
