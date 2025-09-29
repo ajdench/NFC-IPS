@@ -148,20 +148,3 @@
 - Fixed vitals chart legend positioning: reduced gap to half standard padding, aligned legend items to right edge of container - legend now conforms to chart pane padding boundaries
 
 ### Update: 2025-09-27 11:23
-### Update: 2025-09-28 19:45
-- Promoted body spacing to CSS variables (`--page-padding-top/side/bottom`) and documented spacing tokens in README for future tuning.
-
-### Update: 2025-09-28 20:10
-- Legend abbreviations applied for vitals datasets; x-axis ticks now use custom half-hour labels with date rollover and capped tick count of 10.
-
-### Update: 2025-09-29 06:58
-- Restored custom x-axis plugin with canvas padding token; legend now lives in dedicated grid column with configurable spacer. Updated OPCP titles (R2/R3 DHC, dynamic R1 PHC/PHEC) and normalised BT/SpO2 abbreviations.
-
-### Update: 2025-09-29 10:30
-- **MAJOR RECOVERY SESSION**: Comprehensive integration of Codex's recovery work with git version control system
-- **JJ Protection Configuration**: Set working-copy.auto-squash=false, git.auto-local-bookmark=false, git.push=false to prevent destructive git overwrites
-- **Feature Integration Complete**: Successfully merged chart/axis work with preset #0 and OPCP title improvements
-- **Medical Abbreviations Recovered**: LEGEND_ABBREVIATIONS map with proper medical terminology (Hgb for hemoglobin, pH for blood pH)
-- **CSS Grid Architecture**: Complete vitals layout with spacer columns and positioned legends
-- **Preset #0 Implementation**: Full event handling and file mapping for new preset button
-- **Version Control Stability**: JJ now provides irrefutable tracking with git integration protection

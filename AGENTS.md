@@ -1,7 +1,7 @@
 # Codex Ops Log – NFC IPS Viewer
 
-**⏰ LAST UPDATED: 2025-09-29 06:58 UTC**
-**🔄 TTL: Valid until 2025-09-29 07:58 UTC** *(Auto-refresh via Codex timestamp script)*
+**⏰ LAST UPDATED: 2025-09-29 12:00 UTC**
+**🔄 TTL: Valid until 2025-09-29 13:00 UTC** *(Auto-refresh via Codex timestamp script)*
 
 ## Current Mandate
 - Conduct end-to-end documentation/code review with focus on custom application surface; treat third-party dependencies as fixed inputs.
@@ -35,7 +35,7 @@
 
 ## Outstanding Work Items (Custom Layers)
 - Patient Demographics: remove excess bottom gap and render Service Number / NHS Number pills regardless of data presence (explicit fallback copy required).
-- Vitals Chart: monitor legend collision handling for densely packed datasets; current layout uses fixed spacer column with right-aligned legend.
+- Vitals Chart: monitor legend collision handling for densely packed datasets; current layout uses fixed spacer column with right-aligned legend and collapsible vitals pills in stages.
 - Events Pills: ensure first item in each OPCP row displays full datetime (`15 Jan 24 16:00`) while subsequent pills show time-only, without relying on regex against `entry.value`.
 - Validate POI pane empty-state styling (known bug: full-height empty state using condensed style).
 - Stage bands: validate midpoint boundaries across multi-day datasets to ensure contiguous colouring remains accurate; confirm STRATEVAC colouring holds across payload sources.
@@ -48,7 +48,13 @@
 - Auto-JJ automation in place; coordinate with hooks before altering build/test scripts to avoid unintended commits.
 
 ## Codex Quick Start
-- **Load order**: `cat CLAUDE.md`, `cat memory/active/status.md`, `cat memory/active/context.md`, `cat memory/implementations/2025-09-27-chart-tick-system.md` (keeps parity with Claude Quick Start).
+- **Load order**:
+    1. `cat CLAUDE.md`
+    2. `cat AGENTS.md`
+    3. `cat memory/active/status.md`
+    4. `cat memory/active/context.md`
+    5. `cat memory/implementations/2025-09-27-chart-tick-system.md`
+    *(ensures both Claude and Codex instructions stay in sync before coding)*
 - **TTL maintenance**: run `memory/update-codex-md.sh` or set `CODEX_REFRESH_TTL=1` when launching Auto-JJ so commits call the script automatically.
 - **Manual refresh**: execute `./memory/update-codex-md.sh "optional reason"` whenever Codex session resumes without auto-commit triggers.
 - **Crash recovery check**: verify the `LAST UPDATED` / `TTL` header near top of `AGENTS.md` before proceeding.

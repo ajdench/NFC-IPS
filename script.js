@@ -108,6 +108,8 @@ const stageKeys = infoBoxConfig
     .map(config => config.dataKey)
     .filter(key => key && !['patient', 'clinicalSummary'].includes(key));
 
+const stageVitalsCollapseState = new Map();
+
 const STAGE_SHORT_TITLES = {
     poi: 'POI',
     casevac: 'CASEVAC',
@@ -383,6 +385,39 @@ function resetLegendLayout(targetWrapper = null) {
         vitalsContent.style.setProperty('--legend-column-width', '0px');
         vitalsContent.style.setProperty('--legend-spacer-width', 'var(--standard-padding)');
     }
+}
+
+function resetStageVitalsCollapseState(stageSections = {}) {
+    stageKeys.forEach(stageKey => {
+        const section = stageSections[stageKey];
+        const hasVitals = Array.isArray(section?.vitals) && section.vitals.length > 0;
+        if (hasVitals) {
+            stageVitalsCollapseState.set(stageKey, true);
+        } else {
+            stageVitalsCollapseState.delete(stageKey);
+        }
+    });
+}
+
+function toggleStageVitals(stageKey, collapsed) {
+    if (!stageVitalsCollapseState.has(stageKey)) return;
+    stageVitalsCollapseState.set(stageKey, collapsed);
+    if (appState.currentViewModel?.stageSections) {
+        renderStageSections(appState.currentViewModel.stageSections);
+    }
+}
+
+function createVitalsPlaceholder(stageKey, stageColorClass) {
+    const placeholder = createDetailBoxElement('Vitals', '', stageColorClass);
+    placeholder.classList.add('vitals-placeholder');
+    const valueSpan = placeholder.querySelector('.detail-value');
+    if (valueSpan) {
+        valueSpan.innerHTML = 'See&nbsp;<em>Vitals</em>&nbsp;chart below&nbsp;<em>or</em>&nbsp;click to open';
+    }
+    placeholder.addEventListener('click', () => {
+        toggleStageVitals(stageKey, false);
+    });
+    return placeholder;
 }
 
 /**
@@ -4231,6 +4266,41 @@ function createDetailBoxElement(label, value, parentColorClass) {
 }
 
 /**
+ * Blood Group Extractor
+ * Purpose: Resolve blood group information from patient resource or extensions
+ *
+ * @param {Object} patient - FHIR Patient resource or CodeRef patient data
+ * @returns {string|undefined} - Human readable blood group, if present
+ */
+function extractBloodGroupDisplay(patient) {
+    if (!patient) return undefined;
+
+    const direct = patient.blood_group || patient.bloodGroup;
+    if (direct) {
+        if (direct.display) return direct.display;
+        if (direct.code) {
+            const resolved = resolveCodeDisplay('sct', direct.code);
+            if (resolved) return resolved;
+        }
+        if (direct.text) return direct.text;
+    }
+
+    const bloodExt = patient.extension?.find(ext => ext.url?.includes('bloodGroup'));
+    if (!bloodExt) return undefined;
+
+    const coding = bloodExt.valueCodeableConcept?.coding?.[0];
+    if (coding) {
+        if (coding.system?.includes('snomed.info/sct') && coding.code) {
+            const resolved = resolveCodeDisplay('sct', coding.code);
+            if (resolved) return resolved;
+        }
+        if (coding.display) return coding.display;
+    }
+
+    return bloodExt.valueCodeableConcept?.text;
+}
+
+/**
  * Ghost Item Layout System
  * Purpose: Add invisible spacing elements for consistent flexbox wrapping
  * Usage: Ensure even spacing in patient detail grids regardless of item count
@@ -4310,38 +4380,26 @@ function createPatientDetailsElement(patientData, parentColorClass) {
         { label: 'Surname', value: name.family },
         { label: 'Sex', value: patientData.gender },
         { label: 'Date of Birth', value: formatDate(patientData.birthDate) },
-        {
-            label: 'Blood Group',
-            value: (() => {
-                const bloodExt = patientData.extension?.find(ext => ext.url?.includes('bloodGroup'));
-                if (!bloodExt) return undefined;
-
-                const coding = bloodExt?.valueCodeableConcept?.coding?.[0];
-                if (coding) {
-                    // Check for SNOMED CT system
-                    if (coding.system?.includes('snomed.info/sct') && coding.code) {
-                        const bloodGroupName = resolveCodeDisplay('sct', coding.code);
-                        // Ensure we show the complete blood type with antigen and Rh factor
-                        return bloodGroupName || coding.display || bloodExt?.valueCodeableConcept?.text;
-                    }
-                    // Use display from coding if available
-                    if (coding.display) {
-                        return coding.display;
-                    }
-                }
-
-                // Fallback to text
-                return bloodExt?.valueCodeableConcept?.text;
-            })()
-        },
         { label: 'Nationality', value: patientData.extension?.find(ext => ext.url?.includes('nationality'))?.valueCodeableConcept?.text || 'UK' },
-        { label: 'Service Number', value: serviceNumber },
-        { label: 'NHS Number', value: nhsNumber }
+        { label: 'Service Number', value: serviceNumber || 'Not provided', required: true, placeholder: !serviceNumber },
+        { label: 'NHS Number', value: nhsNumber || 'Not provided', required: true, placeholder: !nhsNumber }
     ];
 
+    const bloodGroupDisplay = extractBloodGroupDisplay(patientData);
+    if (bloodGroupDisplay) {
+        details.splice(6, 0, { label: 'Blood Group', value: bloodGroupDisplay });
+    }
+
     details.forEach(detail => {
-        if (detail.value) {
-            detailsContainer.appendChild(createDetailBoxElement(detail.label, detail.value, parentColorClass));
+        if (detail.value || detail.required) {
+            const detailElement = createDetailBoxElement(detail.label, detail.value, parentColorClass);
+            if (detail.placeholder) {
+                const valueSpan = detailElement.querySelector('.detail-value');
+                if (valueSpan) {
+                    valueSpan.classList.add('is-placeholder');
+                }
+            }
+            detailsContainer.appendChild(detailElement);
         }
     });
     return detailsContainer;
@@ -4373,14 +4431,24 @@ function renderStageSections(stageSections = {}) {
         const config = infoBoxConfig.find(item => item.dataKey === stageKey);
         const stageColor = config ? config.colorClass : null;
         const stageData = stageSections[stageKey] || { vitals: [], conditions: [], events: [] };
+        const hasVitals = Array.isArray(stageData.vitals) && stageData.vitals.length > 0;
+        if (!hasVitals) {
+            stageVitalsCollapseState.delete(stageKey);
+        }
+        const vitalsCollapsed = hasVitals ? stageVitalsCollapseState.get(stageKey) !== false : false;
 
         if (stageKey === 'r1') {
             updateR1TitleBasedOnData(stageData);
         }
 
+        const vitalsItems = Array.isArray(stageData.vitals) ? stageData.vitals : [];
+        const symptomsItems = hasVitals
+            ? (vitalsCollapsed ? [{ isVitalsPlaceholder: true }] : vitalsItems)
+            : vitalsItems;
+
         const mistSections = [
             { type: 'Mechanism/Injury', items: stageData.conditions || [] },
-            { type: 'Symptoms', items: stageData.vitals || [] },
+            { type: 'Symptoms', items: symptomsItems },
             { type: 'Treatment', items: stageData.events || [] }
         ].filter(section => Array.isArray(section.items) && section.items.length);
 
@@ -4409,6 +4477,12 @@ function renderStageSections(stageSections = {}) {
             section.items.forEach((entry, itemIndex) => {
                 if (!entry) return;
 
+                if (section.type === 'Symptoms' && hasVitals && entry.isVitalsPlaceholder) {
+                    const placeholder = createVitalsPlaceholder(stageKey, stageColor);
+                    container.appendChild(placeholder);
+                    return;
+                }
+
                 // For first item in section, show full label. For subsequent items, extract just the coded description
                 let displayLabel = entry.label;
                 if (itemIndex > 0 && entry.label.includes('•')) {
@@ -4418,6 +4492,18 @@ function renderStageSections(stageSections = {}) {
 
                 const detail = createDetailBoxElement(displayLabel, entry.value, stageColor);
                 detail.title = entry.tooltip;
+
+                if (section.type === 'Symptoms' && hasVitals) {
+                    const labelSpan = detail.querySelector('.detail-label');
+                    if (labelSpan) {
+                        labelSpan.classList.add('vitals-collapse-trigger');
+                        labelSpan.addEventListener('click', event => {
+                            event.stopPropagation();
+                            toggleStageVitals(stageKey, true);
+                        });
+                    }
+                }
+
                 container.appendChild(detail);
             });
         });
@@ -4880,11 +4966,19 @@ function renderClinicalSummaryBox(currentPatient, allergies, summary) {
 
     const detailItems = [];
 
+    // Add Blood Group as first item if available
+    if (currentPatient) {
+        const bloodGroup = extractBloodGroupDisplay(currentPatient);
+        if (bloodGroup) {
+            detailItems.push({ label: 'Blood Group', value: bloodGroup });
+        }
+    }
+
     if (summary?.totals) {
         const { vitals = 0, conditions = 0, events = 0 } = summary.totals;
-        detailItems.push({ label: 'Total Vitals', value: String(vitals) });
-        detailItems.push({ label: 'Total Conditions', value: String(conditions) });
-        detailItems.push({ label: 'Total Events', value: String(events) });
+        detailItems.push({ label: 'Vitals', value: String(vitals) });
+        detailItems.push({ label: 'Conditions', value: String(conditions) });
+        detailItems.push({ label: 'Events', value: String(events) });
     }
 
     if (summary?.timestamp) {
@@ -5009,6 +5103,11 @@ function processAndRenderAll(viewModel, comparisonViewModel) {
         showMessage('Error: Could not load or parse payload', 'error');
         return;
     }
+
+    appState.currentViewModel = viewModel;
+    appState.comparisonViewModel = comparisonViewModel;
+
+    resetStageVitalsCollapseState(viewModel.stageSections);
 
     renderPatientBox(viewModel.patientResource);
     renderPayloadDisplay(viewModel.rawPayload);

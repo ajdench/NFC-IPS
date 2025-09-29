@@ -2,8 +2,8 @@
 
 ## 🚀 **QUICK START FOR NEW CLAUDE CODE INSTANCES**
 
-**⏰ LAST UPDATED: 2025-09-29 01:07 UTC**
-**🔄 TTL: Valid until 2025-09-29 02:07 UTC** *(Auto-refresh on any Auto-JJ commit)*
+**⏰ LAST UPDATED: 2025-09-29 22:15 UTC** *(Power failure recovery)*
+**🔄 TTL: Valid until 2025-10-13 22:15 UTC** *(Auto-refresh on any Auto-JJ commit)*
 **💾 CRASH RECOVERY: If system restarted unexpectedly, check timestamps below**
 
 ### **Immediate Orientation**
@@ -16,18 +16,19 @@
 - **Last Major Work**: Dual title system fixes, auto-loading disabled, surgical logging implemented (2025-09-28)
 
 ### **Current State Summary**
-✅ **Recently Completed**:
-- Dual title initialization fixes for all OPCP panes
-- Eliminated visual blips on page load by matching HTML/JavaScript structure
-- Disabled auto-loading behavior (preset selection, URL fragments, demo rendering)
-- Implemented surgical logging process (removed 317 debug logs, added minimal targeted logging)
-- Page now loads in clean empty state requiring manual user interaction
+✅ **MAJOR RECOVERY COMPLETED (2025-09-29)**:
+- **Version Control Protection**: JJ protection configured to prevent destructive git overwrites
+- **Feature Integration**: Chart/axis work merged with preset #0 and OPCP title improvements
+- **Medical Terminology**: LEGEND_ABBREVIATIONS recovered with proper medical abbreviations (Hgb, pH)
+- **CSS Grid Architecture**: Complete vitals layout with spacer columns and positioned legends
+- **Preset System**: Preset #0 fully implemented with event handling and file mapping
+- **OPCP Titles**: Enhanced with R2 DHC, R3 DHC, and dynamic R1 PHC/PHEC variations
 
-✅ **Architecture**: Dual title display, vitals chart with positioned legends, MIST chronological rendering
-✅ **Systems**: Auto-JJ commits, claude-dementia memory v3.0, surgical logging methodology
-⚠️ **Active Issue**: Content duplication in dual title text (minimal logging in place for diagnosis)
+✅ **Architecture**: Dual title display, Chart.js positioned legends, custom x-axis ticks, CSS Grid layout
+✅ **Systems**: Auto-JJ commits, JJ protection settings, claude-dementia memory v3.0, comprehensive recovery
+✅ **Version Control**: JJ provides irrefutable tracking with git integration protection
 
-### **Quick Commands**
+### **Quick Commands & Loading Order**
 ```bash
 npm run dev:auto-jj            # Start development server with auto-JJ monitoring
 npm run dev                    # Start development server only (no auto-commits)
@@ -424,3 +425,9 @@ Before EVERY commit:
 
 **Version**: 3.0.0  
 **Token Budget**: This file uses ~1,000 tokens
+# 📥 **Startup Loading Sequence (Claude & Codex parity)**
+1. `cat CLAUDE.md`
+2. `cat AGENTS.md`
+3. `cat memory/active/status.md`
+4. `cat memory/active/context.md`
+5. `cat memory/implementations/2025-09-27-chart-tick-system.md`

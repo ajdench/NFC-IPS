@@ -28,12 +28,15 @@
 ## Open Questions / Dependencies
 - UX decisions needed for minimum spacing rules in the vitals legend when multiple datasets end at similar Y values.
 - Confirm desired fallback copy for missing Service/NHS identifiers (e.g., "Not provided" vs. a blank pill value).
+- Future enhancement: optional smooth-scroll from vitals placeholder to chart (recorded requirement, not yet implemented).
 
 ## Next Actions
 1. Adjust Patient Demographics CSS/JS to normalize spacing and render identifier pills unconditionally.
 2. Stress-test vitals legend with dense datasets to confirm spacer + right alignment prevents collisions.
 3. Refactor Events rendering to use structured datetime fields for first-pill formatting; validate across payloads.
 4. Re-test POI empty-state styling after layout changes.
+5. Evaluate optional smooth-scroll behaviour from vitals placeholder to chart (recorded requirement).
+6. Follow startup loading sequence: CLAUDE.md → AGENTS.md → memory/active/status.md → memory/active/context.md → memory/implementations/2025-09-27-chart-tick-system.md before coding.
 
 ## Environment Notes
 - Auto-JJ active; set `CODEX_REFRESH_TTL=1` before `npm run dev:auto-jj` to keep Codex TTL updated automatically.

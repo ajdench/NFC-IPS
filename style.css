@@ -252,7 +252,7 @@ main {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: var(--standard-padding);
     width: 100%;
 }
@@ -263,6 +263,26 @@ main {
     height: calc(var(--standard-padding) * 2);
     border-radius: calc(var(--standard-padding) * 2);
     overflow: hidden; /* Restore for pill shape */
+}
+
+.detail-box.vitals-placeholder {
+    cursor: pointer;
+}
+
+.detail-box.vitals-placeholder .detail-label,
+.detail-box.vitals-placeholder .detail-value {
+    cursor: pointer;
+}
+
+.detail-box.vitals-placeholder .detail-value {
+    font-weight: normal;
+    justify-content: flex-start;
+    text-align: left;
+    white-space: normal;
+}
+
+.detail-label.vitals-collapse-trigger {
+    cursor: pointer;
 }
 
 .detail-label,
@@ -286,6 +306,11 @@ main {
     background-color: var(--bg-color-detail-value);
     font-weight: bold;
     color: var(--text-color-dark);
+}
+
+.detail-value.is-placeholder {
+    font-weight: normal;
+    opacity: 0.75;
 }
 
 .info-box.grey {

@@ -38,6 +38,7 @@ This project provides a single-page web application designed to display Internat
 *   **Error Boundaries:** Comprehensive error handling with user-friendly messaging
 *   **Stage-Aware Charting:** Vitals chart overlays stage background bands (opacity via `--stage-band-opacity`, default 0.35), enforces half-hour tick alignment, and abbreviates vitals in the legend for quicker scanning
 *   **Legend/Grid Layout:** Vitals pane uses a three-column grid (chart | spacer | legend) so the custom legend stays right-aligned without overlapping the canvas; x-axis labels render via a custom Chart.js plugin.
+*   **Collapsible Vitals Pills:** Each OPCP stage starts with a "See *Vitals* chart below *or* click to open" pill that collapses/expands the detailed vitals list on demand while keeping the pane tidy by default.
 *   **Page Spacing Tokens:** Top/side/bottom gutters configurable via `--page-padding-top`, `--page-padding-side`, and `--page-padding-bottom`
 
 ## How it Works
