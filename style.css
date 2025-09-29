@@ -11,6 +11,9 @@
     --toast-offset-y: -2px;
     --stage-band-opacity: 0.35;
     --empty-pane-height: 15px;
+    --page-padding-top: calc(var(--standard-padding) + 2.5px);
+    --page-padding-side: var(--standard-padding);
+    --page-padding-bottom: calc((var(--standard-padding) * 2) + 5px);
     --pane-button-text-offset: 1px;
 
     --text-color-dark: #555;
@@ -103,7 +106,7 @@ body {
     min-height: 100vh;
     margin: 0;
     background-color: var(--bg-color-page);
-    padding: calc(var(--standard-padding) + 2.5px) var(--standard-padding) calc((var(--standard-padding) * 2) + 5px);
+    padding: var(--page-padding-top) var(--page-padding-side) var(--page-padding-bottom);
 }
 
 main {

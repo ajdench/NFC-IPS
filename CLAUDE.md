@@ -66,15 +66,18 @@ jj commit -m "message"         # Manual commit changes
 6. **Development**: Run `npm run dev` to start environment
 7. **Update memory**: `./memory/update.sh "Session started - recovered from [timestamp]"`
 
-### **🔄 HANDOFF STATUS FOR NEW INSTANCE**
-**Current Focus**: Priority 2 bug investigation and system maintenance
+### **✅ RECENT COMPLETION - Preset #0 Button Implementation**
+**Status**: COMPLETED 2025-09-28 01:07 UTC
 
-**Active Issues**:
-1. **Priority 2 Bug**: Payload visual blip during page initialization
-2. **Auto-JJ System**: Automatic commits not occurring - needs investigation
-3. **Body margin**: Bottom margin issue visible in browser inspector
+**Accomplished**:
+1. **HTML Structure**: Added preset #0 button between Clear and #1 buttons
+2. **JavaScript Integration**: Configured complete event handling for fragment/FHIR modes
+3. **Constants Management**: Added IPS_FHIR_JSON_0 to config/constants.js
+4. **File Mappings**: #0→ips-fhir-json-0.json, #1→ips-fhir-json-1.json (shifted)
+5. **Demo State Array**: Updated with proper index shifting (payload0→demos[0])
+6. **Issue Resolution**: Fixed "Preset 0 not available" by using proper constants
 
-**System Status**: All functionality restored, surgical logging cleared, dual title system working correctly
+**System Status**: All preset buttons (#0-#3) fully functional, ready for new tasks
 
 ---
 

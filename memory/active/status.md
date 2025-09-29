@@ -148,3 +148,6 @@
 - Fixed vitals chart legend positioning: reduced gap to half standard padding, aligned legend items to right edge of container - legend now conforms to chart pane padding boundaries
 
 ### Update: 2025-09-27 11:23
+
+### Update: 2025-09-28 19:45
+- Promoted body spacing to CSS variables (`--page-padding-top/side/bottom`) and documented spacing tokens in README for future tuning.
