@@ -1,8 +1,7 @@
 # Working Context
 
-## Current Focus
 - Patient Demographics card: remove extra bottom gap from pill layout and ensure Service Number / NHS Number pills always render with explicit fallback text.
-- Vitals legend: overlap/spacing changes landed (15px overlap, 7px markers) with first tick clamped to nearest prior hh:00/30 using actual data min/max; awaiting UX sign-off after integrating payload header grid + centered toast badges.
+- Vitals legend + stage bands: overlap/spacing changes landed (15px overlap, 7px markers) with new background shading and STRATEVAC palette; awaiting UX sign-off and multi-day validation.
 - Events first-pill date display: rework presentation layer so the first pill in each stage shows full datetime without relying on regex matching inside `entry.value`.
 - POI pane empty state: confirm condensed empty-state styling matches other OPCP panes.
 
@@ -22,7 +21,7 @@
 
 ## Next Actions
 1. Adjust Patient Demographics CSS/JS to normalize spacing and render identifier pills unconditionally.
-2. Gather UX feedback on legend spacing/ordering after latest overlap tweaks and payload header toast alignment.
+2. Gather UX feedback on legend spacing/ordering after latest overlap tweaks, stage bands, and payload header toast alignment.
 3. Refactor Events rendering to use structured datetime fields for first-pill formatting; validate across payloads.
 4. Re-test POI empty-state styling after layout changes.
 

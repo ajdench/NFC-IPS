@@ -38,7 +38,7 @@
 - Vitals Chart: verify legend overlap/spacing against latest UX feedback once data set is available.
 - Events Pills: ensure first item in each OPCP row displays full datetime (`15 Jan 24 16:00`) while subsequent pills show time-only, without relying on regex against `entry.value`.
 - Validate POI pane empty-state styling (known bug: full-height empty state using condensed style).
-- Stage bands: validate midpoint boundaries across multi-day datasets to ensure contiguous colouring remains accurate.
+- Stage bands: validate midpoint boundaries across multi-day datasets to ensure contiguous colouring remains accurate; confirm STRATEVAC colouring holds across payload sources.
 
 ## Clarifications & Decisions Logged
 - ✅ Scope confirmed with user: concentrate on custom code; dependencies treated as given—only report versions/status.
