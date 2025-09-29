@@ -3861,10 +3861,7 @@ function createInfoBoxes() {
 
     container.innerHTML = '';
 
-    console.log('[STRATEVAC] createInfoBoxes called. Config count:', infoBoxConfig.length);
-
     infoBoxConfig.forEach(config => {
-        console.log('[STRATEVAC] Creating info box for', config.dataKey);
         // const wrapperClass = config.specialClass ? 'poi-box-wrapper' : 'info-box-wrapper';
         // const boxClass = config.specialClass ? 'poi-box' : `info-box ${config.colorClass}`;
 
@@ -3934,8 +3931,6 @@ function createInfoBoxes() {
         } else {
             title.textContent = config.title;
         }
-
-        console.log('[STRATEVAC] Appended title structure for', config.dataKey);
 
         box.appendChild(title);
         wrapper.appendChild(box);

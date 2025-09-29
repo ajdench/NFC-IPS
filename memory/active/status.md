@@ -148,6 +148,3 @@
 - Fixed vitals chart legend positioning: reduced gap to half standard padding, aligned legend items to right edge of container - legend now conforms to chart pane padding boundaries
 
 ### Update: 2025-09-27 11:23
-
-### Update: 2025-09-28 19:02
-- STRATEVAC stage wired end-to-end: pane always visible, dual-title empty state restored, R3/STRATEVAC palette refreshed, stage bands and tick spacing verified with new logging hooks for debugging.
