@@ -116,7 +116,7 @@ npm run deploy      # Deploy to GitHub Pages
 ### Development Notes
 *   **NFC Testing:** Use development server for URL fragment testing
 *   **Demo Payloads:** payload-1.json and payload-2.json provide test data
-*   **Full IPS Scaffold:** `full-ips-fhir-json-example-scaffold.json` contains a comprehensive, stage-by-stage IPS bundle (Composition, Patient, supporting resources, and POI → Rear TACEVAC care settings) for end-to-end encode/decode testing
+*   **Full IPS Scaffold:** `full-ips-fhir-json-example-scaffold.json` contains a comprehensive, stage-by-stage IPS bundle (Composition, Patient, supporting resources, and POI → STRATEVAC care settings) for end-to-end encode/decode testing
 *   **Manual Workflow:** On page load the left pane shows the default IPS FHIR JSON for reference, but no automatic encoding/decoding occurs—use `Encode`/`Parse` to drive the pipeline manually
 *   **OPCP Palette:** CASEVAC, AXP, MEDEVAC, R1, Fwd TACEVAC, R2, Rear TACEVAC, and R3 follow a curated colour progression; AXP is tuned between CASEVAC/MEDEVAC hues and R3 carries a richer lavender tone
 *   **Empty-state styling:** All OPCP panes (including POI) display a condensed title with “• No data available” when empty and expand only when populated
@@ -184,7 +184,7 @@ npm run deploy      # Deploy to GitHub Pages
 
 #### 4. **Styling Architecture** (`style.css` - 662 lines)
 - **CSS Variable System**: `--size-multiplier` for scalable UI
-- **Color-Coded Medical Stages**: POI → CASEVAC → MEDEVAC → R1-R3
+- **Color-Coded Medical Stages**: POI → CASEVAC → MEDEVAC → R1 → R2 → Rear TACEVAC → R3 → STRATEVAC
 - **Responsive Grid Layouts**: Flexbox and CSS Grid hybrid approach
 
 ### Data Processing Pipeline
