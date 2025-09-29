@@ -14,7 +14,7 @@
     --page-padding-top: calc(var(--standard-padding) + 2.5px);
     --page-padding-side: var(--standard-padding);
     --page-padding-bottom: calc((var(--standard-padding) * 2) + 5px);
-    --pane-button-text-offset: 1px;
+    --pane-button-text-offset: 2px;
 
     --text-color-dark: #555;
     --text-color-poi: red;
