@@ -5903,25 +5903,55 @@ async function init() {
     }
 
     parseButton.addEventListener('click', async () => {
+        startPipelineTrace('Parse FHIR to Clinical Display');
 
         if (formatState.rightFormat !== 'fhir') {
+            addPipelineStage('Format Check Failed', formatState.rightFormat, { expectedFormat: 'fhir' });
+            finishPipelineTrace('error', 'Parse only available when right pane shows IPS FHIR JSON');
             showMessage('Parse only available when right pane shows IPS FHIR JSON', 'warning');
             return;
         }
 
+        addPipelineStage('Format Check Passed', formatState.rightFormat, { status: 'valid' });
+
         const fhirInput = rightInput.textContent.trim();
 
         if (!fhirInput) {
+            addPipelineStage('Input Check Failed', fhirInput.length, { isEmpty: true });
+            finishPipelineTrace('error', 'No FHIR JSON available to parse');
             showMessage('No FHIR JSON available to parse', 'warning');
             return;
         }
 
+        addPipelineStage('Input Validated', fhirInput.length, {
+            characterCount: fhirInput.length,
+            hasPatientKeyword: fhirInput.includes('Patient'),
+            hasExtensionKeyword: fhirInput.includes('extension')
+        });
+
         try {
             const parsedViewModel = await payloadService.parseUserInput(fhirInput);
+            addPipelineStage('FHIR Parsed to ViewModel', parsedViewModel, {
+                hasPatient: !!parsedViewModel?.patient,
+                patientKeys: parsedViewModel?.patient ? Object.keys(parsedViewModel.patient) : [],
+                bloodGroupInPatient: parsedViewModel?.patient?.bloodGroup || null,
+                clinicalSummaryCount: parsedViewModel?.clinicalSummary?.length || 0
+            });
 
             appState.currentViewModel = parsedViewModel;
             appState.comparisonViewModel = appState.demos[0] || null;
+            addPipelineStage('App State Updated', appState.currentViewModel, {
+                viewModelSet: !!appState.currentViewModel,
+                comparisonSet: !!appState.comparisonViewModel
+            });
+
             processAndRenderAll(parsedViewModel, appState.comparisonViewModel);
+            addPipelineStage('Clinical Display Rendered', document.querySelector('[data-key="clinicalSummary"]')?.innerHTML?.length || 0, {
+                clinicalSummaryRendered: !document.querySelector('[data-key="clinicalSummary"]')?.classList.contains('empty'),
+                patientRendered: !document.querySelector('[data-key="patient"]')?.classList.contains('empty')
+            });
+
+            finishPipelineTrace('success', 'FHIR JSON parsed and displayed successfully');
             showMessage('FHIR JSON parsed and displayed successfully', 'success');
 
             // Force log flush for complete pipeline session debugging
@@ -5930,6 +5960,12 @@ async function init() {
             }
         } catch (error) {
             console.error('Parse error:', error);
+            addPipelineStage('Parse Error', error.message, {
+                errorType: error.constructor.name,
+                errorMessage: error.message,
+                errorStack: error.stack
+            });
+            finishPipelineTrace('error', `Parse failed: ${error.message}`);
             showMessage(`Parse failed: ${error.message}`, 'error');
         }
     });
@@ -5953,27 +5989,56 @@ async function init() {
         if (formatState.leftMode === 'fragment') {
             // Load fragment into left pane
             if (presetFragments[0]) {
+                startPipelineTrace('Load Preset #0 Fragment');
+                addPipelineStage('Fragment Source', presetFragments[0], checkDataIntegrity(presetFragments[0]));
+
                 leftInput.textContent = presetFragments[0];
                 updateCharCount(leftInput, leftCharCount);
+
+                addPipelineStage('Fragment Loaded', leftInput.textContent, checkDataIntegrity(leftInput.textContent));
+                finishPipelineTrace('success', 'Fragment loaded successfully');
                 showMessage('Loaded preset #0 fragment', 'success');
+            } else {
+                startPipelineTrace('Load Preset #0 Fragment');
+                finishPipelineTrace('error', 'Preset fragment #0 not available');
+                showMessage('Preset #0 fragment not available', 'warning');
             }
         } else {
             // Load FHIR JSON from file (resilient for GitHub Pages)
+            startPipelineTrace('Load Preset #0 FHIR');
+
             try {
+                addPipelineStage('FHIR Fetch Start', '../../ips-fhir-json-0.json', { status: 'fetching' });
+
                 const response = await fetch('../../ips-fhir-json-0.json');
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}`);
                 }
+
+                addPipelineStage('HTTP Response', response.status, { ok: response.ok, status: response.status });
+
                 const fhirData = await response.json();
+                addPipelineStage('FHIR Parsed', fhirData, checkDataIntegrity(fhirData));
+
                 const fhirJson = JSON.stringify(fhirData, null, 2);
+                addPipelineStage('FHIR Stringified', fhirJson.length, {
+                    characterCount: fhirJson.length,
+                    hasPatient: fhirData.entry?.some(e => e.resource?.resourceType === 'Patient'),
+                    patientExtensions: fhirData.entry?.find(e => e.resource?.resourceType === 'Patient')?.resource?.extension?.length || 0
+                });
 
                 leftInput.textContent = fhirJson;
                 updateCharCount(leftInput, leftCharCount);
                 // Store as original FHIR to prevent round-trip loss
                 formatState.originalFhir = fhirJson;
+
+                addPipelineStage('FHIR Display Complete', leftInput.textContent.length, checkDataIntegrity(leftInput.textContent));
+                finishPipelineTrace('success', 'FHIR loaded and displayed successfully');
                 showMessage('Loaded preset #0', 'success');
             } catch (error) {
                 console.error('Failed to load preset #0:', error);
+                addPipelineStage('FHIR Load Error', error.message, { error: error.toString() });
+                finishPipelineTrace('error', `Failed to load preset #0: ${error.message}`);
                 showMessage('Preset #0 not available', 'warning');
             }
         }
@@ -6165,6 +6230,75 @@ function clearConsole() {
     }
 }
 
+// Data integrity checking functions
+function checkDataIntegrity(data, expectedFields = []) {
+    const errors = [];
+    const warnings = [];
+    const info = [];
+
+    if (!data) {
+        errors.push('Data is null or undefined');
+        return { errors, warnings, info };
+    }
+
+    // Check for blood group data specifically
+    if (data.patient) {
+        if (data.patient.bloodGroup) {
+            info.push(`Blood group found: ${data.patient.bloodGroup}`);
+        } else if (data.patient.extension) {
+            // Check FHIR extensions for blood group
+            const bloodGroupExt = data.patient.extension.find(ext =>
+                ext.url === 'http://hl7.org/fhir/StructureDefinition/patient-bloodGroup'
+            );
+            if (bloodGroupExt) {
+                const code = bloodGroupExt.valueCodeableConcept?.coding?.[0]?.code;
+                if (code) {
+                    info.push(`Blood group extension found: ${code}`);
+                } else {
+                    warnings.push('Blood group extension exists but missing code');
+                }
+            } else {
+                warnings.push('No blood group data found in patient');
+            }
+        } else {
+            warnings.push('No patient blood group or extensions found');
+        }
+
+        // Check patient demographics
+        if (data.patient.given) info.push(`Given name: ${data.patient.given}`);
+        if (data.patient.family) info.push(`Family name: ${data.patient.family}`);
+        if (data.patient.name) {
+            const givenName = data.patient.name?.[0]?.given?.[0];
+            const familyName = data.patient.name?.[0]?.family;
+            if (givenName) info.push(`FHIR given name: ${givenName}`);
+            if (familyName) info.push(`FHIR family name: ${familyName}`);
+        }
+    } else {
+        errors.push('No patient data found');
+    }
+
+    // Check for care stage data
+    const careStages = ['poi', 'casevac', 'axp', 'medevac', 'r1', 'fwdTacevac', 'r2', 'rearTacevac', 'r3', 'stratevac'];
+    let stageCount = 0;
+    careStages.forEach(stage => {
+        if (data[stage]) {
+            const vitals = data[stage].vitals?.length || 0;
+            const conditions = data[stage].conditions?.length || 0;
+            const events = data[stage].events?.length || 0;
+            if (vitals + conditions + events > 0) {
+                info.push(`${stage}: ${vitals} vitals, ${conditions} conditions, ${events} events`);
+                stageCount++;
+            }
+        }
+    });
+
+    if (stageCount === 0) {
+        warnings.push('No care stage data found');
+    }
+
+    return { errors, warnings, info };
+}
+
 // Pipeline stage tracking
 function startPipelineTrace(operation) {
     pipelineTrace.stages = [];
@@ -6185,8 +6319,17 @@ function addPipelineStage(stageName, data, dataIntegrity = null) {
 
     if (dataIntegrity) {
         if (dataIntegrity.errors.length > 0) {
-            logToConsole(`❌ Data integrity issues: ${dataIntegrity.errors.join(', ')}`, 'error');
-        } else {
+            logToConsole(`❌ Errors: ${dataIntegrity.errors.join(', ')}`, 'error');
+        }
+        if (dataIntegrity.warnings.length > 0) {
+            logToConsole(`⚠️ Warnings: ${dataIntegrity.warnings.join(', ')}`, 'data');
+        }
+        if (dataIntegrity.info.length > 0) {
+            dataIntegrity.info.forEach(info => {
+                logToConsole(`ℹ️ ${info}`, 'data');
+            });
+        }
+        if (dataIntegrity.errors.length === 0) {
             logToConsole(`✅ Data integrity check passed`, 'success');
         }
     }
