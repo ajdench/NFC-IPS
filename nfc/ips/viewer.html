@@ -177,6 +177,11 @@
                             <span class="stage-label">Compress</span>
                             <span class="stage-format">Protobuf</span>
                         </div>
+                        <div class="stage-reveal-arrow">→</div>
+                        <div class="stage-reveal-item" data-stage="encode">
+                            <span class="stage-label">Encode</span>
+                            <span class="stage-format">Base64 URL-Safe</span>
+                        </div>
                     </div>
                     <div id="left-input" contenteditable="true" placeholder="Paste FHIR JSON here..."></div>
                 </div>
@@ -187,19 +192,24 @@
                         <span id="right-char-count" class="char-count">0 characters</span>
                     </div>
                     <div class="stage-reveal-container" id="right-stage-reveal">
+                        <div class="stage-reveal-item" data-stage="decode">
+                            <span class="stage-label">Decode</span>
+                            <span class="stage-format">Base64 URL-Safe</span>
+                        </div>
+                        <div class="stage-reveal-arrow">→</div>
+                        <div class="stage-reveal-item" data-stage="decompress">
+                            <span class="stage-label">Decompress</span>
+                            <span class="stage-format">Protobuf</span>
+                        </div>
+                        <div class="stage-reveal-arrow">→</div>
                         <div class="stage-reveal-item" data-stage="parse">
                             <span class="stage-label">Parse</span>
-                            <span class="stage-format">FHIR → CodeRef</span>
+                            <span class="stage-format">CodeRef</span>
                         </div>
                         <div class="stage-reveal-arrow">→</div>
                         <div class="stage-reveal-item" data-stage="display">
                             <span class="stage-label">Display</span>
-                            <span class="stage-format">ViewModel</span>
-                        </div>
-                        <div class="stage-reveal-arrow">→</div>
-                        <div class="stage-reveal-item" data-stage="render">
-                            <span class="stage-label">Render</span>
-                            <span class="stage-format">Clinical Data</span>
+                            <span class="stage-format">FHIR JSON</span>
                         </div>
                     </div>
                     <div id="right-input" contenteditable="true" placeholder="Output will appear here..."></div>

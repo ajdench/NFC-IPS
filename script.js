@@ -5743,6 +5743,15 @@ async function init() {
         leftPaneTitle.setAttribute('data-mode', newMode);
         updateCharCount(leftInput, leftCharCount);
         formatState.suppressMessages = false;
+
+        // Auto-show stage reveals when switching modes
+        const leftStageReveal = document.getElementById('left-stage-reveal');
+        if (leftStageReveal && !leftStageReveal.classList.contains('show')) {
+            leftStageReveal.classList.add('show');
+        }
+
+        // Update stage states to highlight current mode
+        // Note: updateStageStates will be called when stage reveals are initialized
     }
 
     function updateRightPaneFormat(newFormat) {
@@ -5771,6 +5780,12 @@ async function init() {
         }
 
         updateCharCount(rightInput, rightCharCount);
+
+        // Auto-show stage reveals when switching formats
+        const rightStageReveal = document.getElementById('right-stage-reveal');
+        if (rightStageReveal && !rightStageReveal.classList.contains('show')) {
+            rightStageReveal.classList.add('show');
+        }
 
         // Update Parse button state based on new format
         if (typeof updateParseButtonState === 'function') {
@@ -5897,9 +5912,23 @@ async function init() {
 
     // Clear buttons
     clearLeftButton.addEventListener('click', () => {
+        // Clear left pane content
         leftInput.textContent = '';
         updateCharCount(leftInput, leftCharCount);
+
+        // Clear right pane content
+        rightInput.textContent = '';
+        updateCharCount(rightInput, rightCharCount);
+
+        // Clear all internal state
+        formatState.conversionResults = {};
+        formatState.originalFragment = null;
+        formatState.originalFhir = null;
+
+        // Update active preset (also clears conversion results but we're being explicit)
         updateActivePreset(null);
+
+        showMessage('Cleared all content and internal state', 'success');
     });
 
     // clearRightButton removed - right pane is output only
@@ -6305,25 +6334,31 @@ function initializeStageReveals() {
         if (pane === 'left') {
             switch(stage) {
                 case 'source':
-                    updateLeftPaneFormat('fhir');
+                    updateLeftPaneMode('fhir');
                     break;
                 case 'convert':
-                    updateLeftPaneFormat('coderef');
+                    updateLeftPaneMode('coderef');
                     break;
                 case 'compress':
-                    updateLeftPaneFormat('protobuf');
+                    updateLeftPaneMode('protobuf');
+                    break;
+                case 'encode':
+                    updateLeftPaneMode('fragment');
                     break;
             }
         } else if (pane === 'right') {
             switch(stage) {
-                case 'parse':
-                    updateRightPaneFormat('fhir');
+                case 'decode':
+                    updateRightPaneFormat('fragment');
                     break;
-                case 'display':
+                case 'decompress':
+                    updateRightPaneFormat('protobuf');
+                    break;
+                case 'parse':
                     updateRightPaneFormat('coderef');
                     break;
-                case 'render':
-                    updateRightPaneFormat('protobuf');
+                case 'display':
+                    updateRightPaneFormat('fhir');
                     break;
             }
         }
@@ -6336,11 +6371,12 @@ function initializeStageReveals() {
             leftStages?.forEach(stage => {
                 stage.classList.remove('active');
                 const stageType = stage.dataset.stage;
-                const currentFormat = formatState.leftFormat;
+                const currentMode = formatState.leftMode;
 
-                if ((stageType === 'source' && currentFormat === 'fhir') ||
-                    (stageType === 'convert' && currentFormat === 'coderef') ||
-                    (stageType === 'compress' && currentFormat === 'protobuf')) {
+                if ((stageType === 'source' && currentMode === 'fhir') ||
+                    (stageType === 'convert' && currentMode === 'coderef') ||
+                    (stageType === 'compress' && currentMode === 'protobuf') ||
+                    (stageType === 'encode' && currentMode === 'fragment')) {
                     stage.classList.add('active');
                 }
             });
@@ -6351,9 +6387,10 @@ function initializeStageReveals() {
                 const stageType = stage.dataset.stage;
                 const currentFormat = formatState.rightFormat;
 
-                if ((stageType === 'parse' && currentFormat === 'fhir') ||
-                    (stageType === 'display' && currentFormat === 'coderef') ||
-                    (stageType === 'render' && currentFormat === 'protobuf')) {
+                if ((stageType === 'decode' && currentFormat === 'fragment') ||
+                    (stageType === 'decompress' && currentFormat === 'protobuf') ||
+                    (stageType === 'parse' && currentFormat === 'coderef') ||
+                    (stageType === 'display' && currentFormat === 'fhir')) {
                     stage.classList.add('active');
                 }
             });
