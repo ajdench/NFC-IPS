@@ -1922,6 +1922,55 @@ async function fetchJson(url) {
 // --- CODEC PIPELINE ---
 
 const codecPipeline = (() => {
+
+    const CARE_STAGE_VALUE_MAP = {
+        poi: 'poi',
+        casevac: 'casevac',
+        axp: 'axp',
+        mevac: 'medevac',
+        medevac: 'medevac',
+        r1: 'r1',
+        'fwdtacevac': 'fwdTacevac',
+        'fwd-tacevac': 'fwdTacevac',
+        'forwardtacevac': 'fwdTacevac',
+        'forward-tacevac': 'fwdTacevac',
+        'fwd tacevac': 'fwdTacevac',
+        r2: 'r2',
+        'reartacevac': 'rearTacevac',
+        'rear-tacevac': 'rearTacevac',
+        'rear tacevac': 'rearTacevac',
+        r3: 'r3',
+        stratevac: 'stratevac',
+        'strategic evacuation': 'stratevac',
+        'strategic-evacuation': 'stratevac',
+        'strategic_evacuati': 'stratevac'
+    };
+
+    function normaliseCareStageValue(rawValue) {
+        if (!rawValue) return null;
+        const trimmed = String(rawValue).trim();
+        const direct = CARE_STAGE_VALUE_MAP[trimmed];
+        if (direct) return direct;
+        const lowered = trimmed.toLowerCase().replace(/\s+/g, '');
+        return CARE_STAGE_VALUE_MAP[lowered] || trimmed;
+    }
+
+    function getCareStageFromExtension(resource) {
+        const careStageExt = resource.extension?.find(ext =>
+            ext.url === FHIR_EXTENSIONS.CARE_STAGE
+        );
+        if (!careStageExt) {
+            debugMIST(`No care stage extension found for ${resource.resourceType}`, {
+                resourceId: resource.id,
+                extensions: resource.extension?.map(ext => ext.url) || []
+            });
+            return null;
+        }
+
+        const rawValue = careStageExt.valueCode || careStageExt.valueString;
+        return normaliseCareStageValue(rawValue);
+    }
+
     const PROTO_URL = RESOURCES.NFC_PAYLOAD_PROTO;
     const LEGACY_PROTO_URL = RESOURCES.NFC_PAYLOAD_LEGACY_PROTO;
 
@@ -2373,6 +2422,12 @@ const codecPipeline = (() => {
         return payload;
     }
 
+    /**
+     * Converts FHIR Bundle to CodeRef format for protobuf serialization
+     * @param {Object} bundle - FHIR Bundle object
+     * @returns {Object} CodeRef payload with bundle metadata
+     */
+    function convertFhirBundleToCodeRef(bundle) {
         // Preserve original Bundle metadata with proper serialization for protobuf
         const bundleMetadata = {
             id: bundle.id || '',
@@ -2437,58 +2492,6 @@ const codecPipeline = (() => {
 
 
         return payload;
-    }
-
-    const CARE_STAGE_VALUE_MAP = {
-        poi: 'poi',
-        casevac: 'casevac',
-        axp: 'axp',
-        mevac: 'medevac', // common shorthand typo
-        medevac: 'medevac',
-        r1: 'r1',
-        'fwdtacevac': 'fwdTacevac',
-        'fwd-tacevac': 'fwdTacevac',
-        'forwardtacevac': 'fwdTacevac',
-        'forward-tacevac': 'fwdTacevac',
-        'fwd tacevac': 'fwdTacevac',
-        r2: 'r2',
-        'reartacevac': 'rearTacevac',
-        'rear-tacevac': 'rearTacevac',
-        'rear tacevac': 'rearTacevac',
-        r3: 'r3',
-        stratevac: 'stratevac',
-        'strategic evacuation': 'stratevac',
-        'strategic-evacuation': 'stratevac',
-        'strategic_evacuati': 'stratevac'
-    };
-
-    function normaliseCareStageValue(rawValue) {
-        if (!rawValue) return null;
-        const trimmed = String(rawValue).trim();
-        const direct = CARE_STAGE_VALUE_MAP[trimmed];
-        if (direct) return direct;
-        const lowered = trimmed.toLowerCase().replace(/\s+/g, '');
-        return CARE_STAGE_VALUE_MAP[lowered] || trimmed;
-    }
-
-    function getCareStageFromExtension(resource) {
-        const careStageExt = resource.extension?.find(ext =>
-            ext.url === FHIR_EXTENSIONS.CARE_STAGE
-        );
-        if (!careStageExt) {
-            debugMIST(`No care stage extension found for ${resource.resourceType}`, {
-                resourceId: resource.id,
-                extensions: resource.extension?.map(ext => ext.url) || []
-            });
-            return null;
-        }
-        const careStage = normaliseCareStageValue(careStageExt.valueCode || careStageExt.valueString || careStageExt.value);
-        debugMIST(`Extracted care stage: ${careStage}`, {
-            resourceType: resource.resourceType,
-            resourceId: resource.id,
-            rawValue: careStageExt.valueCode || careStageExt.valueString || careStageExt.value
-        });
-        return careStage;
     }
 
     function convertConditionToCodeRef(condition) {
