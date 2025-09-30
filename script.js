@@ -5683,12 +5683,15 @@ async function init() {
             actionButton.textContent = 'Decode';
             actionButton.className = 'pane-button decode-mode';
 
-            // If we have original fragment stored, restore it instead of encoding FHIR
+            // Display fragment content - priority order: original fragment, conversion results, or encode from FHIR
             if (formatState.originalFragment) {
                 leftInput.textContent = formatState.originalFragment;
                 if (!formatState.suppressMessages) {
                     showMessage('Restored original fragment data', 'success');
                 }
+            }
+            else if (formatState.conversionResults?.fragment) {
+                leftInput.textContent = formatState.conversionResults.fragment;
             }
             // Otherwise, if switching from FHIR to fragment and we have FHIR content, encode it
             else if (currentContent && looksLikeJson(currentContent)) {
