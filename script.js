@@ -2326,6 +2326,53 @@ const codecPipeline = (() => {
             }
         }
 
+        // Initialize ultra-compact payload structure
+        const payload = {
+            patient: convertedPatient
+        };
+
+        // Process all clinical resources
+        bundle.entry.forEach(entry => {
+            if (!entry.resource) return;
+            const resource = entry.resource;
+
+            // Convert clinical resources to ultra-compact format
+            if (resource.resourceType === 'Observation') {
+                const compactEntry = convertObservationToUltraCompact(resource);
+                if (compactEntry) {
+                    const careStage = determineCareStage(resource);
+                    if (!payload[careStage]) payload[careStage] = [];
+                    payload[careStage].push(compactEntry);
+                }
+            } else if (resource.resourceType === 'Condition') {
+                const compactEntry = convertConditionToUltraCompact(resource);
+                if (compactEntry) {
+                    const careStage = determineCareStage(resource);
+                    if (!payload[careStage]) payload[careStage] = [];
+                    payload[careStage].push(compactEntry);
+                }
+            } else if (resource.resourceType === 'MedicationStatement' ||
+                       resource.resourceType === 'MedicationAdministration') {
+                const compactEntry = convertMedicationToUltraCompact(resource);
+                if (compactEntry) {
+                    const careStage = determineCareStage(resource);
+                    if (!payload[careStage]) payload[careStage] = [];
+                    payload[careStage].push(compactEntry);
+                }
+            }
+        });
+
+        // Store minimal bundle metadata for reconstruction
+        payload.bundleMetadata = {
+            id: bundle.id || 'ips-example',
+            timestamp: bundle.timestamp || new Date().toISOString(),
+            originalBundleJson: JSON.stringify(bundle)
+        };
+
+        console.log('✅ Ultra-Compact CodeRef created:', payload);
+        return payload;
+    }
+
         // Preserve original Bundle metadata with proper serialization for protobuf
         const bundleMetadata = {
             id: bundle.id || '',
