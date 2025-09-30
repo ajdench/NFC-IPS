@@ -5703,34 +5703,37 @@ async function init() {
                     console.error('Error converting FHIR to fragment:', error);
                 }
             }
-        } else { // 'fhir'
+        } else if (newMode === 'fhir') {
             leftPaneTitle.textContent = 'IPS FHIR JSON';
             leftInput.placeholder = 'Paste FHIR JSON here...';
             actionButton.textContent = 'Encode';
             actionButton.className = 'pane-button encode-mode';
 
-            // If we have original FHIR stored, restore it instead of decoding fragment
-            if (formatState.originalFhir) {
+            // Display FHIR format from stored conversion results or restore original
+            if (formatState.conversionResults?.fhir) {
+                leftInput.textContent = formatState.conversionResults.fhir;
+            } else if (formatState.originalFhir) {
                 leftInput.textContent = formatState.originalFhir;
-                if (!formatState.suppressMessages) {
-                    showMessage('Restored original FHIR data', 'success');
-                }
             }
-            // Otherwise, if switching from fragment to FHIR and we have fragment content, decode it
-            else if (currentContent && !looksLikeJson(currentContent)) {
-                try {
-                    const parsedViewModel = await payloadService.parseUserInput(currentContent);
-                    if (parsedViewModel && parsedViewModel.rawPayload) {
-                        const fhirBundle = codecPipeline.convertCodeRefToFhirBundle(parsedViewModel.rawPayload);
-                        const fhirJson = JSON.stringify(fhirBundle, null, 2);
-                        leftInput.textContent = fhirJson;
-                        if (!formatState.suppressMessages) {
-                            showMessage('Converted fragment to FHIR', 'success');
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error converting fragment to FHIR:', error);
-                }
+        } else if (newMode === 'coderef') {
+            leftPaneTitle.textContent = 'CodeRef Format';
+            leftInput.placeholder = 'CodeRef JSON format...';
+            actionButton.textContent = 'Encode';
+            actionButton.className = 'pane-button encode-mode';
+
+            // Display CodeRef format from stored conversion results
+            if (formatState.conversionResults?.coderef) {
+                leftInput.textContent = formatState.conversionResults.coderef;
+            }
+        } else if (newMode === 'protobuf') {
+            leftPaneTitle.textContent = 'Protobuf Binary Format';
+            leftInput.placeholder = 'Protobuf binary data...';
+            actionButton.textContent = 'Encode';
+            actionButton.className = 'pane-button encode-mode';
+
+            // Display Protobuf format from stored conversion results
+            if (formatState.conversionResults?.protobuf) {
+                leftInput.textContent = formatState.conversionResults.protobuf;
             }
         }
 
@@ -5818,10 +5821,13 @@ async function init() {
                 const codeRefData = parsedViewModel.rawPayload;
                 formatState.conversionResults.protobuf = await codecPipeline.getProtobufBinary(codeRefData);
 
+                // Update right pane with decode results - start with Protobuf format
+                updateRightPaneFormat('protobuf');
+
                 showMessage(`Decoded to FHIR Bundle (${fhirBundle.entry.length} entries)`, 'success');
 
             } else { // 'fhir'
-                // Encode: FHIR Bundle -> Multiple formats in right pane
+                // Encode: FHIR Bundle -> URL Fragment in left pane only
 
                 const fhirPayload = JSON.parse(inputContent);
 
@@ -5832,7 +5838,7 @@ async function init() {
                 const codeRef = codecPipeline.convertFhirBundleToCodeRef(fhirPayload);
                 formatState.conversionResults.coderef = JSON.stringify(codeRef, null, 2);
 
-                // Store original FHIR (for right pane display)
+                // Store original FHIR
                 formatState.conversionResults.fhir = inputContent;
 
                 // Encode to fragment
@@ -5842,11 +5848,15 @@ async function init() {
                 // Generate protobuf binary format
                 formatState.conversionResults.protobuf = await codecPipeline.getProtobufBinary(codeRef);
 
-                showMessage(`Encoded FHIR to multiple formats`, 'success');
+                // Switch left pane to URL Fragment mode and display result
+                await updateLeftPaneMode('fragment');
+                leftInput.textContent = fragment;
+                updateCharCount(leftInput, leftCharCount);
+
+                showMessage(`Encoded FHIR to URL Fragment`, 'success');
             }
 
-            // Update right pane display with decoded results
-            updateRightPaneFormat(formatState.rightFormat);
+            // Do NOT update right pane - it should remain empty until Decode is clicked
 
         } catch (error) {
             console.error('Conversion error:', error);
@@ -5856,9 +5866,14 @@ async function init() {
 
     // === EVENT LISTENERS ===
 
-    // Left pane title click - toggle between Fragment/FHIR modes
+    // Left pane title click - cycle through all formats
     leftPaneTitle.addEventListener('click', async () => {
-        const newMode = formatState.leftMode === 'fragment' ? 'fhir' : 'fragment';
+        // Cycle order: fragment → fhir → coderef → protobuf → fragment
+        const modes = ['fragment', 'fhir', 'coderef', 'protobuf'];
+        const currentIndex = modes.indexOf(formatState.leftMode);
+        const nextIndex = (currentIndex + 1) % modes.length;
+        const newMode = modes[nextIndex];
+
         await updateLeftPaneMode(newMode);
     });
 
@@ -6006,6 +6021,10 @@ async function init() {
         if (activeButton) {
             activeButton.classList.add('active');
         }
+
+        // Clear conversion results and right pane when loading presets
+        formatState.conversionResults = {};
+        updateRightPaneFormat(formatState.rightFormat);
     }
 
     // Legacy clear buttons removed - functionality now handled by new clear buttons
