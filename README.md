@@ -1,19 +1,27 @@
 # NFC International Patient Summary (IPS) Viewer
 
-This project provides a single-page web application designed to display International Patient Summary (IPS) data. It can process IPS data encoded as a Base64 JSON message appended to the URL, or load a default IPS file if no URL data is present.
+Transform emergency medical care through instant patient data access. This web application displays comprehensive medical summaries by simply scanning an NFC tag with any smartphone - no apps required. From battlefield medics to emergency rooms, critical patient information is available in seconds.
 
-## Key Features and Architectural Highlights:
+**🌐 [Try the Live Demo](https://ajdench.github.io/NFC-IPS/nfc/ips/home.html)**
 
-*   **Dynamic UI Generation:** Core UI components, including the various information boxes, are dynamically generated from JavaScript configurations, leading to cleaner HTML and more maintainable code.
-*   **Refined Patient Detail Styling:** Patient details are presented in a visually distinct "pill" format, with clear separation and consistent alignment for labels and values.
-*   **Dynamic Spacing with Ghost Items:** Utilizes an advanced flexbox technique with "ghost items" to ensure consistent wrapping and dynamic, even spacing between patient detail components, regardless of the number of items on a line.
-*   **Scalable Styling with CSS Variables:** The application leverages CSS variables for all key styling parameters, including colors, padding, and font sizes. A global `--size-multiplier` variable allows for easy, uniform scaling of the entire UI.
-*   **Client-Side SPA:** All logic is handled client-side via JavaScript, making it suitable for static site deployment.
-*   **Static Site Deployment:** Leverages GitHub Pages for hosting, with automated deployment via `gh-pages`.
-*   **Modular CSS:** Styles are organized into logical sections with extensive use of variables for maintainability.
-*   **Flexible Header Layout:** The header section, including the "Payload" title and controls, has been refactored from absolute positioning to a flexible `display: flex` layout. This improves layout predictability and simplifies spacing management.
-*   **Responsive Control Sizing:** Control elements (toggle switch and parse button) now dynamically size their height based on `calc(var(--standard-padding) * 2)`, ensuring consistent scaling with the overall UI.
-*   **Precise Control Alignment:** The toggle switch is precisely aligned with the right-hand side of the left content pane using a combination of flexbox properties and calculated margins.
+## What It Does
+
+**Instant Medical Access**: Scan an NFC tag to instantly display a patient's complete medical summary - medications, allergies, conditions, and vital signs throughout their care journey.
+
+**Universal Compatibility**: Works on any NFC-enabled smartphone using the built-in browser. No special apps, no downloads, no internet dependency beyond the initial page load.
+
+**Complete Care Timeline**: Visualizes patient data across the entire medical evacuation chain - from Point of Injury through Strategic Evacuation, with color-coded stages and real-time vitals tracking.
+
+**Interactive Pipeline**: Advanced encoding/decoding tools with visual pipeline stages show exactly how medical data transforms from FHIR standards to compressed NFC-ready formats.
+
+## Key Capabilities
+
+*   **🏥 Medical Stage Visualization**: Color-coded care stages from POI through STRATEVAC with detailed vitals, conditions, and events
+*   **📊 Real-time Vitals Charting**: Interactive charts with stage-aware background bands and medical abbreviations
+*   **🔄 Multi-format Support**: Handles FHIR Patient resources, protobuf schemas, and legacy payload formats
+*   **⚡ Instant Loading**: Processes compressed medical data in milliseconds via optimized codec pipeline
+*   **🎯 Medical-first UI**: Designed specifically for emergency medical environments with clear, scannable information
+*   **📱 Touch-friendly**: Optimized for use with gloves and in high-stress medical situations
 
 ## Current Development Status
 
@@ -51,13 +59,13 @@ This project provides a single-page web application designed to display Internat
 
 ## Development and Deployment
 
-This project is intended for concept development, refinement, and distribution via GitHub Pages.
+This project is deployed via GitHub Pages with automated deployment from the mainCode branch.
 
-**Live Demo (main):** [https://ajdench.github.io/NFC-IPS/](https://ajdench.github.io/NFC-IPS/)
+**🌐 Live Application:** [https://ajdench.github.io/NFC-IPS/nfc/ips/home.html](https://ajdench.github.io/NFC-IPS/nfc/ips/home.html)
 
-**Live Demo (Dev2):** [https://ajdench.github.io/NFC-IPS-Dev2/](https://ajdench.github.io/NFC-IPS-Dev2/)
+**📊 Main Viewer:** [https://ajdench.github.io/NFC-IPS/nfc/ips/viewer.html](https://ajdench.github.io/NFC-IPS/nfc/ips/viewer.html)
 
-For information specific to the deployed GitHub Pages branch, see its [README.md](https://github.com/ajdench/NFC-IPS/tree/gh-pages). The `Dev2` branch is used for active development and is deployed to its own `gh-pages2` branch.
+**⚙️ Encoding Tools:** [https://ajdench.github.io/NFC-IPS/nfc/ips/encoding.html](https://ajdench.github.io/NFC-IPS/nfc/ips/encoding.html)
 
 ## Usage
 
@@ -225,6 +233,17 @@ For details about the CodeRef terminology system, medical code mappings, and the
 
 https://github.com/ajdench/NFC-IPS/tree/gh-pages
 
+
+## Technical Implementation Details
+
+### Advanced Architecture Features
+*   **Dynamic UI Generation**: Core UI components are dynamically generated from JavaScript configurations, leading to cleaner HTML and more maintainable code
+*   **Dynamic Spacing with Ghost Items**: Utilizes an advanced flexbox technique with "ghost items" to ensure consistent wrapping and dynamic, even spacing between patient detail components
+*   **Scalable Styling with CSS Variables**: Leverages CSS variables for all key styling parameters, with a global `--size-multiplier` variable for easy, uniform UI scaling
+*   **Static Site Deployment**: Leverages GitHub Pages for hosting, with automated deployment via GitHub Actions workflow
+*   **Flexible Header Layout**: Refactored from absolute positioning to flexible `display: flex` layout for improved predictability
+*   **Responsive Control Sizing**: Control elements dynamically size based on `calc(var(--standard-padding) * 2)` for consistent scaling
+*   **Precise Control Alignment**: Toggle switch precisely aligned using flexbox properties and calculated margins
 
 ## Known Issues
 - POI pane does not collapse to the condensed empty-state style (shows default padding/format) while other OPCP panes do.
