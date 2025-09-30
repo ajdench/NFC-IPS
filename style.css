@@ -699,18 +699,17 @@ main {
 
 /* Stage Reveals */
 .stage-reveal-container {
-    display: none;
+    display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     background: linear-gradient(90deg, rgba(0, 123, 255, 0.05) 0%, rgba(40, 167, 69, 0.05) 100%);
     padding: calc(var(--standard-padding) * 0.5) var(--standard-padding);
-    border-top: 1px solid #e0e0e0;
     transition: all 0.3s ease;
 }
 
 .stage-reveal-container.show {
-    display: flex;
+    /* Animation class - but container is always visible now */
     animation: slideDown 0.3s ease-out;
 }
 
@@ -718,12 +717,16 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: calc(var(--standard-padding) * 0.3) calc(var(--standard-padding) * 0.5);
+    justify-content: center;
+    padding: calc(var(--standard-padding) * 0.3);
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 6px;
     border: 1px solid #d0d0d0;
     transition: all 0.2s ease;
     cursor: pointer;
+    flex: 0 0 95px;
+    width: 95px;
+    text-align: center;
 }
 
 .stage-reveal-item:hover {
@@ -739,22 +742,28 @@ main {
 }
 
 .stage-label {
-    font-size: calc(var(--font-size-uniform) * 0.75);
+    font-size: calc(var(--font-size-uniform) * 0.8);
     font-weight: 600;
     color: #495057;
     margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .stage-format {
-    font-size: calc(var(--font-size-uniform) * 0.65);
+    font-size: calc(var(--font-size-uniform) * 0.7 - 0.75px);
     color: #6c757d;
     font-family: monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .stage-reveal-arrow {
-    font-size: calc(var(--font-size-uniform) * 1.2);
+    font-size: calc(var(--font-size-uniform) * 1.0);
     color: #007bff;
-    margin: 0 calc(var(--standard-padding) * 0.5);
+    margin: 0 calc(var(--standard-padding) * 0.4);
     font-weight: bold;
 }
 
