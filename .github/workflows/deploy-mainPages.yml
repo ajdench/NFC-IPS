@@ -1,0 +1,56 @@
+name: Deploy mainCode to mainPages
+
+on:
+  push:
+    branches: [ mainCode ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout mainCode
+      uses: actions/checkout@v4
+      with:
+        ref: mainCode
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run tests (if any)
+      run: npm test --if-present
+
+    - name: Build project (if needed)
+      run: npm run build --if-present
+
+    - name: Deploy to mainPages
+      run: |
+        git config --global user.name 'GitHub Actions'
+        git config --global user.email 'actions@github.com'
+
+        # Create or checkout mainPages branch
+        git checkout -B mainPages
+
+        # Commit all files from mainCode
+        git add -A
+        git commit -m "deploy: mainCode → mainPages (GitHub Actions) $(git rev-parse mainCode)" || echo "No changes to commit"
+
+        # Push to mainPages branch
+        git push origin mainPages --force
+
+    - name: Verify deployment
+      run: |
+        echo "✅ Deployment completed successfully"
+        echo "🌐 GitHub Pages URL: https://ajdench.github.io/NFC-IPS/nfc/ips/home.html"
+        echo "📊 Deployed commit: $(git rev-parse HEAD)"
