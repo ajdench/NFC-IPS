@@ -2148,7 +2148,130 @@ const codecPipeline = (() => {
         return converted;
     }
 
-    function convertFhirBundleToCodeRef(bundle) {
+    function convertFhirBundleToUltraCompactCodeRef(bundle) {
+        console.log('🔄 Converting FHIR Bundle to Ultra-Compact CodeRef');
+
+        // Helper function to convert FHIR Observation to ultra-compact format
+        function convertObservationToUltraCompact(observation) {
+            const compact = {};
+
+            // Extract terminology code
+            const coding = observation.code?.coding?.[0];
+            if (coding) {
+                const system = getCompactSystemCode(coding.system);
+                if (system && coding.code) {
+                    compact[system] = coding.code;
+                }
+            }
+
+            // Extract value and unit
+            if (observation.valueQuantity) {
+                if (observation.valueQuantity.value !== undefined) {
+                    compact.value = observation.valueQuantity.value;
+                }
+                if (observation.valueQuantity.unit) {
+                    compact.unit = observation.valueQuantity.unit;
+                }
+            }
+
+            // Extract timestamp
+            if (observation.effectiveDateTime) {
+                compact.time = observation.effectiveDateTime;
+            }
+
+            return Object.keys(compact).length > 0 ? compact : null;
+        }
+
+        // Helper function to convert FHIR Condition to ultra-compact format
+        function convertConditionToUltraCompact(condition) {
+            const compact = {};
+
+            // Extract terminology code
+            const coding = condition.code?.coding?.[0];
+            if (coding) {
+                const system = getCompactSystemCode(coding.system);
+                if (system && coding.code) {
+                    compact[system] = coding.code;
+                }
+            }
+
+            // Extract severity
+            if (condition.severity?.coding?.[0]?.display) {
+                compact.severity = condition.severity.coding[0].display.toLowerCase();
+            }
+
+            // Extract timestamp
+            if (condition.onsetDateTime) {
+                compact.time = condition.onsetDateTime;
+            } else if (condition.recordedDate) {
+                compact.time = condition.recordedDate;
+            }
+
+            return Object.keys(compact).length > 0 ? compact : null;
+        }
+
+        // Helper function to convert FHIR Medication to ultra-compact format
+        function convertMedicationToUltraCompact(medication) {
+            const compact = {};
+
+            // Extract medication code
+            const medicationCoding = medication.medicationCodeableConcept?.coding?.[0] ||
+                                   medication.medication?.coding?.[0];
+            if (medicationCoding) {
+                const system = getCompactSystemCode(medicationCoding.system);
+                if (system && medicationCoding.code) {
+                    compact[system] = medicationCoding.code;
+                }
+            }
+
+            // Extract dose
+            if (medication.dosage?.[0]?.doseAndRate?.[0]?.doseQuantity?.value) {
+                const dose = medication.dosage[0].doseAndRate[0].doseQuantity;
+                compact.dose = dose.value + (dose.unit || '');
+            }
+
+            // Extract route
+            if (medication.dosage?.[0]?.route?.coding?.[0]?.display) {
+                compact.route = medication.dosage[0].route.coding[0].display;
+            }
+
+            // Extract timestamp
+            if (medication.effectiveDateTime) {
+                compact.time = medication.effectiveDateTime;
+            } else if (medication.effectivePeriod?.start) {
+                compact.time = medication.effectivePeriod.start;
+            }
+
+            return Object.keys(compact).length > 0 ? compact : null;
+        }
+
+        // Helper function to convert FHIR system URLs to compact codes
+        function getCompactSystemCode(systemUrl) {
+            if (!systemUrl) return null;
+
+            if (systemUrl.includes('snomed.info/sct')) return 'sct';
+            if (systemUrl.includes('loinc.org')) return 'loinc';
+            if (systemUrl.includes('icd-10')) return 'icd10';
+            if (systemUrl.includes('icd-11')) return 'icd11';
+
+            return null; // Unknown system
+        }
+
+        // Helper function to determine care stage from FHIR resource
+        function determineCareStage(resource) {
+            // Look for care-stage extension
+            const careStageExt = resource.extension?.find(ext =>
+                ext.url === FHIR_EXTENSIONS.CARE_STAGE ||
+                ext.url?.includes('care-stage')
+            );
+
+            if (careStageExt?.valueString) {
+                return careStageExt.valueString;
+            }
+
+            // Default to POI if no care stage found
+            return 'poi';
+        }
 
         // Find patient resource
         const patientEntry = bundle.entry?.find(entry =>
@@ -2161,34 +2284,34 @@ const codecPipeline = (() => {
 
         const patient = patientEntry.resource;
 
-        // Convert patient demographics
-        const convertedPatient = {
-            given: patient.name?.[0]?.given?.[0] || '',
-            family: patient.name?.[0]?.family || '',
-            rank: patient.name?.[0]?.prefix?.[0] || '',
-            title: 'Mr', // Default title
-            nationality: 'UK', // From extension if available
-            dob: patient.birthDate || ''
-        };
+        // Convert patient demographics to ultra-compact format
+        const convertedPatient = {};
 
-        // Convert identifiers
+        // Basic demographics
+        if (patient.name?.[0]?.given?.[0]) convertedPatient.given = patient.name[0].given[0];
+        if (patient.name?.[0]?.family) convertedPatient.family = patient.name[0].family;
+        if (patient.birthDate) convertedPatient.dob = patient.birthDate;
+
+        // Convert identifiers using prefix format
         if (patient.identifier) {
             patient.identifier.forEach(identifier => {
                 if (identifier.type?.coding?.[0]?.code === 'NH') {
-                    convertedPatient.nhs_id = { sys: 'nhs', code: identifier.value };
+                    convertedPatient.nhs = identifier.value;
                 } else if (identifier.type?.coding?.[0]?.code === 'MIL') {
-                    convertedPatient.service_id = { sys: 'mil', code: identifier.value };
+                    convertedPatient.mil = identifier.value;
                 }
             });
         }
 
-        // Convert gender
+        // Convert gender to SNOMED code
         if (patient.gender) {
             const genderMap = {
-                'male': { sys: 'sct', code: '248153007' },
-                'female': { sys: 'sct', code: '248152002' }
+                'male': '248153007',
+                'female': '248152002'
             };
-            convertedPatient.gender = genderMap[patient.gender];
+            if (genderMap[patient.gender]) {
+                convertedPatient.sct = genderMap[patient.gender];
+            }
         }
 
         // Extract blood group from extensions
@@ -2198,7 +2321,8 @@ const codecPipeline = (() => {
             );
             if (bloodGroupExt?.valueCodeableConcept?.coding?.[0]) {
                 const coding = bloodGroupExt.valueCodeableConcept.coding[0];
-                convertedPatient.blood_group = { sys: 'sct', code: coding.code };
+                // Blood group becomes sct code - if patient already has sct from gender, this overwrites
+                convertedPatient.sct = coding.code;
             }
         }
 
@@ -2464,10 +2588,27 @@ const codecPipeline = (() => {
         // Convert patient data back to FHIR Patient resource
         if (codeRefPayload.patient) {
             const patient = convertCodeRefPatientToFhir(codeRefPayload.patient);
-            bundle.entry.push({
-                fullUrl: 'urn:uuid:patient-example',
-                resource: patient
-            });
+
+            // Find and replace existing patient entry instead of adding duplicate
+            const existingPatientIndex = bundle.entry.findIndex(entry =>
+                entry.resource?.resourceType === 'Patient'
+            );
+
+            if (existingPatientIndex >= 0) {
+                // Replace existing patient entry
+                bundle.entry[existingPatientIndex] = {
+                    ...bundle.entry[existingPatientIndex],
+                    resource: patient
+                };
+                console.log('DEBUG: Replaced existing patient in bundle with converted patient');
+            } else {
+                // Add new patient entry if none exists
+                bundle.entry.push({
+                    fullUrl: 'urn:uuid:patient-example',
+                    resource: patient
+                });
+                console.log('DEBUG: Added new patient entry to bundle');
+            }
         }
 
         // Convert allergies back to FHIR AllergyIntolerance resources
@@ -2598,7 +2739,9 @@ const codecPipeline = (() => {
         const extensions = [];
         if (patientData.blood_group || patientData.bloodGroup) {
             const bloodGroup = patientData.blood_group || patientData.bloodGroup;
-            extensions.push({
+            console.log('DEBUG: Converting blood group back to FHIR:', bloodGroup);
+
+            const extension = {
                 url: FHIR_EXTENSIONS.PATIENT_BLOOD_GROUP,
                 valueCodeableConcept: {
                     coding: [{
@@ -2607,7 +2750,12 @@ const codecPipeline = (() => {
                         display: resolveCodeDisplay('sct', bloodGroup.code)
                     }]
                 }
-            });
+            };
+
+            console.log('DEBUG: Created FHIR blood group extension:', extension);
+            extensions.push(extension);
+        } else {
+            console.log('DEBUG: No blood group found in patient data:', patientData);
         }
 
         if (patientData.nationality) {
@@ -3017,7 +3165,8 @@ const codecPipeline = (() => {
         convertCodeRefToFhirBundle,
         getProtobufBinary,
         convertFhirToCodeRef,
-        convertFhirBundleToCodeRef
+        convertFhirBundleToCodeRef,
+        convertFhirBundleToUltraCompactCodeRef
     };
 })();
 
@@ -3935,7 +4084,7 @@ const payloadService = (() => {
         }
 
         try {
-            const codeRefPayload = codecPipeline.convertFhirToCodeRef(bundle);
+            const codeRefPayload = codecPipeline.convertFhirBundleToUltraCompactCodeRef(bundle);
             const stageResult = buildCodeRefStageSections(codeRefPayload);
             const summary = buildSummary(codeRefPayload, stageResult.totals);
             return {
