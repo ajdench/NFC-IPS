@@ -5927,7 +5927,7 @@ async function init() {
     // Legacy clear buttons removed - functionality now handled by new clear buttons
 
     // Enhanced preset button handlers
-    preset0Button.addEventListener('click', () => {
+    preset0Button.addEventListener('click', async () => {
         if (formatState.leftMode === 'fragment') {
             // Load fragment into left pane
             if (presetFragments[0]) {
@@ -5936,15 +5936,22 @@ async function init() {
                 showMessage('Loaded preset #0 fragment', 'success');
             }
         } else {
-            // Load FHIR JSON into left pane
-            if (payload0) {
-                const fhirJson = JSON.stringify(payload0, null, 2);
+            // Load FHIR JSON from file (resilient for GitHub Pages)
+            try {
+                const response = await fetch('./ips-fhir-json-0.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                const fhirData = await response.json();
+                const fhirJson = JSON.stringify(fhirData, null, 2);
+
                 leftInput.textContent = fhirJson;
                 updateCharCount(leftInput, leftCharCount);
                 // Store as original FHIR to prevent round-trip loss
                 formatState.originalFhir = fhirJson;
                 showMessage('Loaded preset #0', 'success');
-            } else {
+            } catch (error) {
+                console.error('Failed to load preset #0:', error);
                 showMessage('Preset #0 not available', 'warning');
             }
         }
