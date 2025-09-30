@@ -4275,6 +4275,7 @@ function createDetailBoxElement(label, value, parentColorClass) {
 function extractBloodGroupDisplay(patient) {
     if (!patient) return undefined;
 
+    // First check for direct blood_group/bloodGroup properties
     const direct = patient.blood_group || patient.bloodGroup;
     if (direct) {
         if (direct.display) return direct.display;
@@ -4285,16 +4286,20 @@ function extractBloodGroupDisplay(patient) {
         if (direct.text) return direct.text;
     }
 
-    const bloodExt = patient.extension?.find(ext => ext.url?.includes('bloodGroup'));
+    // Check for FHIR extension
+    const bloodExt = patient.extension?.find(ext => ext.url === FHIR_EXTENSIONS.PATIENT_BLOOD_GROUP);
     if (!bloodExt) return undefined;
 
     const coding = bloodExt.valueCodeableConcept?.coding?.[0];
     if (coding) {
+        // Return display value directly if available (preset #0 has this)
+        if (coding.display) return coding.display;
+
+        // Fallback to code resolution
         if (coding.system?.includes('snomed.info/sct') && coding.code) {
             const resolved = resolveCodeDisplay('sct', coding.code);
             if (resolved) return resolved;
         }
-        if (coding.display) return coding.display;
     }
 
     return bloodExt.valueCodeableConcept?.text;
