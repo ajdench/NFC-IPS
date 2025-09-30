@@ -134,6 +134,7 @@
         <section class="container payload-container">
             <header class="payload-header">
                 <h2 class="info-title clickable-title" id="payload-title">Payload</h2>
+                <button id="payload-collapse" class="collapse-button">-</button>
                 <!-- <div class="payload-controls-row">
                     <div class="payload-toggle-wrapper">
                         <label class="switch">
@@ -170,6 +171,27 @@
                         <span id="right-char-count" class="char-count">0 characters</span>
                     </div>
                     <div id="right-input" contenteditable="true" placeholder="Output will appear here..."></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="container console-container">
+            <header class="console-header">
+                <h2 class="info-title clickable-title" id="console-title">Console</h2>
+                <button id="console-collapse" class="collapse-button">-</button>
+                <div id="toast-container" class="toast-container"></div>
+            </header>
+            <div class="console-content">
+                <div class="console-pane">
+                    <div class="pane-header">
+                        <h3 class="pane-title">Pipeline Trace</h3>
+                        <span class="char-count">Ready</span>
+                        <button id="clear-console" class="preset-button">Clear</button>
+                        <button id="export-trace" class="preset-button">Export</button>
+                    </div>
+                    <div id="console-output" class="console-output" role="log" aria-live="polite" aria-label="Pipeline trace console output">
+                        <div class="console-line">Console ready. Pipeline traces will appear here...</div>
+                    </div>
                 </div>
             </div>
         </section>

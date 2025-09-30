@@ -6105,7 +6105,178 @@ async function init() {
     // Initialize Parse button state
     updateParseButtonState();
 
+    // Initialize console functionality
+    initializeConsole();
+
     // Dual title display now handled in createInfoBoxes()
+}
+
+// Pipeline tracing system
+let pipelineTrace = {
+    stages: [],
+    startTime: null,
+    indexedDB: null
+};
+
+// Initialize IndexedDB for pipeline traces
+async function initializePipelineDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('PipelineTraceDB', 1);
+
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => {
+            pipelineTrace.indexedDB = request.result;
+            resolve(request.result);
+        };
+
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('traces')) {
+                const store = db.createObjectStore('traces', { keyPath: 'id', autoIncrement: true });
+                store.createIndex('timestamp', 'timestamp', { unique: false });
+            }
+        };
+    });
+}
+
+// Console logging functions
+function logToConsole(message, type = 'info', data = null) {
+    const consoleOutput = document.getElementById('console-output');
+    if (!consoleOutput) return;
+
+    const timestamp = new Date().toLocaleTimeString();
+    const line = document.createElement('div');
+    line.className = `console-line ${type}`;
+
+    let content = `[${timestamp}] ${message}`;
+    if (data) {
+        content += `\n${JSON.stringify(data, null, 2)}`;
+    }
+
+    line.textContent = content;
+    consoleOutput.appendChild(line);
+    consoleOutput.scrollTop = consoleOutput.scrollHeight;
+}
+
+function clearConsole() {
+    const consoleOutput = document.getElementById('console-output');
+    if (consoleOutput) {
+        consoleOutput.innerHTML = '<div class="console-line">Console cleared. Pipeline traces will appear here...</div>';
+    }
+}
+
+// Pipeline stage tracking
+function startPipelineTrace(operation) {
+    pipelineTrace.stages = [];
+    pipelineTrace.startTime = Date.now();
+    logToConsole(`🚀 Starting ${operation} pipeline`, 'stage');
+}
+
+function addPipelineStage(stageName, data, dataIntegrity = null) {
+    const stage = {
+        name: stageName,
+        timestamp: Date.now(),
+        data: JSON.parse(JSON.stringify(data)), // Deep clone
+        integrity: dataIntegrity
+    };
+
+    pipelineTrace.stages.push(stage);
+    logToConsole(`📋 ${stageName}`, 'stage');
+
+    if (dataIntegrity) {
+        if (dataIntegrity.errors.length > 0) {
+            logToConsole(`❌ Data integrity issues: ${dataIntegrity.errors.join(', ')}`, 'error');
+        } else {
+            logToConsole(`✅ Data integrity check passed`, 'success');
+        }
+    }
+}
+
+function finishPipelineTrace(operation) {
+    const duration = Date.now() - pipelineTrace.startTime;
+    logToConsole(`✅ ${operation} pipeline completed in ${duration}ms`, 'success');
+
+    // Save to IndexedDB
+    savePipelineTrace(operation, duration);
+
+    // Export to file
+    exportPipelineTrace();
+}
+
+async function savePipelineTrace(operation, duration) {
+    if (!pipelineTrace.indexedDB) return;
+
+    const trace = {
+        operation,
+        duration,
+        timestamp: new Date().toISOString(),
+        stages: pipelineTrace.stages
+    };
+
+    const transaction = pipelineTrace.indexedDB.transaction(['traces'], 'readwrite');
+    const store = transaction.objectStore('traces');
+    store.add(trace);
+}
+
+function exportPipelineTrace() {
+    const traceData = {
+        timestamp: new Date().toISOString(),
+        stages: pipelineTrace.stages
+    };
+
+    // Write to root file
+    const blob = new Blob([JSON.stringify(traceData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    // Auto-download trace file
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'pipeline-trace.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+// Console UI initialization
+function initializeConsole() {
+    // Initialize IndexedDB
+    initializePipelineDB().catch(console.error);
+
+    // Collapse button handlers
+    const payloadCollapse = document.getElementById('payload-collapse');
+    const consoleCollapse = document.getElementById('console-collapse');
+    const payloadContent = document.querySelector('.payload-content');
+    const consoleContent = document.querySelector('.console-content');
+
+    if (payloadCollapse && payloadContent) {
+        payloadCollapse.addEventListener('click', () => {
+            payloadContent.classList.toggle('collapsed');
+            payloadCollapse.textContent = payloadContent.classList.contains('collapsed') ? '+' : '-';
+        });
+    }
+
+    if (consoleCollapse && consoleContent) {
+        consoleCollapse.addEventListener('click', () => {
+            consoleContent.classList.toggle('collapsed');
+            consoleCollapse.textContent = consoleContent.classList.contains('collapsed') ? '+' : '-';
+        });
+    }
+
+    // Console control buttons
+    const clearButton = document.getElementById('clear-console');
+    const exportButton = document.getElementById('export-trace');
+
+    if (clearButton) {
+        clearButton.addEventListener('click', clearConsole);
+    }
+
+    if (exportButton) {
+        exportButton.addEventListener('click', exportPipelineTrace);
+    }
+
+    // Initial console message
+    logToConsole('Console initialized. Ready to trace pipeline operations.', 'success');
 }
 
 
