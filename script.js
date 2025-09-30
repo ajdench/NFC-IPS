@@ -2440,6 +2440,25 @@ const codecPipeline = (() => {
             entries_json: JSON.stringify(bundle.entry || [])
         };
 
+        // Extract and convert patient from bundle
+        const patientEntry = bundle.entry?.find(entry => entry.resource?.resourceType === 'Patient');
+        const patientResource = patientEntry?.resource;
+        const convertedPatient = patientResource ? {
+            given: patientResource.name?.[0]?.given?.[0] || '',
+            family: patientResource.name?.[0]?.family || '',
+            birthDate: patientResource.birthDate || '',
+            gender: patientResource.gender || '',
+            // Extract blood group from extensions
+            bloodGroup: patientResource.extension?.find(ext =>
+                ext.url === 'http://hl7.org/fhir/StructureDefinition/patient-bloodGroup'
+            )?.valueCodeableConcept?.coding?.[0]?.code || null,
+            // Extract identifiers
+            identifiers: patientResource.identifier?.map(id => ({
+                system: id.system || '',
+                value: id.value || '',
+                type: id.type?.coding?.[0]?.code || ''
+            })) || []
+        } : {};
 
         // Initialize payload structure with care stages
         const payload = {
@@ -5941,7 +5960,7 @@ async function init() {
         } else {
             // Load FHIR JSON from file (resilient for GitHub Pages)
             try {
-                const response = await fetch('./ips-fhir-json-0.json');
+                const response = await fetch('../../ips-fhir-json-0.json');
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}`);
                 }
