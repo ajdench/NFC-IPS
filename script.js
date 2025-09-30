@@ -5821,23 +5821,28 @@ async function init() {
                 showMessage(`Decoded to FHIR Bundle (${fhirBundle.entry.length} entries)`, 'success');
 
             } else { // 'fhir'
-                // Encode: FHIR Bundle -> Fragment (stay in left pane)
+                // Encode: FHIR Bundle -> Multiple formats in right pane
 
                 const fhirPayload = JSON.parse(inputContent);
 
                 // Store original FHIR data before encoding
                 formatState.originalFhir = inputContent;
 
+                // Convert FHIR to CodeRef
+                const codeRef = codecPipeline.convertFhirBundleToCodeRef(fhirPayload);
+                formatState.conversionResults.coderef = JSON.stringify(codeRef, null, 2);
+
+                // Store original FHIR (for right pane display)
+                formatState.conversionResults.fhir = inputContent;
+
                 // Encode to fragment
                 const fragment = await codecPipeline.encodeToFragment(fhirPayload);
+                formatState.conversionResults.fragment = fragment;
 
-                // Update left pane to fragment mode with the encoded result
-                await updateLeftPaneMode('fragment');
-                leftInput.textContent = fragment;
-                updateCharCount(leftInput, leftCharCount);
+                // Generate protobuf binary format
+                formatState.conversionResults.protobuf = await codecPipeline.getProtobufBinary(codeRef);
 
-                showMessage(`Encoded to ${fragment.length} character fragment`, 'success');
-                return; // Don't update right pane for encoding
+                showMessage(`Encoded FHIR to multiple formats`, 'success');
             }
 
             // Update right pane display with decoded results
@@ -5930,8 +5935,29 @@ async function init() {
         });
 
         try {
-            const parsedViewModel = await payloadService.parseUserInput(fhirInput);
-            addPipelineStage('FHIR Parsed to ViewModel', parsedViewModel, {
+            // Parse FHIR JSON
+            const fhirBundle = JSON.parse(fhirInput);
+            addPipelineStage('FHIR JSON Parsed', fhirBundle, {
+                resourceType: fhirBundle.resourceType,
+                entryCount: fhirBundle.entry?.length || 0,
+                hasPatientEntry: fhirBundle.entry?.some(e => e.resource?.resourceType === 'Patient') || false
+            });
+
+            // Convert FHIR Bundle to CodeRef
+            const codeRef = codecPipeline.convertFhirBundleToCodeRef(fhirBundle);
+            addPipelineStage('FHIR to CodeRef Conversion', codeRef, {
+                hasPatient: !!codeRef?.patient,
+                patientKeys: codeRef?.patient ? Object.keys(codeRef.patient) : [],
+                careStages: Object.keys(codeRef || {}).filter(key => key !== 'patient')
+            });
+
+            // Build ViewModel from CodeRef
+            const parsedViewModel = payloadService.buildViewModelFromObject(codeRef, {
+                label: 'Parsed FHIR',
+                originalInput: fhirInput,
+                rawPayload: codeRef
+            });
+            addPipelineStage('CodeRef to ViewModel Conversion', parsedViewModel, {
                 hasPatient: !!parsedViewModel?.patient,
                 patientKeys: parsedViewModel?.patient ? Object.keys(parsedViewModel.patient) : [],
                 bloodGroupInPatient: parsedViewModel?.patient?.bloodGroup || null,
