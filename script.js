@@ -5877,6 +5877,99 @@ async function init() {
     leftInput.addEventListener('input', () => updateCharCount(leftInput, leftCharCount));
     rightInput.addEventListener('input', () => updateCharCount(rightInput, rightCharCount));
 
+    // Stage Reveal System
+    const leftStageReveal = document.getElementById('left-stage-reveal');
+    const rightStageReveal = document.getElementById('right-stage-reveal');
+    let leftRevealVisible = false;
+    let rightRevealVisible = false;
+
+    function toggleStageReveal(pane) {
+        if (pane === 'left') {
+            leftRevealVisible = !leftRevealVisible;
+            if (leftRevealVisible) {
+                leftStageReveal.classList.add('show');
+                updateLeftStageHighlight();
+            } else {
+                leftStageReveal.classList.remove('show');
+            }
+        } else if (pane === 'right') {
+            rightRevealVisible = !rightRevealVisible;
+            if (rightRevealVisible) {
+                rightStageReveal.classList.add('show');
+                updateRightStageHighlight();
+            } else {
+                rightStageReveal.classList.remove('show');
+            }
+        }
+    }
+
+    function updateLeftStageHighlight() {
+        const stages = leftStageReveal.querySelectorAll('.stage-reveal-item');
+        stages.forEach(stage => stage.classList.remove('active'));
+
+        // Highlight current stage based on left pane mode
+        if (formatState.leftMode === 'fhir') {
+            leftStageReveal.querySelector('[data-stage="source"]').classList.add('active');
+        } else if (formatState.leftMode === 'fragment') {
+            leftStageReveal.querySelector('[data-stage="encode"]').classList.add('active');
+        }
+    }
+
+    function updateRightStageHighlight() {
+        const stages = rightStageReveal.querySelectorAll('.stage-reveal-item');
+        stages.forEach(stage => stage.classList.remove('active'));
+
+        // Highlight current stage based on right pane format
+        const activeStage = rightStageReveal.querySelector(`[data-stage="${formatState.rightFormat}"]`);
+        if (activeStage) {
+            activeStage.classList.add('active');
+        }
+    }
+
+    // Enhanced title click handlers with stage reveals
+    leftPaneTitle.addEventListener('dblclick', () => {
+        toggleStageReveal('left');
+    });
+
+    rightPaneTitle.addEventListener('dblclick', () => {
+        toggleStageReveal('right');
+    });
+
+    // Action button click with stage reveal
+    actionButton.addEventListener('dblclick', () => {
+        toggleStageReveal('left');
+    });
+
+    // Parse button click with stage reveal
+    parseButton.addEventListener('dblclick', () => {
+        toggleStageReveal('right');
+    });
+
+    // Stage item clicks for direct format switching
+    leftStageReveal.addEventListener('click', async (e) => {
+        const stageItem = e.target.closest('.stage-reveal-item');
+        if (stageItem) {
+            const stage = stageItem.dataset.stage;
+            if (stage === 'source' && formatState.leftMode !== 'fhir') {
+                await updateLeftPaneMode('fhir');
+            } else if (stage === 'encode' && formatState.leftMode !== 'fragment') {
+                await updateLeftPaneMode('fragment');
+            }
+            updateLeftStageHighlight();
+        }
+    });
+
+    rightStageReveal.addEventListener('click', (e) => {
+        const stageItem = e.target.closest('.stage-reveal-item');
+        if (stageItem) {
+            const stage = stageItem.dataset.stage;
+            if (['protobuf', 'coderef', 'fhir'].includes(stage)) {
+                updateRightPaneFormat(stage);
+                updateRightStageHighlight();
+            }
+        }
+    });
+
     // Clear buttons
     clearLeftButton.addEventListener('click', () => {
         leftInput.textContent = '';

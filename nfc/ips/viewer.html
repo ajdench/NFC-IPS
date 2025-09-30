@@ -162,6 +162,22 @@
                         </div>
                         <button id="action-button" class="pane-button encode-mode">Encode</button>
                     </div>
+                    <div class="stage-reveal-container" id="left-stage-reveal">
+                        <div class="stage-reveal-item" data-stage="source">
+                            <span class="stage-label">Source</span>
+                            <span class="stage-format">FHIR JSON</span>
+                        </div>
+                        <div class="stage-reveal-arrow">→</div>
+                        <div class="stage-reveal-item" data-stage="convert">
+                            <span class="stage-label">Convert</span>
+                            <span class="stage-format">CodeRef</span>
+                        </div>
+                        <div class="stage-reveal-arrow">→</div>
+                        <div class="stage-reveal-item" data-stage="encode">
+                            <span class="stage-label">Encode</span>
+                            <span class="stage-format">Fragment</span>
+                        </div>
+                    </div>
                     <div id="left-input" contenteditable="true" placeholder="Paste FHIR JSON here..."></div>
                 </div>
                 <div class="payload-pane right-pane">
@@ -169,6 +185,22 @@
                         <button id="parse-button" class="pane-button">Parse</button>
                         <h3 id="right-pane-title" class="pane-title clickable-title" data-format="protobuf">Protobuf Binary Format</h3>
                         <span id="right-char-count" class="char-count">0 characters</span>
+                    </div>
+                    <div class="stage-reveal-container" id="right-stage-reveal">
+                        <div class="stage-reveal-item" data-stage="protobuf">
+                            <span class="stage-label">Binary</span>
+                            <span class="stage-format">Protobuf</span>
+                        </div>
+                        <div class="stage-reveal-arrow">→</div>
+                        <div class="stage-reveal-item" data-stage="coderef">
+                            <span class="stage-label">Decoded</span>
+                            <span class="stage-format">CodeRef</span>
+                        </div>
+                        <div class="stage-reveal-arrow">→</div>
+                        <div class="stage-reveal-item" data-stage="fhir">
+                            <span class="stage-label">Expanded</span>
+                            <span class="stage-format">FHIR JSON</span>
+                        </div>
                     </div>
                     <div id="right-input" contenteditable="true" placeholder="Output will appear here..."></div>
                 </div>
