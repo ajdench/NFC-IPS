@@ -5750,8 +5750,10 @@ async function init() {
             leftStageReveal.classList.add('show');
         }
 
-        // Update stage states to highlight current mode
-        // Note: updateStageStates will be called when stage reveals are initialized
+        // Update stage states to highlight current mode and apply color progression
+        if (typeof updateStageStates === 'function') {
+            updateStageStates('left');
+        }
     }
 
     function updateRightPaneFormat(newFormat) {
@@ -5790,6 +5792,11 @@ async function init() {
         // Update Parse button state based on new format
         if (typeof updateParseButtonState === 'function') {
             updateParseButtonState();
+        }
+
+        // Update stage states to apply color progression
+        if (typeof updateStageStates === 'function') {
+            updateStageStates('right');
         }
     }
 
@@ -5911,7 +5918,7 @@ async function init() {
     rightInput.addEventListener('input', () => updateCharCount(rightInput, rightCharCount));
 
     // Clear buttons
-    clearLeftButton.addEventListener('click', () => {
+    clearLeftButton.addEventListener('click', async () => {
         // Clear left pane content
         leftInput.textContent = '';
         updateCharCount(leftInput, leftCharCount);
@@ -5925,10 +5932,20 @@ async function init() {
         formatState.originalFragment = null;
         formatState.originalFhir = null;
 
+        // Reset to default modes
+        await updateLeftPaneMode('fhir');
+        updateRightPaneFormat('protobuf');
+
         // Update active preset (also clears conversion results but we're being explicit)
         updateActivePreset(null);
 
-        showMessage('Cleared all content and internal state', 'success');
+        // Update stage reveals to show default state (Source grey, others white)
+        if (typeof updateStageStates === 'function') {
+            updateStageStates('left');
+            updateStageStates('right');
+        }
+
+        showMessage('Reset to default state: FHIR input ready', 'success');
     });
 
     // clearRightButton removed - right pane is output only
@@ -5955,6 +5972,24 @@ async function init() {
     }
 
     parseButton.addEventListener('click', async () => {
+        // Check if we have fragment content to start decode sequence
+        if (formatState.conversionResults?.fragment) {
+            // Start right pane decode sequence: Fragment → Protobuf → CodeRef → FHIR
+            startPipelineTrace('Decode Fragment to Clinical Display');
+
+            // Start with Protobuf format and show decode red stage
+            updateRightPaneFormat('protobuf');
+            if (formatState.conversionResults.protobuf) {
+                rightInput.textContent = formatState.conversionResults.protobuf;
+                updateCharCount(rightInput, rightCharCount);
+            }
+
+            updateStageStates('right');
+            showMessage('Started decode sequence - Decode stage active', 'success');
+            return;
+        }
+
+        // Original FHIR parsing logic (fallback)
         startPipelineTrace('Parse FHIR to Clinical Display');
 
         if (formatState.rightFormat !== 'fhir') {
@@ -6075,6 +6110,9 @@ async function init() {
                 addPipelineStage('Fragment Loaded', leftInput.textContent, checkDataIntegrity(leftInput.textContent));
                 finishPipelineTrace('success', 'Fragment loaded successfully');
                 showMessage('Loaded preset #0 fragment', 'success');
+
+                // Update stage colors after loading content
+                updateStageStates('left');
             } else {
                 startPipelineTrace('Load Preset #0 Fragment');
                 finishPipelineTrace('error', 'Preset fragment #0 not available');
@@ -6112,6 +6150,9 @@ async function init() {
                 addPipelineStage('FHIR Display Complete', leftInput.textContent.length, checkDataIntegrity(leftInput.textContent));
                 finishPipelineTrace('success', 'FHIR loaded and displayed successfully');
                 showMessage('Loaded preset #0', 'success');
+
+                // Update stage colors after loading FHIR content
+                updateStageStates('left');
             } catch (error) {
                 console.error('Failed to load preset #0:', error);
                 addPipelineStage('FHIR Load Error', error.message, { error: error.toString() });
@@ -6131,6 +6172,7 @@ async function init() {
                 leftInput.textContent = presetFragments[1];
                 updateCharCount(leftInput, leftCharCount);
                 showMessage('Loaded preset #1 fragment', 'success');
+                updateStageStates('left');
             }
         } else {
             // Load FHIR JSON into left pane
@@ -6143,6 +6185,7 @@ async function init() {
                 formatState.originalFhir = fhirJson;
 
                 showMessage('Loaded preset #1 FHIR JSON', 'success');
+                updateStageStates('left');
             }
         }
 
@@ -6266,9 +6309,17 @@ function initializeStageReveals() {
     const leftStageReveal = document.getElementById('left-stage-reveal');
     const rightStageReveal = document.getElementById('right-stage-reveal');
 
-    // Track current reveals state
-    let leftRevealsVisible = false;
-    let rightRevealsVisible = false;
+    // Track current reveals state - start visible by default
+    let leftRevealsVisible = true;
+    let rightRevealsVisible = true;
+
+    // Make stage reveals visible by default
+    if (leftStageReveal) {
+        leftStageReveal.classList.add('show');
+    }
+    if (rightStageReveal) {
+        rightStageReveal.classList.add('show');
+    }
 
     // Double-click handlers for titles
     if (leftPaneTitle && leftStageReveal) {
@@ -6306,15 +6357,93 @@ function initializeStageReveals() {
         });
     }
 
-    // Stage item click handlers for format switching
+    // Stage item click handlers for format switching and encoding
     function setupStageClickHandlers() {
         // Left pane stage clicks
         const leftStages = leftStageReveal?.querySelectorAll('.stage-reveal-item');
+        console.log('Setting up stage click handlers, found stages:', leftStages?.length);
         leftStages?.forEach(stage => {
-            stage.addEventListener('click', () => {
+            stage.addEventListener('click', async () => {
                 const stageType = stage.dataset.stage;
-                switchToStageFormat('left', stageType);
-                updateStageStates('left');
+
+                // Handle stepwise encoding actions for specific stages
+                if (stageType === 'convert' || stageType === 'compress' || stageType === 'encode') {
+                    const inputContent = leftInput.textContent.trim();
+                    if (!inputContent) {
+                        showMessage('Input is empty', 'warning');
+                        return;
+                    }
+
+                    try {
+                        showMessage(`${stageType.charAt(0).toUpperCase() + stageType.slice(1)}ing...`, 'info');
+
+                        // Add visual feedback
+                        stage.style.backgroundColor = 'rgba(253, 126, 20, 0.3)';
+                        stage.style.borderColor = '#fd7e14';
+
+                        if (stageType === 'convert') {
+                            // Step 1: Ensure we have FHIR, then convert to CodeRef
+                            if (currentMode !== 'fhir') {
+                                await updateLeftPaneMode('fhir');
+                            }
+                            const fhirPayload = JSON.parse(leftInput.textContent.trim());
+                            const codeRef = codecPipeline.convertFhirBundleToCodeRef(fhirPayload);
+                            formatState.conversionResults.coderef = JSON.stringify(codeRef, null, 2);
+                            await updateLeftPaneMode('coderef');
+                            showMessage('Converted FHIR to CodeRef', 'success');
+                        } else if (stageType === 'compress') {
+                            // Step 2: Ensure we have CodeRef, then compress to Protobuf
+                            if (!formatState.conversionResults.coderef) {
+                                // Need to convert first
+                                if (currentMode !== 'fhir') {
+                                    await updateLeftPaneMode('fhir');
+                                }
+                                const fhirPayload = JSON.parse(leftInput.textContent.trim());
+                                const codeRef = codecPipeline.convertFhirBundleToCodeRef(fhirPayload);
+                                formatState.conversionResults.coderef = JSON.stringify(codeRef, null, 2);
+                            }
+                            // Now compress to protobuf
+                            const codeRefData = JSON.parse(formatState.conversionResults.coderef);
+                            formatState.conversionResults.protobuf = await codecPipeline.getProtobufBinary(codeRefData);
+                            await updateLeftPaneMode('protobuf');
+                            showMessage('Compressed to Protobuf', 'success');
+                        } else if (stageType === 'encode') {
+                            // Step 3: Ensure we have all previous steps, then encode to Fragment
+                            if (currentMode !== 'fhir') {
+                                await updateLeftPaneMode('fhir');
+                            }
+                            await performConversion();
+                            return;
+                        }
+
+                        // Reset visual feedback after 500ms
+                        setTimeout(() => {
+                            stage.style.backgroundColor = '';
+                            stage.style.borderColor = '';
+                            updateStageStates('left');
+                        }, 500);
+
+                    } catch (error) {
+                        console.error(`${stageType} error:`, error);
+                        showMessage(`${stageType.charAt(0).toUpperCase() + stageType.slice(1)} failed: ${error.message}`, 'error');
+                        // Reset visual feedback
+                        stage.style.backgroundColor = '';
+                        stage.style.borderColor = '';
+                    }
+                } else if (stageType === 'source') {
+                    // Source box click: switch to FHIR mode and show green
+                    if (hasContent && currentMode !== 'fhir') {
+                        await updateLeftPaneMode('fhir');
+                        updateStageStates('left');
+                        showMessage('Switched to FHIR source view', 'success');
+                    } else if (!hasContent) {
+                        showMessage('Load content first', 'warning');
+                    }
+                } else {
+                    // Format switching for other stages (shouldn't happen with current logic)
+                    switchToStageFormat('left', stageType);
+                    updateStageStates('left');
+                }
             });
         });
 
@@ -6364,41 +6493,199 @@ function initializeStageReveals() {
         }
     }
 
-    // Update active states based on current format
+    // Update active states and color progression based on current format and content
     function updateStageStates(pane) {
         if (pane === 'left') {
             const leftStages = leftStageReveal?.querySelectorAll('.stage-reveal-item');
-            leftStages?.forEach(stage => {
-                stage.classList.remove('active');
-                const stageType = stage.dataset.stage;
-                const currentMode = formatState.leftMode;
+            const leftInput = document.getElementById('left-input');
+            const hasContent = leftInput && leftInput.textContent.trim().length > 0;
+            const currentMode = formatState.leftMode;
 
-                if ((stageType === 'source' && currentMode === 'fhir') ||
-                    (stageType === 'convert' && currentMode === 'coderef') ||
-                    (stageType === 'compress' && currentMode === 'protobuf') ||
-                    (stageType === 'encode' && currentMode === 'fragment')) {
-                    stage.classList.add('active');
+            leftStages?.forEach(stage => {
+                // Clear all state classes
+                stage.classList.remove('active', 'state-empty', 'state-loaded', 'state-encoded', 'state-convert', 'state-compress');
+
+                const stageType = stage.dataset.stage;
+
+                // Apply color progression based on content and current mode
+                if (!hasContent && stageType === 'source') {
+                    // Only Source stage grey when empty (nudges user to add content)
+                    stage.classList.add('state-empty');
+                } else if (hasContent || stageType !== 'source') {
+                    // Left pane progression based on content and current context
+                    if (stageType === 'source') {
+                        if (currentMode === 'fhir') {
+                            stage.classList.add('active', 'state-loaded'); // Green when FHIR active
+                        }
+                        // Otherwise remains white/default
+                    } else if (stageType === 'convert') {
+                        if (currentMode === 'coderef') {
+                            stage.classList.add('active', 'state-convert'); // Orange when CodeRef active
+                        }
+                        // Otherwise remains white/default
+                    } else if (stageType === 'compress') {
+                        if (currentMode === 'protobuf') {
+                            stage.classList.add('active', 'state-compress'); // Blue when Protobuf active
+                        }
+                        // Otherwise remains white/default
+                    } else if (stageType === 'encode') {
+                        // Encode stays red when Fragment content exists (persistence)
+                        if (formatState.conversionResults?.fragment || currentMode === 'fragment') {
+                            stage.classList.add('active', 'state-encoded'); // Red when Fragment exists or active
+                        }
+                        // Otherwise remains white/default
+                    }
                 }
             });
         } else if (pane === 'right') {
             const rightStages = rightStageReveal?.querySelectorAll('.stage-reveal-item');
-            rightStages?.forEach(stage => {
-                stage.classList.remove('active');
-                const stageType = stage.dataset.stage;
-                const currentFormat = formatState.rightFormat;
+            const rightInput = document.getElementById('right-input');
+            const hasContent = rightInput && rightInput.textContent.trim().length > 0;
+            const currentFormat = formatState.rightFormat;
 
-                if ((stageType === 'decode' && currentFormat === 'fragment') ||
-                    (stageType === 'decompress' && currentFormat === 'protobuf') ||
-                    (stageType === 'parse' && currentFormat === 'coderef') ||
-                    (stageType === 'display' && currentFormat === 'fhir')) {
-                    stage.classList.add('active');
+            rightStages?.forEach(stage => {
+                // Clear all state classes
+                stage.classList.remove('active', 'state-decode', 'state-decompress', 'state-parse', 'state-display');
+
+                const stageType = stage.dataset.stage;
+
+                // Right pane progression triggered by Parse button and content presence
+                if (!hasContent) {
+                    // No content in right pane - all white/default
+                    return;
+                }
+
+                // Right pane decode sequence: Decode(red) → Decompress(orange) → Parse(blue) → Display(green)
+                if (stageType === 'decode') {
+                    // Decode turns red when Parse button has been pressed and fragment content exists
+                    if (formatState.conversionResults?.fragment && (currentFormat === 'fragment' || formatState.rightFormat === 'protobuf')) {
+                        stage.classList.add('active', 'state-decode'); // Red when decode sequence started
+                    }
+                } else if (stageType === 'decompress') {
+                    // Decompress orange when protobuf format active and decode has happened
+                    if (currentFormat === 'protobuf' && formatState.conversionResults?.fragment) {
+                        stage.classList.add('active', 'state-decompress'); // Orange when Protobuf active
+                    }
+                } else if (stageType === 'parse') {
+                    // Parse blue when CodeRef active and enables Parse button
+                    if (currentFormat === 'coderef') {
+                        stage.classList.add('active', 'state-parse'); // Blue when CodeRef active
+                    }
+                } else if (stageType === 'display') {
+                    // Display green when FHIR final stage
+                    if (currentFormat === 'fhir') {
+                        stage.classList.add('active', 'state-display'); // Green when FHIR active
+                    }
                 }
             });
         }
     }
 
     // Set up click handlers after DOM is ready
-    setupStageClickHandlers();
+    // Delay stage click handler setup to ensure DOM is ready
+    setTimeout(() => {
+        setupStageClickHandlers();
+    }, 100);
+
+    // Apply initial color states
+    updateStageStates('left');
+    updateStageStates('right');
+}
+
+// Update active states and color progression based on current format and content
+function updateStageStates(pane) {
+    const leftStageReveal = document.getElementById('left-stage-reveal');
+    const rightStageReveal = document.getElementById('right-stage-reveal');
+
+    if (pane === 'left') {
+        const leftStages = leftStageReveal?.querySelectorAll('.stage-reveal-item');
+        const leftInput = document.getElementById('left-input');
+        const hasContent = leftInput && leftInput.textContent.trim().length > 0;
+        const currentMode = formatState.leftMode;
+
+        leftStages?.forEach(stage => {
+            // Clear all state classes
+            stage.classList.remove('active', 'state-empty', 'state-loaded', 'state-encoded', 'state-convert', 'state-compress');
+
+            const stageType = stage.dataset.stage;
+
+            // Left pane color progression as specified:
+            // Source: grey (empty) → green (preset or pasted)
+            // Convert: orange (title click or box click)
+            // Compress: orange (title click or box click)
+            // Encode: red (title/box click), returns to white when moved away
+
+            if (stageType === 'source') {
+                if (!hasContent) {
+                    // Source grey when empty
+                    stage.classList.add('state-empty');
+                } else if (currentMode === 'fhir') {
+                    // Source green only when in FHIR context with content
+                    stage.classList.add('active', 'state-loaded');
+                }
+                // Otherwise white when content present but not in FHIR context
+            } else if (stageType === 'convert') {
+                if (currentMode === 'coderef') {
+                    // Convert orange when viewing CodeRef format
+                    stage.classList.add('active', 'state-convert');
+                }
+                // Otherwise remains white/default
+            } else if (stageType === 'compress') {
+                if (currentMode === 'protobuf') {
+                    // Compress orange when viewing Protobuf format
+                    stage.classList.add('active', 'state-compress');
+                }
+                // Otherwise remains white/default
+            } else if (stageType === 'encode') {
+                if (currentMode === 'fragment') {
+                    // Encode red when viewing Fragment format
+                    stage.classList.add('active', 'state-encoded');
+                }
+                // Returns to white when moved away from this context
+            }
+        });
+    } else if (pane === 'right') {
+        const rightStages = rightStageReveal?.querySelectorAll('.stage-reveal-item');
+        const rightInput = document.getElementById('right-input');
+        const hasContent = rightInput && rightInput.textContent.trim().length > 0;
+        const currentFormat = formatState.rightFormat;
+
+        rightStages?.forEach(stage => {
+            // Clear all state classes
+            stage.classList.remove('active', 'state-decode', 'state-decompress', 'state-parse', 'state-display');
+
+            const stageType = stage.dataset.stage;
+
+            // Right pane progression triggered by Parse button and content presence
+            if (!hasContent) {
+                // No content in right pane - all white/default
+                return;
+            }
+
+            // Right pane decode sequence: Decode(red) → Decompress(orange) → Parse(blue) → Display(green)
+            if (stageType === 'decode') {
+                // Decode turns red when Parse button has been pressed and fragment content exists
+                if (formatState.conversionResults?.fragment && (currentFormat === 'fragment' || formatState.rightFormat === 'protobuf')) {
+                    stage.classList.add('active', 'state-decode'); // Red when decode sequence started
+                }
+            } else if (stageType === 'decompress') {
+                // Decompress orange when protobuf format active and decode has happened
+                if (currentFormat === 'protobuf' && formatState.conversionResults?.fragment) {
+                    stage.classList.add('active', 'state-decompress'); // Orange when Protobuf active
+                }
+            } else if (stageType === 'parse') {
+                // Parse blue when CodeRef active and enables Parse button
+                if (currentFormat === 'coderef') {
+                    stage.classList.add('active', 'state-parse'); // Blue when CodeRef active
+                }
+            } else if (stageType === 'display') {
+                // Display green when FHIR final stage
+                if (currentFormat === 'fhir') {
+                    stage.classList.add('active', 'state-display'); // Green when FHIR active
+                }
+            }
+        });
+    }
 }
 
 // Pipeline tracing system
