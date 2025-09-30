@@ -5877,99 +5877,6 @@ async function init() {
     leftInput.addEventListener('input', () => updateCharCount(leftInput, leftCharCount));
     rightInput.addEventListener('input', () => updateCharCount(rightInput, rightCharCount));
 
-    // Stage Reveal System
-    const leftStageReveal = document.getElementById('left-stage-reveal');
-    const rightStageReveal = document.getElementById('right-stage-reveal');
-    let leftRevealVisible = false;
-    let rightRevealVisible = false;
-
-    function toggleStageReveal(pane) {
-        if (pane === 'left') {
-            leftRevealVisible = !leftRevealVisible;
-            if (leftRevealVisible) {
-                leftStageReveal.classList.add('show');
-                updateLeftStageHighlight();
-            } else {
-                leftStageReveal.classList.remove('show');
-            }
-        } else if (pane === 'right') {
-            rightRevealVisible = !rightRevealVisible;
-            if (rightRevealVisible) {
-                rightStageReveal.classList.add('show');
-                updateRightStageHighlight();
-            } else {
-                rightStageReveal.classList.remove('show');
-            }
-        }
-    }
-
-    function updateLeftStageHighlight() {
-        const stages = leftStageReveal.querySelectorAll('.stage-reveal-item');
-        stages.forEach(stage => stage.classList.remove('active'));
-
-        // Highlight current stage based on left pane mode
-        if (formatState.leftMode === 'fhir') {
-            leftStageReveal.querySelector('[data-stage="source"]').classList.add('active');
-        } else if (formatState.leftMode === 'fragment') {
-            leftStageReveal.querySelector('[data-stage="encode"]').classList.add('active');
-        }
-    }
-
-    function updateRightStageHighlight() {
-        const stages = rightStageReveal.querySelectorAll('.stage-reveal-item');
-        stages.forEach(stage => stage.classList.remove('active'));
-
-        // Highlight current stage based on right pane format
-        const activeStage = rightStageReveal.querySelector(`[data-stage="${formatState.rightFormat}"]`);
-        if (activeStage) {
-            activeStage.classList.add('active');
-        }
-    }
-
-    // Enhanced title click handlers with stage reveals
-    leftPaneTitle.addEventListener('dblclick', () => {
-        toggleStageReveal('left');
-    });
-
-    rightPaneTitle.addEventListener('dblclick', () => {
-        toggleStageReveal('right');
-    });
-
-    // Action button click with stage reveal
-    actionButton.addEventListener('dblclick', () => {
-        toggleStageReveal('left');
-    });
-
-    // Parse button click with stage reveal
-    parseButton.addEventListener('dblclick', () => {
-        toggleStageReveal('right');
-    });
-
-    // Stage item clicks for direct format switching
-    leftStageReveal.addEventListener('click', async (e) => {
-        const stageItem = e.target.closest('.stage-reveal-item');
-        if (stageItem) {
-            const stage = stageItem.dataset.stage;
-            if (stage === 'source' && formatState.leftMode !== 'fhir') {
-                await updateLeftPaneMode('fhir');
-            } else if (stage === 'encode' && formatState.leftMode !== 'fragment') {
-                await updateLeftPaneMode('fragment');
-            }
-            updateLeftStageHighlight();
-        }
-    });
-
-    rightStageReveal.addEventListener('click', (e) => {
-        const stageItem = e.target.closest('.stage-reveal-item');
-        if (stageItem) {
-            const stage = stageItem.dataset.stage;
-            if (['protobuf', 'coderef', 'fhir'].includes(stage)) {
-                updateRightPaneFormat(stage);
-                updateRightStageHighlight();
-            }
-        }
-    });
-
     // Clear buttons
     clearLeftButton.addEventListener('click', () => {
         leftInput.textContent = '';
@@ -6289,10 +6196,150 @@ async function init() {
     // Initialize Parse button state
     updateParseButtonState();
 
+    // Initialize stage reveals
+    initializeStageReveals();
+
     // Initialize console functionality
     initializeConsole();
 
     // Dual title display now handled in createInfoBoxes()
+}
+
+// Stage Reveals functionality
+function initializeStageReveals() {
+    const leftPaneTitle = document.getElementById('left-pane-title');
+    const rightPaneTitle = document.getElementById('right-pane-title');
+    const actionButton = document.getElementById('action-button');
+    const parseButton = document.getElementById('parse-button');
+
+    const leftStageReveal = document.getElementById('left-stage-reveal');
+    const rightStageReveal = document.getElementById('right-stage-reveal');
+
+    // Track current reveals state
+    let leftRevealsVisible = false;
+    let rightRevealsVisible = false;
+
+    // Double-click handlers for titles
+    if (leftPaneTitle && leftStageReveal) {
+        leftPaneTitle.addEventListener('dblclick', () => {
+            leftRevealsVisible = !leftRevealsVisible;
+            leftStageReveal.classList.toggle('show', leftRevealsVisible);
+            updateStageStates('left');
+        });
+    }
+
+    if (rightPaneTitle && rightStageReveal) {
+        rightPaneTitle.addEventListener('dblclick', () => {
+            rightRevealsVisible = !rightRevealsVisible;
+            rightStageReveal.classList.toggle('show', rightRevealsVisible);
+            updateStageStates('right');
+        });
+    }
+
+    // Double-click handlers for buttons
+    if (actionButton && leftStageReveal) {
+        actionButton.addEventListener('dblclick', (e) => {
+            e.stopPropagation();
+            leftRevealsVisible = !leftRevealsVisible;
+            leftStageReveal.classList.toggle('show', leftRevealsVisible);
+            updateStageStates('left');
+        });
+    }
+
+    if (parseButton && rightStageReveal) {
+        parseButton.addEventListener('dblclick', (e) => {
+            e.stopPropagation();
+            rightRevealsVisible = !rightRevealsVisible;
+            rightStageReveal.classList.toggle('show', rightRevealsVisible);
+            updateStageStates('right');
+        });
+    }
+
+    // Stage item click handlers for format switching
+    function setupStageClickHandlers() {
+        // Left pane stage clicks
+        const leftStages = leftStageReveal?.querySelectorAll('.stage-reveal-item');
+        leftStages?.forEach(stage => {
+            stage.addEventListener('click', () => {
+                const stageType = stage.dataset.stage;
+                switchToStageFormat('left', stageType);
+                updateStageStates('left');
+            });
+        });
+
+        // Right pane stage clicks
+        const rightStages = rightStageReveal?.querySelectorAll('.stage-reveal-item');
+        rightStages?.forEach(stage => {
+            stage.addEventListener('click', () => {
+                const stageType = stage.dataset.stage;
+                switchToStageFormat('right', stageType);
+                updateStageStates('right');
+            });
+        });
+    }
+
+    // Switch pane to format corresponding to stage
+    function switchToStageFormat(pane, stage) {
+        if (pane === 'left') {
+            switch(stage) {
+                case 'source':
+                    updateLeftPaneFormat('fhir');
+                    break;
+                case 'convert':
+                    updateLeftPaneFormat('coderef');
+                    break;
+                case 'compress':
+                    updateLeftPaneFormat('protobuf');
+                    break;
+            }
+        } else if (pane === 'right') {
+            switch(stage) {
+                case 'parse':
+                    updateRightPaneFormat('fhir');
+                    break;
+                case 'display':
+                    updateRightPaneFormat('coderef');
+                    break;
+                case 'render':
+                    updateRightPaneFormat('protobuf');
+                    break;
+            }
+        }
+    }
+
+    // Update active states based on current format
+    function updateStageStates(pane) {
+        if (pane === 'left') {
+            const leftStages = leftStageReveal?.querySelectorAll('.stage-reveal-item');
+            leftStages?.forEach(stage => {
+                stage.classList.remove('active');
+                const stageType = stage.dataset.stage;
+                const currentFormat = formatState.leftFormat;
+
+                if ((stageType === 'source' && currentFormat === 'fhir') ||
+                    (stageType === 'convert' && currentFormat === 'coderef') ||
+                    (stageType === 'compress' && currentFormat === 'protobuf')) {
+                    stage.classList.add('active');
+                }
+            });
+        } else if (pane === 'right') {
+            const rightStages = rightStageReveal?.querySelectorAll('.stage-reveal-item');
+            rightStages?.forEach(stage => {
+                stage.classList.remove('active');
+                const stageType = stage.dataset.stage;
+                const currentFormat = formatState.rightFormat;
+
+                if ((stageType === 'parse' && currentFormat === 'fhir') ||
+                    (stageType === 'display' && currentFormat === 'coderef') ||
+                    (stageType === 'render' && currentFormat === 'protobuf')) {
+                    stage.classList.add('active');
+                }
+            });
+        }
+    }
+
+    // Set up click handlers after DOM is ready
+    setupStageClickHandlers();
 }
 
 // Pipeline tracing system
