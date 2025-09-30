@@ -6317,19 +6317,19 @@ function addPipelineStage(stageName, data, dataIntegrity = null) {
     pipelineTrace.stages.push(stage);
     logToConsole(`📋 ${stageName}`, 'stage');
 
-    if (dataIntegrity) {
-        if (dataIntegrity.errors.length > 0) {
+    if (dataIntegrity && typeof dataIntegrity === 'object') {
+        if (dataIntegrity.errors && dataIntegrity.errors.length > 0) {
             logToConsole(`❌ Errors: ${dataIntegrity.errors.join(', ')}`, 'error');
         }
-        if (dataIntegrity.warnings.length > 0) {
+        if (dataIntegrity.warnings && dataIntegrity.warnings.length > 0) {
             logToConsole(`⚠️ Warnings: ${dataIntegrity.warnings.join(', ')}`, 'data');
         }
-        if (dataIntegrity.info.length > 0) {
+        if (dataIntegrity.info && dataIntegrity.info.length > 0) {
             dataIntegrity.info.forEach(info => {
                 logToConsole(`ℹ️ ${info}`, 'data');
             });
         }
-        if (dataIntegrity.errors.length === 0) {
+        if (dataIntegrity.errors && dataIntegrity.errors.length === 0) {
             logToConsole(`✅ Data integrity check passed`, 'success');
         }
     }
