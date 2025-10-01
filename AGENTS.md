@@ -1,7 +1,7 @@
 # Codex Ops Log – NFC IPS Viewer
 
-**⏰ LAST UPDATED: 2025-10-01 11:10 UTC**
-**🔄 TTL: Valid until 2025-10-01 12:10 UTC** *(Auto-refresh via Codex timestamp script)*
+**⏰ LAST UPDATED: 2025-10-01 11:27 UTC**
+**🔄 TTL: Valid until 2025-10-01 12:27 UTC** *(Auto-refresh via Codex timestamp script)*
 
 ## Current Mandate
 - Conduct end-to-end documentation/code review with focus on custom application surface; treat third-party dependencies as fixed inputs.
@@ -26,7 +26,7 @@
 - Dual-title system is fully wired for all panes but `config.specialClass` hook remains commented out per 2025-09-21 note; confirm whether future styling variations still require that knob.
 - Memory system (`memory/active/context.md`) lists follow-up tasks (make scripts executable, tag v3.0, etc.) that appear stale relative to current UI priorities; coordinate with maintainers before pruning.
 - STRATEVAC pane appended post-R3 with refreshed R3 palette; chart now renders stage background bands (opacity via `--stage-band-opacity`) and legend abbreviations—monitor for UI feedback.
-- Preset bundles #2 and #3 now mirror preset #1’s header layout and use IPS-compliant `urn:uuid` bundle identifiers, so all demo documents advertise `meta.profile` and UUID URNs consistently.
+- Preset bundles #2 and #3 now mirror preset #1’s header layout and use IPS-compliant `urn:uuid` bundle identifiers with unique bundle/document UUIDs to avoid preset collisions during testing.
 
 ## Dependency Snapshot (Treating Vendors as Given)
 - `pako` ^2.1.0 (package.json) – last known stable release (still current as of 2024-10); re-check upstream for security patches when online.
