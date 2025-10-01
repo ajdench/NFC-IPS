@@ -1,7 +1,7 @@
 # Codex Ops Log – NFC IPS Viewer
 
-**⏰ LAST UPDATED: 2025-10-01 11:27 UTC**
-**🔄 TTL: Valid until 2025-10-01 12:27 UTC** *(Auto-refresh via Codex timestamp script)*
+**⏰ LAST UPDATED: 2025-10-01 13:05 UTC**
+**🔄 TTL: Valid until 2025-10-01 14:05 UTC** *(Auto-refresh via Codex timestamp script)*
 
 ## Current Mandate
 - Conduct end-to-end documentation/code review with focus on custom application surface; treat third-party dependencies as fixed inputs.
@@ -27,6 +27,7 @@
 - Memory system (`memory/active/context.md`) lists follow-up tasks (make scripts executable, tag v3.0, etc.) that appear stale relative to current UI priorities; coordinate with maintainers before pruning.
 - STRATEVAC pane appended post-R3 with refreshed R3 palette; chart now renders stage background bands (opacity via `--stage-band-opacity`) and legend abbreviations—monitor for UI feedback.
 - Preset bundles #2 and #3 now mirror preset #1’s header layout and use IPS-compliant `urn:uuid` bundle identifiers with unique bundle/document UUIDs to avoid preset collisions during testing.
+- Validation harness artefacts (`VALIDATION-TESTING.md`, `run-validation-tests.js`, `test-converters-simple.cjs`, `test-pipeline-node.cjs`, `validation-framework.js`) plus edits to `nfc/ips/viewer.html` and `script.js` remain in the working copy from a prior run; left untouched per user instruction.
 
 ## Dependency Snapshot (Treating Vendors as Given)
 - `pako` ^2.1.0 (package.json) – last known stable release (still current as of 2024-10); re-check upstream for security patches when online.
@@ -58,6 +59,7 @@
     *(ensures both Claude and Codex instructions stay in sync before coding)*
 - **TTL maintenance**: run `memory/update-codex-md.sh` or set `CODEX_REFRESH_TTL=1` when launching Auto-JJ so commits call the script automatically.
 - **Manual refresh**: execute `./memory/update-codex-md.sh "optional reason"` whenever Codex session resumes without auto-commit triggers.
+- **Instant restart**: if JJ or Auto-JJ forces an immediate restart, rerun `./memory/update-codex-md.sh "instant restart"` right away so timestamps and instructions stay in sync before coding resumes.
 - **Crash recovery check**: verify the `LAST UPDATED` / `TTL` header near top of `AGENTS.md` before proceeding.
 
 ## Codex CQ Protocol
