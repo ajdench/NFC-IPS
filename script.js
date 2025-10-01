@@ -5762,7 +5762,8 @@ async function init() {
         const formatNames = {
             'fhir': 'IPS FHIR JSON',
             'coderef': 'CodeRef Format',
-            'protobuf': 'Protobuf Binary Format'
+            'protobuf': 'Protobuf Binary Format',
+            'fragment': 'Base64 URL-safe Fragment'
         };
 
         rightPaneTitle.textContent = formatNames[newFormat];
@@ -5817,39 +5818,27 @@ async function init() {
             formatState.conversionResults = {};
 
             if (formatState.leftMode === 'fragment') {
-                // Decode: Fragment -> CodeRef -> FHIR Bundle
+                // Decode: Pass fragment to right pane and prepare all decode formats
 
+                // Decode the fragment to prepare all formats
                 const parsedViewModel = await payloadService.parseUserInput(inputContent);
-                if (parsedViewModel.rawPayload?.original_bundle_json) {
-                }
-                if (parsedViewModel.rawPayload?.originalBundleJson) {
-                }
                 if (!parsedViewModel?.rawPayload) {
                     throw new Error('Unable to decode fragment data');
                 }
 
-                // Store original fragment for restoration
-                formatState.originalFragment = inputContent;
-
-                // Store CodeRef format
-                formatState.conversionResults.coderef = JSON.stringify(parsedViewModel.rawPayload, null, 2);
-
-                // Convert to FHIR Bundle
-                const fhirBundle = codecPipeline.convertCodeRefToFhirBundle(parsedViewModel.rawPayload);
-                const fhirJson = JSON.stringify(fhirBundle, null, 2);
-                formatState.conversionResults.fhir = fhirJson;
-
-                // Store fragment (same as input)
+                // Store all formats for right pane cycling
                 formatState.conversionResults.fragment = inputContent;
+                formatState.conversionResults.coderef = JSON.stringify(parsedViewModel.rawPayload, null, 2);
+                formatState.conversionResults.protobuf = await codecPipeline.getProtobufBinary(parsedViewModel.rawPayload);
 
-                // Generate protobuf binary format
-                const codeRefData = parsedViewModel.rawPayload;
-                formatState.conversionResults.protobuf = await codecPipeline.getProtobufBinary(codeRefData);
+                const fhirBundle = codecPipeline.convertCodeRefToFhirBundle(parsedViewModel.rawPayload);
+                formatState.conversionResults.fhir = JSON.stringify(fhirBundle, null, 2);
 
-                // Update right pane with decode results - start with Protobuf format
-                updateRightPaneFormat('protobuf');
+                // Start with fragment in right pane and activate Decode stage (red)
+                updateRightPaneFormat('fragment');
+                updateStageStates('right');
 
-                showMessage(`Decoded to FHIR Bundle (${fhirBundle.entry.length} entries)`, 'success');
+                showMessage('Fragment decoded - Click right title to cycle through formats', 'success');
 
             } else { // 'fhir'
                 // Encode: FHIR Bundle -> URL Fragment in left pane only
@@ -5878,10 +5867,10 @@ async function init() {
                 leftInput.textContent = fragment;
                 updateCharCount(leftInput, leftCharCount);
 
+                // Do NOT update right pane - it should remain in current state until Decode is clicked
+
                 showMessage(`Encoded FHIR to URL Fragment`, 'success');
             }
-
-            // Do NOT update right pane - it should remain empty until Decode is clicked
 
         } catch (error) {
             console.error('Conversion error:', error);
@@ -5904,7 +5893,7 @@ async function init() {
 
     // Right pane title click - cycle through output formats in decode sequence
     rightPaneTitle.addEventListener('click', () => {
-        const formats = ['protobuf', 'coderef', 'fhir']; // Decode sequence: Protobuf → CodeRef → FHIR
+        const formats = ['fragment', 'protobuf', 'coderef', 'fhir']; // Decode sequence: Fragment → Protobuf → CodeRef → FHIR
         const currentIndex = formats.indexOf(formatState.rightFormat);
         const nextIndex = (currentIndex + 1) % formats.length;
         updateRightPaneFormat(formats[nextIndex]);
@@ -5974,19 +5963,69 @@ async function init() {
     parseButton.addEventListener('click', async () => {
         // Check if we have fragment content to start decode sequence
         if (formatState.conversionResults?.fragment) {
-            // Start right pane decode sequence: Fragment → Protobuf → CodeRef → FHIR
+            // Start right pane decode sequence: Fragment → Protobuf → CodeRef → FHIR → Display
             startPipelineTrace('Decode Fragment to Clinical Display');
 
-            // Start with Protobuf format and show decode red stage
-            updateRightPaneFormat('protobuf');
-            if (formatState.conversionResults.protobuf) {
-                rightInput.textContent = formatState.conversionResults.protobuf;
-                updateCharCount(rightInput, rightCharCount);
-            }
+            try {
+                // Perform actual decoding ONCE: Fragment → OutputFHIR
+                const decodedViewModel = await payloadService.parseUserInput(formatState.conversionResults.fragment);
+                const decodedCodeRef = decodedViewModel.rawPayload;
+                const decodedFhirBundle = codecPipeline.convertCodeRefToFhirBundle(decodedCodeRef);
+                const outputFhir = JSON.stringify(decodedFhirBundle, null, 2);
 
-            updateStageStates('right');
-            showMessage('Started decode sequence - Decode stage active', 'success');
-            return;
+                // Step 1: Decode (Fragment → Protobuf) - Red stage
+                updateRightPaneFormat('protobuf');
+                rightInput.textContent = decodedViewModel.protobuf || 'Protobuf binary data';
+                updateCharCount(rightInput, rightCharCount);
+                updateStageStates('right');
+                showMessage('Decode stage active', 'info');
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // Step 2: Decompress (Protobuf → CodeRef) - Orange stage
+                updateRightPaneFormat('coderef');
+                rightInput.textContent = JSON.stringify(decodedCodeRef, null, 2);
+                updateCharCount(rightInput, rightCharCount);
+                updateStageStates('right');
+                showMessage('Decompress stage active', 'info');
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // Step 3: Parse (CodeRef → FHIR) - Blue stage
+                updateRightPaneFormat('fhir');
+                rightInput.textContent = outputFhir;
+                updateCharCount(rightInput, rightCharCount);
+                updateStageStates('right');
+                showMessage('Parse stage active', 'info');
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // Step 4: Display (Use the OutputFHIR for Parse display) - Green stage
+                const parsedViewModel = payloadService.buildViewModelFromObject(decodedCodeRef, {
+                    label: 'Decoded from Fragment',
+                    originalInput: formatState.conversionResults.fragment,
+                    rawPayload: decodedCodeRef
+                });
+
+                appState.currentViewModel = parsedViewModel;
+                appState.comparisonViewModel = appState.demos[0] || null;
+
+                // Render the clinical data to UI boxes
+                renderStageSections(parsedViewModel.stageSections);
+
+                // Render the vitals chart
+                renderVitalsChart(parsedViewModel);
+
+                // Update stage states to show Display stage
+                updateStageStates('right');
+                showMessage('Parse sequence complete - Clinical data and chart displayed', 'success');
+
+                finishPipelineTrace('success', 'Fragment decoded and clinical data displayed');
+                return;
+
+            } catch (error) {
+                console.error('Decode sequence error:', error);
+                showMessage(`Decode failed: ${error.message}`, 'error');
+                finishPipelineTrace('error', `Decode failed: ${error.message}`);
+                return;
+            }
         }
 
         // Original FHIR parsing logic (fallback)
@@ -6211,6 +6250,7 @@ async function init() {
                 // Store as original FHIR to prevent round-trip loss
                 formatState.originalFhir = fhirJson;
                 showMessage('Loaded preset #2 FHIR JSON', 'success');
+                updateActivePreset(preset2Button);
             } else {
                 showMessage('Preset #2 FHIR JSON not available', 'warning');
             }
@@ -6236,6 +6276,7 @@ async function init() {
                 // Store as original FHIR to prevent round-trip loss
                 formatState.originalFhir = fhirJson;
                 showMessage('Loaded preset #3 FHIR JSON', 'success');
+                updateActivePreset(preset3Button);
             } else {
                 showMessage('Preset #3 FHIR JSON not available', 'warning');
             }
@@ -6662,26 +6703,26 @@ function updateStageStates(pane) {
                 return;
             }
 
-            // Right pane decode sequence: Decode(red) → Decompress(orange) → Parse(blue) → Display(green)
+            // Right pane decode sequence: Only current stage highlighted
             if (stageType === 'decode') {
-                // Decode turns red when Parse button has been pressed and fragment content exists
-                if (formatState.conversionResults?.fragment && (currentFormat === 'fragment' || formatState.rightFormat === 'protobuf')) {
-                    stage.classList.add('active', 'state-decode'); // Red when decode sequence started
+                // Decode red only when viewing fragment format
+                if (currentFormat === 'fragment') {
+                    stage.classList.add('active', 'state-decode');
                 }
             } else if (stageType === 'decompress') {
-                // Decompress orange when protobuf format active and decode has happened
-                if (currentFormat === 'protobuf' && formatState.conversionResults?.fragment) {
-                    stage.classList.add('active', 'state-decompress'); // Orange when Protobuf active
+                // Decompress orange only when viewing protobuf format
+                if (currentFormat === 'protobuf') {
+                    stage.classList.add('active', 'state-decompress');
                 }
             } else if (stageType === 'parse') {
-                // Parse blue when CodeRef active and enables Parse button
+                // Parse blue only when viewing coderef format
                 if (currentFormat === 'coderef') {
-                    stage.classList.add('active', 'state-parse'); // Blue when CodeRef active
+                    stage.classList.add('active', 'state-parse');
                 }
             } else if (stageType === 'display') {
-                // Display green when FHIR final stage
+                // Display green only when viewing fhir format
                 if (currentFormat === 'fhir') {
-                    stage.classList.add('active', 'state-display'); // Green when FHIR active
+                    stage.classList.add('active', 'state-display');
                 }
             }
         });
@@ -6883,13 +6924,13 @@ function exportPipelineTrace() {
     const blob = new Blob([JSON.stringify(traceData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
 
-    // Auto-download trace file
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'pipeline-trace.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    // Auto-download trace file - DISABLED
+    // const a = document.createElement('a');
+    // a.href = url;
+    // a.download = 'pipeline-trace.json';
+    // document.body.appendChild(a);
+    // a.click();
+    // document.body.removeChild(a);
     URL.revokeObjectURL(url);
 }
 

@@ -1071,6 +1071,14 @@ main {
     background-color: #2e7031;
 }
 
+.pane-button.display-button {
+    background-color: var(--text-color-green);
+}
+
+.pane-button.display-button:hover {
+    background-color: #2e7031;
+}
+
 .stage-details-container {
     display: flex;
     flex-wrap: wrap;
@@ -1191,13 +1199,13 @@ input:checked + .slider .slider-label.right {
     background-color: #cc4100;
 }
 
-#parse-button,
-.parse-button {
+#parse-button:not(.display-button),
+.parse-button:not(.display-button) {
     background-color: #2196F3;
 }
 
-#parse-button:hover,
-.parse-button:hover {
+#parse-button:not(.display-button):hover,
+.parse-button:not(.display-button):hover {
     background-color: #1976D2;
 }
 
