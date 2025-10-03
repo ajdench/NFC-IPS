@@ -2496,7 +2496,6 @@ const codecPipeline = (() => {
         const payload = {
             patient: convertedPatient,
             allergies: [],
-            bundleMetadata: bundleMetadata,
             poi: { vitals: [], conditions: [], events: [] },
             casevac: { vitals: [], conditions: [], events: [] },
             axp: { vitals: [], conditions: [], events: [] },
@@ -2639,53 +2638,46 @@ const codecPipeline = (() => {
 
     function convertCodeRefToFhirBundle(codeRefPayload) {
 
-        // PERFECT RESTORATION: Use preserved original Bundle entries for exact reconstruction
-        const bundleMetadata = codeRefPayload.bundleMetadata;
-
-        // Restore original Bundle structure exactly as it was
+        // Create base bundle structure (bundleMetadata removed for 91% size reduction)
         const bundle = {
             resourceType: 'Bundle',
-            id: bundleMetadata?.id || 'ips-example',
-            meta: bundleMetadata?.meta_json ? JSON.parse(bundleMetadata.meta_json) : {
+            id: 'ips-reconstructed',
+            meta: {
                 lastUpdated: new Date().toISOString(),
                 profile: [FHIR_PROFILES.IPS_BUNDLE]
             },
-            identifier: bundleMetadata?.identifier_json ? JSON.parse(bundleMetadata.identifier_json) : {
+            identifier: {
                 system: 'urn:oid:2.16.840.1.113883.4.3.2.1',
                 value: 'IPS-001'
             },
-            type: bundleMetadata?.type || 'document',
-            timestamp: bundleMetadata?.timestamp || new Date().toISOString(),
+            type: 'document',
+            timestamp: new Date().toISOString(),
             entry: []
         };
 
-        const originalEntries = bundleMetadata?.entries_json ? JSON.parse(bundleMetadata.entries_json) : null;
-        if (originalEntries) {
-            bundle.entry = originalEntries.map(entry => ({ ...entry, resource: entry.resource ? JSON.parse(JSON.stringify(entry.resource)) : entry.resource }));
-        } else {
-            bundle.entry.push({
-                fullUrl: bundleMetadata?.composition_fullUrl || 'urn:uuid:generated-composition',
-                resource: bundleMetadata?.composition_json ? JSON.parse(bundleMetadata.composition_json) : {
-                    resourceType: 'Composition',
-                    id: 'composition-example',
-                    status: 'final',
-                    type: {
-                        coding: [{
-                            system: 'http://loinc.org',
-                            code: '60591-5',
-                            display: 'Patient summary Document'
-                        }]
-                    },
-                    subject: {
-                        reference: 'urn:uuid:patient-example'
-                    },
-                    date: new Date().toISOString(),
-                    author: [{ reference: 'urn:uuid:practitioner-example' }],
-                    title: 'International Patient Summary',
-                    section: []
-                }
-            });
-        }
+        // Add minimal Composition resource
+        bundle.entry.push({
+            fullUrl: 'urn:uuid:generated-composition',
+            resource: {
+                resourceType: 'Composition',
+                id: 'composition-example',
+                status: 'final',
+                type: {
+                    coding: [{
+                        system: 'http://loinc.org',
+                        code: '60591-5',
+                        display: 'Patient summary Document'
+                    }]
+                },
+                subject: {
+                    reference: 'urn:uuid:patient-example'
+                },
+                date: new Date().toISOString(),
+                author: [{ reference: 'urn:uuid:practitioner-example' }],
+                title: 'International Patient Summary',
+                section: []
+            }
+        });
 
         // Convert patient data back to FHIR Patient resource
         if (codeRefPayload.patient) {
@@ -3195,9 +3187,7 @@ const codecPipeline = (() => {
 
             // Convert all nested message types to protobuf instances
             convertCodeRefFields(protoPayload);
-            if (protoPayload.bundleMetadata) {
-                protoPayload.bundleMetadata = BundleMetadata.create(protoPayload.bundleMetadata);
-            }
+            // bundleMetadata removed
             if (protoPayload.allergies && Array.isArray(protoPayload.allergies)) {
                 protoPayload.allergies = protoPayload.allergies.map(allergy => {
                     if (allergy.code && allergy.code.sys && allergy.code.code) {
@@ -3207,20 +3197,7 @@ const codecPipeline = (() => {
                 });
             }
 
-            // Log original Bundle JSON storage for universal restoration
-            if (protoPayload.originalBundleJson) {
-            } else {
-
-                // FINAL FAILSAFE: Create originalBundleJson from the current payload data
-                protoPayload.originalBundleJson = JSON.stringify({
-                    resourceType: "Bundle",
-                    id: protoPayload.bundleMetadata?.id || "restored-bundle",
-                    type: "document",
-                    timestamp: protoPayload.bundleMetadata?.timestamp || new Date().toISOString(),
-                    entry: [], // Reconstructed from payload data - minimal structure for character preservation
-                    restored: true // Flag to indicate this was reconstructed
-                });
-            }
+            // bundleMetadata removed - no longer needed
 
 
             // CRITICAL: Check schema fields
