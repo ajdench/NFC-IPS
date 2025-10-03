@@ -199,16 +199,37 @@ Composition sections contain references to resources:
 
 ---
 
-## 6. Source Data Format (YAML)
+## 6. Source Data Format
 
-Clinical data will be authored/maintained in **YAML format** as the single source of truth.
+### 6.1 Primary Format: IPS FHIR JSON
 
-### 6.1 Hierarchical Timing System
+**Clinical data is authored/maintained in IPS-compliant FHIR JSON format** as the canonical source.
+
+**Structure**:
+- Full FHIR R4 IPS Bundle
+- Standard IPS sections (Demographics, Allergies, Medications)
+- Custom OPCP sections (nested care stage subsections)
+- Encounter resources with type.coding for care stages
+- Clinical resources linked via encounter.reference
+
+### 6.2 Development Tool: YAML (Temporary)
+
+**YAML format used ONLY during development** for easier content creation and validation.
 
 **Chained relative timestamps** for easy timeline maintenance:
 - **seedTime**: Global start time for the entire care pathway
 - **Encounter baseTime**: Offset from previous encounter's end (creates contiguous timeline)
 - **Clinical events**: Offset from their encounter's baseTime
+
+**YAML serves as**:
+1. ✏️ Content creation tool (easier than editing JSON)
+2. 🔍 SNOMED code validation input
+3. 🏗️ Input for IPS FHIR JSON builder
+
+**YAML is NOT**:
+- ❌ Part of final architecture
+- ❌ Used in production pipeline
+- ❌ Transmitted via NFC
 
 ```yaml
 seedTime: 2025-10-02T05:00:00-04:00
