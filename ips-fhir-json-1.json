@@ -326,7 +326,17 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "9434765919"
+            "value": "9434765919",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "NH",
+                  "display": "National Health Service Number"
+                }
+              ],
+              "text": "NHS Number"
+            }
           },
           {
             "type": {
