@@ -2466,20 +2466,11 @@ const codecPipeline = (() => {
     /**
      * Converts FHIR Bundle to CodeRef format for protobuf serialization
      * @param {Object} bundle - FHIR Bundle object
-     * @returns {Object} CodeRef payload with bundle metadata
+     * @returns {Object} CodeRef payload
      */
     function convertFhirBundleToCodeRef(bundle) {
-        // Preserve original Bundle metadata with proper serialization for protobuf
-        const bundleMetadata = {
-            id: bundle.id || '',
-            meta_json: JSON.stringify(bundle.meta || {}),
-            identifier_json: JSON.stringify(bundle.identifier || {}),
-            type: bundle.type || 'document',
-            timestamp: bundle.timestamp || new Date().toISOString(),
-            composition_fullUrl: bundle.entry?.find(entry => entry.resource?.resourceType === 'Composition')?.fullUrl || null,
-            composition_json: JSON.stringify(bundle.entry?.find(entry => entry.resource?.resourceType === 'Composition')?.resource || null),
-            entries_json: JSON.stringify(bundle.entry || [])
-        };
+        // bundleMetadata removed - 41KB bloat with fields not in protobuf schema
+        // Bundle metadata can be reconstructed from patient/encounter data
 
         // Extract and convert patient from bundle
         const patientEntry = bundle.entry?.find(entry => entry.resource?.resourceType === 'Patient');

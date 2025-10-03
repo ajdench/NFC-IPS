@@ -116,18 +116,52 @@ const rankExtension = {
 
 ---
 
-## CodeRef System Codes
+## CodeRef Format - Current vs Multi-Coding
 
-### Updated System Mappings
+### Current Format (Single Coding)
+```javascript
+{
+  sys: "sct",           // System short code
+  code: "248153007"     // Code value
+}
+```
 
-| CodeRef sys | Full System URI | Use Case |
-|-------------|-----------------|----------|
+**Protobuf**:
+```protobuf
+message CodeRef {
+  oneof system_reference {
+    string sys = 1;
+    SystemType system_id = 9;
+  }
+  string code = 2;
+}
+```
+
+### Multi-Coding Format (Aligned with Current)
+```javascript
+{
+  "hl7-v2-0141": "E1",
+  "nato-stanag-2116": "OR-1",
+  "text": "Drummer"  // optional
+}
+```
+
+**Why this works**:
+- Simple key-value pairs (no nested arrays)
+- Easy global migration (find-replace system keys)
+- Backward compatible with single codings
+- Matches user requirement: `HL70141: E1 AND NATO2116: OR1 AND rank: Drummer`
+
+### System Key Mappings
+
+| Short Key | Full System URI | Use Case |
+|-----------|-----------------|----------|
 | `sct` | `http://snomed.info/sct` | SNOMED CT codes |
 | `loinc` | `http://loinc.org` | LOINC codes |
 | `nhs` | `https://fhir.nhs.uk/Id/nhs-number` | NHS number |
 | `mil` | Custom service ID system | Military service number |
-| `stanag` | `http://medis.org.uk/CodeSystem/NATO/STANAG/2116/APERSP-01/ranks` | NATO ranks |
-| `hl7-rank` | `http://terminology.hl7.org/CodeSystem/v2-0141` | HL7 generic ranks |
+| `hl7-v2-0141` | `http://terminology.hl7.org/CodeSystem/v2-0141` | HL7 generic ranks |
+| `nato-stanag-2116` | `http://medis.org.uk/CodeSystem/NATO/STANAG/2116/APERSP-01/ranks` | NATO ranks |
 | `opcp` | `http://medis.org.uk/CodeSystem/FHIR/OPCP/care-stages` | Care stages |
 
 ### Expansion/Compression
@@ -282,7 +316,7 @@ message Patient {
 }
 ```
 
-### CodeRef Message (with text support)
+### CodeRef Message (Multi-Coding Support)
 
 **Current**:
 ```protobuf
@@ -306,44 +340,64 @@ message CodeRef {
     SystemType system_id = 9;
   }
   string code = 2;
-  string text = 13;            // ← ADD: For specific text like "Drummer"
+  string text = 13;            // ← ADD: For optional display text
   ClinicalStatus clinical_status = 10;
   VerificationStatus verification_status = 11;
   ObservationCategory category = 12;
 }
 ```
 
+**JavaScript usage**:
+- **Single coding**: `{sys: "sct", code: "248153007"}`
+- **Multi-coding**: `{"hl7-v2-0141": "E1", "nato-stanag-2116": "OR-1", "text": "Drummer"}`
+- **Migration ready**: System keys can be globally shortened later
+
 ---
+
+## Multi-Coding Strategy Summary
+
+**Approach**: Store all codings as key-value pairs in CodeRef objects
+
+**Example - Military Rank**:
+```javascript
+// FHIR has multiple codings
+rank: {
+  "hl7-v2-0141": "E1",          // Generic grade
+  "nato-stanag-2116": "OR-1",   // Specific NATO rank
+  "text": "Drummer"             // Optional UK appointment
+}
+```
+
+**Migration Path**:
+1. Use verbose system keys initially: `"hl7-v2-0141"`, `"nato-stanag-2116"`
+2. Global find-replace later for simplification: `"hl7"`, `"nato"`
+3. No structural changes needed, just key renaming
 
 ## Implementation Checklist
 
-### Phase 1: CodeSystem Setup
+### Phase 1: CodeSystem Setup ✅ COMPLETE
 - [x] Create `/CodeSystem/` directory structure
 - [x] Create `NATO/STANAG/2116/APERSP-01/ranks.json`
 - [x] Create `FHIR/OPCP/care-stages.json`
-- [ ] Create mapping files (stanag-to-hl7, etc.)
-- [ ] Add SNOMED lookup table
-- [ ] Configure web server to serve CodeSystem files
+- [x] Create mapping file: `stanag-to-hl7-rank.json`
 
 ### Phase 2: Protobuf Updates
-- [ ] Add `text` field to CodeRef message
+- [ ] Add `text` field to CodeRef message (field 13)
 - [ ] Change Patient.rank from string to CodeRef
-- [ ] Update SystemType enum with stanag/opcp
 - [ ] Regenerate protobuf JavaScript
 
 ### Phase 3: Converter Updates
+- [ ] Remove bundleMetadata from converter
 - [ ] Update FHIR → CodeRef to extract multi-coded extensions
-- [ ] Store primary code (most specific) in CodeRef
+- [ ] Store all codes as key-value pairs in CodeRef
 - [ ] Update CodeRef → FHIR to rebuild multi-coded extensions
 - [ ] Implement lookup functions for displays
-- [ ] Implement mapping functions (stanag→hl7, etc.)
 
 ### Phase 4: Testing
-- [ ] Test rank: STANAG + HL7 dual coding
+- [ ] Test rank: HL7 + NATO dual coding
 - [ ] Test care stages: OPCP codes
 - [ ] Test round-trip: FHIR → CodeRef → FHIR
 - [ ] Verify all codings preserved
-- [ ] Test offline (no external APIs)
 
 ---
 
