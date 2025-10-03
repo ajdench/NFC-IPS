@@ -58,13 +58,26 @@ jj commit -m "message"         # Manual commit changes
 # TTL: 2025-10-11 23:59 UTC → +2 weeks from now
 ```
 
+### **On Start - Essential First Steps**
+1. **Check for uncommitted changes**: `jj status` or `git status`
+2. **Commit any pending work**: If changes exist, commit them immediately:
+   ```bash
+   jj commit -m "Session start: commit pending work from previous session"
+   jj git push  # Push to remote
+   ```
+3. **Start auto-JJ development mode**:
+   ```bash
+   npm run dev:auto-jj  # Starts dev server AND auto-commit monitoring
+   # NOT just: npm run dev (no auto-commits!)
+   ```
+
 ### **When Taking Over (Expanded)**
 1. **Check timestamps**: If LAST UPDATED > 1 hour old, verify system state
 2. **Update timestamps**: LAST UPDATED = now, TTL = now + 2 weeks
 3. **Crash recovery**: If unexpected restart, check `jj log -n 5` for last activity
 4. **Memory sync**: Run `cat memory/active/status.md | tail -3` for latest state
-5. **System status**: Check `jj status` for uncommitted changes
-6. **Development**: Run `npm run dev` to start environment
+5. **System status**: Check `jj status` for uncommitted changes → **commit immediately if found**
+6. **Development**: Run `npm run dev:auto-jj` to start environment with auto-commits
 7. **Update memory**: `./memory/update.sh "Session started - recovered from [timestamp]"`
 
 ### **✅ RECENT COMPLETION - Preset #0 Button Implementation**

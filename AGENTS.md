@@ -50,6 +50,21 @@
 - Auto-JJ automation in place; coordinate with hooks before altering build/test scripts to avoid unintended commits.
 
 ## Codex Quick Start
+
+### **On Start - Essential First Steps**
+1. **Check for uncommitted changes**: `jj status` or `git status`
+2. **Commit any pending work**: If changes exist, commit them immediately:
+   ```bash
+   jj commit -m "Session start: commit pending work from previous session"
+   jj git push  # Push to remote
+   ```
+3. **Start auto-JJ development mode**:
+   ```bash
+   npm run dev:auto-jj  # Starts dev server AND auto-commit monitoring
+   # NOT just: npm run dev (no auto-commits!)
+   ```
+
+### **Load Order & Context**
 - **Load order**:
     1. `cat CLAUDE.md`
     2. `cat AGENTS.md`
