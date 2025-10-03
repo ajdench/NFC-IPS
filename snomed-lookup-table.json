@@ -1,0 +1,86 @@
+{
+  "278147001": {
+    "display": "Blood group O Rh(D) positive",
+    "verified": true,
+    "source": "web_search",
+    "date": "2025-10-03",
+    "notes": "Corrected from 112144000 (Blood group A)"
+  },
+  "300913006": {
+    "display": "Shellfish allergy",
+    "verified": true,
+    "source": "web_search",
+    "date": "2025-10-03",
+    "notes": "Verified via SNOMED browser"
+  },
+  "320818006": {
+    "display": "Product containing precisely cetirizine hydrochloride 10 milligram/1 each conventional release oral tablet",
+    "verified": true,
+    "source": "web_search",
+    "date": "2025-10-03",
+    "notes": "Corrected from 372729009 (incorrect code)"
+  },
+  "233604007": {
+    "display": "Pneumonia (disorder)",
+    "verified": true,
+    "source": "web_search",
+    "date": "2025-10-03",
+    "notes": "Verified via SNOMED browser"
+  },
+  "47625008": {
+    "display": "Intravenous route",
+    "verified": true,
+    "source": "web_search",
+    "date": "2025-10-03",
+    "notes": "Standard route of administration"
+  },
+  "346628003": {
+    "display": "Piperacillin- and tazobactam-containing product",
+    "verified": true,
+    "source": "snowstorm_api",
+    "date": "2025-10-03",
+    "notes": "Replaces incorrect code 776274009 (which was actually hydroxycitronellal, a fragrance!)"
+  },
+  "777029003": {
+    "display": "Oxygen only product",
+    "verified": true,
+    "source": "snowstorm_api",
+    "date": "2025-10-03",
+    "notes": "Replaces UK-specific code 42016111000001102 (not in international edition). Also replaces earlier incorrect 410942007."
+  },
+  "387390002": {
+    "display": "Sodium chloride",
+    "verified": true,
+    "source": "user_provided",
+    "date": "2025-10-03",
+    "notes": "Replaces incorrect code 432294006 (which was Central sleep apnea)"
+  },
+  "233527006": {
+    "display": "Central venous catheter insertion",
+    "verified": true,
+    "source": "user_provided",
+    "date": "2025-10-03",
+    "notes": "Replaces incorrect code 71796008 (which was device, not procedure)"
+  },
+  "45555007": {
+    "display": "Norepinephrine (substance)",
+    "verified": true,
+    "source": "web_search",
+    "date": "2025-10-03",
+    "notes": "Replaces incorrect code 386980009 (which was Fever)"
+  },
+  "46713006": {
+    "display": "Nasal route",
+    "verified": true,
+    "source": "snomed_hierarchy",
+    "date": "2025-10-03",
+    "notes": "Route of administration - acceptable for nasal oxygen delivery"
+  },
+  "302314004": {
+    "display": "Military personnel (occupation)",
+    "verified": true,
+    "source": "web_search",
+    "date": "2025-10-03",
+    "notes": "General military code - SNOMED does not have specific rank codes. Removed 160548009 (Infectious agent in blood) and using text-only for rank"
+  }
+}

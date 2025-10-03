@@ -1,0 +1,227 @@
+# Preset #1 Source Data - OPCP Illness Pathway (PHC escalation → STRATEVAC)
+# Patient: Thomas Hodge (Drummer, British Army)
+# Scenario: Community-acquired pneumonia with sepsis escalation
+
+seedTime: 2025-10-02T05:00:00-04:00
+
+patient:
+  name:
+    given: Thomas
+    family: Hodge
+    prefix: Drummer
+  birthDate: 1998-03-15
+  gender: male
+  identifiers:
+    nhs: "9434765919"
+    mil: "A1234567"
+  extensions:
+    blood_group: {system: sct, code: "278147001", display: "Blood group O Rh(D) positive"}  # CORRECTED: was 112144000 (Blood group A)
+    rank: {text: "Private (OR-1)"}  # CORRECTED: removed incorrect SNOMED code 160548009 (no specific rank codes in SNOMED)
+    service: {text: "British Army"}
+
+allergies:
+  AllergyIntolerance:
+    - code: {system: sct, code: "300913006", display: "Allergy to shellfish"}
+      category: food
+      clinicalStatus: active
+      verificationStatus: confirmed
+      onsetDateTime: 2015-05-01
+
+medications_maintenance:
+  MedicationStatement:
+    - medicationCodeableConcept: {system: sct, code: "320818006", display: "Product containing precisely cetirizine hydrochloride 10 milligram/1 each conventional release oral tablet"}  # CORRECTED: was 372729009 (incorrect code)
+      status: active
+      effectivePeriod: {start: 2023-04-01}
+      dosage:
+        text: "10mg once daily"
+        timing: {repeat: {frequency: 1, period: 1, periodUnit: d}}
+
+problems_diagnoses:
+  Condition:
+    - code: {system: sct, code: "233604007", display: "Pneumonia (disorder)"}
+      clinicalStatus: active
+      verificationStatus: confirmed
+      onsetDateTime: +0min  # At seedTime
+      text: "Community-acquired pneumonia with sepsis (escalating)"
+
+# ============================================================================
+# OPERATIONAL CARE PATHWAY - Care Stage Timeline
+# ============================================================================
+
+poi:
+  Encounter:
+    baseTime: +0min  # 05:00:00
+    duration: 25min  # End: 05:25:00
+    class: EMER
+    type: {system: "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages", code: poi, display: "Point of Injury"}
+  Observation:
+    - code: {system: loinc, code: "8867-4", display: "Heart rate"}
+      valueQuantity: {value: 104, unit: "/min"}
+      effectiveDateTime: +10min  # 05:10:00
+    - code: {system: loinc, code: "9279-1", display: "Respiratory rate"}
+      valueQuantity: {value: 24, unit: "/min"}
+      effectiveDateTime: +10min  # 05:10:00
+    - code: {system: loinc, code: "8480-6", display: "Systolic blood pressure"}
+      valueQuantity: {value: 120, unit: "mmHg"}
+      effectiveDateTime: +10min  # 05:10:00
+    - code: {system: loinc, code: "8462-4", display: "Diastolic blood pressure"}
+      valueQuantity: {value: 78, unit: "mmHg"}
+      effectiveDateTime: +10min  # 05:10:00
+    - code: {system: loinc, code: "8310-5", display: "Body temperature"}
+      valueQuantity: {value: 38.3, unit: "Cel"}
+      effectiveDateTime: +10min  # 05:10:00
+    - code: {system: loinc, code: "59408-5", display: "Oxygen saturation in Arterial blood"}
+      valueQuantity: {value: 94, unit: "%"}
+      effectiveDateTime: +10min  # 05:10:00
+
+casevac:
+  Encounter:
+    baseTime: +0min  # From POI end (05:25) = 05:25:00
+    duration: 30min  # End: 05:55:00
+    class: EMER
+    type: {system: "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages", code: casevac, display: "Casualty Evacuation"}
+
+axp:
+  Encounter:
+    baseTime: +0min  # From CASEVAC end (05:55) = 05:55:00
+    duration: 30min  # End: 06:25:00
+    class: AMB
+    type: {system: "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages", code: axp, display: "Ambulance Exchange Point"}
+
+medevac:
+  Encounter:
+    baseTime: +5min  # From AXP end (06:25) + 5min gap = 06:30:00
+    duration: 50min  # End: 07:20:00
+    class: EMER
+    type: {system: "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages", code: medevac, display: "Medical Evacuation"}
+
+r1_phec:
+  Encounter:
+    baseTime: +10min  # From MEDEVAC end (07:20) + 10min gap = 07:30:00
+    duration: 60min  # End: 08:30:00
+    class: EMER
+    type: {system: "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages", code: r1_phec, display: "Role 1 PHEC"}
+  Observation:
+    - code: {system: loinc, code: "8867-4", display: "Heart rate"}
+      valueQuantity: {value: 112, unit: "/min"}
+      effectiveDateTime: +20min  # 07:50:00
+    - code: {system: loinc, code: "9279-1", display: "Respiratory rate"}
+      valueQuantity: {value: 28, unit: "/min"}
+      effectiveDateTime: +20min  # 07:50:00
+    - code: {system: loinc, code: "8480-6", display: "Systolic blood pressure"}
+      valueQuantity: {value: 116, unit: "mmHg"}
+      effectiveDateTime: +20min  # 07:50:00
+    - code: {system: loinc, code: "8462-4", display: "Diastolic blood pressure"}
+      valueQuantity: {value: 74, unit: "mmHg"}
+      effectiveDateTime: +20min  # 07:50:00
+    - code: {system: loinc, code: "8310-5", display: "Body temperature"}
+      valueQuantity: {value: 39.1, unit: "Cel"}
+      effectiveDateTime: +20min  # 07:50:00
+    - code: {system: loinc, code: "59408-5", display: "Oxygen saturation in Arterial blood"}
+      valueQuantity: {value: 92, unit: "%"}
+      effectiveDateTime: +20min  # 07:50:00
+  MedicationAdministration:
+    - medicationCodeableConcept: {system: sct, code: "777029003", display: "Oxygen"}
+      dosage:
+        dose: {value: 4, unit: "L/min"}
+        route: {system: sct, code: "46713006", display: "Nasal oxygen cannula"}
+      effectiveDateTime: +20min  # 07:50:00
+
+r1_phc:
+  Encounter:
+    baseTime: +10min  # From R1 PHEC end (08:30) + 10min gap = 08:40:00
+    duration: 200min  # End: 12:00:00 (3h 20min)
+    class: AMB
+    type: {system: "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages", code: r1_phc, display: "Role 1 PHC"}
+  Observation:
+    - code: {system: loinc, code: "8867-4", display: "Heart rate"}
+      valueQuantity: {value: 122, unit: "/min"}
+      effectiveDateTime: +40min  # 09:20:00
+    - code: {system: loinc, code: "9279-1", display: "Respiratory rate"}
+      valueQuantity: {value: 30, unit: "/min"}
+      effectiveDateTime: +40min  # 09:20:00
+    - code: {system: loinc, code: "8480-6", display: "Systolic blood pressure"}
+      valueQuantity: {value: 102, unit: "mmHg"}
+      effectiveDateTime: +40min  # 09:20:00
+    - code: {system: loinc, code: "8462-4", display: "Diastolic blood pressure"}
+      valueQuantity: {value: 64, unit: "mmHg"}
+      effectiveDateTime: +40min  # 09:20:00
+    - code: {system: loinc, code: "8310-5", display: "Body temperature"}
+      valueQuantity: {value: 39.6, unit: "Cel"}
+      effectiveDateTime: +40min  # 09:20:00
+    - code: {system: loinc, code: "59408-5", display: "Oxygen saturation in Arterial blood"}
+      valueQuantity: {value: 89, unit: "%"}
+      effectiveDateTime: +40min  # 09:20:00
+    - code: {system: loinc, code: "6690-2", display: "Leukocytes [#/volume] in Blood"}
+      valueQuantity: {value: 21.5, unit: "10*3/uL"}
+      effectiveDateTime: +60min  # 09:40:00
+    - code: {system: loinc, code: "2519-7", display: "Glucose [Mass/volume] in Serum or Plasma"}
+      valueQuantity: {value: 9.8, unit: "mmol/L"}
+      effectiveDateTime: +65min  # 09:45:00
+    - code: {system: loinc, code: "1988-5", display: "C reactive protein [Mass/volume] in Serum or Plasma"}
+      valueQuantity: {value: 180, unit: "mg/L"}
+      effectiveDateTime: +70min  # 09:50:00
+    - code: {system: loinc, code: "2524-7", display: "Lactate [Moles/volume] in Blood"}
+      valueQuantity: {value: 3.8, unit: "mmol/L"}
+      effectiveDateTime: +75min  # 09:55:00
+  ImagingStudy:
+    - description: "Chest X-ray - right lower lobe consolidation consistent with pneumonia"
+      started: +80min  # 10:00:00
+  MedicationAdministration:
+    - medicationCodeableConcept: {system: sct, code: "387390002", display: "Sodium chloride 0.9% infusion"}
+      dosage:
+        dose: {value: 1000, unit: "mL"}
+        route: {system: sct, code: "47625008", display: "Intravenous route"}
+      effectivePeriod: {start: +45min, end: +75min}  # 09:25:00 to 09:55:00
+    - medicationCodeableConcept: {system: sct, code: "346628003", display: "Piperacillin/tazobactam"}
+      dosage:
+        dose: {value: 4.5, unit: "g"}
+        route: {system: sct, code: "47625008", display: "Intravenous route"}
+      effectivePeriod: {start: +50min, end: +80min}  # 09:30:00 to 10:00:00
+
+fwd_tacevac:
+  Encounter:
+    baseTime: +20min  # From R1 PHC end (12:00) + 20min gap = 12:20:00
+    duration: 60min  # End: 13:20:00
+    class: EMER
+    type: {system: "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages", code: fwd_tacevac, display: "Forward TACEVAC"}
+
+r2_dhc:
+  Encounter:
+    baseTime: +10min  # From FWD TACEVAC end (13:20) + 10min gap = 13:30:00
+    duration: 390min  # End: 20:00:00 (6h 30min)
+    class: IMP
+    type: {system: "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages", code: r2_dhc, display: "Role 2 DHC"}
+  ImagingStudy:
+    - description: "CT Chest - multifocal consolidation, no PE, small pleural effusion"
+      started: +50min  # 14:20:00
+  Procedure:
+    - code: {system: sct, code: "233527006", display: "Central venous catheter insertion"}
+      performedPeriod: {start: +90min, end: +120min}  # 15:00:00 to 15:30:00
+  MedicationAdministration:
+    - medicationCodeableConcept: {system: sct, code: "45555007", display: "Norepinephrine"}
+      dosage:
+        text: "Titrated vasopressor support"
+        route: {system: sct, code: "47625008", display: "Intravenous route"}
+      effectivePeriod: {start: +110min, end: +390min}  # 15:20:00 to 20:00:00
+
+rear_tacevac:
+  Encounter:
+    baseTime: +30min  # From R2 end (20:00) + 30min gap = 20:30:00
+    duration: 150min  # End: 23:00:00 (2h 30min)
+    class: EMER
+    type: {system: "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages", code: rear_tacevac, display: "Rear TACEVAC"}
+
+r3_dhc:
+  Encounter:
+    baseTime: +10min  # From REAR TACEVAC end (23:00) + 10min gap = 23:10:00
+    duration: 1850min  # End: 2025-10-04 06:00:00 (30h 50min - ICU then ward)
+    class: IMP
+    type: {system: "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages", code: r3_dhc, display: "Role 3 DHC"}
+
+stratevac:
+  Encounter:
+    baseTime: +60min  # From R3 end (Oct 4 06:00) + 1h gap = 07:00:00
+    duration: 420min  # End: 14:00:00 (7 hours - flight to UK)
+    class: EMER
+    type: {system: "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages", code: stratevac, display: "STRATEVAC"}
