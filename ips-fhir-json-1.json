@@ -579,6 +579,13 @@
         },
         "type": [
           {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "poi",
+                "display": "Point of Injury"
+              }
+            ],
             "text": "Semi-serious illness onset at POI: cough, fever, chest pain on inspiration"
           }
         ],
@@ -602,6 +609,13 @@
         },
         "type": [
           {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "casevac",
+                "display": "Casualty Evacuation"
+              }
+            ],
             "text": "CASEVAC to AXP"
           }
         ],
@@ -625,6 +639,13 @@
         },
         "type": [
           {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "axp",
+                "display": "Ambulance Exchange Point"
+              }
+            ],
             "text": "Ambulance Exchange Point"
           }
         ],
@@ -648,6 +669,13 @@
         },
         "type": [
           {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "medevac",
+                "display": "Medical Evacuation"
+              }
+            ],
             "text": "MEDEVAC to Role 1"
           }
         ],
@@ -671,6 +699,13 @@
         },
         "type": [
           {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "r1_phec",
+                "display": "Role 1 PHEC"
+              }
+            ],
             "text": "R1 PHEC initial stabilization; MIST & MARCH; supplemental O2"
           }
         ],
@@ -694,6 +729,13 @@
         },
         "type": [
           {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "r1_phc",
+                "display": "Role 1 PHC"
+              }
+            ],
             "text": "R1 PHC: worsening dyspnea & fever; sepsis suspected; escalation triggered"
           }
         ],
@@ -717,6 +759,13 @@
         },
         "type": [
           {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "fwd_tacevac",
+                "display": "Forward TACEVAC"
+              }
+            ],
             "text": "Forward TACEVAC to Role 2"
           }
         ],
@@ -740,6 +789,13 @@
         },
         "type": [
           {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "r2_dhc",
+                "display": "Role 2"
+              }
+            ],
             "text": "Role 2: high-flow O2, IV antibiotics, imaging; transfer to R3"
           }
         ],
@@ -763,6 +819,13 @@
         },
         "type": [
           {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "rear_tacevac",
+                "display": "Rear TACEVAC"
+              }
+            ],
             "text": "Rear TACEVAC to Role 3"
           }
         ],
@@ -786,6 +849,13 @@
         },
         "type": [
           {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "r3_dhc",
+                "display": "Role 3"
+              }
+            ],
             "text": "Role 3: ICU then ward; improvement but needs STRATEVAC"
           }
         ],
@@ -809,6 +879,13 @@
         },
         "type": [
           {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "stratevac",
+                "display": "STRATEVAC"
+              }
+            ],
             "text": "STRATEVAC to UK for continued care"
           }
         ],

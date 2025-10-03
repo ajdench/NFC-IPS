@@ -1971,6 +1971,54 @@ const codecPipeline = (() => {
         return normaliseCareStageValue(rawValue);
     }
 
+    /**
+     * Get care stage from resource via Encounter.type.coding (new IPS-OPCP approach)
+     * or encounter.reference lookup, with fallback to extension (old Preset #0 approach)
+     * @param {Object} resource - FHIR resource (Observation, Condition, etc.)
+     * @param {Object} bundle - Full FHIR Bundle (for Encounter lookup)
+     * @returns {string|null} - Care stage key (poi, casevac, r1, etc.)
+     */
+    function getCareStageFromResource(resource, bundle) {
+        // Approach 1: If resource has encounter.reference, look up the Encounter
+        if (resource.encounter?.reference && bundle?.entry) {
+            const encounterRef = resource.encounter.reference;
+            const encounterEntry = bundle.entry.find(entry =>
+                entry.fullUrl === encounterRef ||
+                entry.resource?.id === encounterRef.replace('urn:uuid:', '')
+            );
+
+            if (encounterEntry?.resource?.resourceType === 'Encounter') {
+                const encounter = encounterEntry.resource;
+
+                // Check for type.coding (IPS-OPCP approach)
+                const typeCoding = encounter.type?.[0]?.coding?.find(coding =>
+                    coding.system === 'http://medis.org.uk/fhir/CodeSystem/opcp-care-stages'
+                );
+
+                if (typeCoding?.code) {
+                    // Map codes to internal stage keys
+                    const codeMap = {
+                        'poi': 'poi',
+                        'casevac': 'casevac',
+                        'axp': 'axp',
+                        'medevac': 'medevac',
+                        'r1_phec': 'r1',
+                        'r1_phc': 'r1',
+                        'fwd_tacevac': 'fwdTacevac',
+                        'r2_dhc': 'r2',
+                        'rear_tacevac': 'rearTacevac',
+                        'r3_dhc': 'r3',
+                        'stratevac': 'stratevac'
+                    };
+                    return codeMap[typeCoding.code] || typeCoding.code;
+                }
+            }
+        }
+
+        // Approach 2: Fallback to care-stage extension (old Preset #0 approach)
+        return getCareStageFromExtension(resource);
+    }
+
     const PROTO_URL = RESOURCES.NFC_PAYLOAD_PROTO;
     const LEGACY_PROTO_URL = RESOURCES.NFC_PAYLOAD_LEGACY_PROTO;
 
