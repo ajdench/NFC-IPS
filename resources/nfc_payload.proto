@@ -62,20 +62,23 @@ message Patient {
     CodeRef nhs_id = 5;
     CodeRef service_id = 6;
     string dob = 7;
-    string rank = 8;
+    CodeRef rank = 8;              // Changed from string - now supports multi-coding
     string title = 9;
-    string nationality = 10;
+    CodeRef nationality = 10;      // Changed from string - now ISO 3166 coded
+    string id = 11;                // Patient.id for fullUrl reconstruction
 }
 
 message Vital {
     CodeRef code = 1;
     double value = 2;
     string time = 3;
+    string id = 4;                 // Observation.id for fullUrl reconstruction
 }
 
 message Condition {
     CodeRef code = 1;
     string onset = 2;
+    string id = 3;                 // Condition.id for fullUrl reconstruction
 }
 
 message Event {
@@ -84,6 +87,7 @@ message Event {
     double dose = 3;
     string unit = 4;
     string route = 5;
+    string id = 6;                 // MedicationAdministration.id for fullUrl reconstruction
 }
 
 message Stage {
@@ -104,6 +108,7 @@ message Allergy {
     CodeRef code = 1;
     string onset = 2;
     string severity = 3;
+    string id = 4;                 // AllergyIntolerance.id for fullUrl reconstruction
 }
 
 message NFCPayload {
@@ -114,7 +119,14 @@ message NFCPayload {
     Stage r2 = 5;
     Stage casevac = 6;
     Stage r3 = 7;
-    int64 t = 8;
-    BundleMetadata bundleMetadata = 9;
+    int64 t = 8;                       // Bundle.timestamp (Unix milliseconds)
+    BundleMetadata bundleMetadata = 9; // DEPRECATED - will be removed
     repeated Allergy allergies = 10;
+
+    // Lossless reconstruction metadata (v2.0)
+    string bundle_id = 11;             // Bundle.id
+    string bundle_identifier = 12;     // Bundle.identifier.value (UUID)
+    string composition_id = 13;        // Composition.id
+    string composition_title = 14;     // Composition.title
+    int64 composition_date = 15;       // Composition.date (Unix milliseconds)
 }
