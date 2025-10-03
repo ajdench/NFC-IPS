@@ -1,0 +1,62 @@
+{
+  "resourceType": "ConceptMap",
+  "id": "stanag-to-hl7-rank",
+  "url": "http://medis.org.uk/CodeSystem/mappings/stanag-to-hl7-rank",
+  "version": "1.0.0",
+  "name": "STANAGToHL7RankMap",
+  "title": "NATO STANAG 2116 to HL7 v2 Table 0141 Rank Mapping",
+  "status": "active",
+  "date": "2025-10-03",
+  "publisher": "MEDIS",
+  "description": "Maps NATO STANAG 2116 military rank codes to HL7 v2 Table 0141 generic military rank/grade codes",
+  "sourceUri": "http://medis.org.uk/CodeSystem/NATO/STANAG/2116/APERSP-01/ranks",
+  "targetUri": "http://terminology.hl7.org/CodeSystem/v2-0141",
+  "group": [
+    {
+      "source": "http://medis.org.uk/CodeSystem/NATO/STANAG/2116/APERSP-01/ranks",
+      "target": "http://terminology.hl7.org/CodeSystem/v2-0141",
+      "element": [
+        { "code": "OR-1", "target": [{ "code": "E1", "equivalence": "equivalent" }] },
+        { "code": "OR-2", "target": [{ "code": "E2", "equivalence": "equivalent" }] },
+        { "code": "OR-3", "target": [{ "code": "E3", "equivalence": "equivalent" }] },
+        { "code": "OR-4", "target": [{ "code": "E4", "equivalence": "equivalent" }] },
+        { "code": "OR-5", "target": [{ "code": "E5", "equivalence": "equivalent" }] },
+        { "code": "OR-6", "target": [{ "code": "E6", "equivalence": "equivalent" }] },
+        { "code": "OR-7", "target": [{ "code": "E7", "equivalence": "equivalent" }] },
+        { "code": "OR-8", "target": [{ "code": "E8", "equivalence": "equivalent" }] },
+        { "code": "OR-9", "target": [{ "code": "E9", "equivalence": "equivalent" }] },
+        { "code": "OF-1", "target": [{ "code": "O1", "equivalence": "equivalent" }] },
+        { "code": "OF-2", "target": [{ "code": "O2", "equivalence": "equivalent" }] },
+        { "code": "OF-3", "target": [{ "code": "O3", "equivalence": "equivalent" }] },
+        { "code": "OF-4", "target": [{ "code": "O4", "equivalence": "equivalent" }] },
+        { "code": "OF-5", "target": [{ "code": "O5", "equivalence": "equivalent" }] },
+        { "code": "OF-6", "target": [{ "code": "O6", "equivalence": "equivalent" }] },
+        { "code": "OF-7", "target": [{ "code": "O7", "equivalence": "equivalent" }] },
+        { "code": "OF-8", "target": [{ "code": "O8", "equivalence": "equivalent" }] },
+        { "code": "OF-9", "target": [{ "code": "O9", "equivalence": "equivalent" }] },
+        { "code": "OF-10", "target": [{ "code": "O10", "equivalence": "equivalent" }] }
+      ]
+    }
+  ],
+  "simpleMap": {
+    "OR-1": "E1",
+    "OR-2": "E2",
+    "OR-3": "E3",
+    "OR-4": "E4",
+    "OR-5": "E5",
+    "OR-6": "E6",
+    "OR-7": "E7",
+    "OR-8": "E8",
+    "OR-9": "E9",
+    "OF-1": "O1",
+    "OF-2": "O2",
+    "OF-3": "O3",
+    "OF-4": "O4",
+    "OF-5": "O5",
+    "OF-6": "O6",
+    "OF-7": "O7",
+    "OF-8": "O8",
+    "OF-9": "O9",
+    "OF-10": "O10"
+  }
+}

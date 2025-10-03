@@ -1,0 +1,113 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "stanag-2116-ranks",
+  "url": "http://medis.org.uk/CodeSystem/NATO/STANAG/2116/APERSP-01/ranks",
+  "version": "1.0.0",
+  "name": "STANAG2116Ranks",
+  "title": "NATO STANAG 2116 / APERSP-01 Military Ranks",
+  "status": "active",
+  "experimental": false,
+  "date": "2025-10-03",
+  "publisher": "MEDIS",
+  "description": "NATO Standardization Agreement 2116 (STANAG 2116) / APERSP-01 military rank codes. Provides standardized rank grades across NATO forces.",
+  "purpose": "To provide a common rank coding system for NATO and allied military personnel in healthcare contexts.",
+  "caseSensitive": true,
+  "content": "complete",
+  "concept": [
+    {
+      "code": "OR-1",
+      "display": "Private (OR-1)",
+      "definition": "Other Ranks Grade 1 - Entry level enlisted personnel"
+    },
+    {
+      "code": "OR-2",
+      "display": "Private First Class (OR-2)",
+      "definition": "Other Ranks Grade 2"
+    },
+    {
+      "code": "OR-3",
+      "display": "Lance Corporal (OR-3)",
+      "definition": "Other Ranks Grade 3"
+    },
+    {
+      "code": "OR-4",
+      "display": "Corporal (OR-4)",
+      "definition": "Other Ranks Grade 4"
+    },
+    {
+      "code": "OR-5",
+      "display": "Sergeant (OR-5)",
+      "definition": "Other Ranks Grade 5"
+    },
+    {
+      "code": "OR-6",
+      "display": "Staff Sergeant (OR-6)",
+      "definition": "Other Ranks Grade 6"
+    },
+    {
+      "code": "OR-7",
+      "display": "Warrant Officer Class 2 (OR-7)",
+      "definition": "Other Ranks Grade 7"
+    },
+    {
+      "code": "OR-8",
+      "display": "Warrant Officer Class 1 (OR-8)",
+      "definition": "Other Ranks Grade 8"
+    },
+    {
+      "code": "OR-9",
+      "display": "Warrant Officer (OR-9)",
+      "definition": "Other Ranks Grade 9 - Senior enlisted rank"
+    },
+    {
+      "code": "OF-1",
+      "display": "Second Lieutenant (OF-1)",
+      "definition": "Officer Grade 1 - Entry level commissioned officer"
+    },
+    {
+      "code": "OF-2",
+      "display": "Lieutenant (OF-2)",
+      "definition": "Officer Grade 2"
+    },
+    {
+      "code": "OF-3",
+      "display": "Captain (OF-3)",
+      "definition": "Officer Grade 3"
+    },
+    {
+      "code": "OF-4",
+      "display": "Major (OF-4)",
+      "definition": "Officer Grade 4"
+    },
+    {
+      "code": "OF-5",
+      "display": "Lieutenant Colonel (OF-5)",
+      "definition": "Officer Grade 5"
+    },
+    {
+      "code": "OF-6",
+      "display": "Colonel (OF-6)",
+      "definition": "Officer Grade 6"
+    },
+    {
+      "code": "OF-7",
+      "display": "Brigadier (OF-7)",
+      "definition": "Officer Grade 7"
+    },
+    {
+      "code": "OF-8",
+      "display": "Major General (OF-8)",
+      "definition": "Officer Grade 8"
+    },
+    {
+      "code": "OF-9",
+      "display": "Lieutenant General (OF-9)",
+      "definition": "Officer Grade 9"
+    },
+    {
+      "code": "OF-10",
+      "display": "General (OF-10)",
+      "definition": "Officer Grade 10 - Senior general officer"
+    }
+  ]
+}

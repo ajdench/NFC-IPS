@@ -372,9 +372,9 @@
             "valueCodeableConcept": {
               "coding": [
                 {
-                  "system": "https://nato.int/CodeSystem/stanag-2116",
-                  "code": "OR1",
-                  "display": "Private (OR-1)"
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0141",
+                  "code": "E1",
+                  "display": "Enlisted 1"
                 }
               ],
               "text": "Drummer"
@@ -401,6 +401,18 @@
                   "system": "urn:iso:std:iso:3166",
                   "code": "GB",
                   "display": "United Kingdom"
+                }
+              ]
+            }
+          },
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/patient-bloodGroup",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "112144000",
+                  "display": "Blood group O positive"
                 }
               ]
             }

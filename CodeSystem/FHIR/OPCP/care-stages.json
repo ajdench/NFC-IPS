@@ -1,0 +1,81 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "opcp-care-stages",
+  "url": "http://medis.org.uk/CodeSystem/FHIR/OPCP/care-stages",
+  "version": "1.0.0",
+  "name": "OPCPCareStages",
+  "title": "Operational Care Pathway (OPCP) Care Stages",
+  "status": "active",
+  "experimental": false,
+  "date": "2025-10-03",
+  "publisher": "MEDIS",
+  "description": "Care stage codes for Operational Care Pathway (OPCP) used in military/pre-hospital trauma care. Defines progression from point of injury through strategic evacuation.",
+  "purpose": "To provide standardized codes for care stages in the OPCP framework, enabling structured tracking of patient journey through military healthcare system.",
+  "caseSensitive": true,
+  "content": "complete",
+  "concept": [
+    {
+      "code": "poi",
+      "display": "Point of Injury",
+      "definition": "Initial point of wounding or illness onset"
+    },
+    {
+      "code": "casevac",
+      "display": "Casualty Evacuation",
+      "definition": "Evacuation from point of injury to next care facility"
+    },
+    {
+      "code": "axp",
+      "display": "Ambulance Exchange Point",
+      "definition": "Transfer point between evacuation assets"
+    },
+    {
+      "code": "medevac",
+      "display": "Medical Evacuation",
+      "definition": "Medical evacuation with care during transport"
+    },
+    {
+      "code": "r1-phec",
+      "display": "Role 1 PHEC",
+      "definition": "Role 1 Pre-Hospital Emergency Care - Initial stabilization"
+    },
+    {
+      "code": "r1-phc",
+      "display": "Role 1 PHC",
+      "definition": "Role 1 Primary Healthcare - Outpatient medical services"
+    },
+    {
+      "code": "fwd-tacevac",
+      "display": "Forward TACEVAC",
+      "definition": "Forward tactical evacuation to Role 2"
+    },
+    {
+      "code": "r2-dhc",
+      "display": "Role 2 DHC",
+      "definition": "Role 2 Deployed Hospital Care - Resuscitative surgery capability"
+    },
+    {
+      "code": "rear-tacevac",
+      "display": "Rear TACEVAC",
+      "definition": "Rear tactical evacuation to Role 3"
+    },
+    {
+      "code": "r3-dhc",
+      "display": "Role 3 DHC",
+      "definition": "Role 3 Deployed Hospital Care - Full hospital capability"
+    },
+    {
+      "code": "stratevac",
+      "display": "STRATEVAC",
+      "definition": "Strategic evacuation to definitive care facility"
+    }
+  ],
+  "property": [
+    {
+      "code": "encounter-class",
+      "uri": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+      "description": "Recommended Encounter.class value",
+      "type": "code"
+    }
+  ]
+}
