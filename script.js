@@ -2356,18 +2356,11 @@ const codecPipeline = (() => {
 
         // Helper function to determine care stage from FHIR resource
         function determineCareStage(resource) {
-            // Look for care-stage extension
-            const careStageExt = resource.extension?.find(ext =>
-                ext.url === FHIR_EXTENSIONS.CARE_STAGE ||
-                ext.url?.includes('care-stage')
-            );
-
-            if (careStageExt?.valueString) {
-                return careStageExt.valueString;
-            }
+            // Use the new getCareStageFromResource function
+            const careStage = getCareStageFromResource(resource, bundle);
 
             // Default to POI if no care stage found
-            return 'poi';
+            return careStage || 'poi';
         }
 
         // Find patient resource
@@ -2525,7 +2518,8 @@ const codecPipeline = (() => {
             t: Date.now()
         };
 
-        // Process all clinical resources and categorize by care-stage extension
+        // Process all clinical resources and categorize by care stage
+        // Uses Encounter.type.coding (new IPS-OPCP) or extension (old Preset #0)
         bundle.entry.forEach(entry => {
             if (!entry.resource) return;
 
@@ -2537,7 +2531,7 @@ const codecPipeline = (() => {
                 return;
             }
 
-            const careStage = getCareStageFromExtension(resource);
+            const careStage = getCareStageFromResource(resource, bundle);
 
             if (!careStage) return;
 
