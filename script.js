@@ -5992,8 +5992,7 @@ async function init() {
         try {
             // If fragment already exists and we're not in fragment mode, just navigate to it
             if (formatState.conversionResults.fragment && formatState.leftMode !== 'fragment') {
-                switchToStageFormat('left', 'encode');
-                updateStageStates('left');
+                await updateLeftPaneMode('fragment');
                 showMessage('✓ Viewing existing Fragment', 'info');
                 return;
             }
