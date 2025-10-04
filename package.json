@@ -31,7 +31,8 @@
   "homepage": "https://ajdench.github.io/NFC-IPS/",
   "devDependencies": {
     "gh-pages": "^6.3.0",
-    "live-server": "^1.2.2"
+    "live-server": "^1.2.2",
+    "puppeteer": "^24.23.0"
   },
   "dependencies": {
     "pako": "^2.1.0",
