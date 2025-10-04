@@ -6001,7 +6001,7 @@ async function init() {
             formatState.conversionResults = {};
 
             if (formatState.leftMode === 'fragment') {
-                // Decode: Pass fragment to right pane and prepare all decode formats
+                // Decode: Fragment → FHIR in right pane (with staged progression)
 
                 // Decode the fragment to prepare all formats
                 const parsedViewModel = await payloadService.parseUserInput(inputContent);
@@ -6009,68 +6009,103 @@ async function init() {
                     throw new Error('Unable to decode fragment data');
                 }
 
-                // Store all formats for right pane cycling
+                // Store fragment
                 formatState.conversionResults.fragment = inputContent;
-                formatState.conversionResults.coderef = JSON.stringify(parsedViewModel.rawPayload, null, 2);
-                formatState.conversionResults.protobuf = await codecPipeline.getProtobufBinary(parsedViewModel.rawPayload);
 
+                // Stage 1: Decode (Fragment → Protobuf) - Red stage
+                formatState.conversionResults.protobuf = await codecPipeline.getProtobufBinary(parsedViewModel.rawPayload);
+                updateRightPaneFormat('protobuf');
+                const uint8Array = new Uint8Array(formatState.conversionResults.protobuf);
+                const hexDisplay = Array.from(uint8Array).map(b => b.toString(16).padStart(2, '0')).join(' ');
+                rightInput.textContent = hexDisplay;
+                updateCharCount(rightInput, rightCharCount);
+                updateStageStates('right');
+                showMessage('Decode stage active', 'info');
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // Stage 2: Decompress (Protobuf → CodeRef) - Blue stage
+                formatState.conversionResults.coderef = JSON.stringify(parsedViewModel.rawPayload, null, 2);
+                updateRightPaneFormat('coderef');
+                rightInput.textContent = formatState.conversionResults.coderef;
+                updateCharCount(rightInput, rightCharCount);
+                updateStageStates('right');
+                showMessage('Decompress stage active', 'info');
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // Stage 3: Parse (CodeRef → FHIR) - Orange stage
                 const fhirBundle = codecPipeline.convertCodeRefToFhirBundle(parsedViewModel.rawPayload);
                 formatState.conversionResults.fhir = JSON.stringify(fhirBundle, null, 2);
-
-                // Start with fragment in right pane and activate Decode stage (red)
-                updateRightPaneFormat('fragment');
+                updateRightPaneFormat('fhir');
+                rightInput.textContent = formatState.conversionResults.fhir;
+                updateCharCount(rightInput, rightCharCount);
                 updateStageStates('right');
 
-                showMessage('Fragment decoded - Click right title to cycle through formats', 'success');
+                showMessage('Fragment decoded to FHIR - Click right title to cycle through formats', 'success');
 
             } else if (formatState.leftMode === 'fhir') {
-                // Encode: FHIR Bundle -> URL Fragment in left pane only
+                // Encode: FHIR Bundle -> URL Fragment in left pane only (with staged progression)
 
                 const fhirPayload = JSON.parse(inputContent);
 
                 // Store original FHIR data before encoding
                 formatState.originalFhir = inputContent;
-
-                // Convert FHIR to CodeRef
-                const codeRef = codecPipeline.convertFhirBundleToCodeRef(fhirPayload);
-                formatState.conversionResults.coderef = JSON.stringify(codeRef, null, 2);
-
-                // Store original FHIR
                 formatState.conversionResults.fhir = inputContent;
 
-                // Encode to fragment
+                // Stage 1: Convert (FHIR → CodeRef) - Orange stage
+                const codeRef = codecPipeline.convertFhirBundleToCodeRef(fhirPayload);
+                formatState.conversionResults.coderef = JSON.stringify(codeRef, null, 2);
+                await updateLeftPaneMode('coderef');
+                leftInput.textContent = formatState.conversionResults.coderef;
+                updateCharCount(leftInput, leftCharCount);
+                updateStageStates('left');
+                showMessage('Convert stage active', 'info');
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // Stage 2: Compress (CodeRef → Protobuf) - Blue stage
+                formatState.conversionResults.protobuf = await codecPipeline.getProtobufBinary(codeRef);
+                await updateLeftPaneMode('protobuf');
+                const uint8Array = new Uint8Array(formatState.conversionResults.protobuf);
+                const hexDisplay = Array.from(uint8Array).map(b => b.toString(16).padStart(2, '0')).join(' ');
+                leftInput.textContent = hexDisplay;
+                updateCharCount(leftInput, leftCharCount);
+                updateStageStates('left');
+                showMessage('Compress stage active', 'info');
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // Stage 3: Encode (Protobuf → Fragment) - Red stage
                 const fragment = await codecPipeline.encodeToFragment(fhirPayload);
                 formatState.conversionResults.fragment = fragment;
-
-                // Generate protobuf binary format
-                formatState.conversionResults.protobuf = await codecPipeline.getProtobufBinary(codeRef);
-
-                // Switch left pane to URL Fragment mode and display result
                 await updateLeftPaneMode('fragment');
                 leftInput.textContent = fragment;
                 updateCharCount(leftInput, leftCharCount);
+                updateStageStates('left');
 
                 // Do NOT update right pane - it should remain in current state until Decode is clicked
 
                 showMessage(`Encoded FHIR to URL Fragment`, 'success');
             } else if (formatState.leftMode === 'coderef') {
-                // From CodeRef: encode to fragment
+                // From CodeRef: encode to fragment (with staged progression)
                 const codeRef = JSON.parse(inputContent);
-
-                // Generate protobuf binary format
-                formatState.conversionResults.protobuf = await codecPipeline.getProtobufBinary(codeRef);
-
-                // Encode to fragment
-                const fragment = await codecPipeline.encodeToFragment(codeRef);
-                formatState.conversionResults.fragment = fragment;
-
-                // Store CodeRef
                 formatState.conversionResults.coderef = inputContent;
 
-                // Switch to fragment view
+                // Stage 1: Compress (CodeRef → Protobuf) - Blue stage
+                formatState.conversionResults.protobuf = await codecPipeline.getProtobufBinary(codeRef);
+                await updateLeftPaneMode('protobuf');
+                const uint8Array = new Uint8Array(formatState.conversionResults.protobuf);
+                const hexDisplay = Array.from(uint8Array).map(b => b.toString(16).padStart(2, '0')).join(' ');
+                leftInput.textContent = hexDisplay;
+                updateCharCount(leftInput, leftCharCount);
+                updateStageStates('left');
+                showMessage('Compress stage active', 'info');
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // Stage 2: Encode (Protobuf → Fragment) - Red stage
+                const fragment = await codecPipeline.encodeToFragment(codeRef);
+                formatState.conversionResults.fragment = fragment;
                 await updateLeftPaneMode('fragment');
                 leftInput.textContent = fragment;
                 updateCharCount(leftInput, leftCharCount);
+                updateStageStates('left');
 
                 showMessage(`Encoded CodeRef to URL Fragment`, 'success');
             } else if (formatState.leftMode === 'protobuf') {
@@ -6080,14 +6115,15 @@ async function init() {
                     return;
                 }
 
+                // Stage 1: Encode (Protobuf → Fragment) - Red stage
                 const codeRef = JSON.parse(formatState.conversionResults.coderef);
                 const fragment = await codecPipeline.encodeToFragment(codeRef);
                 formatState.conversionResults.fragment = fragment;
 
-                // Switch to fragment view
                 await updateLeftPaneMode('fragment');
                 leftInput.textContent = fragment;
                 updateCharCount(leftInput, leftCharCount);
+                updateStageStates('left');
 
                 showMessage(`Encoded to URL Fragment`, 'success');
             }
