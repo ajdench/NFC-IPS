@@ -6585,6 +6585,10 @@ function initializeStageReveals() {
 
     // Stage item click handlers for format switching and encoding
     function setupStageClickHandlers() {
+        // Get input elements
+        const leftInput = document.getElementById('left-input');
+        const rightInput = document.getElementById('right-input');
+
         // Left pane stage clicks
         const leftStages = leftStageReveal?.querySelectorAll('.stage-reveal-item');
         console.log('Setting up stage click handlers, found stages:', leftStages?.length);
