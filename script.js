@@ -3395,12 +3395,9 @@ const codecPipeline = (() => {
                 const testDecodeSmall = payloadType.decode(testBuffer);
             }
 
-            // Convert binary to hex representation for display
-            const hexString = Array.from(new Uint8Array(buffer))
-                .map(byte => byte.toString(16).padStart(2, '0'))
-                .join(' ');
-
-            return `// Protobuf binary representation (${buffer.length} bytes)\n// Hex format:\n${hexString}`;
+            // Return the actual ArrayBuffer for encoding/storage
+            // Display layer will convert to hex when needed
+            return buffer;
         } catch (error) {
             console.error('Error generating protobuf binary:', error);
             return `// Error generating protobuf binary:\n// ${error.message}`;
