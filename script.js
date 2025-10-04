@@ -6719,6 +6719,10 @@ function initializeStageReveals() {
                         const hexDisplay = Array.from(new Uint8Array(formatState.conversionResults.protobuf))
                             .map(b => b.toString(16).padStart(2, '0')).join(' ');
                         leftInput.textContent = hexDisplay;
+                        console.log('Protobuf hex display:', hexDisplay.substring(0, 100));
+                    } else {
+                        leftInput.textContent = '';
+                        console.warn('No protobuf data in formatState.conversionResults');
                     }
                     break;
                 case 'encode':
