@@ -2647,6 +2647,7 @@ const codecPipeline = (() => {
 
     function convertConditionToCodeRef(condition) {
         return {
+            id: condition.id || '',
             code: {
                 sys: extractSystem(condition.code?.coding?.[0]?.system),
                 code: condition.code?.coding?.[0]?.code || 'unknown'
@@ -2657,6 +2658,7 @@ const codecPipeline = (() => {
 
     function convertObservationToCodeRef(observation) {
         const vital = {
+            id: observation.id || '',
             code: {
                 sys: extractSystem(observation.code?.coding?.[0]?.system),
                 code: observation.code?.coding?.[0]?.code || 'unknown'
@@ -2682,6 +2684,7 @@ const codecPipeline = (() => {
 
     function convertMedicationToCodeRef(medication) {
         return {
+            id: medication.id || '',
             code: {
                 sys: extractSystem(medication.medicationCodeableConcept?.coding?.[0]?.system),
                 code: medication.medicationCodeableConcept?.coding?.[0]?.code || 'unknown'
@@ -2700,6 +2703,7 @@ const codecPipeline = (() => {
 
     function convertProcedureToCodeRef(procedure) {
         return {
+            id: procedure.id || '',
             code: {
                 sys: extractSystem(procedure.code?.coding?.[0]?.system),
                 code: procedure.code?.coding?.[0]?.code || 'unknown'
@@ -2718,6 +2722,7 @@ const codecPipeline = (() => {
 
     function convertAllergyToCodeRef(allergy) {
         return {
+            id: allergy.id || '',
             code: {
                 sys: extractSystem(allergy.code?.coding?.[0]?.system),
                 code: allergy.code?.coding?.[0]?.code || 'unknown'
