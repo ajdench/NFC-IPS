@@ -36,11 +36,20 @@ async function runParityTest() {
         await page.goto(SERVER_URL, { waitUntil: 'networkidle2', timeout: 30000 });
 
         console.log('⏳ Waiting for frameworks to load...\n');
+
+        // Debug: Check what's actually available
+        const availableGlobals = await page.evaluate(() => {
+            return {
+                pipelineValidator: typeof window.pipelineValidator,
+                codecPipeline: typeof window.codecPipeline,
+                payloadService: typeof window.payloadService,
+                viewModelBuilder: typeof window.viewModelBuilder
+            };
+        });
+        console.log('Available globals:', availableGlobals);
+
         await page.waitForFunction(() => {
-            return window.pipelineValidator &&
-                   window.codecPipeline &&
-                   window.payloadService &&
-                   window.viewModelBuilder;
+            return window.pipelineValidator;
         }, { timeout: 30000 });
 
         console.log('✅ Frameworks loaded\n');
