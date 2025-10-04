@@ -6023,7 +6023,7 @@ async function init() {
 
                 showMessage('Fragment decoded - Click right title to cycle through formats', 'success');
 
-            } else { // 'fhir'
+            } else if (formatState.leftMode === 'fhir') {
                 // Encode: FHIR Bundle -> URL Fragment in left pane only
 
                 const fhirPayload = JSON.parse(inputContent);
@@ -6053,6 +6053,43 @@ async function init() {
                 // Do NOT update right pane - it should remain in current state until Decode is clicked
 
                 showMessage(`Encoded FHIR to URL Fragment`, 'success');
+            } else if (formatState.leftMode === 'coderef') {
+                // From CodeRef: encode to fragment
+                const codeRef = JSON.parse(inputContent);
+
+                // Generate protobuf binary format
+                formatState.conversionResults.protobuf = await codecPipeline.getProtobufBinary(codeRef);
+
+                // Encode to fragment
+                const fragment = await codecPipeline.encodeToFragment(codeRef);
+                formatState.conversionResults.fragment = fragment;
+
+                // Store CodeRef
+                formatState.conversionResults.coderef = inputContent;
+
+                // Switch to fragment view
+                await updateLeftPaneMode('fragment');
+                leftInput.textContent = fragment;
+                updateCharCount(leftInput, leftCharCount);
+
+                showMessage(`Encoded CodeRef to URL Fragment`, 'success');
+            } else if (formatState.leftMode === 'protobuf') {
+                // From Protobuf: need CodeRef to encode to fragment
+                if (!formatState.conversionResults.coderef) {
+                    showMessage('CodeRef data needed to encode to fragment', 'error');
+                    return;
+                }
+
+                const codeRef = JSON.parse(formatState.conversionResults.coderef);
+                const fragment = await codecPipeline.encodeToFragment(codeRef);
+                formatState.conversionResults.fragment = fragment;
+
+                // Switch to fragment view
+                await updateLeftPaneMode('fragment');
+                leftInput.textContent = fragment;
+                updateCharCount(leftInput, leftCharCount);
+
+                showMessage(`Encoded to URL Fragment`, 'success');
             }
 
         } catch (error) {
