@@ -6665,12 +6665,13 @@ function initializeStageReveals() {
                             showMessage('✓ Viewing Fragment', 'info');
                         } else {
                             // Need to encode - check prerequisite
-                            if (currentMode !== 'protobuf' || !formatState.conversionResults.protobuf) {
-                                showMessage('Compress to Protobuf first', 'warning');
+                            if (!formatState.conversionResults.coderef) {
+                                showMessage('Convert to CodeRef first', 'warning');
                                 return;
                             }
-                            // Encode Protobuf → Fragment
-                            const fragment = await codecPipeline.encodeToFragment(formatState.conversionResults.protobuf);
+                            // Encode CodeRef → Fragment (via protobuf compression)
+                            const codeRefData = JSON.parse(formatState.conversionResults.coderef);
+                            const fragment = await codecPipeline.encodeToFragment(codeRefData);
                             formatState.conversionResults.fragment = fragment;
                             switchToStageFormat('left', 'encode');
                             updateStageStates('left');
