@@ -6678,19 +6678,57 @@ function initializeStageReveals() {
 
     // Switch pane to format corresponding to stage
     function switchToStageFormat(pane, stage) {
+        const leftInput = document.getElementById('left-input');
+        const leftPaneTitle = document.getElementById('left-pane-title');
+        const actionButton = document.getElementById('action-button');
+
         if (pane === 'left') {
             switch(stage) {
                 case 'source':
-                    updateLeftPaneMode('fhir');
+                    formatState.leftMode = 'fhir';
+                    leftPaneTitle.textContent = 'IPS FHIR JSON';
+                    leftInput.placeholder = 'Paste FHIR JSON here...';
+                    actionButton.textContent = 'Encode';
+                    actionButton.className = 'pane-button encode-mode';
+                    if (formatState.conversionResults?.fhir) {
+                        leftInput.textContent = formatState.conversionResults.fhir;
+                    } else if (formatState.originalFhir) {
+                        leftInput.textContent = formatState.originalFhir;
+                    }
                     break;
                 case 'convert':
-                    updateLeftPaneMode('coderef');
+                    formatState.leftMode = 'coderef';
+                    leftPaneTitle.textContent = 'CodeRef Format';
+                    leftInput.placeholder = 'CodeRef JSON format...';
+                    actionButton.textContent = 'Encode';
+                    actionButton.className = 'pane-button encode-mode';
+                    if (formatState.conversionResults?.coderef) {
+                        leftInput.textContent = formatState.conversionResults.coderef;
+                    }
                     break;
                 case 'compress':
-                    updateLeftPaneMode('protobuf');
+                    formatState.leftMode = 'protobuf';
+                    leftPaneTitle.textContent = 'Protobuf Binary';
+                    leftInput.placeholder = 'Protobuf binary data...';
+                    actionButton.textContent = 'Encode';
+                    actionButton.className = 'pane-button encode-mode';
+                    if (formatState.conversionResults?.protobuf) {
+                        const hexDisplay = Array.from(new Uint8Array(formatState.conversionResults.protobuf))
+                            .map(b => b.toString(16).padStart(2, '0')).join(' ');
+                        leftInput.textContent = hexDisplay;
+                    }
                     break;
                 case 'encode':
-                    updateLeftPaneMode('fragment');
+                    formatState.leftMode = 'fragment';
+                    leftPaneTitle.textContent = 'URL Fragment';
+                    leftInput.placeholder = 'Paste Base64 encoded fragment here...';
+                    actionButton.textContent = 'Decode';
+                    actionButton.className = 'pane-button decode-mode';
+                    if (formatState.originalFragment) {
+                        leftInput.textContent = formatState.originalFragment;
+                    } else if (formatState.conversionResults?.fragment) {
+                        leftInput.textContent = formatState.conversionResults.fragment;
+                    }
                     break;
             }
         } else if (pane === 'right') {
