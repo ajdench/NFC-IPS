@@ -2464,35 +2464,129 @@ const codecPipeline = (() => {
     }
 
     /**
+     * Extract blood group from Patient extensions
+     */
+    function extractBloodGroup(patientResource) {
+        const bloodGroupExt = patientResource.extension?.find(ext =>
+            ext.url === 'http://hl7.org/fhir/StructureDefinition/patient-bloodGroup'
+        );
+        const code = bloodGroupExt?.valueCodeableConcept?.coding?.[0]?.code;
+        return code ? {sct: code} : null;
+    }
+
+    /**
+     * Extract NHS identifier with type code
+     */
+    function extractNHSIdentifier(patientResource) {
+        const nhsId = patientResource.identifier?.find(id =>
+            id.system === 'https://fhir.nhs.uk/Id/nhs-number'
+        );
+        if (!nhsId) return null;
+        return {
+            nhs: nhsId.value,
+            type: nhsId.type?.coding?.[0]?.code || 'NH'
+        };
+    }
+
+    /**
+     * Extract service identifier with type code
+     */
+    function extractServiceIdentifier(patientResource) {
+        const serviceId = patientResource.identifier?.find(id =>
+            id.system === 'https://fhir.nato.int/Id/service-number'
+        );
+        if (!serviceId) return null;
+        return {
+            mil: serviceId.value,
+            type: serviceId.type?.coding?.[0]?.code || 'MIL'
+        };
+    }
+
+    /**
+     * Extract multi-coded rank (HL7 + NATO STANAG + text)
+     */
+    function extractRank(patientResource) {
+        const rankExt = patientResource.extension?.find(ext =>
+            ext.url === 'https://fhir.nato.int/StructureDefinition/military-rank'
+        );
+        if (!rankExt) return null;
+
+        const codings = rankExt.valueCodeableConcept?.coding || [];
+        const text = rankExt.valueCodeableConcept?.text;
+
+        const rank = {};
+
+        // Extract HL7 v2-0141 code
+        const hl7Coding = codings.find(c =>
+            c.system === 'http://terminology.hl7.org/CodeSystem/v2-0141'
+        );
+        if (hl7Coding) rank['hl7-v2-0141'] = hl7Coding.code;
+
+        // Extract NATO STANAG code
+        const natoCoding = codings.find(c =>
+            c.system === 'http://medis.org.uk/CodeSystem/NATO/STANAG/2116/APERSP-01/ranks'
+        );
+        if (natoCoding) rank['nato-stanag-2116'] = natoCoding.code;
+
+        // Add text if present
+        if (text) rank.text = text;
+
+        return Object.keys(rank).length > 0 ? rank : null;
+    }
+
+    /**
+     * Extract coded nationality (ISO 3166)
+     */
+    function extractNationality(patientResource) {
+        const nationalityExt = patientResource.extension?.find(ext =>
+            ext.url === 'http://hl7.org/fhir/StructureDefinition/patient-nationality'
+        );
+        const code = nationalityExt?.valueCodeableConcept?.coding?.find(c =>
+            c.system === 'urn:iso:std:iso:3166'
+        )?.code;
+        return code ? {'iso-3166': code} : null;
+    }
+
+    /**
      * Converts FHIR Bundle to CodeRef format for protobuf serialization
      * @param {Object} bundle - FHIR Bundle object
      * @returns {Object} CodeRef payload
      */
     function convertFhirBundleToCodeRef(bundle) {
-        // bundleMetadata removed - 41KB bloat with fields not in protobuf schema
-        // Bundle metadata can be reconstructed from patient/encounter data
+        // Extract Bundle metadata for lossless reconstruction
+        const bundleId = bundle.id || '';
+        const bundleIdentifier = bundle.identifier?.value || '';
+        const bundleTimestamp = bundle.timestamp ? new Date(bundle.timestamp).getTime() : Date.now();
+
+        // Extract Composition metadata
+        const compositionEntry = bundle.entry?.find(entry => entry.resource?.resourceType === 'Composition');
+        const composition = compositionEntry?.resource;
+        const compositionId = composition?.id || '';
+        const compositionTitle = composition?.title || '';
+        const compositionDate = composition?.date ? new Date(composition.date).getTime() : bundleTimestamp;
 
         // Extract and convert patient from bundle
         const patientEntry = bundle.entry?.find(entry => entry.resource?.resourceType === 'Patient');
         const patientResource = patientEntry?.resource;
         const convertedPatient = patientResource ? {
+            id: patientResource.id || '',
             given: patientResource.name?.[0]?.given?.[0] || '',
             family: patientResource.name?.[0]?.family || '',
-            birthDate: patientResource.birthDate || '',
-            gender: patientResource.gender || '',
+            title: patientResource.name?.[0]?.prefix?.[0] || '',
+            dob: patientResource.birthDate || '',
+            gender: {sys: 'sct', code: patientResource.gender || ''},
             // Extract blood group from extensions
-            bloodGroup: patientResource.extension?.find(ext =>
-                ext.url === 'http://hl7.org/fhir/StructureDefinition/patient-bloodGroup'
-            )?.valueCodeableConcept?.coding?.[0]?.code || null,
-            // Extract identifiers
-            identifiers: patientResource.identifier?.map(id => ({
-                system: id.system || '',
-                value: id.value || '',
-                type: id.type?.coding?.[0]?.code || ''
-            })) || []
+            blood_group: extractBloodGroup(patientResource),
+            // Extract identifiers with multi-coding
+            nhs_id: extractNHSIdentifier(patientResource),
+            service_id: extractServiceIdentifier(patientResource),
+            // Extract multi-coded rank
+            rank: extractRank(patientResource),
+            // Extract coded nationality
+            nationality: extractNationality(patientResource)
         } : {};
 
-        // Initialize payload structure with care stages
+        // Initialize payload structure with care stages and metadata
         const payload = {
             patient: convertedPatient,
             allergies: [],
@@ -2505,7 +2599,13 @@ const codecPipeline = (() => {
             r2: { vitals: [], conditions: [], events: [] },
             rearTacevac: { vitals: [], conditions: [], events: [] },
             r3: { vitals: [], conditions: [], events: [] },
-            t: Date.now()
+            t: bundleTimestamp,
+            // Lossless reconstruction metadata
+            bundle_id: bundleId,
+            bundle_identifier: bundleIdentifier,
+            composition_id: compositionId,
+            composition_title: compositionTitle,
+            composition_date: compositionDate
         };
 
         // Process all clinical resources and categorize by care stage
