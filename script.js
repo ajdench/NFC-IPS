@@ -6716,9 +6716,18 @@ function initializeStageReveals() {
                     actionButton.textContent = 'Encode';
                     actionButton.className = 'pane-button encode-mode';
                     if (formatState.conversionResults?.protobuf) {
-                        const hexDisplay = Array.from(new Uint8Array(formatState.conversionResults.protobuf))
+                        console.log('Protobuf data type:', typeof formatState.conversionResults.protobuf);
+                        console.log('Protobuf data:', formatState.conversionResults.protobuf);
+                        console.log('Protobuf byteLength:', formatState.conversionResults.protobuf?.byteLength);
+
+                        const uint8Array = new Uint8Array(formatState.conversionResults.protobuf);
+                        console.log('Uint8Array length:', uint8Array.length);
+                        console.log('First 10 bytes:', Array.from(uint8Array.slice(0, 10)));
+
+                        const hexDisplay = Array.from(uint8Array)
                             .map(b => b.toString(16).padStart(2, '0')).join(' ');
                         leftInput.textContent = hexDisplay;
+                        console.log('Hex display length:', hexDisplay.length);
                         console.log('Protobuf hex display:', hexDisplay.substring(0, 100));
                     } else {
                         leftInput.textContent = '';
