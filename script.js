@@ -6681,6 +6681,7 @@ function initializeStageReveals() {
         const leftInput = document.getElementById('left-input');
         const leftPaneTitle = document.getElementById('left-pane-title');
         const actionButton = document.getElementById('action-button');
+        const leftCharCount = document.getElementById('left-char-count');
 
         if (pane === 'left') {
             switch(stage) {
@@ -6743,6 +6744,12 @@ function initializeStageReveals() {
                         leftInput.textContent = formatState.conversionResults.fragment;
                     }
                     break;
+            }
+
+            // Update character count for left pane
+            if (leftCharCount) {
+                const text = leftInput.textContent || '';
+                leftCharCount.textContent = `${text.length} characters`;
             }
         } else if (pane === 'right') {
             switch(stage) {
