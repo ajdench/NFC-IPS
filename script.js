@@ -6545,12 +6545,17 @@ function initializeStageReveals() {
     if (leftPaneTitle && leftStageReveal) {
         leftPaneTitle.addEventListener('dblclick', () => {
             // Cycle through formats: FHIR → CodeRef → Protobuf → Fragment → FHIR
-            const formatCycle = ['fhir', 'coderef', 'protobuf', 'fragment'];
-            const currentMode = formatState.leftMode;
-            const currentIndex = formatCycle.indexOf(currentMode);
-            const nextMode = formatCycle[(currentIndex + 1) % formatCycle.length];
+            const formatCycle = ['source', 'convert', 'compress', 'encode'];
+            const stageMap = {fhir: 'source', coderef: 'convert', protobuf: 'compress', fragment: 'encode'};
+            const reverseMap = {source: 'fhir', convert: 'coderef', compress: 'protobuf', encode: 'fragment'};
 
-            updateLeftPaneMode(nextMode);
+            const currentMode = formatState.leftMode;
+            const currentStage = stageMap[currentMode] || 'source';
+            const currentIndex = formatCycle.indexOf(currentStage);
+            const nextStage = formatCycle[(currentIndex + 1) % formatCycle.length];
+            const nextMode = reverseMap[nextStage];
+
+            switchToStageFormat('left', nextStage);
             updateStageStates('left');
             showMessage(`Cycled to ${nextMode} view (no conversion)`, 'info');
         });
@@ -6623,7 +6628,7 @@ function initializeStageReveals() {
                         formatState.conversionResults.coderef = JSON.stringify(
                             codecPipeline.convertFhirBundleToCodeRef(fhirData), null, 2
                         );
-                        await updateLeftPaneMode('coderef');
+                        switchToStageFormat('left', 'convert');
                         showMessage('✓ Converted to CodeRef', 'success');
                     }
                     else if (stageType === 'compress') {
@@ -6634,7 +6639,7 @@ function initializeStageReveals() {
                         // Compress CodeRef → Protobuf
                         const codeRefData = JSON.parse(formatState.conversionResults.coderef);
                         formatState.conversionResults.protobuf = await codecPipeline.getProtobufBinary(codeRefData);
-                        await updateLeftPaneMode('protobuf');
+                        switchToStageFormat('left', 'compress');
                         showMessage('✓ Compressed to Protobuf', 'success');
                     }
                     else if (stageType === 'encode') {
@@ -6645,12 +6650,12 @@ function initializeStageReveals() {
                         // Encode Protobuf → Fragment
                         const fragment = await codecPipeline.encodeToFragment(formatState.conversionResults.protobuf);
                         formatState.conversionResults.fragment = fragment;
-                        await updateLeftPaneMode('fragment');
+                        switchToStageFormat('left', 'encode');
                         showMessage('✓ Encoded to Fragment', 'success');
                     }
                     else if (stageType === 'source') {
                         // Source box click: navigate to FHIR view
-                        await updateLeftPaneMode('fhir');
+                        switchToStageFormat('left', 'source');
                         updateStageStates('left');
                         showMessage('✓ FHIR source view', 'success');
                     }
