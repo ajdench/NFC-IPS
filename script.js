@@ -6613,45 +6613,69 @@ function initializeStageReveals() {
                     return;
                 }
 
-                // Stepwise conversion with strict prerequisites
+                // Stepwise conversion with smart navigation
                 try {
                     if (stageType === 'convert') {
-                        if (currentMode !== 'fhir') {
-                            showMessage('Switch to FHIR source first', 'warning');
-                            return;
+                        // If CodeRef already exists, just navigate to it
+                        if (formatState.conversionResults.coderef) {
+                            switchToStageFormat('left', 'convert');
+                            updateStageStates('left');
+                            showMessage('✓ Viewing CodeRef', 'info');
+                        } else {
+                            // Need to convert - check prerequisite
+                            if (currentMode !== 'fhir') {
+                                showMessage('Switch to FHIR source first', 'warning');
+                                return;
+                            }
+                            // Convert FHIR → CodeRef
+                            const fhirData = JSON.parse(leftInput.textContent);
+                            formatState.conversionResults.coderef = JSON.stringify(
+                                codecPipeline.convertFhirBundleToCodeRef(fhirData), null, 2
+                            );
+                            switchToStageFormat('left', 'convert');
+                            updateStageStates('left');
+                            showMessage('✓ Converted to CodeRef', 'success');
                         }
-                        // Convert FHIR → CodeRef
-                        const fhirData = JSON.parse(leftInput.textContent);
-                        formatState.conversionResults.coderef = JSON.stringify(
-                            codecPipeline.convertFhirBundleToCodeRef(fhirData), null, 2
-                        );
-                        switchToStageFormat('left', 'convert');
-                        updateStageStates('left');
-                        showMessage('✓ Converted to CodeRef', 'success');
                     }
                     else if (stageType === 'compress') {
-                        if (currentMode !== 'coderef' || !formatState.conversionResults.coderef) {
-                            showMessage('Convert to CodeRef first', 'warning');
-                            return;
+                        // If Protobuf already exists, just navigate to it
+                        if (formatState.conversionResults.protobuf) {
+                            switchToStageFormat('left', 'compress');
+                            updateStageStates('left');
+                            showMessage('✓ Viewing Protobuf', 'info');
+                        } else {
+                            // Need to compress - check prerequisite
+                            if (currentMode !== 'coderef' || !formatState.conversionResults.coderef) {
+                                showMessage('Convert to CodeRef first', 'warning');
+                                return;
+                            }
+                            // Compress CodeRef → Protobuf
+                            const codeRefData = JSON.parse(formatState.conversionResults.coderef);
+                            formatState.conversionResults.protobuf = await codecPipeline.getProtobufBinary(codeRefData);
+                            switchToStageFormat('left', 'compress');
+                            updateStageStates('left');
+                            showMessage('✓ Compressed to Protobuf', 'success');
                         }
-                        // Compress CodeRef → Protobuf
-                        const codeRefData = JSON.parse(formatState.conversionResults.coderef);
-                        formatState.conversionResults.protobuf = await codecPipeline.getProtobufBinary(codeRefData);
-                        switchToStageFormat('left', 'compress');
-                        updateStageStates('left');
-                        showMessage('✓ Compressed to Protobuf', 'success');
                     }
                     else if (stageType === 'encode') {
-                        if (currentMode !== 'protobuf' || !formatState.conversionResults.protobuf) {
-                            showMessage('Compress to Protobuf first', 'warning');
-                            return;
+                        // If Fragment already exists, just navigate to it
+                        if (formatState.conversionResults.fragment) {
+                            switchToStageFormat('left', 'encode');
+                            updateStageStates('left');
+                            showMessage('✓ Viewing Fragment', 'info');
+                        } else {
+                            // Need to encode - check prerequisite
+                            if (currentMode !== 'protobuf' || !formatState.conversionResults.protobuf) {
+                                showMessage('Compress to Protobuf first', 'warning');
+                                return;
+                            }
+                            // Encode Protobuf → Fragment
+                            const fragment = await codecPipeline.encodeToFragment(formatState.conversionResults.protobuf);
+                            formatState.conversionResults.fragment = fragment;
+                            switchToStageFormat('left', 'encode');
+                            updateStageStates('left');
+                            showMessage('✓ Encoded to Fragment', 'success');
                         }
-                        // Encode Protobuf → Fragment
-                        const fragment = await codecPipeline.encodeToFragment(formatState.conversionResults.protobuf);
-                        formatState.conversionResults.fragment = fragment;
-                        switchToStageFormat('left', 'encode');
-                        updateStageStates('left');
-                        showMessage('✓ Encoded to Fragment', 'success');
                     }
                     else if (stageType === 'source') {
                         // Source box click: navigate to FHIR view
