@@ -2743,29 +2743,30 @@ const codecPipeline = (() => {
 
     function convertCodeRefToFhirBundle(codeRefPayload) {
 
-        // Create base bundle structure (bundleMetadata removed for 91% size reduction)
+        // Create base bundle structure with preserved metadata for lossless reconstruction
         const bundle = {
             resourceType: 'Bundle',
-            id: 'ips-reconstructed',
+            id: codeRefPayload.bundle_id || 'ips-reconstructed',
             meta: {
                 lastUpdated: new Date().toISOString(),
                 profile: [FHIR_PROFILES.IPS_BUNDLE]
             },
             identifier: {
                 system: 'urn:oid:2.16.840.1.113883.4.3.2.1',
-                value: 'IPS-001'
+                value: codeRefPayload.bundle_identifier || 'IPS-001'
             },
             type: 'document',
-            timestamp: new Date().toISOString(),
+            timestamp: codeRefPayload.t ? new Date(codeRefPayload.t).toISOString() : new Date().toISOString(),
             entry: []
         };
 
-        // Add minimal Composition resource
+        // Add Composition resource with preserved metadata
+        const compositionId = codeRefPayload.composition_id || 'composition-example';
         bundle.entry.push({
-            fullUrl: 'urn:uuid:generated-composition',
+            fullUrl: `urn:uuid:${compositionId}`,
             resource: {
                 resourceType: 'Composition',
-                id: 'composition-example',
+                id: compositionId,
                 status: 'final',
                 type: {
                     coding: [{
@@ -2775,11 +2776,10 @@ const codecPipeline = (() => {
                     }]
                 },
                 subject: {
-                    reference: 'urn:uuid:patient-example'
+                    reference: `urn:uuid:${codeRefPayload.patient?.id || 'patient-example'}`
                 },
-                date: new Date().toISOString(),
-                author: [{ reference: 'urn:uuid:practitioner-example' }],
-                title: 'International Patient Summary',
+                date: codeRefPayload.composition_date ? new Date(codeRefPayload.composition_date).toISOString() : new Date().toISOString(),
+                title: codeRefPayload.composition_title || 'International Patient Summary',
                 section: []
             }
         });
@@ -2801,9 +2801,9 @@ const codecPipeline = (() => {
                 };
                 console.log('DEBUG: Replaced existing patient in bundle with converted patient');
             } else {
-                // Add new patient entry if none exists
+                // Add new patient entry using preserved resource ID
                 bundle.entry.push({
-                    fullUrl: 'urn:uuid:patient-example',
+                    fullUrl: `urn:uuid:${patient.id}`,
                     resource: patient
                 });
                 console.log('DEBUG: Added new patient entry to bundle');
@@ -2815,7 +2815,7 @@ const codecPipeline = (() => {
             codeRefPayload.allergies.forEach((allergy, index) => {
                 const allergyResource = convertCodeRefAllergyToFhir(allergy);
                 bundle.entry.push({
-                    fullUrl: `urn:uuid:allergy-${index}`,
+                    fullUrl: `urn:uuid:${allergyResource.id}`,
                     resource: allergyResource
                 });
             });
@@ -2832,7 +2832,7 @@ const codecPipeline = (() => {
                 stage.vitals.forEach((vital, index) => {
                     const observation = convertCodeRefVitalToFhir(vital, stageKey);
                     bundle.entry.push({
-                        fullUrl: `urn:uuid:${stageKey}-vital-${index}`,
+                        fullUrl: `urn:uuid:${observation.id}`,
                         resource: observation
                     });
                 });
@@ -2843,7 +2843,7 @@ const codecPipeline = (() => {
                 stage.conditions.forEach((condition, index) => {
                     const conditionResource = convertCodeRefConditionToFhir(condition, stageKey);
                     bundle.entry.push({
-                        fullUrl: `urn:uuid:${stageKey}-condition-${index}`,
+                        fullUrl: `urn:uuid:${conditionResource.id}`,
                         resource: conditionResource
                     });
                 });
@@ -2854,7 +2854,7 @@ const codecPipeline = (() => {
                 stage.events.forEach((event, index) => {
                     const eventResource = convertCodeRefEventToFhir(event, stageKey);
                     bundle.entry.push({
-                        fullUrl: `urn:uuid:${stageKey}-event-${index}`,
+                        fullUrl: `urn:uuid:${eventResource.id}`,
                         resource: eventResource
                     });
                 });
@@ -2867,15 +2867,14 @@ const codecPipeline = (() => {
     function convertCodeRefPatientToFhir(patientData) {
         const patient = {
             resourceType: 'Patient',
-            id: 'patient-example'
+            id: patientData.id || 'patient-example'
         };
 
-        // Name
-        if (patientData.given || patientData.family || patientData.title || patientData.rank) {
+        // Name (rank removed from prefix - now in extension)
+        if (patientData.given || patientData.family || patientData.title) {
             const nameEntry = { use: 'official' };
             const prefixes = [];
             if (patientData.title) prefixes.push(patientData.title);
-            if (patientData.rank) prefixes.push(patientData.rank);
             if (prefixes.length) nameEntry.prefix = prefixes;
             if (patientData.given) {
                 nameEntry.given = Array.isArray(patientData.given) ? patientData.given : [patientData.given];
@@ -2957,17 +2956,77 @@ const codecPipeline = (() => {
             console.log('DEBUG: No blood group found in patient data:', patientData);
         }
 
+        // Military Rank (multi-coding support)
+        if (patientData.rank) {
+            const rankExt = {
+                url: 'https://fhir.nato.int/StructureDefinition/military-rank',
+                valueCodeableConcept: {
+                    coding: []
+                }
+            };
+
+            if (typeof patientData.rank === 'object') {
+                // Multi-coded rank
+                if (patientData.rank['hl7-v2-0141']) {
+                    rankExt.valueCodeableConcept.coding.push({
+                        system: 'http://terminology.hl7.org/CodeSystem/v2-0141',
+                        code: patientData.rank['hl7-v2-0141'],
+                        display: `Enlisted ${patientData.rank['hl7-v2-0141'].substring(1)}`
+                    });
+                }
+                if (patientData.rank['nato-stanag-2116']) {
+                    rankExt.valueCodeableConcept.coding.push({
+                        system: 'http://medis.org.uk/CodeSystem/NATO/STANAG/2116/APERSP-01/ranks',
+                        code: patientData.rank['nato-stanag-2116'],
+                        display: `Private (${patientData.rank['nato-stanag-2116']})`
+                    });
+                }
+                if (patientData.rank.text) {
+                    rankExt.valueCodeableConcept.text = patientData.rank.text;
+                }
+            } else {
+                // Legacy string format (text only)
+                rankExt.valueCodeableConcept.text = patientData.rank;
+            }
+
+            if (rankExt.valueCodeableConcept.coding.length || rankExt.valueCodeableConcept.text) {
+                extensions.push(rankExt);
+            }
+        }
+
+        // Nationality (multi-coding support)
         if (patientData.nationality) {
-            extensions.push({
+            const nationalityExt = {
                 url: FHIR_EXTENSIONS.PATIENT_NATIONALITY,
                 valueCodeableConcept: {
-                    coding: [{
-                        system: 'urn:iso:std:iso:3166',
-                        code: patientData.nationality,
-                        display: patientData.nationality
-                    }]
+                    coding: []
                 }
-            });
+            };
+
+            if (typeof patientData.nationality === 'object') {
+                // Multi-coded nationality
+                if (patientData.nationality['iso-3166']) {
+                    nationalityExt.valueCodeableConcept.coding.push({
+                        system: 'urn:iso:std:iso:3166',
+                        code: patientData.nationality['iso-3166'],
+                        display: patientData.nationality.text || patientData.nationality['iso-3166']
+                    });
+                }
+                if (patientData.nationality.text) {
+                    nationalityExt.valueCodeableConcept.text = patientData.nationality.text;
+                }
+            } else {
+                // Legacy string format
+                nationalityExt.valueCodeableConcept.coding.push({
+                    system: 'urn:iso:std:iso:3166',
+                    code: patientData.nationality,
+                    display: patientData.nationality
+                });
+            }
+
+            if (nationalityExt.valueCodeableConcept.coding.length) {
+                extensions.push(nationalityExt);
+            }
         }
 
         if (extensions.length) patient.extension = extensions;
@@ -2978,6 +3037,7 @@ const codecPipeline = (() => {
     function convertCodeRefAllergyToFhir(allergy) {
         const allergyResource = {
             resourceType: 'AllergyIntolerance',
+            id: allergy.id || `allergy-${Date.now()}`,
             clinicalStatus: {
                 coding: [{
                     system: 'http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical',
@@ -3025,6 +3085,7 @@ const codecPipeline = (() => {
     function convertCodeRefVitalToFhir(vital, careStage) {
         return {
             resourceType: 'Observation',
+            id: vital.id || `vital-${careStage}-${Date.now()}`,
             status: 'final',
             category: [{
                 coding: [{
@@ -3056,6 +3117,7 @@ const codecPipeline = (() => {
     function convertCodeRefConditionToFhir(condition, careStage) {
         return {
             resourceType: 'Condition',
+            id: condition.id || `condition-${careStage}-${Date.now()}`,
             clinicalStatus: {
                 coding: [{
                     system: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
@@ -3085,6 +3147,7 @@ const codecPipeline = (() => {
         if (isMedication) {
             return {
                 resourceType: 'MedicationAdministration',
+                id: event.id || `medication-${careStage}-${Date.now()}`,
                 status: 'completed',
                 medicationCodeableConcept: {
                     coding: [{
@@ -3115,6 +3178,7 @@ const codecPipeline = (() => {
         } else {
             return {
                 resourceType: 'Procedure',
+                id: event.id || `procedure-${careStage}-${Date.now()}`,
                 status: 'completed',
                 code: {
                     coding: [{
