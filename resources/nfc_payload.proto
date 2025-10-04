@@ -109,6 +109,7 @@ message Allergy {
     string onset = 2;
     string severity = 3;
     string id = 4;                 // AllergyIntolerance.id for fullUrl reconstruction
+    string recorded_date = 5;      // AllergyIntolerance.recordedDate (ISO string)
 }
 
 message NFCPayload {
@@ -129,4 +130,7 @@ message NFCPayload {
     string composition_id = 13;        // Composition.id
     string composition_title = 14;     // Composition.title
     int64 composition_date = 15;       // Composition.date (Unix milliseconds)
+
+    // Phase 3: 100% lossless timestamps
+    string bundle_meta_last_updated = 16;  // Bundle.meta.lastUpdated (ISO string)
 }

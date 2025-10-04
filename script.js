@@ -2605,7 +2605,8 @@ const codecPipeline = (() => {
             bundle_identifier: bundleIdentifier,
             composition_id: compositionId,
             composition_title: compositionTitle,
-            composition_date: compositionDate
+            composition_date: compositionDate,
+            bundle_meta_last_updated: bundle.meta?.lastUpdated || ''
         };
 
         // Process all clinical resources and categorize by care stage
@@ -2729,7 +2730,7 @@ const codecPipeline = (() => {
             },
             category: allergy.category?.[0] || 'unknown',
             criticality: allergy.criticality || 'unknown',
-            recorded: allergy.recordedDate || new Date().toISOString(),
+            recorded_date: allergy.recordedDate || new Date().toISOString(),
             reaction: allergy.reaction?.[0]?.manifestation?.[0]?.coding?.[0]?.code || 'unknown',
             severity: allergy.reaction?.[0]?.severity || 'unknown'
         };
@@ -2748,7 +2749,7 @@ const codecPipeline = (() => {
             resourceType: 'Bundle',
             id: codeRefPayload.bundle_id || 'ips-reconstructed',
             meta: {
-                lastUpdated: new Date().toISOString(),
+                lastUpdated: codeRefPayload.bundle_meta_last_updated || new Date().toISOString(),
                 profile: [FHIR_PROFILES.IPS_BUNDLE]
             },
             identifier: {
@@ -3062,7 +3063,7 @@ const codecPipeline = (() => {
             patient: {
                 reference: 'urn:uuid:patient-example'
             },
-            recordedDate: allergy.recorded || new Date().toISOString()
+            recordedDate: allergy.recorded_date || new Date().toISOString()
         };
 
         // Add reaction if present

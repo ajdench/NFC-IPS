@@ -1,0 +1,1976 @@
+[
+  {
+    "path": "meta.lastUpdated",
+    "type": "value",
+    "left": "2025-10-05T10:13:47.106Z",
+    "right": "2025-10-05T10:13:48.389Z"
+  },
+  {
+    "path": "meta.profile",
+    "type": "value",
+    "left": [
+      "http://hl7.org/fhir/uv/ips/StructureDefinition/Bundle-uv-ips"
+    ],
+    "right": [
+      "http://hl7.org/fhir/uv/ips/StructureDefinition/Bundle-uv-ips"
+    ]
+  },
+  {
+    "path": "entry",
+    "type": "value",
+    "left": [
+      {
+        "fullUrl": "urn:uuid:composition-example",
+        "resource": {
+          "resourceType": "Composition",
+          "id": "composition-example",
+          "status": "final",
+          "type": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "60591-5",
+                "display": "Patient summary Document"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
+          },
+          "date": "2025-10-05T10:13:47.106Z",
+          "title": "International Patient Summary",
+          "section": []
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452",
+        "resource": {
+          "resourceType": "Patient",
+          "id": "5ed15fe2-7f5f-5f52-a1f6-0991ff75f452",
+          "name": [
+            {
+              "use": "official",
+              "prefix": [
+                "Mr"
+              ],
+              "given": [
+                "Thomas"
+              ],
+              "family": "Hodge"
+            }
+          ],
+          "gender": "unknown",
+          "birthDate": "1998-03-15"
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:dab83d87-5ddb-50f9-ab9b-7d228555b8ec",
+        "resource": {
+          "resourceType": "AllergyIntolerance",
+          "id": "dab83d87-5ddb-50f9-ab9b-7d228555b8ec",
+          "clinicalStatus": {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+                "code": "active"
+              }
+            ]
+          },
+          "verificationStatus": {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
+                "code": "confirmed"
+              }
+            ]
+          },
+          "category": [
+            "unknown"
+          ],
+          "criticality": "unknown",
+          "code": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "300913006",
+                "display": ""
+              }
+            ]
+          },
+          "patient": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "recordedDate": "2025-10-05T10:13:47.106Z"
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8867-4-POI-10",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8867-4-POI-10",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8867-4",
+                "display": "Heart rate"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+          "valueQuantity": {
+            "value": 104,
+            "unit": "bpm"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "poi"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-9279-1-POI-10",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-9279-1-POI-10",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "9279-1",
+                "display": "Respiratory rate"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+          "valueQuantity": {
+            "value": 24,
+            "unit": "/min"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "poi"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8480-6-POI-10",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8480-6-POI-10",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8480-6",
+                "display": "Systolic blood pressure"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+          "valueQuantity": {
+            "value": 120,
+            "unit": "mmHg"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "poi"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8462-4-POI-10",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8462-4-POI-10",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8462-4",
+                "display": "Diastolic blood pressure"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+          "valueQuantity": {
+            "value": 78,
+            "unit": "mmHg"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "poi"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8310-5-POI-10",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8310-5-POI-10",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8310-5",
+                "display": "Body temperature"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+          "valueQuantity": {
+            "value": 38.3,
+            "unit": "°F"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "poi"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-59408-5-POI-10",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-59408-5-POI-10",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "59408-5",
+                "display": "59408-5"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+          "valueQuantity": {
+            "value": 94,
+            "unit": ""
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "poi"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8867-4-R1_PHEC-50",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8867-4-R1_PHEC-50",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8867-4",
+                "display": "Heart rate"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T07:50:00-04:00",
+          "valueQuantity": {
+            "value": 112,
+            "unit": "bpm"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-9279-1-R1_PHEC-50",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-9279-1-R1_PHEC-50",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "9279-1",
+                "display": "Respiratory rate"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T07:50:00-04:00",
+          "valueQuantity": {
+            "value": 28,
+            "unit": "/min"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8480-6-R1_PHEC-50",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8480-6-R1_PHEC-50",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8480-6",
+                "display": "Systolic blood pressure"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T07:50:00-04:00",
+          "valueQuantity": {
+            "value": 116,
+            "unit": "mmHg"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8462-4-R1_PHEC-50",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8462-4-R1_PHEC-50",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8462-4",
+                "display": "Diastolic blood pressure"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T07:50:00-04:00",
+          "valueQuantity": {
+            "value": 74,
+            "unit": "mmHg"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8310-5-R1_PHEC-50",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8310-5-R1_PHEC-50",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8310-5",
+                "display": "Body temperature"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T07:50:00-04:00",
+          "valueQuantity": {
+            "value": 39.1,
+            "unit": "°F"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-59408-5-R1_PHEC-50",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-59408-5-R1_PHEC-50",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "59408-5",
+                "display": "59408-5"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T07:50:00-04:00",
+          "valueQuantity": {
+            "value": 92,
+            "unit": ""
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8867-4-R1_PHC-20",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8867-4-R1_PHC-20",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8867-4",
+                "display": "Heart rate"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T09:20:00-04:00",
+          "valueQuantity": {
+            "value": 122,
+            "unit": "bpm"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-9279-1-R1_PHC-20",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-9279-1-R1_PHC-20",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "9279-1",
+                "display": "Respiratory rate"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T09:20:00-04:00",
+          "valueQuantity": {
+            "value": 30,
+            "unit": "/min"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8480-6-R1_PHC-20",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8480-6-R1_PHC-20",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8480-6",
+                "display": "Systolic blood pressure"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T09:20:00-04:00",
+          "valueQuantity": {
+            "value": 102,
+            "unit": "mmHg"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8462-4-R1_PHC-20",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8462-4-R1_PHC-20",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8462-4",
+                "display": "Diastolic blood pressure"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T09:20:00-04:00",
+          "valueQuantity": {
+            "value": 64,
+            "unit": "mmHg"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8310-5-R1_PHC-20",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8310-5-R1_PHC-20",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8310-5",
+                "display": "Body temperature"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T09:20:00-04:00",
+          "valueQuantity": {
+            "value": 39.6,
+            "unit": "°F"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-59408-5-R1_PHC-20",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-59408-5-R1_PHC-20",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "59408-5",
+                "display": "59408-5"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T09:20:00-04:00",
+          "valueQuantity": {
+            "value": 89,
+            "unit": ""
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:medadmin-R1_PHEC-50",
+        "resource": {
+          "resourceType": "Procedure",
+          "id": "medadmin-R1_PHEC-50",
+          "status": "completed",
+          "code": {
+            "coding": [
+              {
+                "system": "urn:code:unknown",
+                "code": "unknown",
+                "display": "unknown"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "performedDateTime": "2025-10-05T10:13:44.571Z",
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:medadmin-R1_PHC-25",
+        "resource": {
+          "resourceType": "Procedure",
+          "id": "medadmin-R1_PHC-25",
+          "status": "completed",
+          "code": {
+            "coding": [
+              {
+                "system": "urn:code:unknown",
+                "code": "unknown",
+                "display": "unknown"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "performedDateTime": "2025-10-05T10:13:44.571Z",
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:medadmin-R1_PHC-30",
+        "resource": {
+          "resourceType": "Procedure",
+          "id": "medadmin-R1_PHC-30",
+          "status": "completed",
+          "code": {
+            "coding": [
+              {
+                "system": "urn:code:unknown",
+                "code": "unknown",
+                "display": "unknown"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "performedDateTime": "2025-10-05T10:13:44.571Z",
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:proc-central-line",
+        "resource": {
+          "resourceType": "Procedure",
+          "id": "proc-central-line",
+          "status": "completed",
+          "code": {
+            "coding": [
+              {
+                "system": "urn:code:unknown",
+                "code": "unknown",
+                "display": "unknown"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "performedDateTime": "2025-10-05T10:13:44.571Z",
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r2"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:medadmin-R2-20",
+        "resource": {
+          "resourceType": "Procedure",
+          "id": "medadmin-R2-20",
+          "status": "completed",
+          "code": {
+            "coding": [
+              {
+                "system": "urn:code:unknown",
+                "code": "unknown",
+                "display": "unknown"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "performedDateTime": "2025-10-05T10:13:44.571Z",
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r2"
+            }
+          ]
+        }
+      }
+    ],
+    "right": [
+      {
+        "fullUrl": "urn:uuid:composition-example",
+        "resource": {
+          "resourceType": "Composition",
+          "id": "composition-example",
+          "status": "final",
+          "type": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "60591-5",
+                "display": "Patient summary Document"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
+          },
+          "date": "2025-10-05T10:13:48.389Z",
+          "title": "International Patient Summary",
+          "section": []
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452",
+        "resource": {
+          "resourceType": "Patient",
+          "id": "5ed15fe2-7f5f-5f52-a1f6-0991ff75f452",
+          "name": [
+            {
+              "use": "official",
+              "prefix": [
+                "Mr"
+              ],
+              "given": [
+                "Thomas"
+              ],
+              "family": "Hodge"
+            }
+          ],
+          "gender": "unknown",
+          "birthDate": "1998-03-15"
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:dab83d87-5ddb-50f9-ab9b-7d228555b8ec",
+        "resource": {
+          "resourceType": "AllergyIntolerance",
+          "id": "dab83d87-5ddb-50f9-ab9b-7d228555b8ec",
+          "clinicalStatus": {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+                "code": "active"
+              }
+            ]
+          },
+          "verificationStatus": {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
+                "code": "confirmed"
+              }
+            ]
+          },
+          "category": [
+            "unknown"
+          ],
+          "criticality": "unknown",
+          "code": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "300913006",
+                "display": ""
+              }
+            ]
+          },
+          "patient": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "recordedDate": "2025-10-05T10:13:48.390Z"
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8867-4-POI-10",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8867-4-POI-10",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8867-4",
+                "display": "Heart rate"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+          "valueQuantity": {
+            "value": 104,
+            "unit": "bpm"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "poi"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-9279-1-POI-10",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-9279-1-POI-10",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "9279-1",
+                "display": "Respiratory rate"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+          "valueQuantity": {
+            "value": 24,
+            "unit": "/min"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "poi"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8480-6-POI-10",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8480-6-POI-10",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8480-6",
+                "display": "Systolic blood pressure"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+          "valueQuantity": {
+            "value": 120,
+            "unit": "mmHg"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "poi"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8462-4-POI-10",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8462-4-POI-10",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8462-4",
+                "display": "Diastolic blood pressure"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+          "valueQuantity": {
+            "value": 78,
+            "unit": "mmHg"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "poi"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8310-5-POI-10",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8310-5-POI-10",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8310-5",
+                "display": "Body temperature"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+          "valueQuantity": {
+            "value": 38.3,
+            "unit": "°F"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "poi"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-59408-5-POI-10",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-59408-5-POI-10",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "59408-5",
+                "display": "59408-5"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+          "valueQuantity": {
+            "value": 94,
+            "unit": ""
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "poi"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8867-4-R1_PHEC-50",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8867-4-R1_PHEC-50",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8867-4",
+                "display": "Heart rate"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T07:50:00-04:00",
+          "valueQuantity": {
+            "value": 112,
+            "unit": "bpm"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-9279-1-R1_PHEC-50",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-9279-1-R1_PHEC-50",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "9279-1",
+                "display": "Respiratory rate"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T07:50:00-04:00",
+          "valueQuantity": {
+            "value": 28,
+            "unit": "/min"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8480-6-R1_PHEC-50",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8480-6-R1_PHEC-50",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8480-6",
+                "display": "Systolic blood pressure"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T07:50:00-04:00",
+          "valueQuantity": {
+            "value": 116,
+            "unit": "mmHg"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8462-4-R1_PHEC-50",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8462-4-R1_PHEC-50",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8462-4",
+                "display": "Diastolic blood pressure"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T07:50:00-04:00",
+          "valueQuantity": {
+            "value": 74,
+            "unit": "mmHg"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8310-5-R1_PHEC-50",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8310-5-R1_PHEC-50",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8310-5",
+                "display": "Body temperature"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T07:50:00-04:00",
+          "valueQuantity": {
+            "value": 39.1,
+            "unit": "°F"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-59408-5-R1_PHEC-50",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-59408-5-R1_PHEC-50",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "59408-5",
+                "display": "59408-5"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T07:50:00-04:00",
+          "valueQuantity": {
+            "value": 92,
+            "unit": ""
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8867-4-R1_PHC-20",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8867-4-R1_PHC-20",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8867-4",
+                "display": "Heart rate"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T09:20:00-04:00",
+          "valueQuantity": {
+            "value": 122,
+            "unit": "bpm"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-9279-1-R1_PHC-20",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-9279-1-R1_PHC-20",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "9279-1",
+                "display": "Respiratory rate"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T09:20:00-04:00",
+          "valueQuantity": {
+            "value": 30,
+            "unit": "/min"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8480-6-R1_PHC-20",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8480-6-R1_PHC-20",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8480-6",
+                "display": "Systolic blood pressure"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T09:20:00-04:00",
+          "valueQuantity": {
+            "value": 102,
+            "unit": "mmHg"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8462-4-R1_PHC-20",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8462-4-R1_PHC-20",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8462-4",
+                "display": "Diastolic blood pressure"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T09:20:00-04:00",
+          "valueQuantity": {
+            "value": 64,
+            "unit": "mmHg"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-8310-5-R1_PHC-20",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-8310-5-R1_PHC-20",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "8310-5",
+                "display": "Body temperature"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T09:20:00-04:00",
+          "valueQuantity": {
+            "value": 39.6,
+            "unit": "°F"
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:obs-59408-5-R1_PHC-20",
+        "resource": {
+          "resourceType": "Observation",
+          "id": "obs-59408-5-R1_PHC-20",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                  "code": "vital-signs",
+                  "display": "Vital Signs"
+                }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "59408-5",
+                "display": "59408-5"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "effectiveDateTime": "2025-10-02T09:20:00-04:00",
+          "valueQuantity": {
+            "value": 89,
+            "unit": ""
+          },
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:medadmin-R1_PHEC-50",
+        "resource": {
+          "resourceType": "Procedure",
+          "id": "medadmin-R1_PHEC-50",
+          "status": "completed",
+          "code": {
+            "coding": [
+              {
+                "system": "urn:code:unknown",
+                "code": "unknown",
+                "display": "unknown"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "performedDateTime": "2025-10-05T10:13:44.571Z",
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:medadmin-R1_PHC-25",
+        "resource": {
+          "resourceType": "Procedure",
+          "id": "medadmin-R1_PHC-25",
+          "status": "completed",
+          "code": {
+            "coding": [
+              {
+                "system": "urn:code:unknown",
+                "code": "unknown",
+                "display": "unknown"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "performedDateTime": "2025-10-05T10:13:44.571Z",
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:medadmin-R1_PHC-30",
+        "resource": {
+          "resourceType": "Procedure",
+          "id": "medadmin-R1_PHC-30",
+          "status": "completed",
+          "code": {
+            "coding": [
+              {
+                "system": "urn:code:unknown",
+                "code": "unknown",
+                "display": "unknown"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "performedDateTime": "2025-10-05T10:13:44.571Z",
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r1"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:proc-central-line",
+        "resource": {
+          "resourceType": "Procedure",
+          "id": "proc-central-line",
+          "status": "completed",
+          "code": {
+            "coding": [
+              {
+                "system": "urn:code:unknown",
+                "code": "unknown",
+                "display": "unknown"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "performedDateTime": "2025-10-05T10:13:44.571Z",
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r2"
+            }
+          ]
+        }
+      },
+      {
+        "fullUrl": "urn:uuid:medadmin-R2-20",
+        "resource": {
+          "resourceType": "Procedure",
+          "id": "medadmin-R2-20",
+          "status": "completed",
+          "code": {
+            "coding": [
+              {
+                "system": "urn:code:unknown",
+                "code": "unknown",
+                "display": "unknown"
+              }
+            ]
+          },
+          "subject": {
+            "reference": "urn:uuid:patient-example"
+          },
+          "performedDateTime": "2025-10-05T10:13:44.571Z",
+          "extension": [
+            {
+              "url": "http://example.org/fhir/StructureDefinition/care-stage",
+              "valueCode": "r2"
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

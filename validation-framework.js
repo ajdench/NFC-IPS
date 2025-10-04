@@ -458,8 +458,10 @@ class PipelineValidator {
 
     // Helper methods for pipeline operations
     async loadFhirPreset(filename) {
-        const response = await fetch(filename);
-        if (!response.ok) throw new Error(`Failed to load ${filename}`);
+        // Adjust path based on current location
+        const path = window.location.pathname.includes('/nfc/ips/') ? `../../${filename}` : filename;
+        const response = await fetch(path);
+        if (!response.ok) throw new Error(`Failed to load ${filename} (tried: ${path})`);
         return await response.json();
     }
 

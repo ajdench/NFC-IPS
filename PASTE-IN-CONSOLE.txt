@@ -1,0 +1,122 @@
+// Copy and paste this entire block into browser console after encode→decode
+
+(function() {
+    console.clear();
+    console.log('🔍 Extracting FHIR data for comparison...\n');
+
+    const leftFhir = document.getElementById('left-input').textContent;
+    const rightFhir = document.getElementById('right-input').textContent;
+
+    const leftObj = JSON.parse(leftFhir);
+    const rightObj = JSON.parse(rightFhir);
+
+    console.log('Left (Original) FHIR:');
+    console.log('  ID:', leftObj.id);
+    console.log('  Timestamp:', leftObj.timestamp);
+    console.log('  Meta.lastUpdated:', leftObj.meta?.lastUpdated);
+    console.log('  Entries:', leftObj.entry?.length);
+    console.log('  Chars:', leftFhir.length);
+    console.log('');
+
+    console.log('Right (Reconstructed) FHIR:');
+    console.log('  ID:', rightObj.id);
+    console.log('  Timestamp:', rightObj.timestamp);
+    console.log('  Meta.lastUpdated:', rightObj.meta?.lastUpdated);
+    console.log('  Entries:', rightObj.entry?.length);
+    console.log('  Chars:', rightFhir.length);
+    console.log('');
+
+    // Deep comparison
+    function findDiffs(obj1, obj2, path = '', diffs = []) {
+        const type1 = Array.isArray(obj1) ? 'array' : typeof obj1;
+        const type2 = Array.isArray(obj2) ? 'array' : typeof obj2;
+
+        if (type1 !== type2) {
+            diffs.push({ path, type: 'type_mismatch', left: type1, right: type2 });
+            return diffs;
+        }
+
+        if (obj1 === null || obj2 === null || type1 !== 'object') {
+            if (obj1 !== obj2) {
+                diffs.push({ path, type: 'value', left: obj1, right: obj2 });
+            }
+            return diffs;
+        }
+
+        if (Array.isArray(obj1)) {
+            if (obj1.length !== obj2.length) {
+                diffs.push({ path, type: 'array_length', left: obj1.length, right: obj2.length });
+            }
+            for (let i = 0; i < Math.max(obj1.length, obj2.length); i++) {
+                findDiffs(obj1[i], obj2[i], `${path}[${i}]`, diffs);
+            }
+            return diffs;
+        }
+
+        const allKeys = new Set([...Object.keys(obj1), ...Object.keys(obj2)]);
+        for (const key of allKeys) {
+            const newPath = path ? `${path}.${key}` : key;
+            if (!(key in obj1)) {
+                diffs.push({ path: newPath, type: 'added', right: obj2[key] });
+            } else if (!(key in obj2)) {
+                diffs.push({ path: newPath, type: 'removed', left: obj1[key] });
+            } else {
+                findDiffs(obj1[key], obj2[key], newPath, diffs);
+            }
+        }
+        return diffs;
+    }
+
+    console.log('🔄 Running deep comparison...\n');
+    const diffs = findDiffs(leftObj, rightObj);
+
+    console.log(`═══════════════════════════════════════════════════════`);
+    console.log(`📊 FOUND ${diffs.length} DIFFERENCES`);
+    console.log(`═══════════════════════════════════════════════════════\n`);
+
+    // Group by type
+    const byType = {};
+    diffs.forEach(d => {
+        byType[d.type] = (byType[d.type] || 0) + 1;
+    });
+
+    console.log('Breakdown:');
+    Object.entries(byType).forEach(([type, count]) => {
+        console.log(`  ${type}: ${count}`);
+    });
+    console.log('');
+
+    console.log('First 30 differences:\n');
+    diffs.slice(0, 30).forEach((d, i) => {
+        console.log(`${i + 1}. [${d.type}] ${d.path}`);
+        if (d.left !== undefined) {
+            const leftStr = typeof d.left === 'object' ? JSON.stringify(d.left) : String(d.left);
+            console.log(`   Left:  ${leftStr.substring(0, 80)}`);
+        }
+        if (d.right !== undefined) {
+            const rightStr = typeof d.right === 'object' ? JSON.stringify(d.right) : String(d.right);
+            console.log(`   Right: ${rightStr.substring(0, 80)}`);
+        }
+    });
+
+    if (diffs.length > 30) console.log(`\n... and ${diffs.length - 30} more\n`);
+
+    // Download
+    function download(data, name) {
+        const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = name;
+        a.click();
+    }
+
+    console.log('\n💾 Downloading files...');
+    download(leftObj, 'left-original.json');
+    download(rightObj, 'right-reconstructed.json');
+    download(diffs, 'differences.json');
+    console.log('✅ Done!\n');
+
+    window.comparisonResults = { diffs, leftObj, rightObj };
+    console.log('Results saved to: window.comparisonResults');
+})();
