@@ -6629,6 +6629,7 @@ function initializeStageReveals() {
                             codecPipeline.convertFhirBundleToCodeRef(fhirData), null, 2
                         );
                         switchToStageFormat('left', 'convert');
+                        updateStageStates('left');
                         showMessage('✓ Converted to CodeRef', 'success');
                     }
                     else if (stageType === 'compress') {
@@ -6640,6 +6641,7 @@ function initializeStageReveals() {
                         const codeRefData = JSON.parse(formatState.conversionResults.coderef);
                         formatState.conversionResults.protobuf = await codecPipeline.getProtobufBinary(codeRefData);
                         switchToStageFormat('left', 'compress');
+                        updateStageStates('left');
                         showMessage('✓ Compressed to Protobuf', 'success');
                     }
                     else if (stageType === 'encode') {
@@ -6651,6 +6653,7 @@ function initializeStageReveals() {
                         const fragment = await codecPipeline.encodeToFragment(formatState.conversionResults.protobuf);
                         formatState.conversionResults.fragment = fragment;
                         switchToStageFormat('left', 'encode');
+                        updateStageStates('left');
                         showMessage('✓ Encoded to Fragment', 'success');
                     }
                     else if (stageType === 'source') {
