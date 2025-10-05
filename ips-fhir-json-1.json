@@ -2500,6 +2500,13 @@
         "id": "medadmin-R1_PHEC-50",
         "status": "completed",
         "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "57485005",
+              "display": "Oxygen"
+            }
+          ],
           "text": "Oxygen via nasal cannula 4 L/min"
         },
         "subject": {
@@ -2511,6 +2518,23 @@
         },
         "encounter": {
           "reference": "urn:uuid:2972c6a4-96e4-4795-a659-e1a6ba9b3d13"
+        },
+        "dosage": {
+          "dose": {
+            "value": 4,
+            "unit": "L/min",
+            "system": "http://unitsofmeasure.org",
+            "code": "L/min"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "46073002",
+                "display": "Nasal cannula"
+              }
+            ]
+          }
         }
       }
     },
@@ -2521,6 +2545,13 @@
         "id": "medadmin-R1_PHC-25",
         "status": "completed",
         "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "432102000",
+              "display": "Normal saline"
+            }
+          ],
           "text": "Crystalloid bolus 1000 mL IV"
         },
         "subject": {
@@ -2532,6 +2563,23 @@
         },
         "encounter": {
           "reference": "urn:uuid:eaf7a7aa-5060-4afc-a947-aa5920479a9f"
+        },
+        "dosage": {
+          "dose": {
+            "value": 1000,
+            "unit": "mL",
+            "system": "http://unitsofmeasure.org",
+            "code": "mL"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "47625008",
+                "display": "Intravenous route"
+              }
+            ]
+          }
         }
       }
     },
@@ -2542,6 +2590,13 @@
         "id": "medadmin-R1_PHC-30",
         "status": "completed",
         "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "432122003",
+              "display": "Piperacillin and tazobactam"
+            }
+          ],
           "text": "Piperacillin-tazobactam 4.5 g IV"
         },
         "subject": {
@@ -2553,6 +2608,23 @@
         },
         "encounter": {
           "reference": "urn:uuid:eaf7a7aa-5060-4afc-a947-aa5920479a9f"
+        },
+        "dosage": {
+          "dose": {
+            "value": 4.5,
+            "unit": "g",
+            "system": "http://unitsofmeasure.org",
+            "code": "g"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "47625008",
+                "display": "Intravenous route"
+              }
+            ]
+          }
         }
       }
     },
@@ -2563,6 +2635,13 @@
         "id": "medadmin-R2-20",
         "status": "completed",
         "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "45555007",
+              "display": "Norepinephrine"
+            }
+          ],
           "text": "Vasopressor support (norepinephrine) titrated"
         },
         "subject": {
@@ -2574,6 +2653,18 @@
         },
         "encounter": {
           "reference": "urn:uuid:edf8bafe-33e5-4932-a203-846e25f1492a"
+        },
+        "dosage": {
+          "text": "Titrated to effect",
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "47625008",
+                "display": "Intravenous route"
+              }
+            ]
+          }
         }
       }
     }
