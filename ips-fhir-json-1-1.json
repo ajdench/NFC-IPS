@@ -1,0 +1,2721 @@
+{
+  "resourceType": "Bundle",
+  "id": "ips-bundle-phc-illness",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/uv/ips/StructureDefinition/Bundle-uv-ips"
+    ]
+  },
+  "type": "document",
+  "timestamp": "2025-10-02T05:50:00-04:00",
+  "identifier": {
+    "system": "urn:ietf:rfc:3986",
+    "value": "urn:uuid:fec6b256-401a-48a2-ae94-b376331a64a7"
+  },
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:e51b996a-2e5f-4258-95c2-215d51d02a59",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "composition-ips-phc-illness",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/uv/ips/StructureDefinition/Composition-uv-ips"
+          ]
+        },
+        "identifier": {
+          "system": "urn:ietf:rfc:3986",
+          "value": "urn:uuid:9766931a-408c-4ea9-8e1c-7143bb4b4f05"
+        },
+        "status": "final",
+        "type": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "60591-5",
+              "display": "Patient summary Document"
+            }
+          ]
+        },
+        "date": "2025-10-02T05:45:00-04:00",
+        "title": "International Patient Summary — OPCP Illness Pathway (PHC escalation → STRATEVAC)",
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "author": [
+          {
+            "reference": "urn:uuid:621a5aee-288a-4fd3-8cca-e2439256df03"
+          }
+        ],
+        "section": [
+          {
+            "title": "Demographics & Identifiers",
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "45970-1",
+                  "display": "Demographic information section"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+              },
+              {
+                "reference": "urn:uuid:45c79820-819d-4730-87d6-cb94d8d82036"
+              }
+            ]
+          },
+          {
+            "title": "Allergies",
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "48765-2",
+                  "display": "Allergies and adverse reactions Document"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "urn:uuid:4cc835fe-1a3c-4298-b403-eab93167333a"
+              }
+            ]
+          },
+          {
+            "title": "Problem/Diagnosis",
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "11450-4",
+                  "display": "Problem list - Reported"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "urn:uuid:fc55d531-3aac-4fb8-b2d8-dd7fb4052e5c"
+              }
+            ]
+          },
+          {
+            "title": "Medications (Maintenance)",
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "10160-0",
+                  "display": "History of medication use"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "urn:uuid:e3936c0e-a93a-494e-8520-3b35d5b7dbbd"
+              }
+            ]
+          },
+          {
+            "title": "Point of Injury (POI)",
+            "entry": [
+              {
+                "reference": "urn:uuid:0dac073f-0ce7-426b-b7c4-a490b7847ca1"
+              },
+              {
+                "reference": "urn:uuid:d475d196-91c0-4bcb-acfb-719928872ae1"
+              },
+              {
+                "reference": "urn:uuid:9d8438a0-eb43-4e73-b91f-0ed4970b0818"
+              },
+              {
+                "reference": "urn:uuid:e8b40391-9955-4ee5-a047-3c5e9cc652c5"
+              },
+              {
+                "reference": "urn:uuid:d1b9f594-990e-4eaa-a528-935e5eec4303"
+              },
+              {
+                "reference": "urn:uuid:1900b287-7681-42ff-bc44-f1b4b8280102"
+              },
+              {
+                "reference": "urn:uuid:aaf76a6c-4159-49aa-8786-af3d0cc4d0f6"
+              },
+              {
+                "reference": "urn:uuid:8c1498d5-4d69-4dd2-b183-1b8a18a2f51c"
+              },
+              {
+                "reference": "urn:uuid:93a18e47-6c91-46cc-910e-e5936d348032"
+              }
+            ]
+          },
+          {
+            "title": "Casualty Evacuation (CASEVAC)",
+            "entry": [
+              {
+                "reference": "urn:uuid:9c6f6ae5-2bd7-493e-9fbe-e7bf84047ac8"
+              }
+            ]
+          },
+          {
+            "title": "Ambulance Exchange Point (AXP)",
+            "entry": [
+              {
+                "reference": "urn:uuid:009fcb58-d829-456e-b500-e70e1668a13a"
+              }
+            ]
+          },
+          {
+            "title": "Medical Evacuation (MEDEVAC)",
+            "entry": [
+              {
+                "reference": "urn:uuid:c0d1331f-4cf4-4f0e-9110-8ca5ae678a3c"
+              }
+            ]
+          },
+          {
+            "title": "Role 1 PHEC",
+            "entry": [
+              {
+                "reference": "urn:uuid:2972c6a4-96e4-4795-a659-e1a6ba9b3d13"
+              },
+              {
+                "reference": "urn:uuid:ead37c7d-4200-4913-97a3-7e6eb730148b"
+              },
+              {
+                "reference": "urn:uuid:d5fc371d-9300-4bd2-983d-2e02bd905937"
+              },
+              {
+                "reference": "urn:uuid:26c7edfe-2f2f-442b-85e8-4aa1793c107d"
+              },
+              {
+                "reference": "urn:uuid:ec06a9ec-588b-42a8-b981-4ee59ced7ef8"
+              },
+              {
+                "reference": "urn:uuid:21e126d7-0e96-46d5-ab0e-8fcfb53f21ef"
+              },
+              {
+                "reference": "urn:uuid:8f865316-4236-4056-8597-7ce8ec5f7491"
+              },
+              {
+                "reference": "urn:uuid:d04a1014-71de-4ba7-a9eb-d9f778ffeda0"
+              },
+              {
+                "reference": "urn:uuid:ece8727e-e1fe-4f18-99e9-d7d399d4a3f4"
+              }
+            ]
+          },
+          {
+            "title": "Role 1 PHC",
+            "entry": [
+              {
+                "reference": "urn:uuid:eaf7a7aa-5060-4afc-a947-aa5920479a9f"
+              },
+              {
+                "reference": "urn:uuid:8e69d39e-0ebc-4c77-b583-091aa203361f"
+              },
+              {
+                "reference": "urn:uuid:f163c626-84d1-4351-88b8-7d30798c9e08"
+              },
+              {
+                "reference": "urn:uuid:d4ab7c95-521b-4ab8-a96f-a79b8f8a5169"
+              },
+              {
+                "reference": "urn:uuid:ff7ac4ed-4297-4b69-a14d-6b9b0de76cff"
+              },
+              {
+                "reference": "urn:uuid:bf3d07ae-9e6d-4262-ae5d-725c7289a052"
+              },
+              {
+                "reference": "urn:uuid:e5dce8d1-cb96-48cc-bea0-8161590c8210"
+              },
+              {
+                "reference": "urn:uuid:c6c45707-27a0-42c2-b59f-8bd154a33fef"
+              },
+              {
+                "reference": "urn:uuid:c6d10e18-a882-4d76-8bad-b6e49ec3a17e"
+              },
+              {
+                "reference": "urn:uuid:2f6a1b95-20e3-45d4-8028-cbc234097190"
+              },
+              {
+                "reference": "urn:uuid:88caeec5-cb15-435a-b3c2-0ca488b4935d"
+              },
+              {
+                "reference": "urn:uuid:85a88b2f-f6c7-4303-a444-60386ddc2bb7"
+              },
+              {
+                "reference": "urn:uuid:3b53f95e-740c-4ad8-bc99-a30e47095cf4"
+              },
+              {
+                "reference": "urn:uuid:31fdccd5-5e48-4bc3-92da-075996380c5f"
+              },
+              {
+                "reference": "urn:uuid:39923852-6b75-404e-a6f9-a6d649461c8c"
+              },
+              {
+                "reference": "urn:uuid:1a4fd638-8a3d-4ce5-b7de-851da1e90d84"
+              }
+            ]
+          },
+          {
+            "title": "Forward TACEVAC",
+            "entry": [
+              {
+                "reference": "urn:uuid:b244a7c6-206b-43df-91cc-28250b323b1d"
+              }
+            ]
+          },
+          {
+            "title": "Role 2",
+            "entry": [
+              {
+                "reference": "urn:uuid:edf8bafe-33e5-4932-a203-846e25f1492a"
+              },
+              {
+                "reference": "urn:uuid:127735bf-55ba-4b0e-bd0d-e9bcb92b80cb"
+              },
+              {
+                "reference": "urn:uuid:aefb56c3-e4e1-4298-9e3e-711e1415d867"
+              },
+              {
+                "reference": "urn:uuid:30d7c7b0-ded1-4e70-9de0-71e952bb86f9"
+              }
+            ]
+          },
+          {
+            "title": "Rear TACEVAC",
+            "entry": [
+              {
+                "reference": "urn:uuid:b623ff8a-c630-4ec4-9888-55e85cea4630"
+              }
+            ]
+          },
+          {
+            "title": "Role 3",
+            "entry": [
+              {
+                "reference": "urn:uuid:e522b4a5-5e31-4ce1-80b3-0e858ef81641"
+              }
+            ]
+          },
+          {
+            "title": "STRATEVAC",
+            "entry": [
+              {
+                "reference": "urn:uuid:765812af-8889-4a42-9b8d-e18cbaf17e1f"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "5ed15fe2-7f5f-5f52-a1f6-0991ff75f452",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/uv/ips/StructureDefinition/Patient-uv-ips",
+            "https://fhir.hl7.org.uk/StructureDefinition/UKCore-Patient"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9434765919",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "NH",
+                  "display": "National Health Service Number"
+                }
+              ],
+              "text": "NHS Number"
+            }
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MIL",
+                  "display": "Military ID number"
+                }
+              ]
+            },
+            "system": "https://fhir.nato.int/Id/service-number",
+            "value": "A1234567"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "prefix": [
+              "Mr"
+            ],
+            "given": [
+              "Thomas"
+            ],
+            "family": "Hodge"
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1998-03-15",
+        "extension": [
+          {
+            "url": "https://fhir.nato.int/StructureDefinition/military-rank",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0141",
+                  "code": "E1",
+                  "display": "Enlisted 1"
+                },
+                {
+                  "system": "http://medis.org.uk/CodeSystem/NATO/STANAG/2116/APERSP-01/ranks",
+                  "code": "OR-1",
+                  "display": "Private (OR-1)"
+                }
+              ],
+              "text": "Drummer"
+            }
+          },
+          {
+            "url": "https://fhir.nato.int/StructureDefinition/military-service",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+                  "code": "ARMY",
+                  "display": "Army"
+                }
+              ],
+              "text": "British Army"
+            }
+          },
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/patient-nationality",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3166",
+                  "code": "GB",
+                  "display": "United Kingdom"
+                }
+              ]
+            }
+          },
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/patient-bloodGroup",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "278147001",
+                  "display": "Blood group O Rh(D) positive"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:621a5aee-288a-4fd3-8cca-e2439256df03",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "6b66aea3-107a-5242-90e8-98d74caa83e0",
+        "name": "British Army Medical Services"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:fc55d531-3aac-4fb8-b2d8-dd7fb4052e5c",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-cap-sepsis",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "233604007",
+              "display": "Pneumonia (disorder)"
+            }
+          ],
+          "text": "Community-acquired pneumonia with sepsis (escalating)"
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "onsetDateTime": "2025-10-02T10:15:00-04:00",
+        "encounter": {
+          "reference": "urn:uuid:eaf7a7aa-5060-4afc-a947-aa5920479a9f"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:4cc835fe-1a3c-4298-b403-eab93167333a",
+      "resource": {
+        "resourceType": "AllergyIntolerance",
+        "id": "dab83d87-5ddb-50f9-ab9b-7d228555b8ec",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/uv/ips/StructureDefinition/AllergyIntolerance-uv-ips"
+          ]
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "type": "allergy",
+        "category": [
+          "food"
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "300913006",
+              "display": "Allergy to shellfish"
+            }
+          ]
+        },
+        "patient": {
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
+        },
+        "onsetDateTime": "2015-05-01"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:e3936c0e-a93a-494e-8520-3b35d5b7dbbd",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "d825cd00-06ce-5539-82df-d08ae786d8cf",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/uv/ips/StructureDefinition/MedicationStatement-uv-ips"
+          ]
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "372729009",
+              "display": "Cetirizine hydrochloride"
+            },
+            {
+              "system": "https://dmd.nhs.uk",
+              "code": "32118011000001102",
+              "display": "Cetirizine 10mg tablets"
+            }
+          ],
+          "text": "Cetirizine 10 mg tablet once daily"
+        },
+        "subject": {
+          "reference": "urn:uuid:5ed15fe2-7f5f-5f52-a1f6-0991ff75f452"
+        },
+        "effectivePeriod": {
+          "start": "2023-04-01"
+        },
+        "reasonCode": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "418689008",
+                "display": "Hay fever"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:0dac073f-0ce7-426b-b7c4-a490b7847ca1",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-poi-phcill",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "poi",
+                "display": "Point of Injury"
+              }
+            ],
+            "text": "Semi-serious illness onset at POI: cough, fever, chest pain on inspiration"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "period": {
+          "start": "2025-10-02T05:00:00-04:00",
+          "end": "2025-10-02T05:25:00-04:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:9c6f6ae5-2bd7-493e-9fbe-e7bf84047ac8",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-casevac-phcill",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "EMER"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "casevac",
+                "display": "Casualty Evacuation"
+              }
+            ],
+            "text": "CASEVAC to AXP"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "period": {
+          "start": "2025-10-02T05:25:00-04:00",
+          "end": "2025-10-02T05:55:00-04:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:009fcb58-d829-456e-b500-e70e1668a13a",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-axp-phcill",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "axp",
+                "display": "Ambulance Exchange Point"
+              }
+            ],
+            "text": "Ambulance Exchange Point"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "period": {
+          "start": "2025-10-02T05:55:00-04:00",
+          "end": "2025-10-02T06:25:00-04:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c0d1331f-4cf4-4f0e-9110-8ca5ae678a3c",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-medevac-phcill",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "EMER"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "medevac",
+                "display": "Medical Evacuation"
+              }
+            ],
+            "text": "MEDEVAC to Role 1"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "period": {
+          "start": "2025-10-02T06:30:00-04:00",
+          "end": "2025-10-02T07:20:00-04:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:2972c6a4-96e4-4795-a659-e1a6ba9b3d13",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-r1_phec-phcill",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "EMER"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "r1_phec",
+                "display": "Role 1 PHEC"
+              }
+            ],
+            "text": "R1 PHEC initial stabilization; MIST & MARCH; supplemental O2"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "period": {
+          "start": "2025-10-02T07:30:00-04:00",
+          "end": "2025-10-02T08:30:00-04:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:eaf7a7aa-5060-4afc-a947-aa5920479a9f",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-r1_phc-phcill",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "r1_phc",
+                "display": "Role 1 PHC"
+              }
+            ],
+            "text": "R1 PHC: worsening dyspnea & fever; sepsis suspected; escalation triggered"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "period": {
+          "start": "2025-10-02T08:40:00-04:00",
+          "end": "2025-10-02T12:00:00-04:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:b244a7c6-206b-43df-91cc-28250b323b1d",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-fwd_tacevac-phcill",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "EMER"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "fwd_tacevac",
+                "display": "Forward TACEVAC"
+              }
+            ],
+            "text": "Forward TACEVAC to Role 2"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "period": {
+          "start": "2025-10-02T12:20:00-04:00",
+          "end": "2025-10-02T13:20:00-04:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:edf8bafe-33e5-4932-a203-846e25f1492a",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-r2-phcill",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "r2_dhc",
+                "display": "Role 2"
+              }
+            ],
+            "text": "Role 2: high-flow O2, IV antibiotics, imaging; transfer to R3"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "period": {
+          "start": "2025-10-02T13:30:00-04:00",
+          "end": "2025-10-02T20:00:00-04:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:b623ff8a-c630-4ec4-9888-55e85cea4630",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-rear_tacevac-phcill",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "EMER"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "rear_tacevac",
+                "display": "Rear TACEVAC"
+              }
+            ],
+            "text": "Rear TACEVAC to Role 3"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "period": {
+          "start": "2025-10-02T20:30:00-04:00",
+          "end": "2025-10-02T23:00:00-04:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:e522b4a5-5e31-4ce1-80b3-0e858ef81641",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-r3-phcill",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "r3_dhc",
+                "display": "Role 3"
+              }
+            ],
+            "text": "Role 3: ICU then ward; improvement but needs STRATEVAC"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "period": {
+          "start": "2025-10-02T23:10:00-04:00",
+          "end": "2025-10-04T06:00:00-04:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:765812af-8889-4a42-9b8d-e18cbaf17e1f",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-stratevac-phcill",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "EMER"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "stratevac",
+                "display": "STRATEVAC"
+              }
+            ],
+            "text": "STRATEVAC to UK for continued care"
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "period": {
+          "start": "2025-10-04T07:00:00-04:00",
+          "end": "2025-10-04T14:00:00-04:00"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-mechanism-POI-10",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-mechanism-POI-10",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "418189009",
+              "display": "Mechanism of injury"
+            }
+          ]
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "428916009",
+              "display": "Non-traumatic mechanism"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+        "encounter": {
+          "reference": "urn:uuid:0dac073f-0ce7-426b-b7c4-a490b7847ca1"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-lung-sounds-POI-10",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-lung-sounds-POI-10",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "10340-1",
+              "display": "Respiratory system Findings"
+            }
+          ]
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "48348005",
+              "display": "Coarse crackles"
+            }
+          ]
+        },
+        "bodySite": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "90572001",
+              "display": "Structure of lower lobe of right lung"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+        "encounter": {
+          "reference": "urn:uuid:0dac073f-0ce7-426b-b7c4-a490b7847ca1"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-febrile-POI-10",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-febrile-POI-10",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "386661006",
+              "display": "Fever"
+            }
+          ]
+        },
+        "valueBoolean": true,
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+        "encounter": {
+          "reference": "urn:uuid:0dac073f-0ce7-426b-b7c4-a490b7847ca1"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-complaint-POI",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-complaint-POI",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "426976009",
+              "display": "Pleuritic chest pain"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "onsetDateTime": "2025-10-02T05:00:00-04:00",
+        "encounter": {
+          "reference": "urn:uuid:0dac073f-0ce7-426b-b7c4-a490b7847ca1"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-flu-prodrome-POI",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-flu-prodrome-POI",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "95891005",
+              "display": "Influenza-like illness"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "onsetDateTime": "2025-10-01T00:00:00-04:00",
+        "encounter": {
+          "reference": "urn:uuid:0dac073f-0ce7-426b-b7c4-a490b7847ca1"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:proc-o2-therapy-POI-10",
+      "resource": {
+        "resourceType": "Procedure",
+        "id": "proc-o2-therapy-POI-10",
+        "status": "completed",
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "371907003",
+              "display": "Oxygen administration by nasal cannula"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "performedDateTime": "2025-10-02T05:12:00-04:00",
+        "encounter": {
+          "reference": "urn:uuid:0dac073f-0ce7-426b-b7c4-a490b7847ca1"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:svc-casevac-POI-10",
+      "resource": {
+        "resourceType": "ServiceRequest",
+        "id": "svc-casevac-POI-10",
+        "status": "active",
+        "intent": "order",
+        "priority": "urgent",
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "225358003",
+              "display": "Casualty evacuation"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "authoredOn": "2025-10-02T05:10:00-04:00",
+        "encounter": {
+          "reference": "urn:uuid:0dac073f-0ce7-426b-b7c4-a490b7847ca1"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-hemorrhage-POI-10",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-hemorrhage-POI-10",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "75269-8",
+              "display": "Hemorrhage assessment"
+            }
+          ]
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "260413007",
+              "display": "None"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+        "encounter": {
+          "reference": "urn:uuid:0dac073f-0ce7-426b-b7c4-a490b7847ca1"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-airway-POI-10",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-airway-POI-10",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "11392-8",
+              "display": "Airway patency"
+            }
+          ]
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "281900007",
+              "display": "Patent"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+        "encounter": {
+          "reference": "urn:uuid:0dac073f-0ce7-426b-b7c4-a490b7847ca1"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-respiration-POI-10",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-respiration-POI-10",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "80341-1",
+              "display": "Respiratory pattern"
+            }
+          ]
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "271823003",
+              "display": "Tachypnea"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+        "encounter": {
+          "reference": "urn:uuid:0dac073f-0ce7-426b-b7c4-a490b7847ca1"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-circulation-POI-10",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-circulation-POI-10",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8478-0",
+              "display": "Mean blood pressure"
+            }
+          ],
+          "text": "Perfusion status"
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "58158008",
+              "display": "Hemodynamically stable"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+        "encounter": {
+          "reference": "urn:uuid:0dac073f-0ce7-426b-b7c4-a490b7847ca1"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-neuro-POI-10",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-neuro-POI-10",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "9269-2",
+              "display": "Glasgow coma score total"
+            }
+          ],
+          "text": "Level of consciousness"
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "248234008",
+              "display": "Alert"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+        "encounter": {
+          "reference": "urn:uuid:0dac073f-0ce7-426b-b7c4-a490b7847ca1"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-temp-status-POI-10",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-temp-status-POI-10",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8310-5",
+              "display": "Body temperature"
+            }
+          ],
+          "text": "Temperature status"
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "386725007",
+              "display": "Normothermic"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+        "encounter": {
+          "reference": "urn:uuid:0dac073f-0ce7-426b-b7c4-a490b7847ca1"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:ead37c7d-4200-4913-97a3-7e6eb730148b",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "mist-R1_PHEC-50",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "text": "MIST report"
+        },
+        "valueString": "M: Increasing work of breathing; persistent fever. I: Access x1, cap refill <2s; mild confusion intermittently. S: HR 112, RR 28, BP 116/74, Temp 39.1°C, SpO2 92% on O2. T: IV fluids 500 mL, antipyretic, broad-spectrum antibiotics ordered.",
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T07:50:00-04:00",
+        "encounter": {
+          "reference": "urn:uuid:2972c6a4-96e4-4795-a659-e1a6ba9b3d13"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:d5fc371d-9300-4bd2-983d-2e02bd905937",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "march-R1_PHEC-50",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "text": "MARCH assessment"
+        },
+        "effectiveDateTime": "2025-10-02T07:50:00-04:00",
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "encounter": {
+          "reference": "urn:uuid:2972c6a4-96e4-4795-a659-e1a6ba9b3d13"
+        },
+        "component": [
+          {
+            "code": {
+              "text": "Massive hemorrhage"
+            },
+            "valueString": "none"
+          },
+          {
+            "code": {
+              "text": "Airway"
+            },
+            "valueString": "patent"
+          },
+          {
+            "code": {
+              "text": "Respiration"
+            },
+            "valueString": "increased WOB; crackles, no wheeze"
+          },
+          {
+            "code": {
+              "text": "Circulation"
+            },
+            "valueString": "borderline perfusion"
+          },
+          {
+            "code": {
+              "text": "Head/Neuro"
+            },
+            "valueString": "alert"
+          },
+          {
+            "code": {
+              "text": "Hypothermia/Heat"
+            },
+            "valueString": "normothermic"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:8e69d39e-0ebc-4c77-b583-091aa203361f",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "mist-R1_PHC-20",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "text": "MIST report"
+        },
+        "valueString": "M: Worsening dyspnea; hypotension trend; suspected sepsis. I: New productive cough; purulent sputum. S: HR 122, RR 30, BP 102/64, Temp 39.6°C, SpO2 89% on O2. T: Sepsis bundle: cultures, IV fluids, broad-spectrum IV antibiotics, escalate to Role 2.",
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T09:20:00-04:00",
+        "encounter": {
+          "reference": "urn:uuid:eaf7a7aa-5060-4afc-a947-aa5920479a9f"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:f163c626-84d1-4351-88b8-7d30798c9e08",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "march-R1_PHC-20",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "text": "MARCH assessment"
+        },
+        "effectiveDateTime": "2025-10-02T09:20:00-04:00",
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "encounter": {
+          "reference": "urn:uuid:eaf7a7aa-5060-4afc-a947-aa5920479a9f"
+        },
+        "component": [
+          {
+            "code": {
+              "text": "Massive hemorrhage"
+            },
+            "valueString": "none"
+          },
+          {
+            "code": {
+              "text": "Airway"
+            },
+            "valueString": "patent"
+          },
+          {
+            "code": {
+              "text": "Respiration"
+            },
+            "valueString": "labored; crackles; low SpO2 on O2"
+          },
+          {
+            "code": {
+              "text": "Circulation"
+            },
+            "valueString": "cool peripheries; MAP low"
+          },
+          {
+            "code": {
+              "text": "Head/Neuro"
+            },
+            "valueString": "alert"
+          },
+          {
+            "code": {
+              "text": "Hypothermia/Heat"
+            },
+            "valueString": "normothermic"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:e8b40391-9955-4ee5-a047-3c5e9cc652c5",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-8867-4-POI-10",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8867-4",
+              "display": "Heart rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+        "valueQuantity": {
+          "value": 104,
+          "unit": "/min"
+        },
+        "encounter": {
+          "reference": "urn:uuid:0dac073f-0ce7-426b-b7c4-a490b7847ca1"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:d1b9f594-990e-4eaa-a528-935e5eec4303",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-9279-1-POI-10",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "9279-1",
+              "display": "Respiratory rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+        "valueQuantity": {
+          "value": 24,
+          "unit": "/min"
+        },
+        "encounter": {
+          "reference": "urn:uuid:0dac073f-0ce7-426b-b7c4-a490b7847ca1"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:1900b287-7681-42ff-bc44-f1b4b8280102",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-8480-6-POI-10",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8480-6",
+              "display": "Systolic blood pressure"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+        "valueQuantity": {
+          "value": 120,
+          "unit": "mmHg"
+        },
+        "encounter": {
+          "reference": "urn:uuid:0dac073f-0ce7-426b-b7c4-a490b7847ca1"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:aaf76a6c-4159-49aa-8786-af3d0cc4d0f6",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-8462-4-POI-10",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8462-4",
+              "display": "Diastolic blood pressure"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+        "valueQuantity": {
+          "value": 78,
+          "unit": "mmHg"
+        },
+        "encounter": {
+          "reference": "urn:uuid:0dac073f-0ce7-426b-b7c4-a490b7847ca1"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:8c1498d5-4d69-4dd2-b183-1b8a18a2f51c",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-8310-5-POI-10",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8310-5",
+              "display": "Body temperature"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+        "valueQuantity": {
+          "value": 38.3,
+          "unit": "°C"
+        },
+        "encounter": {
+          "reference": "urn:uuid:0dac073f-0ce7-426b-b7c4-a490b7847ca1"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:93a18e47-6c91-46cc-910e-e5936d348032",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-59408-5-POI-10",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "59408-5",
+              "display": "SpO2"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T05:10:00-04:00",
+        "valueQuantity": {
+          "value": 94,
+          "unit": "%"
+        },
+        "encounter": {
+          "reference": "urn:uuid:0dac073f-0ce7-426b-b7c4-a490b7847ca1"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:26c7edfe-2f2f-442b-85e8-4aa1793c107d",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-8867-4-R1_PHEC-50",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8867-4",
+              "display": "Heart rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T07:50:00-04:00",
+        "valueQuantity": {
+          "value": 112,
+          "unit": "/min"
+        },
+        "encounter": {
+          "reference": "urn:uuid:2972c6a4-96e4-4795-a659-e1a6ba9b3d13"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:ec06a9ec-588b-42a8-b981-4ee59ced7ef8",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-9279-1-R1_PHEC-50",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "9279-1",
+              "display": "Respiratory rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T07:50:00-04:00",
+        "valueQuantity": {
+          "value": 28,
+          "unit": "/min"
+        },
+        "encounter": {
+          "reference": "urn:uuid:2972c6a4-96e4-4795-a659-e1a6ba9b3d13"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:21e126d7-0e96-46d5-ab0e-8fcfb53f21ef",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-8480-6-R1_PHEC-50",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8480-6",
+              "display": "Systolic blood pressure"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T07:50:00-04:00",
+        "valueQuantity": {
+          "value": 116,
+          "unit": "mmHg"
+        },
+        "encounter": {
+          "reference": "urn:uuid:2972c6a4-96e4-4795-a659-e1a6ba9b3d13"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:8f865316-4236-4056-8597-7ce8ec5f7491",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-8462-4-R1_PHEC-50",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8462-4",
+              "display": "Diastolic blood pressure"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T07:50:00-04:00",
+        "valueQuantity": {
+          "value": 74,
+          "unit": "mmHg"
+        },
+        "encounter": {
+          "reference": "urn:uuid:2972c6a4-96e4-4795-a659-e1a6ba9b3d13"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:d04a1014-71de-4ba7-a9eb-d9f778ffeda0",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-8310-5-R1_PHEC-50",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8310-5",
+              "display": "Body temperature"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T07:50:00-04:00",
+        "valueQuantity": {
+          "value": 39.1,
+          "unit": "°C"
+        },
+        "encounter": {
+          "reference": "urn:uuid:2972c6a4-96e4-4795-a659-e1a6ba9b3d13"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:ece8727e-e1fe-4f18-99e9-d7d399d4a3f4",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-59408-5-R1_PHEC-50",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "59408-5",
+              "display": "SpO2"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T07:50:00-04:00",
+        "valueQuantity": {
+          "value": 92,
+          "unit": "%"
+        },
+        "encounter": {
+          "reference": "urn:uuid:2972c6a4-96e4-4795-a659-e1a6ba9b3d13"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:d4ab7c95-521b-4ab8-a96f-a79b8f8a5169",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-8867-4-R1_PHC-20",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8867-4",
+              "display": "Heart rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T09:20:00-04:00",
+        "valueQuantity": {
+          "value": 122,
+          "unit": "/min"
+        },
+        "encounter": {
+          "reference": "urn:uuid:eaf7a7aa-5060-4afc-a947-aa5920479a9f"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:ff7ac4ed-4297-4b69-a14d-6b9b0de76cff",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-9279-1-R1_PHC-20",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "9279-1",
+              "display": "Respiratory rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T09:20:00-04:00",
+        "valueQuantity": {
+          "value": 30,
+          "unit": "/min"
+        },
+        "encounter": {
+          "reference": "urn:uuid:eaf7a7aa-5060-4afc-a947-aa5920479a9f"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:bf3d07ae-9e6d-4262-ae5d-725c7289a052",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-8480-6-R1_PHC-20",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8480-6",
+              "display": "Systolic blood pressure"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T09:20:00-04:00",
+        "valueQuantity": {
+          "value": 102,
+          "unit": "mmHg"
+        },
+        "encounter": {
+          "reference": "urn:uuid:eaf7a7aa-5060-4afc-a947-aa5920479a9f"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:e5dce8d1-cb96-48cc-bea0-8161590c8210",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-8462-4-R1_PHC-20",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8462-4",
+              "display": "Diastolic blood pressure"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T09:20:00-04:00",
+        "valueQuantity": {
+          "value": 64,
+          "unit": "mmHg"
+        },
+        "encounter": {
+          "reference": "urn:uuid:eaf7a7aa-5060-4afc-a947-aa5920479a9f"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c6c45707-27a0-42c2-b59f-8bd154a33fef",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-8310-5-R1_PHC-20",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8310-5",
+              "display": "Body temperature"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T09:20:00-04:00",
+        "valueQuantity": {
+          "value": 39.6,
+          "unit": "°C"
+        },
+        "encounter": {
+          "reference": "urn:uuid:eaf7a7aa-5060-4afc-a947-aa5920479a9f"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c6d10e18-a882-4d76-8bad-b6e49ec3a17e",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-59408-5-R1_PHC-20",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "59408-5",
+              "display": "SpO2"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T09:20:00-04:00",
+        "valueQuantity": {
+          "value": 89,
+          "unit": "%"
+        },
+        "encounter": {
+          "reference": "urn:uuid:eaf7a7aa-5060-4afc-a947-aa5920479a9f"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:2f6a1b95-20e3-45d4-8028-cbc234097190",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "lab-6690-2-R1_PHC-40",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "6690-2",
+              "display": "Leukocytes [#/volume] in Blood by Automated count"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T09:40:00-04:00",
+        "valueQuantity": {
+          "value": 21.5,
+          "unit": "10^3/uL"
+        },
+        "encounter": {
+          "reference": "urn:uuid:eaf7a7aa-5060-4afc-a947-aa5920479a9f"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:88caeec5-cb15-435a-b3c2-0ca488b4935d",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "lab-1988-5-R1_PHC-50",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "1988-5",
+              "display": "C reactive protein [Mass/volume] in Serum or Plasma"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T09:50:00-04:00",
+        "valueQuantity": {
+          "value": 180,
+          "unit": "mg/L"
+        },
+        "encounter": {
+          "reference": "urn:uuid:eaf7a7aa-5060-4afc-a947-aa5920479a9f"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:85a88b2f-f6c7-4303-a444-60386ddc2bb7",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "lab-2519-7-R1_PHC-45",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "2519-7",
+              "display": "Glucose [Mass/volume] in Serum or Plasma"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T09:45:00-04:00",
+        "valueQuantity": {
+          "value": 9.8,
+          "unit": "mmol/L"
+        },
+        "encounter": {
+          "reference": "urn:uuid:eaf7a7aa-5060-4afc-a947-aa5920479a9f"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:3b53f95e-740c-4ad8-bc99-a30e47095cf4",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "lab-2524-7-R1_PHC-55",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "2524-7",
+              "display": "Lactate [Moles/volume] in Blood"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectiveDateTime": "2025-10-02T09:55:00-04:00",
+        "valueQuantity": {
+          "value": 3.8,
+          "unit": "mmol/L"
+        },
+        "encounter": {
+          "reference": "urn:uuid:eaf7a7aa-5060-4afc-a947-aa5920479a9f"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:31fdccd5-5e48-4bc3-92da-075996380c5f",
+      "resource": {
+        "resourceType": "ImagingStudy",
+        "id": "img-cxr",
+        "status": "available",
+        "description": "Chest X-ray: right lower lobe consolidation consistent with pneumonia.",
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "started": "2025-10-02T10:00:00-04:00",
+        "encounter": {
+          "reference": "urn:uuid:eaf7a7aa-5060-4afc-a947-aa5920479a9f"
+        },
+        "series": []
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:127735bf-55ba-4b0e-bd0d-e9bcb92b80cb",
+      "resource": {
+        "resourceType": "ImagingStudy",
+        "id": "img-ct-chest",
+        "status": "available",
+        "description": "CT Chest: multifocal consolidation, no PE; small pleural effusion.",
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "started": "2025-10-02T14:20:00-04:00",
+        "encounter": {
+          "reference": "urn:uuid:edf8bafe-33e5-4932-a203-846e25f1492a"
+        },
+        "series": []
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:aefb56c3-e4e1-4298-9e3e-711e1415d867",
+      "resource": {
+        "resourceType": "Procedure",
+        "id": "proc-central-line",
+        "status": "completed",
+        "code": {
+          "text": "Central venous catheter insertion"
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "performedPeriod": {
+          "start": "2025-10-02T15:00:00-04:00",
+          "end": "2025-10-02T15:30:00-04:00"
+        },
+        "encounter": {
+          "reference": "urn:uuid:edf8bafe-33e5-4932-a203-846e25f1492a"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:1e8f461b-056c-40dc-bdb6-d368c2d5f930",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "medadmin-R1_PHEC-50",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "57485005",
+              "display": "Oxygen"
+            }
+          ],
+          "text": "Oxygen via nasal cannula 4 L/min"
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectivePeriod": {
+          "start": "2025-10-02T07:50:00-04:00",
+          "end": "2025-10-02T08:50:00-04:00"
+        },
+        "encounter": {
+          "reference": "urn:uuid:2972c6a4-96e4-4795-a659-e1a6ba9b3d13"
+        },
+        "dosage": {
+          "dose": {
+            "value": 4,
+            "unit": "L/min",
+            "system": "http://unitsofmeasure.org",
+            "code": "L/min"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "46073002",
+                "display": "Nasal cannula"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:39923852-6b75-404e-a6f9-a6d649461c8c",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "medadmin-R1_PHC-25",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "432102000",
+              "display": "Normal saline"
+            }
+          ],
+          "text": "Crystalloid bolus 1000 mL IV"
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectivePeriod": {
+          "start": "2025-10-02T09:25:00-04:00",
+          "end": "2025-10-02T09:55:00-04:00"
+        },
+        "encounter": {
+          "reference": "urn:uuid:eaf7a7aa-5060-4afc-a947-aa5920479a9f"
+        },
+        "dosage": {
+          "dose": {
+            "value": 1000,
+            "unit": "mL",
+            "system": "http://unitsofmeasure.org",
+            "code": "mL"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "47625008",
+                "display": "Intravenous route"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:1a4fd638-8a3d-4ce5-b7de-851da1e90d84",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "medadmin-R1_PHC-30",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "432122003",
+              "display": "Piperacillin and tazobactam"
+            }
+          ],
+          "text": "Piperacillin-tazobactam 4.5 g IV"
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectivePeriod": {
+          "start": "2025-10-02T09:30:00-04:00",
+          "end": "2025-10-02T10:00:00-04:00"
+        },
+        "encounter": {
+          "reference": "urn:uuid:eaf7a7aa-5060-4afc-a947-aa5920479a9f"
+        },
+        "dosage": {
+          "dose": {
+            "value": 4.5,
+            "unit": "g",
+            "system": "http://unitsofmeasure.org",
+            "code": "g"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "47625008",
+                "display": "Intravenous route"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:30d7c7b0-ded1-4e70-9de0-71e952bb86f9",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "medadmin-R2-20",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "45555007",
+              "display": "Norepinephrine"
+            }
+          ],
+          "text": "Vasopressor support (norepinephrine) titrated"
+        },
+        "subject": {
+          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
+        },
+        "effectivePeriod": {
+          "start": "2025-10-02T15:20:00-04:00",
+          "end": "2025-10-02T20:00:00-04:00"
+        },
+        "encounter": {
+          "reference": "urn:uuid:edf8bafe-33e5-4932-a203-846e25f1492a"
+        },
+        "dosage": {
+          "text": "Titrated to effect",
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "47625008",
+                "display": "Intravenous route"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "casevac": {
+    "vitals": [
+      {
+        "code": {
+          "sys": "loinc",
+          "code": "8310-5"
+        },
+        "value": 98.6,
+        "unit": "°F"
+      },
+      {
+        "code": {
+          "sys": "loinc",
+          "code": "8867-4"
+        },
+        "value": 75,
+        "unit": "bpm"
+      }
+    ],
+    "conditions": [
+      {
+        "code": {
+          "sys": "sct",
+          "code": "125605004"
+        },
+        "onset": "2024-01-15T14:30:00Z"
+      }
+    ],
+    "events": [
+      {
+        "code": {
+          "sys": "sct",
+          "code": "182856006"
+        },
+        "time": "2024-01-15T09:20:00Z",
+        "dose": "Tourniquet applied",
+        "route": "Left upper extremity"
+      },
+      {
+        "code": {
+          "sys": "sct",
+          "code": "225358003"
+        },
+        "time": "2024-01-15T15:00:00Z",
+        "dose": "Stretcher",
+        "route": "Manual carry"
+      }
+    ]
+  }
+}

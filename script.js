@@ -6056,23 +6056,6 @@ async function init() {
     const payload3 = await fetchJson(DEMO_PAYLOADS.IPS_FHIR_JSON_3);
 
     if (payload1) {
-        // Add CASEVAC demo data to payload1
-        if (!payload1.casevac) {
-            payload1.casevac = {
-                vitals: [
-                    { code: { sys: 'loinc', code: '8310-5' }, value: 98.6, unit: '°F' },
-                    { code: { sys: 'loinc', code: '8867-4' }, value: 75, unit: 'bpm' }
-                ],
-                conditions: [
-                    { code: { sys: 'sct', code: '125605004' }, onset: '2024-01-15T14:30:00Z' }
-                ],
-                events: [
-                    { code: { sys: 'sct', code: '182856006' }, time: '2024-01-15T09:20:00Z', dose: 'Tourniquet applied', route: 'Left upper extremity' },
-                    { code: { sys: 'sct', code: '225358003' }, time: '2024-01-15T15:00:00Z', dose: 'Stretcher', route: 'Manual carry' }
-                ]
-            };
-        }
-
         appState.demos[1] = payloadService.buildViewModelFromObject(payload1, {
             label: 'Payload 1',
             rawPayload: payload1
