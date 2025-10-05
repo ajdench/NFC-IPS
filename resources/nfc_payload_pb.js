@@ -2569,6 +2569,7 @@ $root.medis = (function() {
              * @property {string|null} [onset] Allergy onset
              * @property {string|null} [severity] Allergy severity
              * @property {string|null} [id] Allergy id
+             * @property {string|null} [recordedDate] Allergy recordedDate
              */
 
             /**
@@ -2619,6 +2620,14 @@ $root.medis = (function() {
             Allergy.prototype.id = "";
 
             /**
+             * Allergy recordedDate.
+             * @member {string} recordedDate
+             * @memberof medis.nfc.Allergy
+             * @instance
+             */
+            Allergy.prototype.recordedDate = "";
+
+            /**
              * Creates a new Allergy instance using the specified properties.
              * @function create
              * @memberof medis.nfc.Allergy
@@ -2650,6 +2659,8 @@ $root.medis = (function() {
                     writer.uint32(/* id 3, wireType 2 =*/26).string(message.severity);
                 if (message.id != null && Object.hasOwnProperty.call(message, "id"))
                     writer.uint32(/* id 4, wireType 2 =*/34).string(message.id);
+                if (message.recordedDate != null && Object.hasOwnProperty.call(message, "recordedDate"))
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.recordedDate);
                 return writer;
             };
 
@@ -2702,6 +2713,10 @@ $root.medis = (function() {
                             message.id = reader.string();
                             break;
                         }
+                    case 5: {
+                            message.recordedDate = reader.string();
+                            break;
+                        }
                     default:
                         reader.skipType(tag & 7);
                         break;
@@ -2751,6 +2766,9 @@ $root.medis = (function() {
                 if (message.id != null && message.hasOwnProperty("id"))
                     if (!$util.isString(message.id))
                         return "id: string expected";
+                if (message.recordedDate != null && message.hasOwnProperty("recordedDate"))
+                    if (!$util.isString(message.recordedDate))
+                        return "recordedDate: string expected";
                 return null;
             };
 
@@ -2777,6 +2795,8 @@ $root.medis = (function() {
                     message.severity = String(object.severity);
                 if (object.id != null)
                     message.id = String(object.id);
+                if (object.recordedDate != null)
+                    message.recordedDate = String(object.recordedDate);
                 return message;
             };
 
@@ -2798,6 +2818,7 @@ $root.medis = (function() {
                     object.onset = "";
                     object.severity = "";
                     object.id = "";
+                    object.recordedDate = "";
                 }
                 if (message.code != null && message.hasOwnProperty("code"))
                     object.code = $root.medis.nfc.CodeRef.toObject(message.code, options);
@@ -2807,6 +2828,8 @@ $root.medis = (function() {
                     object.severity = message.severity;
                 if (message.id != null && message.hasOwnProperty("id"))
                     object.id = message.id;
+                if (message.recordedDate != null && message.hasOwnProperty("recordedDate"))
+                    object.recordedDate = message.recordedDate;
                 return object;
             };
 
@@ -2860,6 +2883,7 @@ $root.medis = (function() {
              * @property {string|null} [compositionId] NFCPayload compositionId
              * @property {string|null} [compositionTitle] NFCPayload compositionTitle
              * @property {number|Long|null} [compositionDate] NFCPayload compositionDate
+             * @property {string|null} [bundleMetaLastUpdated] NFCPayload bundleMetaLastUpdated
              */
 
             /**
@@ -2999,6 +3023,14 @@ $root.medis = (function() {
             NFCPayload.prototype.compositionDate = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
 
             /**
+             * NFCPayload bundleMetaLastUpdated.
+             * @member {string} bundleMetaLastUpdated
+             * @memberof medis.nfc.NFCPayload
+             * @instance
+             */
+            NFCPayload.prototype.bundleMetaLastUpdated = "";
+
+            /**
              * Creates a new NFCPayload instance using the specified properties.
              * @function create
              * @memberof medis.nfc.NFCPayload
@@ -3053,6 +3085,8 @@ $root.medis = (function() {
                     writer.uint32(/* id 14, wireType 2 =*/114).string(message.compositionTitle);
                 if (message.compositionDate != null && Object.hasOwnProperty.call(message, "compositionDate"))
                     writer.uint32(/* id 15, wireType 0 =*/120).int64(message.compositionDate);
+                if (message.bundleMetaLastUpdated != null && Object.hasOwnProperty.call(message, "bundleMetaLastUpdated"))
+                    writer.uint32(/* id 16, wireType 2 =*/130).string(message.bundleMetaLastUpdated);
                 return writer;
             };
 
@@ -3149,6 +3183,10 @@ $root.medis = (function() {
                         }
                     case 15: {
                             message.compositionDate = reader.int64();
+                            break;
+                        }
+                    case 16: {
+                            message.bundleMetaLastUpdated = reader.string();
                             break;
                         }
                     default:
@@ -3253,6 +3291,9 @@ $root.medis = (function() {
                 if (message.compositionDate != null && message.hasOwnProperty("compositionDate"))
                     if (!$util.isInteger(message.compositionDate) && !(message.compositionDate && $util.isInteger(message.compositionDate.low) && $util.isInteger(message.compositionDate.high)))
                         return "compositionDate: integer|Long expected";
+                if (message.bundleMetaLastUpdated != null && message.hasOwnProperty("bundleMetaLastUpdated"))
+                    if (!$util.isString(message.bundleMetaLastUpdated))
+                        return "bundleMetaLastUpdated: string expected";
                 return null;
             };
 
@@ -3344,6 +3385,8 @@ $root.medis = (function() {
                         message.compositionDate = object.compositionDate;
                     else if (typeof object.compositionDate === "object")
                         message.compositionDate = new $util.LongBits(object.compositionDate.low >>> 0, object.compositionDate.high >>> 0).toNumber();
+                if (object.bundleMetaLastUpdated != null)
+                    message.bundleMetaLastUpdated = String(object.bundleMetaLastUpdated);
                 return message;
             };
 
@@ -3385,6 +3428,7 @@ $root.medis = (function() {
                         object.compositionDate = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                     } else
                         object.compositionDate = options.longs === String ? "0" : 0;
+                    object.bundleMetaLastUpdated = "";
                 }
                 if (message.patient != null && message.hasOwnProperty("patient"))
                     object.patient = $root.medis.nfc.Patient.toObject(message.patient, options);
@@ -3425,6 +3469,8 @@ $root.medis = (function() {
                         object.compositionDate = options.longs === String ? String(message.compositionDate) : message.compositionDate;
                     else
                         object.compositionDate = options.longs === String ? $util.Long.prototype.toString.call(message.compositionDate) : options.longs === Number ? new $util.LongBits(message.compositionDate.low >>> 0, message.compositionDate.high >>> 0).toNumber() : message.compositionDate;
+                if (message.bundleMetaLastUpdated != null && message.hasOwnProperty("bundleMetaLastUpdated"))
+                    object.bundleMetaLastUpdated = message.bundleMetaLastUpdated;
                 return object;
             };
 
