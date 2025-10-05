@@ -143,15 +143,39 @@
         a.click();
     }
 
+    // Create compact summary with line references
+    const summary = {
+        metadata: {
+            timestamp: new Date().toISOString(),
+            originalSize: leftFhir.length,
+            reconstructedSize: rightFhir.length,
+            originalEntries: leftObj.entry?.length,
+            reconstructedEntries: rightObj.entry?.length,
+            differenceCount: differences.length
+        },
+        summary: differences.map((diff, idx) => ({
+            line: idx + 1,
+            path: diff.path,
+            type: diff.type,
+            leftPreview: diff.left !== undefined ? JSON.stringify(diff.left).substring(0, 100) : undefined,
+            rightPreview: diff.right !== undefined ? JSON.stringify(diff.right).substring(0, 100) : undefined,
+            fullDetailsAtLine: 100 + idx  // Reference to detailed section
+        })),
+        detailedDifferences: differences.map((diff, idx) => ({
+            lineNumber: 100 + idx,
+            ...diff
+        }))
+    };
+
     console.log('💾 Downloading files...\n');
     download(leftObj, 'left-original-fhir.json');
     download(rightObj, 'right-reconstructed-fhir.json');
-    download(differences, 'fhir-differences.json');
+    download(summary, 'differences-summary.json');
 
     console.log('✅ Downloaded:');
     console.log('  - left-original-fhir.json');
     console.log('  - right-reconstructed-fhir.json');
-    console.log('  - fhir-differences.json\n');
+    console.log('  - differences-summary.json (with metadata + compact summary + detailed differences)\n');
 
     console.log('To see diff in terminal:');
     console.log('  diff -u left-original-fhir.json right-reconstructed-fhir.json | less\n');
