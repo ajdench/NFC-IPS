@@ -2656,6 +2656,12 @@
         },
         "dosage": {
           "text": "Titrated to effect",
+          "dose": {
+            "value": 0.1,
+            "unit": "mcg/kg/min",
+            "system": "http://unitsofmeasure.org",
+            "code": "ug/kg/min"
+          },
           "route": {
             "coding": [
               {
