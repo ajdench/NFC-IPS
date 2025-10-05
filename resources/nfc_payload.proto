@@ -175,7 +175,7 @@ message NFCPayload {
     Patient patient = 1;
     Stage poi = 2;
     Stage medevac = 3;
-    Stage r1 = 4;
+    Stage r1 = 4;              // DEPRECATED - use r1_phec and r1_phc instead
     Stage r2 = 5;
     Stage casevac = 6;
     Stage r3 = 7;
@@ -202,4 +202,6 @@ message NFCPayload {
     Stage fwdTacevac = 20;
     Stage rearTacevac = 21;
     Stage stratevac = 22;
+    Stage r1_phec = 23;        // R1 Primary Health Emergency Care
+    Stage r1_phc = 24;         // R1 Primary Health Care
 }

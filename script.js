@@ -2002,8 +2002,8 @@ const codecPipeline = (() => {
                         'casevac': 'casevac',
                         'axp': 'axp',
                         'medevac': 'medevac',
-                        'r1_phec': 'r1',
-                        'r1_phc': 'r1',
+                        'r1_phec': 'r1_phec',
+                        'r1_phc': 'r1_phc',
                         'fwd_tacevac': 'fwdTacevac',
                         'r2_dhc': 'r2',
                         'rear_tacevac': 'rearTacevac',
@@ -2596,7 +2596,9 @@ const codecPipeline = (() => {
             casevac: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
             axp: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
             medevac: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
-            r1: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
+            r1: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },  // DEPRECATED
+            r1_phec: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
+            r1_phc: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
             fwdTacevac: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
             r2: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
             rearTacevac: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
@@ -2646,8 +2648,8 @@ const codecPipeline = (() => {
                         'casevac': 'casevac',
                         'axp': 'axp',
                         'medevac': 'medevac',
-                        'r1_phec': 'r1',
-                        'r1_phc': 'r1',
+                        'r1_phec': 'r1_phec',    // Separate stages for R1 encounters
+                        'r1_phc': 'r1_phc',
                         'fwd_tacevac': 'fwdTacevac',
                         'r2_dhc': 'r2',
                         'rear_tacevac': 'rearTacevac',
@@ -3009,7 +3011,7 @@ const codecPipeline = (() => {
         }
 
         // Convert clinical data from each stage back to FHIR resources
-        const stageKeys = ['poi', 'casevac', 'axp', 'medevac', 'r1', 'fwdTacevac', 'r2', 'rearTacevac', 'r3', 'stratevac'];
+        const stageKeys = ['poi', 'casevac', 'axp', 'medevac', 'r1', 'r1_phec', 'r1_phc', 'fwdTacevac', 'r2', 'rearTacevac', 'r3', 'stratevac'];
         stageKeys.forEach(stageKey => {
             const stage = codeRefPayload[stageKey];
             if (!stage) return;
@@ -3604,7 +3606,9 @@ const codecPipeline = (() => {
                 'casevac': 'casevac',
                 'axp': 'axp',
                 'medevac': 'medevac',
-                'r1': 'r1_phc',  // Default fallback
+                'r1': 'r1_phc',  // DEPRECATED - default fallback
+                'r1_phec': 'r1_phec',
+                'r1_phc': 'r1_phc',
                 'fwdTacevac': 'fwd_tacevac',
                 'r2': 'r2_dhc',
                 'rearTacevac': 'rear_tacevac',
