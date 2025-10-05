@@ -2,8 +2,8 @@
 
 ## 🚀 **QUICK START FOR NEW CLAUDE CODE INSTANCES**
 
-**⏰ LAST UPDATED: 2025-10-05 10:24 UTC** *(Power failure recovery)*
-**🔄 TTL: Valid until 2025-10-05 11:24 UTC** *(Auto-refresh on any Auto-JJ commit)*
+**⏰ LAST UPDATED: 2025-10-05 23:26 UTC** *(Power failure recovery)*
+**🔄 TTL: Valid until 2025-10-06 00:26 UTC** *(Auto-refresh on any Auto-JJ commit)*
 **💾 CRASH RECOVERY: If system restarted unexpectedly, check timestamps below**
 
 ### **Immediate Orientation**
