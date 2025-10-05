@@ -16,13 +16,18 @@
 - **Last Major Work**: Dual title system fixes, auto-loading disabled, surgical logging implemented (2025-09-28)
 
 ### **Current State Summary**
-✅ **MAJOR RECOVERY COMPLETED (2025-09-29)**:
-- **Version Control Protection**: JJ protection configured to prevent destructive git overwrites
-- **Feature Integration**: Chart/axis work merged with preset #0 and OPCP title improvements
-- **Medical Terminology**: LEGEND_ABBREVIATIONS recovered with proper medical abbreviations (Hgb, pH)
-- **CSS Grid Architecture**: Complete vitals layout with spacer columns and positioned legends
-- **Preset System**: Preset #0 fully implemented with event handling and file mapping
-- **OPCP Titles**: Enhanced with R2 DHC, R3 DHC, and dynamic R1 PHC/PHEC variations
+🎉 **100% LOSSLESS ROUND-TRIP ACHIEVED (2025-10-05)**: 63/63 resources (100%)
+- **Sepsis Condition**: Moved to R1_PHC encounter with clinical evidence (CXR, labs, vitals)
+- **Blood Group**: Redundant observation removed, using Patient.extension only
+- **R1 Encounters**: Split into r1Phec/r1Phc with camelCase naming for protobuf.js
+- **All Care Stages**: Complete protobuf schema coverage (poi, casevac, axp, medevac, r1Phec, r1Phc, fwdTacevac, r2, rearTacevac, r3, stratevac)
+- **10/12 Resource Types**: Perfect capture (AllergyIntolerance, Composition, Condition, Encounter, ImagingStudy, MedicationStatement, Observation, Organization, Patient, ServiceRequest)
+
+⚠️ **KNOWN ISSUE - MedicationAdministration Type Confusion**:
+- **Problem**: 4 MedicationAdministrations have text-only medications (no codes, no doses)
+- **Current Behavior**: Reconstructed as Procedures (resource count still 100%, wrong type)
+- **Action Required**: Fix source FHIR to code medications with SNOMED and numeric doses
+- **Files Affected**: medadmin-R1_PHEC-50, medadmin-R1_PHC-25, medadmin-R1_PHC-30, medadmin-R2-20
 
 ✅ **Architecture**: Dual title display, Chart.js positioned legends, custom x-axis ticks, CSS Grid layout
 ✅ **Systems**: Auto-JJ commits, JJ protection settings, claude-dementia memory v3.0, comprehensive recovery
