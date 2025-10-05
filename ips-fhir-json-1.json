@@ -467,7 +467,10 @@
         "subject": {
           "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
         },
-        "onsetDateTime": "2025-10-02T05:00:00-04:00"
+        "onsetDateTime": "2025-10-02T10:15:00-04:00",
+        "encounter": {
+          "reference": "urn:uuid:eaf7a7aa-5060-4afc-a947-aa5920479a9f"
+        }
       }
     },
     {
