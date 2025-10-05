@@ -73,6 +73,27 @@ message Vital {
     double value = 2;
     string time = 3;
     string id = 4;                 // Observation.id for fullUrl reconstruction
+    string unit = 5;               // Optional unit for vital signs
+}
+
+message Lab {
+    CodeRef code = 1;
+    double value = 2;
+    string time = 3;
+    string id = 4;                 // Observation.id for fullUrl reconstruction
+    string unit = 5;               // Unit for lab results (e.g., "10*3/uL")
+}
+
+message Assessment {
+    CodeRef code = 1;
+    oneof value_type {
+        CodeRef value_code = 2;    // CodeableConcept value (most common)
+        bool value_bool = 3;       // Boolean value (e.g., febrile status)
+        double value_quantity = 4; // Numeric value (if needed)
+    }
+    string time = 5;
+    string id = 6;                 // Observation.id for fullUrl reconstruction
+    CodeRef body_site = 7;         // Optional bodySite (e.g., lung location)
 }
 
 message Condition {
@@ -87,13 +108,40 @@ message Event {
     double dose = 3;
     string unit = 4;
     string route = 5;
-    string id = 6;                 // MedicationAdministration.id for fullUrl reconstruction
+    string id = 6;                 // MedicationAdministration.id or Procedure.id for fullUrl reconstruction
+}
+
+message ServiceRequest {
+    CodeRef code = 1;
+    string time = 2;               // ServiceRequest.authoredOn
+    string priority = 3;           // "routine", "urgent", "asap", "stat"
+    string id = 4;                 // ServiceRequest.id for fullUrl reconstruction
+}
+
+message Imaging {
+    string id = 1;                 // ImagingStudy.id
+    CodeRef modality = 2;          // Modality code (CT, X-RAY, MRI, etc.)
+    string description = 3;        // ImagingStudy.description (findings)
+    string time = 4;               // ImagingStudy.started
+}
+
+message Encounter {
+    string id = 1;                 // Encounter.id
+    string start = 2;              // Encounter.period.start
+    string end = 3;                // Encounter.period.end
+    CodeRef class_code = 4;        // Encounter.class (EMER, IMP, etc.)
+    string type_code = 5;          // Encounter.type.coding[0].code (poi, r1_phc, r1_phec, etc.)
 }
 
 message Stage {
     repeated Vital vitals = 1;
     repeated Condition conditions = 2;
     repeated Event events = 3;
+    repeated Lab labs = 4;                    // NEW: Laboratory observations
+    repeated Assessment assessments = 5;      // NEW: Clinical assessments (MIST/MARCH)
+    repeated ServiceRequest requests = 6;     // NEW: Service requests (CASEVAC, etc.)
+    Encounter encounter = 7;                  // NEW: Encounter metadata per stage
+    repeated Imaging imaging = 8;             // NEW: Imaging studies for this stage
 }
 
 message BundleMetadata {
@@ -110,6 +158,17 @@ message Allergy {
     string severity = 3;
     string id = 4;                 // AllergyIntolerance.id for fullUrl reconstruction
     string recorded_date = 5;      // AllergyIntolerance.recordedDate (ISO string)
+}
+
+message MedicationStatement {
+    CodeRef code = 1;              // MedicationStatement.medicationCodeableConcept
+    string id = 2;                 // MedicationStatement.id
+    string status = 3;             // "active", "completed", "stopped", etc.
+}
+
+message Organization {
+    string id = 1;                 // Organization.id
+    string name = 2;               // Organization.name
 }
 
 message NFCPayload {
@@ -133,4 +192,8 @@ message NFCPayload {
 
     // Phase 3: 100% lossless timestamps
     string bundle_meta_last_updated = 16;  // Bundle.meta.lastUpdated (ISO string)
+
+    // Phase 4: Additional resource types
+    repeated MedicationStatement medications = 17;  // NEW: Ongoing medications
+    Organization organization = 18;                 // NEW: Authoring organization
 }

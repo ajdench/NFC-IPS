@@ -2590,15 +2590,17 @@ const codecPipeline = (() => {
         const payload = {
             patient: convertedPatient,
             allergies: [],
-            poi: { vitals: [], conditions: [], events: [] },
-            casevac: { vitals: [], conditions: [], events: [] },
-            axp: { vitals: [], conditions: [], events: [] },
-            medevac: { vitals: [], conditions: [], events: [] },
-            r1: { vitals: [], conditions: [], events: [] },
-            fwdTacevac: { vitals: [], conditions: [], events: [] },
-            r2: { vitals: [], conditions: [], events: [] },
-            rearTacevac: { vitals: [], conditions: [], events: [] },
-            r3: { vitals: [], conditions: [], events: [] },
+            medications: [],  // NEW: MedicationStatements
+            organization: null,  // NEW: Authoring organization
+            poi: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
+            casevac: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
+            axp: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
+            medevac: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
+            r1: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
+            fwdTacevac: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
+            r2: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
+            rearTacevac: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
+            r3: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
             t: bundleTimestamp,
             // Lossless reconstruction metadata
             bundle_id: bundleId,
@@ -2616,9 +2618,46 @@ const codecPipeline = (() => {
 
             const resource = entry.resource;
 
-            // Handle allergies separately (no care-stage assignment)
+            // Handle patient-level resources (no care-stage assignment)
             if (resource.resourceType === 'AllergyIntolerance') {
                 payload.allergies.push(convertAllergyToCodeRef(resource));
+                return;
+            }
+            if (resource.resourceType === 'MedicationStatement') {
+                payload.medications.push(convertMedicationStatementToCodeRef(resource));
+                return;
+            }
+            if (resource.resourceType === 'Organization') {
+                payload.organization = convertOrganizationToCodeRef(resource);
+                return;
+            }
+
+            // Handle Encounters specially - they define the care stage
+            if (resource.resourceType === 'Encounter') {
+                // Extract care stage from encounter's own type.coding
+                const typeCoding = resource.type?.[0]?.coding?.find(coding =>
+                    coding.system === 'http://medis.org.uk/fhir/CodeSystem/opcp-care-stages'
+                );
+
+                if (typeCoding?.code) {
+                    const codeMap = {
+                        'poi': 'poi',
+                        'casevac': 'casevac',
+                        'axp': 'axp',
+                        'medevac': 'medevac',
+                        'r1_phec': 'r1',
+                        'r1_phc': 'r1',
+                        'fwd_tacevac': 'fwdTacevac',
+                        'r2_dhc': 'r2',
+                        'rear_tacevac': 'rearTacevac',
+                        'r3_dhc': 'r3',
+                        'stratevac': 'stratevac'
+                    };
+                    const encounterStage = codeMap[typeCoding.code] || typeCoding.code;
+                    if (payload[encounterStage]) {
+                        payload[encounterStage].encounter = convertEncounterToCodeRef(resource);
+                    }
+                }
                 return;
             }
 
@@ -2626,15 +2665,35 @@ const codecPipeline = (() => {
 
             if (!careStage) return;
 
+            // Handle Conditions
             if (resource.resourceType === 'Condition') {
                 payload[careStage].conditions.push(convertConditionToCodeRef(resource));
-            } else if (resource.resourceType === 'Observation' &&
-                       resource.category?.[0]?.coding?.[0]?.code === 'vital-signs') {
-                payload[careStage].vitals.push(convertObservationToCodeRef(resource));
-            } else if (resource.resourceType === 'MedicationAdministration') {
+            }
+            // Handle Observations - categorize by type
+            else if (resource.resourceType === 'Observation') {
+                const category = resource.category?.[0]?.coding?.[0]?.code;
+                if (category === 'vital-signs') {
+                    payload[careStage].vitals.push(convertObservationToCodeRef(resource));
+                } else if (category === 'laboratory') {
+                    payload[careStage].labs.push(convertLabToCodeRef(resource));
+                } else if (category === 'exam' || category === 'survey') {
+                    payload[careStage].assessments.push(convertAssessmentToCodeRef(resource));
+                }
+            }
+            // Handle MedicationAdministration and Procedure
+            else if (resource.resourceType === 'MedicationAdministration') {
                 payload[careStage].events.push(convertMedicationToCodeRef(resource));
-            } else if (resource.resourceType === 'Procedure') {
+            }
+            else if (resource.resourceType === 'Procedure') {
                 payload[careStage].events.push(convertProcedureToCodeRef(resource));
+            }
+            // Handle ServiceRequest
+            else if (resource.resourceType === 'ServiceRequest') {
+                payload[careStage].requests.push(convertServiceRequestToCodeRef(resource));
+            }
+            // Handle ImagingStudy
+            else if (resource.resourceType === 'ImagingStudy') {
+                payload[careStage].imaging.push(convertImagingToCodeRef(resource));
             }
         });
 
@@ -2736,6 +2795,112 @@ const codecPipeline = (() => {
         };
     }
 
+    function convertLabToCodeRef(observation) {
+        return {
+            id: observation.id || '',
+            code: {
+                sys: extractSystem(observation.code?.coding?.[0]?.system),
+                code: observation.code?.coding?.[0]?.code || 'unknown'
+            },
+            value: observation.valueQuantity?.value || 0,
+            unit: observation.valueQuantity?.unit || '',
+            time: observation.effectiveDateTime || new Date().toISOString()
+        };
+    }
+
+    function convertAssessmentToCodeRef(observation) {
+        const assessment = {
+            id: observation.id || '',
+            code: {
+                sys: extractSystem(observation.code?.coding?.[0]?.system),
+                code: observation.code?.coding?.[0]?.code || 'unknown'
+            },
+            time: observation.effectiveDateTime || new Date().toISOString()
+        };
+
+        // Handle different value types
+        if (observation.valueCodeableConcept) {
+            assessment.value = {
+                sys: extractSystem(observation.valueCodeableConcept.coding?.[0]?.system),
+                code: observation.valueCodeableConcept.coding?.[0]?.code || 'unknown'
+            };
+        } else if (observation.valueBoolean !== undefined) {
+            assessment.value = observation.valueBoolean;
+        } else if (observation.valueQuantity) {
+            assessment.value = observation.valueQuantity.value;
+        }
+
+        // Handle optional bodySite
+        if (observation.bodySite?.coding?.[0]) {
+            assessment.bodySite = {
+                sys: extractSystem(observation.bodySite.coding[0].system),
+                code: observation.bodySite.coding[0].code
+            };
+        }
+
+        return assessment;
+    }
+
+    function convertServiceRequestToCodeRef(serviceRequest) {
+        return {
+            id: serviceRequest.id || '',
+            code: {
+                sys: extractSystem(serviceRequest.code?.coding?.[0]?.system),
+                code: serviceRequest.code?.coding?.[0]?.code || 'unknown'
+            },
+            time: serviceRequest.authoredOn || new Date().toISOString(),
+            priority: serviceRequest.priority || 'routine'
+        };
+    }
+
+    function convertImagingToCodeRef(imagingStudy) {
+        return {
+            id: imagingStudy.id || '',
+            modality: imagingStudy.modality?.[0] ? {
+                sys: extractSystem(imagingStudy.modality[0].system),
+                code: imagingStudy.modality[0].code || 'unknown'
+            } : { sys: 'unknown', code: 'unknown' },
+            description: imagingStudy.description || '',
+            time: imagingStudy.started || new Date().toISOString()
+        };
+    }
+
+    function convertEncounterToCodeRef(encounter) {
+        // Extract the type.coding for care stage (e.g., poi, r1_phc, r1_phec)
+        const typeCoding = encounter.type?.[0]?.coding?.find(coding =>
+            coding.system === 'http://medis.org.uk/fhir/CodeSystem/opcp-care-stages'
+        );
+
+        return {
+            id: encounter.id || '',
+            start: encounter.period?.start || '',
+            end: encounter.period?.end || '',
+            class: encounter.class ? {
+                sys: extractSystem(encounter.class.system),
+                code: encounter.class.code || 'unknown'
+            } : { sys: 'unknown', code: 'unknown' },
+            type_code: typeCoding?.code || ''  // Store original type code (r1_phc vs r1_phec)
+        };
+    }
+
+    function convertMedicationStatementToCodeRef(medStatement) {
+        return {
+            id: medStatement.id || '',
+            code: {
+                sys: extractSystem(medStatement.medicationCodeableConcept?.coding?.[0]?.system),
+                code: medStatement.medicationCodeableConcept?.coding?.[0]?.code || 'unknown'
+            },
+            status: medStatement.status || 'active'
+        };
+    }
+
+    function convertOrganizationToCodeRef(organization) {
+        return {
+            id: organization.id || '',
+            name: organization.name || ''
+        };
+    }
+
     function extractSystem(systemUrl) {
         if (systemUrl?.includes('snomed')) return 'sct';
         if (systemUrl?.includes('loinc')) return 'loinc';
@@ -2822,16 +2987,67 @@ const codecPipeline = (() => {
             });
         }
 
+        // Convert MedicationStatements (patient-level)
+        if (codeRefPayload.medications) {
+            codeRefPayload.medications.forEach(medication => {
+                const medResource = convertCodeRefMedicationStatementToFhir(medication, codeRefPayload.patient?.id);
+                bundle.entry.push({
+                    fullUrl: `urn:uuid:${medResource.id}`,
+                    resource: medResource
+                });
+            });
+        }
+
+        // Convert Organization (patient-level)
+        if (codeRefPayload.organization) {
+            const orgResource = convertCodeRefOrganizationToFhir(codeRefPayload.organization);
+            bundle.entry.push({
+                fullUrl: `urn:uuid:${orgResource.id}`,
+                resource: orgResource
+            });
+        }
+
         // Convert clinical data from each stage back to FHIR resources
         const stageKeys = ['poi', 'casevac', 'axp', 'medevac', 'r1', 'fwdTacevac', 'r2', 'rearTacevac', 'r3', 'stratevac'];
         stageKeys.forEach(stageKey => {
             const stage = codeRefPayload[stageKey];
             if (!stage) return;
 
+            // Convert encounter metadata
+            if (stage.encounter) {
+                const encounterResource = convertCodeRefEncounterToFhir(stage.encounter, stageKey, codeRefPayload.patient?.id);
+                bundle.entry.push({
+                    fullUrl: `urn:uuid:${encounterResource.id}`,
+                    resource: encounterResource
+                });
+            }
+
             // Convert vitals to Observation resources
             if (stage.vitals) {
                 stage.vitals.forEach((vital, index) => {
-                    const observation = convertCodeRefVitalToFhir(vital, stageKey);
+                    const observation = convertCodeRefVitalToFhir(vital, stageKey, stage.encounter?.id, codeRefPayload.patient?.id);
+                    bundle.entry.push({
+                        fullUrl: `urn:uuid:${observation.id}`,
+                        resource: observation
+                    });
+                });
+            }
+
+            // Convert labs to Observation resources (laboratory category)
+            if (stage.labs) {
+                stage.labs.forEach(lab => {
+                    const observation = convertCodeRefLabToFhir(lab, stageKey, stage.encounter?.id, codeRefPayload.patient?.id);
+                    bundle.entry.push({
+                        fullUrl: `urn:uuid:${observation.id}`,
+                        resource: observation
+                    });
+                });
+            }
+
+            // Convert assessments to Observation resources (exam/survey category)
+            if (stage.assessments) {
+                stage.assessments.forEach(assessment => {
+                    const observation = convertCodeRefAssessmentToFhir(assessment, stageKey, stage.encounter?.id, codeRefPayload.patient?.id);
                     bundle.entry.push({
                         fullUrl: `urn:uuid:${observation.id}`,
                         resource: observation
@@ -2842,7 +3058,7 @@ const codecPipeline = (() => {
             // Convert conditions to Condition resources
             if (stage.conditions) {
                 stage.conditions.forEach((condition, index) => {
-                    const conditionResource = convertCodeRefConditionToFhir(condition, stageKey);
+                    const conditionResource = convertCodeRefConditionToFhir(condition, stageKey, stage.encounter?.id, codeRefPayload.patient?.id);
                     bundle.entry.push({
                         fullUrl: `urn:uuid:${conditionResource.id}`,
                         resource: conditionResource
@@ -2853,10 +3069,32 @@ const codecPipeline = (() => {
             // Convert events to various FHIR resources
             if (stage.events) {
                 stage.events.forEach((event, index) => {
-                    const eventResource = convertCodeRefEventToFhir(event, stageKey);
+                    const eventResource = convertCodeRefEventToFhir(event, stageKey, stage.encounter?.id, codeRefPayload.patient?.id);
                     bundle.entry.push({
                         fullUrl: `urn:uuid:${eventResource.id}`,
                         resource: eventResource
+                    });
+                });
+            }
+
+            // Convert service requests to ServiceRequest resources
+            if (stage.requests) {
+                stage.requests.forEach(request => {
+                    const requestResource = convertCodeRefServiceRequestToFhir(request, stageKey, stage.encounter?.id, codeRefPayload.patient?.id);
+                    bundle.entry.push({
+                        fullUrl: `urn:uuid:${requestResource.id}`,
+                        resource: requestResource
+                    });
+                });
+            }
+
+            // Convert imaging studies to ImagingStudy resources
+            if (stage.imaging) {
+                stage.imaging.forEach(imaging => {
+                    const imagingResource = convertCodeRefImagingToFhir(imaging, stageKey, stage.encounter?.id, codeRefPayload.patient?.id);
+                    bundle.entry.push({
+                        fullUrl: `urn:uuid:${imagingResource.id}`,
+                        resource: imagingResource
                     });
                 });
             }
@@ -3083,8 +3321,8 @@ const codecPipeline = (() => {
         return allergyResource;
     }
 
-    function convertCodeRefVitalToFhir(vital, careStage) {
-        return {
+    function convertCodeRefVitalToFhir(vital, careStage, encounterId, patientId) {
+        const observation = {
             resourceType: 'Observation',
             id: vital.id || `vital-${careStage}-${Date.now()}`,
             status: 'final',
@@ -3102,27 +3340,35 @@ const codecPipeline = (() => {
                     display: resolveCodeDisplay(vital.code.sys, vital.code.code)
                 }]
             },
-            subject: { reference: 'urn:uuid:patient-example' },
+            subject: { reference: `urn:uuid:${patientId || 'patient-example'}` },
             effectiveDateTime: vital.time,
             valueQuantity: {
                 value: vital.value,
-                unit: inferUnitFromCode(vital.code.sys, vital.code.code) || ''
-            },
-            extension: [{
-                url: FHIR_EXTENSIONS.CARE_STAGE,
-                valueCode: careStage
-            }]
+                unit: vital.unit || inferUnitFromCode(vital.code.sys, vital.code.code) || ''
+            }
         };
+
+        if (encounterId) {
+            observation.encounter = { reference: `urn:uuid:${encounterId}` };
+        }
+
+        return observation;
     }
 
-    function convertCodeRefConditionToFhir(condition, careStage) {
-        return {
+    function convertCodeRefConditionToFhir(condition, careStage, encounterId, patientId) {
+        const conditionResource = {
             resourceType: 'Condition',
             id: condition.id || `condition-${careStage}-${Date.now()}`,
             clinicalStatus: {
                 coding: [{
                     system: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
                     code: 'active'
+                }]
+            },
+            verificationStatus: {
+                coding: [{
+                    system: 'http://terminology.hl7.org/CodeSystem/condition-ver-status',
+                    code: 'confirmed'
                 }]
             },
             code: {
@@ -3132,21 +3378,23 @@ const codecPipeline = (() => {
                     display: resolveCodeDisplay(condition.code.sys, condition.code.code)
                 }]
             },
-            subject: { reference: 'urn:uuid:patient-example' },
-            onsetDateTime: condition.onset,
-            extension: [{
-                url: FHIR_EXTENSIONS.CARE_STAGE,
-                valueCode: careStage
-            }]
+            subject: { reference: `urn:uuid:${patientId || 'patient-example'}` },
+            onsetDateTime: condition.onset
         };
+
+        if (encounterId) {
+            conditionResource.encounter = { reference: `urn:uuid:${encounterId}` };
+        }
+
+        return conditionResource;
     }
 
-    function convertCodeRefEventToFhir(event, careStage) {
+    function convertCodeRefEventToFhir(event, careStage, encounterId, patientId) {
         // Determine resource type based on the event code
         const isMedication = event.dose && typeof event.dose === 'number';
 
         if (isMedication) {
-            return {
+            const medAdmin = {
                 resourceType: 'MedicationAdministration',
                 id: event.id || `medication-${careStage}-${Date.now()}`,
                 status: 'completed',
@@ -3157,7 +3405,7 @@ const codecPipeline = (() => {
                         display: resolveCodeDisplay(event.code.sys, event.code.code)
                     }]
                 },
-                subject: { reference: 'urn:uuid:patient-example' },
+                subject: { reference: `urn:uuid:${patientId || 'patient-example'}` },
                 effectiveDateTime: event.time,
                 dosage: {
                     dose: {
@@ -3170,14 +3418,14 @@ const codecPipeline = (() => {
                             code: event.route
                         }]
                     } : undefined
-                },
-                extension: [{
-                    url: FHIR_EXTENSIONS.CARE_STAGE,
-                    valueCode: careStage
-                }]
+                }
             };
+            if (encounterId) {
+                medAdmin.encounter = { reference: `urn:uuid:${encounterId}` };
+            }
+            return medAdmin;
         } else {
-            return {
+            const procedure = {
                 resourceType: 'Procedure',
                 id: event.id || `procedure-${careStage}-${Date.now()}`,
                 status: 'completed',
@@ -3188,17 +3436,229 @@ const codecPipeline = (() => {
                         display: resolveCodeDisplay(event.code.sys, event.code.code)
                     }]
                 },
-                subject: { reference: 'urn:uuid:patient-example' },
+                subject: { reference: `urn:uuid:${patientId || 'patient-example'}` },
                 performedDateTime: event.time,
                 note: event.dose && typeof event.dose === 'string' ? [{
                     text: event.dose
-                }] : undefined,
-                extension: [{
-                    url: FHIR_EXTENSIONS.CARE_STAGE,
-                    valueCode: careStage
+                }] : undefined
+            };
+            if (encounterId) {
+                procedure.encounter = { reference: `urn:uuid:${encounterId}` };
+            }
+            return procedure;
+        }
+    }
+
+    // NEW: Lab converter
+    function convertCodeRefLabToFhir(lab, careStage, encounterId, patientId) {
+        const observation = {
+            resourceType: 'Observation',
+            id: lab.id || `lab-${careStage}-${Date.now()}`,
+            status: 'final',
+            category: [{
+                coding: [{
+                    system: 'http://terminology.hl7.org/CodeSystem/observation-category',
+                    code: 'laboratory',
+                    display: 'Laboratory'
+                }]
+            }],
+            code: {
+                coding: [{
+                    system: lab.code.sys === 'loinc' ? 'http://loinc.org' : `urn:code:${lab.code.sys}`,
+                    code: lab.code.code,
+                    display: resolveCodeDisplay(lab.code.sys, lab.code.code)
+                }]
+            },
+            subject: { reference: `urn:uuid:${patientId || 'patient-example'}` },
+            effectiveDateTime: lab.time,
+            valueQuantity: {
+                value: lab.value,
+                unit: lab.unit || ''
+            }
+        };
+
+        if (encounterId) {
+            observation.encounter = { reference: `urn:uuid:${encounterId}` };
+        }
+
+        return observation;
+    }
+
+    // NEW: Assessment converter
+    function convertCodeRefAssessmentToFhir(assessment, careStage, encounterId, patientId) {
+        const observation = {
+            resourceType: 'Observation',
+            id: assessment.id || `assessment-${careStage}-${Date.now()}`,
+            status: 'final',
+            category: [{
+                coding: [{
+                    system: 'http://terminology.hl7.org/CodeSystem/observation-category',
+                    code: 'exam',
+                    display: 'Exam'
+                }]
+            }],
+            code: {
+                coding: [{
+                    system: assessment.code.sys === 'loinc' ? 'http://loinc.org' : assessment.code.sys === 'sct' ? 'http://snomed.info/sct' : `urn:code:${assessment.code.sys}`,
+                    code: assessment.code.code,
+                    display: resolveCodeDisplay(assessment.code.sys, assessment.code.code)
+                }]
+            },
+            subject: { reference: `urn:uuid:${patientId || 'patient-example'}` },
+            effectiveDateTime: assessment.time
+        };
+
+        // Handle different value types
+        if (assessment.value && typeof assessment.value === 'object' && assessment.value.sys) {
+            observation.valueCodeableConcept = {
+                coding: [{
+                    system: assessment.value.sys === 'sct' ? 'http://snomed.info/sct' : `urn:code:${assessment.value.sys}`,
+                    code: assessment.value.code,
+                    display: resolveCodeDisplay(assessment.value.sys, assessment.value.code)
+                }]
+            };
+        } else if (typeof assessment.value === 'boolean') {
+            observation.valueBoolean = assessment.value;
+        } else if (typeof assessment.value === 'number') {
+            observation.valueQuantity = { value: assessment.value };
+        }
+
+        // Handle bodySite if present
+        if (assessment.bodySite) {
+            observation.bodySite = {
+                coding: [{
+                    system: assessment.bodySite.sys === 'sct' ? 'http://snomed.info/sct' : `urn:code:${assessment.bodySite.sys}`,
+                    code: assessment.bodySite.code
                 }]
             };
         }
+
+        if (encounterId) {
+            observation.encounter = { reference: `urn:uuid:${encounterId}` };
+        }
+
+        return observation;
+    }
+
+    // NEW: ServiceRequest converter
+    function convertCodeRefServiceRequestToFhir(request, careStage, encounterId, patientId) {
+        const serviceRequest = {
+            resourceType: 'ServiceRequest',
+            id: request.id || `request-${careStage}-${Date.now()}`,
+            status: 'active',
+            intent: 'order',
+            priority: request.priority || 'routine',
+            code: {
+                coding: [{
+                    system: request.code.sys === 'sct' ? 'http://snomed.info/sct' : `urn:code:${request.code.sys}`,
+                    code: request.code.code,
+                    display: resolveCodeDisplay(request.code.sys, request.code.code)
+                }]
+            },
+            subject: { reference: `urn:uuid:${patientId || 'patient-example'}` },
+            authoredOn: request.time
+        };
+
+        if (encounterId) {
+            serviceRequest.encounter = { reference: `urn:uuid:${encounterId}` };
+        }
+
+        return serviceRequest;
+    }
+
+    // NEW: ImagingStudy converter
+    function convertCodeRefImagingToFhir(imaging, careStage, encounterId, patientId) {
+        const imagingStudy = {
+            resourceType: 'ImagingStudy',
+            id: imaging.id || `imaging-${careStage}-${Date.now()}`,
+            status: 'available',
+            subject: { reference: `urn:uuid:${patientId || 'patient-example'}` },
+            started: imaging.time,
+            description: imaging.description || '',
+            series: []
+        };
+
+        if (imaging.modality && imaging.modality.code && imaging.modality.code !== 'unknown') {
+            imagingStudy.modality = [{
+                system: imaging.modality.sys === 'sct' ? 'http://snomed.info/sct' : `urn:code:${imaging.modality.sys}`,
+                code: imaging.modality.code
+            }];
+        }
+
+        if (encounterId) {
+            imagingStudy.encounter = { reference: `urn:uuid:${encounterId}` };
+        }
+
+        return imagingStudy;
+    }
+
+    // NEW: Encounter converter
+    function convertCodeRefEncounterToFhir(encounter, careStage, patientId) {
+        // Use the stored type_code if available, otherwise map from care stage
+        let typeCode = encounter.type_code;
+        if (!typeCode) {
+            // Fallback mapping if type_code wasn't stored
+            const stageCodeMap = {
+                'poi': 'poi',
+                'casevac': 'casevac',
+                'axp': 'axp',
+                'medevac': 'medevac',
+                'r1': 'r1_phc',  // Default fallback
+                'fwdTacevac': 'fwd_tacevac',
+                'r2': 'r2_dhc',
+                'rearTacevac': 'rear_tacevac',
+                'r3': 'r3_dhc',
+                'stratevac': 'stratevac'
+            };
+            typeCode = stageCodeMap[careStage] || careStage;
+        }
+
+        return {
+            resourceType: 'Encounter',
+            id: encounter.id || `encounter-${careStage}-${Date.now()}`,
+            status: 'finished',
+            class: encounter.class && encounter.class.code && encounter.class.code !== 'unknown' ? {
+                system: encounter.class.sys === 'unknown' ? 'http://terminology.hl7.org/CodeSystem/v3-ActCode' : `urn:code:${encounter.class.sys}`,
+                code: encounter.class.code
+            } : { system: 'http://terminology.hl7.org/CodeSystem/v3-ActCode', code: 'AMB' },
+            type: [{
+                coding: [{
+                    system: 'http://medis.org.uk/fhir/CodeSystem/opcp-care-stages',
+                    code: typeCode
+                }]
+            }],
+            subject: { reference: `urn:uuid:${patientId || 'patient-example'}` },
+            period: {
+                start: encounter.start,
+                end: encounter.end
+            }
+        };
+    }
+
+    // NEW: MedicationStatement converter
+    function convertCodeRefMedicationStatementToFhir(medication, patientId) {
+        return {
+            resourceType: 'MedicationStatement',
+            id: medication.id || `medication-statement-${Date.now()}`,
+            status: medication.status || 'active',
+            medicationCodeableConcept: {
+                coding: [{
+                    system: medication.code.sys === 'sct' ? 'http://snomed.info/sct' : `urn:code:${medication.code.sys}`,
+                    code: medication.code.code,
+                    display: resolveCodeDisplay(medication.code.sys, medication.code.code)
+                }]
+            },
+            subject: { reference: `urn:uuid:${patientId || 'patient-example'}` }
+        };
+    }
+
+    // NEW: Organization converter
+    function convertCodeRefOrganizationToFhir(organization) {
+        return {
+            resourceType: 'Organization',
+            id: organization.id || `organization-${Date.now()}`,
+            name: organization.name || ''
+        };
     }
 
     async function encodeToFragment(payload) {
@@ -4330,7 +4790,7 @@ const payloadService = (() => {
         }
 
         try {
-            const codeRefPayload = codecPipeline.convertFhirBundleToUltraCompactCodeRef(bundle);
+            const codeRefPayload = codecPipeline.convertFhirBundleToCodeRef(bundle);
             const stageResult = buildCodeRefStageSections(codeRefPayload);
             const summary = buildSummary(codeRefPayload, stageResult.totals);
             return {
@@ -6035,9 +6495,11 @@ async function init() {
 
                 // Stage 3: Parse (CodeRef → FHIR) - Orange stage
                 const fhirBundle = codecPipeline.convertCodeRefToFhirBundle(parsedViewModel.rawPayload);
-                formatState.conversionResults.fhir = JSON.stringify(fhirBundle, null, 2);
+                const reconstructedFhir = JSON.stringify(fhirBundle, null, 2);
+                // Don't overwrite original FHIR - store reconstruction separately
+                formatState.conversionResults.reconstructedFhir = reconstructedFhir;
                 updateRightPaneFormat('fhir');
-                rightInput.textContent = formatState.conversionResults.fhir;
+                rightInput.textContent = reconstructedFhir;
                 updateCharCount(rightInput, rightCharCount);
                 updateStageStates('right');
 
