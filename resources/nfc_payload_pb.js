@@ -1093,6 +1093,7 @@ $root.medis = (function() {
              * @property {number|null} [value] Vital value
              * @property {string|null} [time] Vital time
              * @property {string|null} [id] Vital id
+             * @property {string|null} [unit] Vital unit
              */
 
             /**
@@ -1143,6 +1144,14 @@ $root.medis = (function() {
             Vital.prototype.id = "";
 
             /**
+             * Vital unit.
+             * @member {string} unit
+             * @memberof medis.nfc.Vital
+             * @instance
+             */
+            Vital.prototype.unit = "";
+
+            /**
              * Creates a new Vital instance using the specified properties.
              * @function create
              * @memberof medis.nfc.Vital
@@ -1174,6 +1183,8 @@ $root.medis = (function() {
                     writer.uint32(/* id 3, wireType 2 =*/26).string(message.time);
                 if (message.id != null && Object.hasOwnProperty.call(message, "id"))
                     writer.uint32(/* id 4, wireType 2 =*/34).string(message.id);
+                if (message.unit != null && Object.hasOwnProperty.call(message, "unit"))
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.unit);
                 return writer;
             };
 
@@ -1226,6 +1237,10 @@ $root.medis = (function() {
                             message.id = reader.string();
                             break;
                         }
+                    case 5: {
+                            message.unit = reader.string();
+                            break;
+                        }
                     default:
                         reader.skipType(tag & 7);
                         break;
@@ -1275,6 +1290,9 @@ $root.medis = (function() {
                 if (message.id != null && message.hasOwnProperty("id"))
                     if (!$util.isString(message.id))
                         return "id: string expected";
+                if (message.unit != null && message.hasOwnProperty("unit"))
+                    if (!$util.isString(message.unit))
+                        return "unit: string expected";
                 return null;
             };
 
@@ -1301,6 +1319,8 @@ $root.medis = (function() {
                     message.time = String(object.time);
                 if (object.id != null)
                     message.id = String(object.id);
+                if (object.unit != null)
+                    message.unit = String(object.unit);
                 return message;
             };
 
@@ -1322,6 +1342,7 @@ $root.medis = (function() {
                     object.value = 0;
                     object.time = "";
                     object.id = "";
+                    object.unit = "";
                 }
                 if (message.code != null && message.hasOwnProperty("code"))
                     object.code = $root.medis.nfc.CodeRef.toObject(message.code, options);
@@ -1331,6 +1352,8 @@ $root.medis = (function() {
                     object.time = message.time;
                 if (message.id != null && message.hasOwnProperty("id"))
                     object.id = message.id;
+                if (message.unit != null && message.hasOwnProperty("unit"))
+                    object.unit = message.unit;
                 return object;
             };
 
@@ -1361,6 +1384,700 @@ $root.medis = (function() {
             };
 
             return Vital;
+        })();
+
+        nfc.Lab = (function() {
+
+            /**
+             * Properties of a Lab.
+             * @memberof medis.nfc
+             * @interface ILab
+             * @property {medis.nfc.ICodeRef|null} [code] Lab code
+             * @property {number|null} [value] Lab value
+             * @property {string|null} [time] Lab time
+             * @property {string|null} [id] Lab id
+             * @property {string|null} [unit] Lab unit
+             */
+
+            /**
+             * Constructs a new Lab.
+             * @memberof medis.nfc
+             * @classdesc Represents a Lab.
+             * @implements ILab
+             * @constructor
+             * @param {medis.nfc.ILab=} [properties] Properties to set
+             */
+            function Lab(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * Lab code.
+             * @member {medis.nfc.ICodeRef|null|undefined} code
+             * @memberof medis.nfc.Lab
+             * @instance
+             */
+            Lab.prototype.code = null;
+
+            /**
+             * Lab value.
+             * @member {number} value
+             * @memberof medis.nfc.Lab
+             * @instance
+             */
+            Lab.prototype.value = 0;
+
+            /**
+             * Lab time.
+             * @member {string} time
+             * @memberof medis.nfc.Lab
+             * @instance
+             */
+            Lab.prototype.time = "";
+
+            /**
+             * Lab id.
+             * @member {string} id
+             * @memberof medis.nfc.Lab
+             * @instance
+             */
+            Lab.prototype.id = "";
+
+            /**
+             * Lab unit.
+             * @member {string} unit
+             * @memberof medis.nfc.Lab
+             * @instance
+             */
+            Lab.prototype.unit = "";
+
+            /**
+             * Creates a new Lab instance using the specified properties.
+             * @function create
+             * @memberof medis.nfc.Lab
+             * @static
+             * @param {medis.nfc.ILab=} [properties] Properties to set
+             * @returns {medis.nfc.Lab} Lab instance
+             */
+            Lab.create = function create(properties) {
+                return new Lab(properties);
+            };
+
+            /**
+             * Encodes the specified Lab message. Does not implicitly {@link medis.nfc.Lab.verify|verify} messages.
+             * @function encode
+             * @memberof medis.nfc.Lab
+             * @static
+             * @param {medis.nfc.ILab} message Lab message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Lab.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.code != null && Object.hasOwnProperty.call(message, "code"))
+                    $root.medis.nfc.CodeRef.encode(message.code, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.value != null && Object.hasOwnProperty.call(message, "value"))
+                    writer.uint32(/* id 2, wireType 1 =*/17).double(message.value);
+                if (message.time != null && Object.hasOwnProperty.call(message, "time"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.time);
+                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.id);
+                if (message.unit != null && Object.hasOwnProperty.call(message, "unit"))
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.unit);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified Lab message, length delimited. Does not implicitly {@link medis.nfc.Lab.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof medis.nfc.Lab
+             * @static
+             * @param {medis.nfc.ILab} message Lab message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Lab.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a Lab message from the specified reader or buffer.
+             * @function decode
+             * @memberof medis.nfc.Lab
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {medis.nfc.Lab} Lab
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Lab.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.medis.nfc.Lab();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.code = $root.medis.nfc.CodeRef.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 2: {
+                            message.value = reader.double();
+                            break;
+                        }
+                    case 3: {
+                            message.time = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.id = reader.string();
+                            break;
+                        }
+                    case 5: {
+                            message.unit = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a Lab message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof medis.nfc.Lab
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {medis.nfc.Lab} Lab
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Lab.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a Lab message.
+             * @function verify
+             * @memberof medis.nfc.Lab
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            Lab.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.code != null && message.hasOwnProperty("code")) {
+                    var error = $root.medis.nfc.CodeRef.verify(message.code);
+                    if (error)
+                        return "code." + error;
+                }
+                if (message.value != null && message.hasOwnProperty("value"))
+                    if (typeof message.value !== "number")
+                        return "value: number expected";
+                if (message.time != null && message.hasOwnProperty("time"))
+                    if (!$util.isString(message.time))
+                        return "time: string expected";
+                if (message.id != null && message.hasOwnProperty("id"))
+                    if (!$util.isString(message.id))
+                        return "id: string expected";
+                if (message.unit != null && message.hasOwnProperty("unit"))
+                    if (!$util.isString(message.unit))
+                        return "unit: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a Lab message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof medis.nfc.Lab
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {medis.nfc.Lab} Lab
+             */
+            Lab.fromObject = function fromObject(object) {
+                if (object instanceof $root.medis.nfc.Lab)
+                    return object;
+                var message = new $root.medis.nfc.Lab();
+                if (object.code != null) {
+                    if (typeof object.code !== "object")
+                        throw TypeError(".medis.nfc.Lab.code: object expected");
+                    message.code = $root.medis.nfc.CodeRef.fromObject(object.code);
+                }
+                if (object.value != null)
+                    message.value = Number(object.value);
+                if (object.time != null)
+                    message.time = String(object.time);
+                if (object.id != null)
+                    message.id = String(object.id);
+                if (object.unit != null)
+                    message.unit = String(object.unit);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a Lab message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof medis.nfc.Lab
+             * @static
+             * @param {medis.nfc.Lab} message Lab
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            Lab.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.code = null;
+                    object.value = 0;
+                    object.time = "";
+                    object.id = "";
+                    object.unit = "";
+                }
+                if (message.code != null && message.hasOwnProperty("code"))
+                    object.code = $root.medis.nfc.CodeRef.toObject(message.code, options);
+                if (message.value != null && message.hasOwnProperty("value"))
+                    object.value = options.json && !isFinite(message.value) ? String(message.value) : message.value;
+                if (message.time != null && message.hasOwnProperty("time"))
+                    object.time = message.time;
+                if (message.id != null && message.hasOwnProperty("id"))
+                    object.id = message.id;
+                if (message.unit != null && message.hasOwnProperty("unit"))
+                    object.unit = message.unit;
+                return object;
+            };
+
+            /**
+             * Converts this Lab to JSON.
+             * @function toJSON
+             * @memberof medis.nfc.Lab
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            Lab.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for Lab
+             * @function getTypeUrl
+             * @memberof medis.nfc.Lab
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            Lab.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/medis.nfc.Lab";
+            };
+
+            return Lab;
+        })();
+
+        nfc.Assessment = (function() {
+
+            /**
+             * Properties of an Assessment.
+             * @memberof medis.nfc
+             * @interface IAssessment
+             * @property {medis.nfc.ICodeRef|null} [code] Assessment code
+             * @property {medis.nfc.ICodeRef|null} [valueCode] Assessment valueCode
+             * @property {boolean|null} [valueBool] Assessment valueBool
+             * @property {number|null} [valueQuantity] Assessment valueQuantity
+             * @property {string|null} [time] Assessment time
+             * @property {string|null} [id] Assessment id
+             * @property {medis.nfc.ICodeRef|null} [bodySite] Assessment bodySite
+             */
+
+            /**
+             * Constructs a new Assessment.
+             * @memberof medis.nfc
+             * @classdesc Represents an Assessment.
+             * @implements IAssessment
+             * @constructor
+             * @param {medis.nfc.IAssessment=} [properties] Properties to set
+             */
+            function Assessment(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * Assessment code.
+             * @member {medis.nfc.ICodeRef|null|undefined} code
+             * @memberof medis.nfc.Assessment
+             * @instance
+             */
+            Assessment.prototype.code = null;
+
+            /**
+             * Assessment valueCode.
+             * @member {medis.nfc.ICodeRef|null|undefined} valueCode
+             * @memberof medis.nfc.Assessment
+             * @instance
+             */
+            Assessment.prototype.valueCode = null;
+
+            /**
+             * Assessment valueBool.
+             * @member {boolean|null|undefined} valueBool
+             * @memberof medis.nfc.Assessment
+             * @instance
+             */
+            Assessment.prototype.valueBool = null;
+
+            /**
+             * Assessment valueQuantity.
+             * @member {number|null|undefined} valueQuantity
+             * @memberof medis.nfc.Assessment
+             * @instance
+             */
+            Assessment.prototype.valueQuantity = null;
+
+            /**
+             * Assessment time.
+             * @member {string} time
+             * @memberof medis.nfc.Assessment
+             * @instance
+             */
+            Assessment.prototype.time = "";
+
+            /**
+             * Assessment id.
+             * @member {string} id
+             * @memberof medis.nfc.Assessment
+             * @instance
+             */
+            Assessment.prototype.id = "";
+
+            /**
+             * Assessment bodySite.
+             * @member {medis.nfc.ICodeRef|null|undefined} bodySite
+             * @memberof medis.nfc.Assessment
+             * @instance
+             */
+            Assessment.prototype.bodySite = null;
+
+            // OneOf field names bound to virtual getters and setters
+            var $oneOfFields;
+
+            /**
+             * Assessment valueType.
+             * @member {"valueCode"|"valueBool"|"valueQuantity"|undefined} valueType
+             * @memberof medis.nfc.Assessment
+             * @instance
+             */
+            Object.defineProperty(Assessment.prototype, "valueType", {
+                get: $util.oneOfGetter($oneOfFields = ["valueCode", "valueBool", "valueQuantity"]),
+                set: $util.oneOfSetter($oneOfFields)
+            });
+
+            /**
+             * Creates a new Assessment instance using the specified properties.
+             * @function create
+             * @memberof medis.nfc.Assessment
+             * @static
+             * @param {medis.nfc.IAssessment=} [properties] Properties to set
+             * @returns {medis.nfc.Assessment} Assessment instance
+             */
+            Assessment.create = function create(properties) {
+                return new Assessment(properties);
+            };
+
+            /**
+             * Encodes the specified Assessment message. Does not implicitly {@link medis.nfc.Assessment.verify|verify} messages.
+             * @function encode
+             * @memberof medis.nfc.Assessment
+             * @static
+             * @param {medis.nfc.IAssessment} message Assessment message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Assessment.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.code != null && Object.hasOwnProperty.call(message, "code"))
+                    $root.medis.nfc.CodeRef.encode(message.code, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.valueCode != null && Object.hasOwnProperty.call(message, "valueCode"))
+                    $root.medis.nfc.CodeRef.encode(message.valueCode, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.valueBool != null && Object.hasOwnProperty.call(message, "valueBool"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).bool(message.valueBool);
+                if (message.valueQuantity != null && Object.hasOwnProperty.call(message, "valueQuantity"))
+                    writer.uint32(/* id 4, wireType 1 =*/33).double(message.valueQuantity);
+                if (message.time != null && Object.hasOwnProperty.call(message, "time"))
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.time);
+                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                    writer.uint32(/* id 6, wireType 2 =*/50).string(message.id);
+                if (message.bodySite != null && Object.hasOwnProperty.call(message, "bodySite"))
+                    $root.medis.nfc.CodeRef.encode(message.bodySite, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified Assessment message, length delimited. Does not implicitly {@link medis.nfc.Assessment.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof medis.nfc.Assessment
+             * @static
+             * @param {medis.nfc.IAssessment} message Assessment message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Assessment.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an Assessment message from the specified reader or buffer.
+             * @function decode
+             * @memberof medis.nfc.Assessment
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {medis.nfc.Assessment} Assessment
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Assessment.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.medis.nfc.Assessment();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.code = $root.medis.nfc.CodeRef.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 2: {
+                            message.valueCode = $root.medis.nfc.CodeRef.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 3: {
+                            message.valueBool = reader.bool();
+                            break;
+                        }
+                    case 4: {
+                            message.valueQuantity = reader.double();
+                            break;
+                        }
+                    case 5: {
+                            message.time = reader.string();
+                            break;
+                        }
+                    case 6: {
+                            message.id = reader.string();
+                            break;
+                        }
+                    case 7: {
+                            message.bodySite = $root.medis.nfc.CodeRef.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an Assessment message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof medis.nfc.Assessment
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {medis.nfc.Assessment} Assessment
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Assessment.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an Assessment message.
+             * @function verify
+             * @memberof medis.nfc.Assessment
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            Assessment.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                var properties = {};
+                if (message.code != null && message.hasOwnProperty("code")) {
+                    var error = $root.medis.nfc.CodeRef.verify(message.code);
+                    if (error)
+                        return "code." + error;
+                }
+                if (message.valueCode != null && message.hasOwnProperty("valueCode")) {
+                    properties.valueType = 1;
+                    {
+                        var error = $root.medis.nfc.CodeRef.verify(message.valueCode);
+                        if (error)
+                            return "valueCode." + error;
+                    }
+                }
+                if (message.valueBool != null && message.hasOwnProperty("valueBool")) {
+                    if (properties.valueType === 1)
+                        return "valueType: multiple values";
+                    properties.valueType = 1;
+                    if (typeof message.valueBool !== "boolean")
+                        return "valueBool: boolean expected";
+                }
+                if (message.valueQuantity != null && message.hasOwnProperty("valueQuantity")) {
+                    if (properties.valueType === 1)
+                        return "valueType: multiple values";
+                    properties.valueType = 1;
+                    if (typeof message.valueQuantity !== "number")
+                        return "valueQuantity: number expected";
+                }
+                if (message.time != null && message.hasOwnProperty("time"))
+                    if (!$util.isString(message.time))
+                        return "time: string expected";
+                if (message.id != null && message.hasOwnProperty("id"))
+                    if (!$util.isString(message.id))
+                        return "id: string expected";
+                if (message.bodySite != null && message.hasOwnProperty("bodySite")) {
+                    var error = $root.medis.nfc.CodeRef.verify(message.bodySite);
+                    if (error)
+                        return "bodySite." + error;
+                }
+                return null;
+            };
+
+            /**
+             * Creates an Assessment message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof medis.nfc.Assessment
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {medis.nfc.Assessment} Assessment
+             */
+            Assessment.fromObject = function fromObject(object) {
+                if (object instanceof $root.medis.nfc.Assessment)
+                    return object;
+                var message = new $root.medis.nfc.Assessment();
+                if (object.code != null) {
+                    if (typeof object.code !== "object")
+                        throw TypeError(".medis.nfc.Assessment.code: object expected");
+                    message.code = $root.medis.nfc.CodeRef.fromObject(object.code);
+                }
+                if (object.valueCode != null) {
+                    if (typeof object.valueCode !== "object")
+                        throw TypeError(".medis.nfc.Assessment.valueCode: object expected");
+                    message.valueCode = $root.medis.nfc.CodeRef.fromObject(object.valueCode);
+                }
+                if (object.valueBool != null)
+                    message.valueBool = Boolean(object.valueBool);
+                if (object.valueQuantity != null)
+                    message.valueQuantity = Number(object.valueQuantity);
+                if (object.time != null)
+                    message.time = String(object.time);
+                if (object.id != null)
+                    message.id = String(object.id);
+                if (object.bodySite != null) {
+                    if (typeof object.bodySite !== "object")
+                        throw TypeError(".medis.nfc.Assessment.bodySite: object expected");
+                    message.bodySite = $root.medis.nfc.CodeRef.fromObject(object.bodySite);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an Assessment message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof medis.nfc.Assessment
+             * @static
+             * @param {medis.nfc.Assessment} message Assessment
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            Assessment.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.code = null;
+                    object.time = "";
+                    object.id = "";
+                    object.bodySite = null;
+                }
+                if (message.code != null && message.hasOwnProperty("code"))
+                    object.code = $root.medis.nfc.CodeRef.toObject(message.code, options);
+                if (message.valueCode != null && message.hasOwnProperty("valueCode")) {
+                    object.valueCode = $root.medis.nfc.CodeRef.toObject(message.valueCode, options);
+                    if (options.oneofs)
+                        object.valueType = "valueCode";
+                }
+                if (message.valueBool != null && message.hasOwnProperty("valueBool")) {
+                    object.valueBool = message.valueBool;
+                    if (options.oneofs)
+                        object.valueType = "valueBool";
+                }
+                if (message.valueQuantity != null && message.hasOwnProperty("valueQuantity")) {
+                    object.valueQuantity = options.json && !isFinite(message.valueQuantity) ? String(message.valueQuantity) : message.valueQuantity;
+                    if (options.oneofs)
+                        object.valueType = "valueQuantity";
+                }
+                if (message.time != null && message.hasOwnProperty("time"))
+                    object.time = message.time;
+                if (message.id != null && message.hasOwnProperty("id"))
+                    object.id = message.id;
+                if (message.bodySite != null && message.hasOwnProperty("bodySite"))
+                    object.bodySite = $root.medis.nfc.CodeRef.toObject(message.bodySite, options);
+                return object;
+            };
+
+            /**
+             * Converts this Assessment to JSON.
+             * @function toJSON
+             * @memberof medis.nfc.Assessment
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            Assessment.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for Assessment
+             * @function getTypeUrl
+             * @memberof medis.nfc.Assessment
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            Assessment.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/medis.nfc.Assessment";
+            };
+
+            return Assessment;
         })();
 
         nfc.Condition = (function() {
@@ -1946,6 +2663,869 @@ $root.medis = (function() {
             return Event;
         })();
 
+        nfc.ServiceRequest = (function() {
+
+            /**
+             * Properties of a ServiceRequest.
+             * @memberof medis.nfc
+             * @interface IServiceRequest
+             * @property {medis.nfc.ICodeRef|null} [code] ServiceRequest code
+             * @property {string|null} [time] ServiceRequest time
+             * @property {string|null} [priority] ServiceRequest priority
+             * @property {string|null} [id] ServiceRequest id
+             */
+
+            /**
+             * Constructs a new ServiceRequest.
+             * @memberof medis.nfc
+             * @classdesc Represents a ServiceRequest.
+             * @implements IServiceRequest
+             * @constructor
+             * @param {medis.nfc.IServiceRequest=} [properties] Properties to set
+             */
+            function ServiceRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * ServiceRequest code.
+             * @member {medis.nfc.ICodeRef|null|undefined} code
+             * @memberof medis.nfc.ServiceRequest
+             * @instance
+             */
+            ServiceRequest.prototype.code = null;
+
+            /**
+             * ServiceRequest time.
+             * @member {string} time
+             * @memberof medis.nfc.ServiceRequest
+             * @instance
+             */
+            ServiceRequest.prototype.time = "";
+
+            /**
+             * ServiceRequest priority.
+             * @member {string} priority
+             * @memberof medis.nfc.ServiceRequest
+             * @instance
+             */
+            ServiceRequest.prototype.priority = "";
+
+            /**
+             * ServiceRequest id.
+             * @member {string} id
+             * @memberof medis.nfc.ServiceRequest
+             * @instance
+             */
+            ServiceRequest.prototype.id = "";
+
+            /**
+             * Creates a new ServiceRequest instance using the specified properties.
+             * @function create
+             * @memberof medis.nfc.ServiceRequest
+             * @static
+             * @param {medis.nfc.IServiceRequest=} [properties] Properties to set
+             * @returns {medis.nfc.ServiceRequest} ServiceRequest instance
+             */
+            ServiceRequest.create = function create(properties) {
+                return new ServiceRequest(properties);
+            };
+
+            /**
+             * Encodes the specified ServiceRequest message. Does not implicitly {@link medis.nfc.ServiceRequest.verify|verify} messages.
+             * @function encode
+             * @memberof medis.nfc.ServiceRequest
+             * @static
+             * @param {medis.nfc.IServiceRequest} message ServiceRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ServiceRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.code != null && Object.hasOwnProperty.call(message, "code"))
+                    $root.medis.nfc.CodeRef.encode(message.code, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.time != null && Object.hasOwnProperty.call(message, "time"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.time);
+                if (message.priority != null && Object.hasOwnProperty.call(message, "priority"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.priority);
+                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.id);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified ServiceRequest message, length delimited. Does not implicitly {@link medis.nfc.ServiceRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof medis.nfc.ServiceRequest
+             * @static
+             * @param {medis.nfc.IServiceRequest} message ServiceRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ServiceRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a ServiceRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof medis.nfc.ServiceRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {medis.nfc.ServiceRequest} ServiceRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ServiceRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.medis.nfc.ServiceRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.code = $root.medis.nfc.CodeRef.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 2: {
+                            message.time = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.priority = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.id = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a ServiceRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof medis.nfc.ServiceRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {medis.nfc.ServiceRequest} ServiceRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ServiceRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a ServiceRequest message.
+             * @function verify
+             * @memberof medis.nfc.ServiceRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            ServiceRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.code != null && message.hasOwnProperty("code")) {
+                    var error = $root.medis.nfc.CodeRef.verify(message.code);
+                    if (error)
+                        return "code." + error;
+                }
+                if (message.time != null && message.hasOwnProperty("time"))
+                    if (!$util.isString(message.time))
+                        return "time: string expected";
+                if (message.priority != null && message.hasOwnProperty("priority"))
+                    if (!$util.isString(message.priority))
+                        return "priority: string expected";
+                if (message.id != null && message.hasOwnProperty("id"))
+                    if (!$util.isString(message.id))
+                        return "id: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a ServiceRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof medis.nfc.ServiceRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {medis.nfc.ServiceRequest} ServiceRequest
+             */
+            ServiceRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.medis.nfc.ServiceRequest)
+                    return object;
+                var message = new $root.medis.nfc.ServiceRequest();
+                if (object.code != null) {
+                    if (typeof object.code !== "object")
+                        throw TypeError(".medis.nfc.ServiceRequest.code: object expected");
+                    message.code = $root.medis.nfc.CodeRef.fromObject(object.code);
+                }
+                if (object.time != null)
+                    message.time = String(object.time);
+                if (object.priority != null)
+                    message.priority = String(object.priority);
+                if (object.id != null)
+                    message.id = String(object.id);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a ServiceRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof medis.nfc.ServiceRequest
+             * @static
+             * @param {medis.nfc.ServiceRequest} message ServiceRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            ServiceRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.code = null;
+                    object.time = "";
+                    object.priority = "";
+                    object.id = "";
+                }
+                if (message.code != null && message.hasOwnProperty("code"))
+                    object.code = $root.medis.nfc.CodeRef.toObject(message.code, options);
+                if (message.time != null && message.hasOwnProperty("time"))
+                    object.time = message.time;
+                if (message.priority != null && message.hasOwnProperty("priority"))
+                    object.priority = message.priority;
+                if (message.id != null && message.hasOwnProperty("id"))
+                    object.id = message.id;
+                return object;
+            };
+
+            /**
+             * Converts this ServiceRequest to JSON.
+             * @function toJSON
+             * @memberof medis.nfc.ServiceRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            ServiceRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for ServiceRequest
+             * @function getTypeUrl
+             * @memberof medis.nfc.ServiceRequest
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            ServiceRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/medis.nfc.ServiceRequest";
+            };
+
+            return ServiceRequest;
+        })();
+
+        nfc.Imaging = (function() {
+
+            /**
+             * Properties of an Imaging.
+             * @memberof medis.nfc
+             * @interface IImaging
+             * @property {string|null} [id] Imaging id
+             * @property {medis.nfc.ICodeRef|null} [modality] Imaging modality
+             * @property {string|null} [description] Imaging description
+             * @property {string|null} [time] Imaging time
+             */
+
+            /**
+             * Constructs a new Imaging.
+             * @memberof medis.nfc
+             * @classdesc Represents an Imaging.
+             * @implements IImaging
+             * @constructor
+             * @param {medis.nfc.IImaging=} [properties] Properties to set
+             */
+            function Imaging(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * Imaging id.
+             * @member {string} id
+             * @memberof medis.nfc.Imaging
+             * @instance
+             */
+            Imaging.prototype.id = "";
+
+            /**
+             * Imaging modality.
+             * @member {medis.nfc.ICodeRef|null|undefined} modality
+             * @memberof medis.nfc.Imaging
+             * @instance
+             */
+            Imaging.prototype.modality = null;
+
+            /**
+             * Imaging description.
+             * @member {string} description
+             * @memberof medis.nfc.Imaging
+             * @instance
+             */
+            Imaging.prototype.description = "";
+
+            /**
+             * Imaging time.
+             * @member {string} time
+             * @memberof medis.nfc.Imaging
+             * @instance
+             */
+            Imaging.prototype.time = "";
+
+            /**
+             * Creates a new Imaging instance using the specified properties.
+             * @function create
+             * @memberof medis.nfc.Imaging
+             * @static
+             * @param {medis.nfc.IImaging=} [properties] Properties to set
+             * @returns {medis.nfc.Imaging} Imaging instance
+             */
+            Imaging.create = function create(properties) {
+                return new Imaging(properties);
+            };
+
+            /**
+             * Encodes the specified Imaging message. Does not implicitly {@link medis.nfc.Imaging.verify|verify} messages.
+             * @function encode
+             * @memberof medis.nfc.Imaging
+             * @static
+             * @param {medis.nfc.IImaging} message Imaging message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Imaging.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
+                if (message.modality != null && Object.hasOwnProperty.call(message, "modality"))
+                    $root.medis.nfc.CodeRef.encode(message.modality, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.description != null && Object.hasOwnProperty.call(message, "description"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.description);
+                if (message.time != null && Object.hasOwnProperty.call(message, "time"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.time);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified Imaging message, length delimited. Does not implicitly {@link medis.nfc.Imaging.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof medis.nfc.Imaging
+             * @static
+             * @param {medis.nfc.IImaging} message Imaging message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Imaging.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an Imaging message from the specified reader or buffer.
+             * @function decode
+             * @memberof medis.nfc.Imaging
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {medis.nfc.Imaging} Imaging
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Imaging.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.medis.nfc.Imaging();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.id = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.modality = $root.medis.nfc.CodeRef.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 3: {
+                            message.description = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.time = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an Imaging message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof medis.nfc.Imaging
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {medis.nfc.Imaging} Imaging
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Imaging.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an Imaging message.
+             * @function verify
+             * @memberof medis.nfc.Imaging
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            Imaging.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.id != null && message.hasOwnProperty("id"))
+                    if (!$util.isString(message.id))
+                        return "id: string expected";
+                if (message.modality != null && message.hasOwnProperty("modality")) {
+                    var error = $root.medis.nfc.CodeRef.verify(message.modality);
+                    if (error)
+                        return "modality." + error;
+                }
+                if (message.description != null && message.hasOwnProperty("description"))
+                    if (!$util.isString(message.description))
+                        return "description: string expected";
+                if (message.time != null && message.hasOwnProperty("time"))
+                    if (!$util.isString(message.time))
+                        return "time: string expected";
+                return null;
+            };
+
+            /**
+             * Creates an Imaging message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof medis.nfc.Imaging
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {medis.nfc.Imaging} Imaging
+             */
+            Imaging.fromObject = function fromObject(object) {
+                if (object instanceof $root.medis.nfc.Imaging)
+                    return object;
+                var message = new $root.medis.nfc.Imaging();
+                if (object.id != null)
+                    message.id = String(object.id);
+                if (object.modality != null) {
+                    if (typeof object.modality !== "object")
+                        throw TypeError(".medis.nfc.Imaging.modality: object expected");
+                    message.modality = $root.medis.nfc.CodeRef.fromObject(object.modality);
+                }
+                if (object.description != null)
+                    message.description = String(object.description);
+                if (object.time != null)
+                    message.time = String(object.time);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an Imaging message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof medis.nfc.Imaging
+             * @static
+             * @param {medis.nfc.Imaging} message Imaging
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            Imaging.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.id = "";
+                    object.modality = null;
+                    object.description = "";
+                    object.time = "";
+                }
+                if (message.id != null && message.hasOwnProperty("id"))
+                    object.id = message.id;
+                if (message.modality != null && message.hasOwnProperty("modality"))
+                    object.modality = $root.medis.nfc.CodeRef.toObject(message.modality, options);
+                if (message.description != null && message.hasOwnProperty("description"))
+                    object.description = message.description;
+                if (message.time != null && message.hasOwnProperty("time"))
+                    object.time = message.time;
+                return object;
+            };
+
+            /**
+             * Converts this Imaging to JSON.
+             * @function toJSON
+             * @memberof medis.nfc.Imaging
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            Imaging.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for Imaging
+             * @function getTypeUrl
+             * @memberof medis.nfc.Imaging
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            Imaging.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/medis.nfc.Imaging";
+            };
+
+            return Imaging;
+        })();
+
+        nfc.Encounter = (function() {
+
+            /**
+             * Properties of an Encounter.
+             * @memberof medis.nfc
+             * @interface IEncounter
+             * @property {string|null} [id] Encounter id
+             * @property {string|null} [start] Encounter start
+             * @property {string|null} [end] Encounter end
+             * @property {medis.nfc.ICodeRef|null} [classCode] Encounter classCode
+             * @property {string|null} [typeCode] Encounter typeCode
+             */
+
+            /**
+             * Constructs a new Encounter.
+             * @memberof medis.nfc
+             * @classdesc Represents an Encounter.
+             * @implements IEncounter
+             * @constructor
+             * @param {medis.nfc.IEncounter=} [properties] Properties to set
+             */
+            function Encounter(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * Encounter id.
+             * @member {string} id
+             * @memberof medis.nfc.Encounter
+             * @instance
+             */
+            Encounter.prototype.id = "";
+
+            /**
+             * Encounter start.
+             * @member {string} start
+             * @memberof medis.nfc.Encounter
+             * @instance
+             */
+            Encounter.prototype.start = "";
+
+            /**
+             * Encounter end.
+             * @member {string} end
+             * @memberof medis.nfc.Encounter
+             * @instance
+             */
+            Encounter.prototype.end = "";
+
+            /**
+             * Encounter classCode.
+             * @member {medis.nfc.ICodeRef|null|undefined} classCode
+             * @memberof medis.nfc.Encounter
+             * @instance
+             */
+            Encounter.prototype.classCode = null;
+
+            /**
+             * Encounter typeCode.
+             * @member {string} typeCode
+             * @memberof medis.nfc.Encounter
+             * @instance
+             */
+            Encounter.prototype.typeCode = "";
+
+            /**
+             * Creates a new Encounter instance using the specified properties.
+             * @function create
+             * @memberof medis.nfc.Encounter
+             * @static
+             * @param {medis.nfc.IEncounter=} [properties] Properties to set
+             * @returns {medis.nfc.Encounter} Encounter instance
+             */
+            Encounter.create = function create(properties) {
+                return new Encounter(properties);
+            };
+
+            /**
+             * Encodes the specified Encounter message. Does not implicitly {@link medis.nfc.Encounter.verify|verify} messages.
+             * @function encode
+             * @memberof medis.nfc.Encounter
+             * @static
+             * @param {medis.nfc.IEncounter} message Encounter message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Encounter.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
+                if (message.start != null && Object.hasOwnProperty.call(message, "start"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.start);
+                if (message.end != null && Object.hasOwnProperty.call(message, "end"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.end);
+                if (message.classCode != null && Object.hasOwnProperty.call(message, "classCode"))
+                    $root.medis.nfc.CodeRef.encode(message.classCode, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                if (message.typeCode != null && Object.hasOwnProperty.call(message, "typeCode"))
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.typeCode);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified Encounter message, length delimited. Does not implicitly {@link medis.nfc.Encounter.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof medis.nfc.Encounter
+             * @static
+             * @param {medis.nfc.IEncounter} message Encounter message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Encounter.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an Encounter message from the specified reader or buffer.
+             * @function decode
+             * @memberof medis.nfc.Encounter
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {medis.nfc.Encounter} Encounter
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Encounter.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.medis.nfc.Encounter();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.id = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.start = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.end = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.classCode = $root.medis.nfc.CodeRef.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 5: {
+                            message.typeCode = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an Encounter message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof medis.nfc.Encounter
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {medis.nfc.Encounter} Encounter
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Encounter.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an Encounter message.
+             * @function verify
+             * @memberof medis.nfc.Encounter
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            Encounter.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.id != null && message.hasOwnProperty("id"))
+                    if (!$util.isString(message.id))
+                        return "id: string expected";
+                if (message.start != null && message.hasOwnProperty("start"))
+                    if (!$util.isString(message.start))
+                        return "start: string expected";
+                if (message.end != null && message.hasOwnProperty("end"))
+                    if (!$util.isString(message.end))
+                        return "end: string expected";
+                if (message.classCode != null && message.hasOwnProperty("classCode")) {
+                    var error = $root.medis.nfc.CodeRef.verify(message.classCode);
+                    if (error)
+                        return "classCode." + error;
+                }
+                if (message.typeCode != null && message.hasOwnProperty("typeCode"))
+                    if (!$util.isString(message.typeCode))
+                        return "typeCode: string expected";
+                return null;
+            };
+
+            /**
+             * Creates an Encounter message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof medis.nfc.Encounter
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {medis.nfc.Encounter} Encounter
+             */
+            Encounter.fromObject = function fromObject(object) {
+                if (object instanceof $root.medis.nfc.Encounter)
+                    return object;
+                var message = new $root.medis.nfc.Encounter();
+                if (object.id != null)
+                    message.id = String(object.id);
+                if (object.start != null)
+                    message.start = String(object.start);
+                if (object.end != null)
+                    message.end = String(object.end);
+                if (object.classCode != null) {
+                    if (typeof object.classCode !== "object")
+                        throw TypeError(".medis.nfc.Encounter.classCode: object expected");
+                    message.classCode = $root.medis.nfc.CodeRef.fromObject(object.classCode);
+                }
+                if (object.typeCode != null)
+                    message.typeCode = String(object.typeCode);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an Encounter message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof medis.nfc.Encounter
+             * @static
+             * @param {medis.nfc.Encounter} message Encounter
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            Encounter.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.id = "";
+                    object.start = "";
+                    object.end = "";
+                    object.classCode = null;
+                    object.typeCode = "";
+                }
+                if (message.id != null && message.hasOwnProperty("id"))
+                    object.id = message.id;
+                if (message.start != null && message.hasOwnProperty("start"))
+                    object.start = message.start;
+                if (message.end != null && message.hasOwnProperty("end"))
+                    object.end = message.end;
+                if (message.classCode != null && message.hasOwnProperty("classCode"))
+                    object.classCode = $root.medis.nfc.CodeRef.toObject(message.classCode, options);
+                if (message.typeCode != null && message.hasOwnProperty("typeCode"))
+                    object.typeCode = message.typeCode;
+                return object;
+            };
+
+            /**
+             * Converts this Encounter to JSON.
+             * @function toJSON
+             * @memberof medis.nfc.Encounter
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            Encounter.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for Encounter
+             * @function getTypeUrl
+             * @memberof medis.nfc.Encounter
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            Encounter.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/medis.nfc.Encounter";
+            };
+
+            return Encounter;
+        })();
+
         nfc.Stage = (function() {
 
             /**
@@ -1955,6 +3535,11 @@ $root.medis = (function() {
              * @property {Array.<medis.nfc.IVital>|null} [vitals] Stage vitals
              * @property {Array.<medis.nfc.ICondition>|null} [conditions] Stage conditions
              * @property {Array.<medis.nfc.IEvent>|null} [events] Stage events
+             * @property {Array.<medis.nfc.ILab>|null} [labs] Stage labs
+             * @property {Array.<medis.nfc.IAssessment>|null} [assessments] Stage assessments
+             * @property {Array.<medis.nfc.IServiceRequest>|null} [requests] Stage requests
+             * @property {medis.nfc.IEncounter|null} [encounter] Stage encounter
+             * @property {Array.<medis.nfc.IImaging>|null} [imaging] Stage imaging
              */
 
             /**
@@ -1969,6 +3554,10 @@ $root.medis = (function() {
                 this.vitals = [];
                 this.conditions = [];
                 this.events = [];
+                this.labs = [];
+                this.assessments = [];
+                this.requests = [];
+                this.imaging = [];
                 if (properties)
                     for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
@@ -1998,6 +3587,46 @@ $root.medis = (function() {
              * @instance
              */
             Stage.prototype.events = $util.emptyArray;
+
+            /**
+             * Stage labs.
+             * @member {Array.<medis.nfc.ILab>} labs
+             * @memberof medis.nfc.Stage
+             * @instance
+             */
+            Stage.prototype.labs = $util.emptyArray;
+
+            /**
+             * Stage assessments.
+             * @member {Array.<medis.nfc.IAssessment>} assessments
+             * @memberof medis.nfc.Stage
+             * @instance
+             */
+            Stage.prototype.assessments = $util.emptyArray;
+
+            /**
+             * Stage requests.
+             * @member {Array.<medis.nfc.IServiceRequest>} requests
+             * @memberof medis.nfc.Stage
+             * @instance
+             */
+            Stage.prototype.requests = $util.emptyArray;
+
+            /**
+             * Stage encounter.
+             * @member {medis.nfc.IEncounter|null|undefined} encounter
+             * @memberof medis.nfc.Stage
+             * @instance
+             */
+            Stage.prototype.encounter = null;
+
+            /**
+             * Stage imaging.
+             * @member {Array.<medis.nfc.IImaging>} imaging
+             * @memberof medis.nfc.Stage
+             * @instance
+             */
+            Stage.prototype.imaging = $util.emptyArray;
 
             /**
              * Creates a new Stage instance using the specified properties.
@@ -2032,6 +3661,20 @@ $root.medis = (function() {
                 if (message.events != null && message.events.length)
                     for (var i = 0; i < message.events.length; ++i)
                         $root.medis.nfc.Event.encode(message.events[i], writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                if (message.labs != null && message.labs.length)
+                    for (var i = 0; i < message.labs.length; ++i)
+                        $root.medis.nfc.Lab.encode(message.labs[i], writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                if (message.assessments != null && message.assessments.length)
+                    for (var i = 0; i < message.assessments.length; ++i)
+                        $root.medis.nfc.Assessment.encode(message.assessments[i], writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                if (message.requests != null && message.requests.length)
+                    for (var i = 0; i < message.requests.length; ++i)
+                        $root.medis.nfc.ServiceRequest.encode(message.requests[i], writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                if (message.encounter != null && Object.hasOwnProperty.call(message, "encounter"))
+                    $root.medis.nfc.Encounter.encode(message.encounter, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                if (message.imaging != null && message.imaging.length)
+                    for (var i = 0; i < message.imaging.length; ++i)
+                        $root.medis.nfc.Imaging.encode(message.imaging[i], writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
                 return writer;
             };
 
@@ -2084,6 +3727,34 @@ $root.medis = (function() {
                             if (!(message.events && message.events.length))
                                 message.events = [];
                             message.events.push($root.medis.nfc.Event.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    case 4: {
+                            if (!(message.labs && message.labs.length))
+                                message.labs = [];
+                            message.labs.push($root.medis.nfc.Lab.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    case 5: {
+                            if (!(message.assessments && message.assessments.length))
+                                message.assessments = [];
+                            message.assessments.push($root.medis.nfc.Assessment.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    case 6: {
+                            if (!(message.requests && message.requests.length))
+                                message.requests = [];
+                            message.requests.push($root.medis.nfc.ServiceRequest.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    case 7: {
+                            message.encounter = $root.medis.nfc.Encounter.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 8: {
+                            if (!(message.imaging && message.imaging.length))
+                                message.imaging = [];
+                            message.imaging.push($root.medis.nfc.Imaging.decode(reader, reader.uint32()));
                             break;
                         }
                     default:
@@ -2148,6 +3819,47 @@ $root.medis = (function() {
                             return "events." + error;
                     }
                 }
+                if (message.labs != null && message.hasOwnProperty("labs")) {
+                    if (!Array.isArray(message.labs))
+                        return "labs: array expected";
+                    for (var i = 0; i < message.labs.length; ++i) {
+                        var error = $root.medis.nfc.Lab.verify(message.labs[i]);
+                        if (error)
+                            return "labs." + error;
+                    }
+                }
+                if (message.assessments != null && message.hasOwnProperty("assessments")) {
+                    if (!Array.isArray(message.assessments))
+                        return "assessments: array expected";
+                    for (var i = 0; i < message.assessments.length; ++i) {
+                        var error = $root.medis.nfc.Assessment.verify(message.assessments[i]);
+                        if (error)
+                            return "assessments." + error;
+                    }
+                }
+                if (message.requests != null && message.hasOwnProperty("requests")) {
+                    if (!Array.isArray(message.requests))
+                        return "requests: array expected";
+                    for (var i = 0; i < message.requests.length; ++i) {
+                        var error = $root.medis.nfc.ServiceRequest.verify(message.requests[i]);
+                        if (error)
+                            return "requests." + error;
+                    }
+                }
+                if (message.encounter != null && message.hasOwnProperty("encounter")) {
+                    var error = $root.medis.nfc.Encounter.verify(message.encounter);
+                    if (error)
+                        return "encounter." + error;
+                }
+                if (message.imaging != null && message.hasOwnProperty("imaging")) {
+                    if (!Array.isArray(message.imaging))
+                        return "imaging: array expected";
+                    for (var i = 0; i < message.imaging.length; ++i) {
+                        var error = $root.medis.nfc.Imaging.verify(message.imaging[i]);
+                        if (error)
+                            return "imaging." + error;
+                    }
+                }
                 return null;
             };
 
@@ -2193,6 +3905,51 @@ $root.medis = (function() {
                         message.events[i] = $root.medis.nfc.Event.fromObject(object.events[i]);
                     }
                 }
+                if (object.labs) {
+                    if (!Array.isArray(object.labs))
+                        throw TypeError(".medis.nfc.Stage.labs: array expected");
+                    message.labs = [];
+                    for (var i = 0; i < object.labs.length; ++i) {
+                        if (typeof object.labs[i] !== "object")
+                            throw TypeError(".medis.nfc.Stage.labs: object expected");
+                        message.labs[i] = $root.medis.nfc.Lab.fromObject(object.labs[i]);
+                    }
+                }
+                if (object.assessments) {
+                    if (!Array.isArray(object.assessments))
+                        throw TypeError(".medis.nfc.Stage.assessments: array expected");
+                    message.assessments = [];
+                    for (var i = 0; i < object.assessments.length; ++i) {
+                        if (typeof object.assessments[i] !== "object")
+                            throw TypeError(".medis.nfc.Stage.assessments: object expected");
+                        message.assessments[i] = $root.medis.nfc.Assessment.fromObject(object.assessments[i]);
+                    }
+                }
+                if (object.requests) {
+                    if (!Array.isArray(object.requests))
+                        throw TypeError(".medis.nfc.Stage.requests: array expected");
+                    message.requests = [];
+                    for (var i = 0; i < object.requests.length; ++i) {
+                        if (typeof object.requests[i] !== "object")
+                            throw TypeError(".medis.nfc.Stage.requests: object expected");
+                        message.requests[i] = $root.medis.nfc.ServiceRequest.fromObject(object.requests[i]);
+                    }
+                }
+                if (object.encounter != null) {
+                    if (typeof object.encounter !== "object")
+                        throw TypeError(".medis.nfc.Stage.encounter: object expected");
+                    message.encounter = $root.medis.nfc.Encounter.fromObject(object.encounter);
+                }
+                if (object.imaging) {
+                    if (!Array.isArray(object.imaging))
+                        throw TypeError(".medis.nfc.Stage.imaging: array expected");
+                    message.imaging = [];
+                    for (var i = 0; i < object.imaging.length; ++i) {
+                        if (typeof object.imaging[i] !== "object")
+                            throw TypeError(".medis.nfc.Stage.imaging: object expected");
+                        message.imaging[i] = $root.medis.nfc.Imaging.fromObject(object.imaging[i]);
+                    }
+                }
                 return message;
             };
 
@@ -2213,7 +3970,13 @@ $root.medis = (function() {
                     object.vitals = [];
                     object.conditions = [];
                     object.events = [];
+                    object.labs = [];
+                    object.assessments = [];
+                    object.requests = [];
+                    object.imaging = [];
                 }
+                if (options.defaults)
+                    object.encounter = null;
                 if (message.vitals && message.vitals.length) {
                     object.vitals = [];
                     for (var j = 0; j < message.vitals.length; ++j)
@@ -2228,6 +3991,28 @@ $root.medis = (function() {
                     object.events = [];
                     for (var j = 0; j < message.events.length; ++j)
                         object.events[j] = $root.medis.nfc.Event.toObject(message.events[j], options);
+                }
+                if (message.labs && message.labs.length) {
+                    object.labs = [];
+                    for (var j = 0; j < message.labs.length; ++j)
+                        object.labs[j] = $root.medis.nfc.Lab.toObject(message.labs[j], options);
+                }
+                if (message.assessments && message.assessments.length) {
+                    object.assessments = [];
+                    for (var j = 0; j < message.assessments.length; ++j)
+                        object.assessments[j] = $root.medis.nfc.Assessment.toObject(message.assessments[j], options);
+                }
+                if (message.requests && message.requests.length) {
+                    object.requests = [];
+                    for (var j = 0; j < message.requests.length; ++j)
+                        object.requests[j] = $root.medis.nfc.ServiceRequest.toObject(message.requests[j], options);
+                }
+                if (message.encounter != null && message.hasOwnProperty("encounter"))
+                    object.encounter = $root.medis.nfc.Encounter.toObject(message.encounter, options);
+                if (message.imaging && message.imaging.length) {
+                    object.imaging = [];
+                    for (var j = 0; j < message.imaging.length; ++j)
+                        object.imaging[j] = $root.medis.nfc.Imaging.toObject(message.imaging[j], options);
                 }
                 return object;
             };
@@ -2862,6 +4647,492 @@ $root.medis = (function() {
             return Allergy;
         })();
 
+        nfc.MedicationStatement = (function() {
+
+            /**
+             * Properties of a MedicationStatement.
+             * @memberof medis.nfc
+             * @interface IMedicationStatement
+             * @property {medis.nfc.ICodeRef|null} [code] MedicationStatement code
+             * @property {string|null} [id] MedicationStatement id
+             * @property {string|null} [status] MedicationStatement status
+             */
+
+            /**
+             * Constructs a new MedicationStatement.
+             * @memberof medis.nfc
+             * @classdesc Represents a MedicationStatement.
+             * @implements IMedicationStatement
+             * @constructor
+             * @param {medis.nfc.IMedicationStatement=} [properties] Properties to set
+             */
+            function MedicationStatement(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * MedicationStatement code.
+             * @member {medis.nfc.ICodeRef|null|undefined} code
+             * @memberof medis.nfc.MedicationStatement
+             * @instance
+             */
+            MedicationStatement.prototype.code = null;
+
+            /**
+             * MedicationStatement id.
+             * @member {string} id
+             * @memberof medis.nfc.MedicationStatement
+             * @instance
+             */
+            MedicationStatement.prototype.id = "";
+
+            /**
+             * MedicationStatement status.
+             * @member {string} status
+             * @memberof medis.nfc.MedicationStatement
+             * @instance
+             */
+            MedicationStatement.prototype.status = "";
+
+            /**
+             * Creates a new MedicationStatement instance using the specified properties.
+             * @function create
+             * @memberof medis.nfc.MedicationStatement
+             * @static
+             * @param {medis.nfc.IMedicationStatement=} [properties] Properties to set
+             * @returns {medis.nfc.MedicationStatement} MedicationStatement instance
+             */
+            MedicationStatement.create = function create(properties) {
+                return new MedicationStatement(properties);
+            };
+
+            /**
+             * Encodes the specified MedicationStatement message. Does not implicitly {@link medis.nfc.MedicationStatement.verify|verify} messages.
+             * @function encode
+             * @memberof medis.nfc.MedicationStatement
+             * @static
+             * @param {medis.nfc.IMedicationStatement} message MedicationStatement message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MedicationStatement.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.code != null && Object.hasOwnProperty.call(message, "code"))
+                    $root.medis.nfc.CodeRef.encode(message.code, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.id);
+                if (message.status != null && Object.hasOwnProperty.call(message, "status"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.status);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified MedicationStatement message, length delimited. Does not implicitly {@link medis.nfc.MedicationStatement.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof medis.nfc.MedicationStatement
+             * @static
+             * @param {medis.nfc.IMedicationStatement} message MedicationStatement message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MedicationStatement.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a MedicationStatement message from the specified reader or buffer.
+             * @function decode
+             * @memberof medis.nfc.MedicationStatement
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {medis.nfc.MedicationStatement} MedicationStatement
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MedicationStatement.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.medis.nfc.MedicationStatement();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.code = $root.medis.nfc.CodeRef.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 2: {
+                            message.id = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.status = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a MedicationStatement message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof medis.nfc.MedicationStatement
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {medis.nfc.MedicationStatement} MedicationStatement
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MedicationStatement.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a MedicationStatement message.
+             * @function verify
+             * @memberof medis.nfc.MedicationStatement
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            MedicationStatement.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.code != null && message.hasOwnProperty("code")) {
+                    var error = $root.medis.nfc.CodeRef.verify(message.code);
+                    if (error)
+                        return "code." + error;
+                }
+                if (message.id != null && message.hasOwnProperty("id"))
+                    if (!$util.isString(message.id))
+                        return "id: string expected";
+                if (message.status != null && message.hasOwnProperty("status"))
+                    if (!$util.isString(message.status))
+                        return "status: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a MedicationStatement message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof medis.nfc.MedicationStatement
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {medis.nfc.MedicationStatement} MedicationStatement
+             */
+            MedicationStatement.fromObject = function fromObject(object) {
+                if (object instanceof $root.medis.nfc.MedicationStatement)
+                    return object;
+                var message = new $root.medis.nfc.MedicationStatement();
+                if (object.code != null) {
+                    if (typeof object.code !== "object")
+                        throw TypeError(".medis.nfc.MedicationStatement.code: object expected");
+                    message.code = $root.medis.nfc.CodeRef.fromObject(object.code);
+                }
+                if (object.id != null)
+                    message.id = String(object.id);
+                if (object.status != null)
+                    message.status = String(object.status);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a MedicationStatement message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof medis.nfc.MedicationStatement
+             * @static
+             * @param {medis.nfc.MedicationStatement} message MedicationStatement
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            MedicationStatement.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.code = null;
+                    object.id = "";
+                    object.status = "";
+                }
+                if (message.code != null && message.hasOwnProperty("code"))
+                    object.code = $root.medis.nfc.CodeRef.toObject(message.code, options);
+                if (message.id != null && message.hasOwnProperty("id"))
+                    object.id = message.id;
+                if (message.status != null && message.hasOwnProperty("status"))
+                    object.status = message.status;
+                return object;
+            };
+
+            /**
+             * Converts this MedicationStatement to JSON.
+             * @function toJSON
+             * @memberof medis.nfc.MedicationStatement
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            MedicationStatement.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for MedicationStatement
+             * @function getTypeUrl
+             * @memberof medis.nfc.MedicationStatement
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            MedicationStatement.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/medis.nfc.MedicationStatement";
+            };
+
+            return MedicationStatement;
+        })();
+
+        nfc.Organization = (function() {
+
+            /**
+             * Properties of an Organization.
+             * @memberof medis.nfc
+             * @interface IOrganization
+             * @property {string|null} [id] Organization id
+             * @property {string|null} [name] Organization name
+             */
+
+            /**
+             * Constructs a new Organization.
+             * @memberof medis.nfc
+             * @classdesc Represents an Organization.
+             * @implements IOrganization
+             * @constructor
+             * @param {medis.nfc.IOrganization=} [properties] Properties to set
+             */
+            function Organization(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * Organization id.
+             * @member {string} id
+             * @memberof medis.nfc.Organization
+             * @instance
+             */
+            Organization.prototype.id = "";
+
+            /**
+             * Organization name.
+             * @member {string} name
+             * @memberof medis.nfc.Organization
+             * @instance
+             */
+            Organization.prototype.name = "";
+
+            /**
+             * Creates a new Organization instance using the specified properties.
+             * @function create
+             * @memberof medis.nfc.Organization
+             * @static
+             * @param {medis.nfc.IOrganization=} [properties] Properties to set
+             * @returns {medis.nfc.Organization} Organization instance
+             */
+            Organization.create = function create(properties) {
+                return new Organization(properties);
+            };
+
+            /**
+             * Encodes the specified Organization message. Does not implicitly {@link medis.nfc.Organization.verify|verify} messages.
+             * @function encode
+             * @memberof medis.nfc.Organization
+             * @static
+             * @param {medis.nfc.IOrganization} message Organization message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Organization.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
+                if (message.name != null && Object.hasOwnProperty.call(message, "name"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.name);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified Organization message, length delimited. Does not implicitly {@link medis.nfc.Organization.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof medis.nfc.Organization
+             * @static
+             * @param {medis.nfc.IOrganization} message Organization message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Organization.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an Organization message from the specified reader or buffer.
+             * @function decode
+             * @memberof medis.nfc.Organization
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {medis.nfc.Organization} Organization
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Organization.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.medis.nfc.Organization();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.id = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.name = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an Organization message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof medis.nfc.Organization
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {medis.nfc.Organization} Organization
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Organization.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an Organization message.
+             * @function verify
+             * @memberof medis.nfc.Organization
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            Organization.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.id != null && message.hasOwnProperty("id"))
+                    if (!$util.isString(message.id))
+                        return "id: string expected";
+                if (message.name != null && message.hasOwnProperty("name"))
+                    if (!$util.isString(message.name))
+                        return "name: string expected";
+                return null;
+            };
+
+            /**
+             * Creates an Organization message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof medis.nfc.Organization
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {medis.nfc.Organization} Organization
+             */
+            Organization.fromObject = function fromObject(object) {
+                if (object instanceof $root.medis.nfc.Organization)
+                    return object;
+                var message = new $root.medis.nfc.Organization();
+                if (object.id != null)
+                    message.id = String(object.id);
+                if (object.name != null)
+                    message.name = String(object.name);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an Organization message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof medis.nfc.Organization
+             * @static
+             * @param {medis.nfc.Organization} message Organization
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            Organization.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.id = "";
+                    object.name = "";
+                }
+                if (message.id != null && message.hasOwnProperty("id"))
+                    object.id = message.id;
+                if (message.name != null && message.hasOwnProperty("name"))
+                    object.name = message.name;
+                return object;
+            };
+
+            /**
+             * Converts this Organization to JSON.
+             * @function toJSON
+             * @memberof medis.nfc.Organization
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            Organization.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for Organization
+             * @function getTypeUrl
+             * @memberof medis.nfc.Organization
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            Organization.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/medis.nfc.Organization";
+            };
+
+            return Organization;
+        })();
+
         nfc.NFCPayload = (function() {
 
             /**
@@ -2875,7 +5146,7 @@ $root.medis = (function() {
              * @property {medis.nfc.IStage|null} [r2] NFCPayload r2
              * @property {medis.nfc.IStage|null} [casevac] NFCPayload casevac
              * @property {medis.nfc.IStage|null} [r3] NFCPayload r3
-             * @property {number|Long|null} [t] NFCPayload t
+             * @property {string|null} [t] NFCPayload t
              * @property {medis.nfc.IBundleMetadata|null} [bundleMetadata] NFCPayload bundleMetadata
              * @property {Array.<medis.nfc.IAllergy>|null} [allergies] NFCPayload allergies
              * @property {string|null} [bundleId] NFCPayload bundleId
@@ -2884,6 +5155,14 @@ $root.medis = (function() {
              * @property {string|null} [compositionTitle] NFCPayload compositionTitle
              * @property {number|Long|null} [compositionDate] NFCPayload compositionDate
              * @property {string|null} [bundleMetaLastUpdated] NFCPayload bundleMetaLastUpdated
+             * @property {Array.<medis.nfc.IMedicationStatement>|null} [medications] NFCPayload medications
+             * @property {medis.nfc.IOrganization|null} [organization] NFCPayload organization
+             * @property {medis.nfc.IStage|null} [axp] NFCPayload axp
+             * @property {medis.nfc.IStage|null} [fwdTacevac] NFCPayload fwdTacevac
+             * @property {medis.nfc.IStage|null} [rearTacevac] NFCPayload rearTacevac
+             * @property {medis.nfc.IStage|null} [stratevac] NFCPayload stratevac
+             * @property {medis.nfc.IStage|null} [r1Phec] NFCPayload r1Phec
+             * @property {medis.nfc.IStage|null} [r1Phc] NFCPayload r1Phc
              */
 
             /**
@@ -2896,6 +5175,7 @@ $root.medis = (function() {
              */
             function NFCPayload(properties) {
                 this.allergies = [];
+                this.medications = [];
                 if (properties)
                     for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
@@ -2960,11 +5240,11 @@ $root.medis = (function() {
 
             /**
              * NFCPayload t.
-             * @member {number|Long} t
+             * @member {string} t
              * @memberof medis.nfc.NFCPayload
              * @instance
              */
-            NFCPayload.prototype.t = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+            NFCPayload.prototype.t = "";
 
             /**
              * NFCPayload bundleMetadata.
@@ -3031,6 +5311,70 @@ $root.medis = (function() {
             NFCPayload.prototype.bundleMetaLastUpdated = "";
 
             /**
+             * NFCPayload medications.
+             * @member {Array.<medis.nfc.IMedicationStatement>} medications
+             * @memberof medis.nfc.NFCPayload
+             * @instance
+             */
+            NFCPayload.prototype.medications = $util.emptyArray;
+
+            /**
+             * NFCPayload organization.
+             * @member {medis.nfc.IOrganization|null|undefined} organization
+             * @memberof medis.nfc.NFCPayload
+             * @instance
+             */
+            NFCPayload.prototype.organization = null;
+
+            /**
+             * NFCPayload axp.
+             * @member {medis.nfc.IStage|null|undefined} axp
+             * @memberof medis.nfc.NFCPayload
+             * @instance
+             */
+            NFCPayload.prototype.axp = null;
+
+            /**
+             * NFCPayload fwdTacevac.
+             * @member {medis.nfc.IStage|null|undefined} fwdTacevac
+             * @memberof medis.nfc.NFCPayload
+             * @instance
+             */
+            NFCPayload.prototype.fwdTacevac = null;
+
+            /**
+             * NFCPayload rearTacevac.
+             * @member {medis.nfc.IStage|null|undefined} rearTacevac
+             * @memberof medis.nfc.NFCPayload
+             * @instance
+             */
+            NFCPayload.prototype.rearTacevac = null;
+
+            /**
+             * NFCPayload stratevac.
+             * @member {medis.nfc.IStage|null|undefined} stratevac
+             * @memberof medis.nfc.NFCPayload
+             * @instance
+             */
+            NFCPayload.prototype.stratevac = null;
+
+            /**
+             * NFCPayload r1Phec.
+             * @member {medis.nfc.IStage|null|undefined} r1Phec
+             * @memberof medis.nfc.NFCPayload
+             * @instance
+             */
+            NFCPayload.prototype.r1Phec = null;
+
+            /**
+             * NFCPayload r1Phc.
+             * @member {medis.nfc.IStage|null|undefined} r1Phc
+             * @memberof medis.nfc.NFCPayload
+             * @instance
+             */
+            NFCPayload.prototype.r1Phc = null;
+
+            /**
              * Creates a new NFCPayload instance using the specified properties.
              * @function create
              * @memberof medis.nfc.NFCPayload
@@ -3069,7 +5413,7 @@ $root.medis = (function() {
                 if (message.r3 != null && Object.hasOwnProperty.call(message, "r3"))
                     $root.medis.nfc.Stage.encode(message.r3, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
                 if (message.t != null && Object.hasOwnProperty.call(message, "t"))
-                    writer.uint32(/* id 8, wireType 0 =*/64).int64(message.t);
+                    writer.uint32(/* id 8, wireType 2 =*/66).string(message.t);
                 if (message.bundleMetadata != null && Object.hasOwnProperty.call(message, "bundleMetadata"))
                     $root.medis.nfc.BundleMetadata.encode(message.bundleMetadata, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
                 if (message.allergies != null && message.allergies.length)
@@ -3087,6 +5431,23 @@ $root.medis = (function() {
                     writer.uint32(/* id 15, wireType 0 =*/120).int64(message.compositionDate);
                 if (message.bundleMetaLastUpdated != null && Object.hasOwnProperty.call(message, "bundleMetaLastUpdated"))
                     writer.uint32(/* id 16, wireType 2 =*/130).string(message.bundleMetaLastUpdated);
+                if (message.medications != null && message.medications.length)
+                    for (var i = 0; i < message.medications.length; ++i)
+                        $root.medis.nfc.MedicationStatement.encode(message.medications[i], writer.uint32(/* id 17, wireType 2 =*/138).fork()).ldelim();
+                if (message.organization != null && Object.hasOwnProperty.call(message, "organization"))
+                    $root.medis.nfc.Organization.encode(message.organization, writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
+                if (message.axp != null && Object.hasOwnProperty.call(message, "axp"))
+                    $root.medis.nfc.Stage.encode(message.axp, writer.uint32(/* id 19, wireType 2 =*/154).fork()).ldelim();
+                if (message.fwdTacevac != null && Object.hasOwnProperty.call(message, "fwdTacevac"))
+                    $root.medis.nfc.Stage.encode(message.fwdTacevac, writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
+                if (message.rearTacevac != null && Object.hasOwnProperty.call(message, "rearTacevac"))
+                    $root.medis.nfc.Stage.encode(message.rearTacevac, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
+                if (message.stratevac != null && Object.hasOwnProperty.call(message, "stratevac"))
+                    $root.medis.nfc.Stage.encode(message.stratevac, writer.uint32(/* id 22, wireType 2 =*/178).fork()).ldelim();
+                if (message.r1Phec != null && Object.hasOwnProperty.call(message, "r1Phec"))
+                    $root.medis.nfc.Stage.encode(message.r1Phec, writer.uint32(/* id 23, wireType 2 =*/186).fork()).ldelim();
+                if (message.r1Phc != null && Object.hasOwnProperty.call(message, "r1Phc"))
+                    $root.medis.nfc.Stage.encode(message.r1Phc, writer.uint32(/* id 24, wireType 2 =*/194).fork()).ldelim();
                 return writer;
             };
 
@@ -3152,7 +5513,7 @@ $root.medis = (function() {
                             break;
                         }
                     case 8: {
-                            message.t = reader.int64();
+                            message.t = reader.string();
                             break;
                         }
                     case 9: {
@@ -3187,6 +5548,40 @@ $root.medis = (function() {
                         }
                     case 16: {
                             message.bundleMetaLastUpdated = reader.string();
+                            break;
+                        }
+                    case 17: {
+                            if (!(message.medications && message.medications.length))
+                                message.medications = [];
+                            message.medications.push($root.medis.nfc.MedicationStatement.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    case 18: {
+                            message.organization = $root.medis.nfc.Organization.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 19: {
+                            message.axp = $root.medis.nfc.Stage.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 20: {
+                            message.fwdTacevac = $root.medis.nfc.Stage.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 21: {
+                            message.rearTacevac = $root.medis.nfc.Stage.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 22: {
+                            message.stratevac = $root.medis.nfc.Stage.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 23: {
+                            message.r1Phec = $root.medis.nfc.Stage.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 24: {
+                            message.r1Phc = $root.medis.nfc.Stage.decode(reader, reader.uint32());
                             break;
                         }
                     default:
@@ -3260,8 +5655,8 @@ $root.medis = (function() {
                         return "r3." + error;
                 }
                 if (message.t != null && message.hasOwnProperty("t"))
-                    if (!$util.isInteger(message.t) && !(message.t && $util.isInteger(message.t.low) && $util.isInteger(message.t.high)))
-                        return "t: integer|Long expected";
+                    if (!$util.isString(message.t))
+                        return "t: string expected";
                 if (message.bundleMetadata != null && message.hasOwnProperty("bundleMetadata")) {
                     var error = $root.medis.nfc.BundleMetadata.verify(message.bundleMetadata);
                     if (error)
@@ -3294,6 +5689,50 @@ $root.medis = (function() {
                 if (message.bundleMetaLastUpdated != null && message.hasOwnProperty("bundleMetaLastUpdated"))
                     if (!$util.isString(message.bundleMetaLastUpdated))
                         return "bundleMetaLastUpdated: string expected";
+                if (message.medications != null && message.hasOwnProperty("medications")) {
+                    if (!Array.isArray(message.medications))
+                        return "medications: array expected";
+                    for (var i = 0; i < message.medications.length; ++i) {
+                        var error = $root.medis.nfc.MedicationStatement.verify(message.medications[i]);
+                        if (error)
+                            return "medications." + error;
+                    }
+                }
+                if (message.organization != null && message.hasOwnProperty("organization")) {
+                    var error = $root.medis.nfc.Organization.verify(message.organization);
+                    if (error)
+                        return "organization." + error;
+                }
+                if (message.axp != null && message.hasOwnProperty("axp")) {
+                    var error = $root.medis.nfc.Stage.verify(message.axp);
+                    if (error)
+                        return "axp." + error;
+                }
+                if (message.fwdTacevac != null && message.hasOwnProperty("fwdTacevac")) {
+                    var error = $root.medis.nfc.Stage.verify(message.fwdTacevac);
+                    if (error)
+                        return "fwdTacevac." + error;
+                }
+                if (message.rearTacevac != null && message.hasOwnProperty("rearTacevac")) {
+                    var error = $root.medis.nfc.Stage.verify(message.rearTacevac);
+                    if (error)
+                        return "rearTacevac." + error;
+                }
+                if (message.stratevac != null && message.hasOwnProperty("stratevac")) {
+                    var error = $root.medis.nfc.Stage.verify(message.stratevac);
+                    if (error)
+                        return "stratevac." + error;
+                }
+                if (message.r1Phec != null && message.hasOwnProperty("r1Phec")) {
+                    var error = $root.medis.nfc.Stage.verify(message.r1Phec);
+                    if (error)
+                        return "r1Phec." + error;
+                }
+                if (message.r1Phc != null && message.hasOwnProperty("r1Phc")) {
+                    var error = $root.medis.nfc.Stage.verify(message.r1Phc);
+                    if (error)
+                        return "r1Phc." + error;
+                }
                 return null;
             };
 
@@ -3345,14 +5784,7 @@ $root.medis = (function() {
                     message.r3 = $root.medis.nfc.Stage.fromObject(object.r3);
                 }
                 if (object.t != null)
-                    if ($util.Long)
-                        (message.t = $util.Long.fromValue(object.t)).unsigned = false;
-                    else if (typeof object.t === "string")
-                        message.t = parseInt(object.t, 10);
-                    else if (typeof object.t === "number")
-                        message.t = object.t;
-                    else if (typeof object.t === "object")
-                        message.t = new $util.LongBits(object.t.low >>> 0, object.t.high >>> 0).toNumber();
+                    message.t = String(object.t);
                 if (object.bundleMetadata != null) {
                     if (typeof object.bundleMetadata !== "object")
                         throw TypeError(".medis.nfc.NFCPayload.bundleMetadata: object expected");
@@ -3387,6 +5819,51 @@ $root.medis = (function() {
                         message.compositionDate = new $util.LongBits(object.compositionDate.low >>> 0, object.compositionDate.high >>> 0).toNumber();
                 if (object.bundleMetaLastUpdated != null)
                     message.bundleMetaLastUpdated = String(object.bundleMetaLastUpdated);
+                if (object.medications) {
+                    if (!Array.isArray(object.medications))
+                        throw TypeError(".medis.nfc.NFCPayload.medications: array expected");
+                    message.medications = [];
+                    for (var i = 0; i < object.medications.length; ++i) {
+                        if (typeof object.medications[i] !== "object")
+                            throw TypeError(".medis.nfc.NFCPayload.medications: object expected");
+                        message.medications[i] = $root.medis.nfc.MedicationStatement.fromObject(object.medications[i]);
+                    }
+                }
+                if (object.organization != null) {
+                    if (typeof object.organization !== "object")
+                        throw TypeError(".medis.nfc.NFCPayload.organization: object expected");
+                    message.organization = $root.medis.nfc.Organization.fromObject(object.organization);
+                }
+                if (object.axp != null) {
+                    if (typeof object.axp !== "object")
+                        throw TypeError(".medis.nfc.NFCPayload.axp: object expected");
+                    message.axp = $root.medis.nfc.Stage.fromObject(object.axp);
+                }
+                if (object.fwdTacevac != null) {
+                    if (typeof object.fwdTacevac !== "object")
+                        throw TypeError(".medis.nfc.NFCPayload.fwdTacevac: object expected");
+                    message.fwdTacevac = $root.medis.nfc.Stage.fromObject(object.fwdTacevac);
+                }
+                if (object.rearTacevac != null) {
+                    if (typeof object.rearTacevac !== "object")
+                        throw TypeError(".medis.nfc.NFCPayload.rearTacevac: object expected");
+                    message.rearTacevac = $root.medis.nfc.Stage.fromObject(object.rearTacevac);
+                }
+                if (object.stratevac != null) {
+                    if (typeof object.stratevac !== "object")
+                        throw TypeError(".medis.nfc.NFCPayload.stratevac: object expected");
+                    message.stratevac = $root.medis.nfc.Stage.fromObject(object.stratevac);
+                }
+                if (object.r1Phec != null) {
+                    if (typeof object.r1Phec !== "object")
+                        throw TypeError(".medis.nfc.NFCPayload.r1Phec: object expected");
+                    message.r1Phec = $root.medis.nfc.Stage.fromObject(object.r1Phec);
+                }
+                if (object.r1Phc != null) {
+                    if (typeof object.r1Phc !== "object")
+                        throw TypeError(".medis.nfc.NFCPayload.r1Phc: object expected");
+                    message.r1Phc = $root.medis.nfc.Stage.fromObject(object.r1Phc);
+                }
                 return message;
             };
 
@@ -3403,8 +5880,10 @@ $root.medis = (function() {
                 if (!options)
                     options = {};
                 var object = {};
-                if (options.arrays || options.defaults)
+                if (options.arrays || options.defaults) {
                     object.allergies = [];
+                    object.medications = [];
+                }
                 if (options.defaults) {
                     object.patient = null;
                     object.poi = null;
@@ -3413,11 +5892,7 @@ $root.medis = (function() {
                     object.r2 = null;
                     object.casevac = null;
                     object.r3 = null;
-                    if ($util.Long) {
-                        var long = new $util.Long(0, 0, false);
-                        object.t = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
-                    } else
-                        object.t = options.longs === String ? "0" : 0;
+                    object.t = "";
                     object.bundleMetadata = null;
                     object.bundleId = "";
                     object.bundleIdentifier = "";
@@ -3429,6 +5904,13 @@ $root.medis = (function() {
                     } else
                         object.compositionDate = options.longs === String ? "0" : 0;
                     object.bundleMetaLastUpdated = "";
+                    object.organization = null;
+                    object.axp = null;
+                    object.fwdTacevac = null;
+                    object.rearTacevac = null;
+                    object.stratevac = null;
+                    object.r1Phec = null;
+                    object.r1Phc = null;
                 }
                 if (message.patient != null && message.hasOwnProperty("patient"))
                     object.patient = $root.medis.nfc.Patient.toObject(message.patient, options);
@@ -3445,10 +5927,7 @@ $root.medis = (function() {
                 if (message.r3 != null && message.hasOwnProperty("r3"))
                     object.r3 = $root.medis.nfc.Stage.toObject(message.r3, options);
                 if (message.t != null && message.hasOwnProperty("t"))
-                    if (typeof message.t === "number")
-                        object.t = options.longs === String ? String(message.t) : message.t;
-                    else
-                        object.t = options.longs === String ? $util.Long.prototype.toString.call(message.t) : options.longs === Number ? new $util.LongBits(message.t.low >>> 0, message.t.high >>> 0).toNumber() : message.t;
+                    object.t = message.t;
                 if (message.bundleMetadata != null && message.hasOwnProperty("bundleMetadata"))
                     object.bundleMetadata = $root.medis.nfc.BundleMetadata.toObject(message.bundleMetadata, options);
                 if (message.allergies && message.allergies.length) {
@@ -3471,6 +5950,25 @@ $root.medis = (function() {
                         object.compositionDate = options.longs === String ? $util.Long.prototype.toString.call(message.compositionDate) : options.longs === Number ? new $util.LongBits(message.compositionDate.low >>> 0, message.compositionDate.high >>> 0).toNumber() : message.compositionDate;
                 if (message.bundleMetaLastUpdated != null && message.hasOwnProperty("bundleMetaLastUpdated"))
                     object.bundleMetaLastUpdated = message.bundleMetaLastUpdated;
+                if (message.medications && message.medications.length) {
+                    object.medications = [];
+                    for (var j = 0; j < message.medications.length; ++j)
+                        object.medications[j] = $root.medis.nfc.MedicationStatement.toObject(message.medications[j], options);
+                }
+                if (message.organization != null && message.hasOwnProperty("organization"))
+                    object.organization = $root.medis.nfc.Organization.toObject(message.organization, options);
+                if (message.axp != null && message.hasOwnProperty("axp"))
+                    object.axp = $root.medis.nfc.Stage.toObject(message.axp, options);
+                if (message.fwdTacevac != null && message.hasOwnProperty("fwdTacevac"))
+                    object.fwdTacevac = $root.medis.nfc.Stage.toObject(message.fwdTacevac, options);
+                if (message.rearTacevac != null && message.hasOwnProperty("rearTacevac"))
+                    object.rearTacevac = $root.medis.nfc.Stage.toObject(message.rearTacevac, options);
+                if (message.stratevac != null && message.hasOwnProperty("stratevac"))
+                    object.stratevac = $root.medis.nfc.Stage.toObject(message.stratevac, options);
+                if (message.r1Phec != null && message.hasOwnProperty("r1Phec"))
+                    object.r1Phec = $root.medis.nfc.Stage.toObject(message.r1Phec, options);
+                if (message.r1Phc != null && message.hasOwnProperty("r1Phc"))
+                    object.r1Phc = $root.medis.nfc.Stage.toObject(message.r1Phc, options);
                 return object;
             };
 

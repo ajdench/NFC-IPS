@@ -179,7 +179,7 @@ message NFCPayload {
     Stage r2 = 5;
     Stage casevac = 6;
     Stage r3 = 7;
-    int64 t = 8;                       // Bundle.timestamp (Unix milliseconds)
+    string t = 8;                      // Bundle.timestamp (ISO8601 string with timezone)
     BundleMetadata bundleMetadata = 9; // DEPRECATED - will be removed
     repeated Allergy allergies = 10;
 
