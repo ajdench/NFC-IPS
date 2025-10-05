@@ -111,10 +111,34 @@
         a.click();
     }
 
+    // Create compact summary with line references
+    const summary = {
+        metadata: {
+            timestamp: new Date().toISOString(),
+            originalSize: leftFhir.length,
+            reconstructedSize: rightFhir.length,
+            originalEntries: leftObj.entry?.length,
+            reconstructedEntries: rightObj.entry?.length,
+            differenceCount: diffs.length
+        },
+        summary: diffs.map((diff, idx) => ({
+            line: idx + 1,
+            path: diff.path,
+            type: diff.type,
+            leftPreview: diff.left !== undefined ? JSON.stringify(diff.left).substring(0, 100) : undefined,
+            rightPreview: diff.right !== undefined ? JSON.stringify(diff.right).substring(0, 100) : undefined,
+            fullDetailsAtLine: 100 + idx
+        })),
+        detailedDifferences: diffs.map((diff, idx) => ({
+            lineNumber: 100 + idx,
+            ...diff
+        }))
+    };
+
     console.log('\n💾 Downloading files...');
     download(leftObj, 'left-original.json');
     download(rightObj, 'right-reconstructed.json');
-    download(diffs, 'differences.json');
+    download(summary, 'differences-summary.json');
     console.log('✅ Done!\n');
 
     window.comparisonResults = { diffs, leftObj, rightObj };
