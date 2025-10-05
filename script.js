@@ -2674,6 +2674,12 @@ const codecPipeline = (() => {
             }
             // Handle Observations - categorize by type
             else if (resource.resourceType === 'Observation') {
+                // Skip blood group observation (882-1) - already captured in Patient extension
+                const isBloodGroupObs = resource.code?.coding?.some(c => c.code === '882-1' && c.system?.includes('loinc'));
+                if (isBloodGroupObs) {
+                    return; // Skip - redundant with Patient.extension.bloodGroup
+                }
+
                 const category = resource.category?.[0]?.coding?.[0]?.code;
                 if (category === 'vital-signs') {
                     payload[careStage].vitals.push(convertObservationToCodeRef(resource));
