@@ -2556,7 +2556,7 @@ const codecPipeline = (() => {
         // Extract Bundle metadata for lossless reconstruction
         const bundleId = bundle.id || '';
         const bundleIdentifier = bundle.identifier?.value || '';
-        const bundleTimestamp = bundle.timestamp ? new Date(bundle.timestamp).getTime() : Date.now();
+        const bundleTimestamp = bundle.timestamp || new Date().toISOString();
 
         // Extract Composition metadata
         const compositionEntry = bundle.entry?.find(entry => entry.resource?.resourceType === 'Composition');
