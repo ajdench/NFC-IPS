@@ -196,4 +196,10 @@ message NFCPayload {
     // Phase 4: Additional resource types
     repeated MedicationStatement medications = 17;  // NEW: Ongoing medications
     Organization organization = 18;                 // NEW: Authoring organization
+
+    // Phase 5: Complete care stage coverage
+    Stage axp = 19;
+    Stage fwdTacevac = 20;
+    Stage rearTacevac = 21;
+    Stage stratevac = 22;
 }

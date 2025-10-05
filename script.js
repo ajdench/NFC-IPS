@@ -2601,6 +2601,7 @@ const codecPipeline = (() => {
             r2: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
             rearTacevac: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
             r3: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
+            stratevac: { vitals: [], labs: [], assessments: [], conditions: [], events: [], requests: [], imaging: [], encounter: null },
             t: bundleTimestamp,
             // Lossless reconstruction metadata
             bundle_id: bundleId,
