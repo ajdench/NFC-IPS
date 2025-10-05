@@ -2925,7 +2925,7 @@ const codecPipeline = (() => {
                 value: codeRefPayload.bundle_identifier || 'IPS-001'
             },
             type: 'document',
-            timestamp: codeRefPayload.t ? new Date(codeRefPayload.t).toISOString() : new Date().toISOString(),
+            timestamp: codeRefPayload.t || new Date().toISOString(),
             entry: []
         };
 
