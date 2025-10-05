@@ -474,41 +474,6 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:45c79820-819d-4730-87d6-cb94d8d82036",
-      "resource": {
-        "resourceType": "Observation",
-        "id": "333a7c6d-e1e0-5ff9-ad7e-2cf0d48313da",
-        "status": "final",
-        "meta": {
-          "profile": [
-            "http://hl7.org/fhir/uv/ips/StructureDefinition/Observation-results-uv-ips"
-          ]
-        },
-        "code": {
-          "coding": [
-            {
-              "system": "http://loinc.org",
-              "code": "882-1",
-              "display": "ABO and Rh group"
-            }
-          ]
-        },
-        "subject": {
-          "reference": "urn:uuid:b63b1e74-ac70-414b-a017-22c20df29043"
-        },
-        "effectiveDateTime": "2024-06-01",
-        "valueCodeableConcept": {
-          "coding": [
-            {
-              "system": "http://snomed.info/sct",
-              "code": "112144000",
-              "display": "Blood group O positive"
-            }
-          ]
-        }
-      }
-    },
-    {
       "fullUrl": "urn:uuid:4cc835fe-1a3c-4298-b403-eab93167333a",
       "resource": {
         "resourceType": "AllergyIntolerance",
