@@ -290,7 +290,7 @@ export const DEMO_PAYLOADS = {
 // RESOURCE FILES
 // =============================================================================
 export const RESOURCES = {
-    NFC_PAYLOAD_PROTO: new URL('resources/nfc_payload.proto', BASE_URL).href,
+    NFC_PAYLOAD_PROTO: new URL('resources/nfc_payload.proto?v=2', BASE_URL).href,  // v=2: Added r1_phec/r1_phc split
     NFC_PAYLOAD_LEGACY_PROTO: new URL('resources/nfc_payload_legacy.proto', BASE_URL).href
 };
 
