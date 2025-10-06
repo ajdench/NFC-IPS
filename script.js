@@ -4851,7 +4851,7 @@ const payloadService = (() => {
         // Extract care stage from extension
         const getCareStage = (resource) => {
             const ext = resource.extension?.find(e => e.url === 'http://example.org/fhir/StructureDefinition/care-stage');
-            return ext?.valueString || 'patient';
+            return ext?.valueCode || 'patient';
         };
 
         // Extract display text from CodeableConcept
@@ -4889,6 +4889,9 @@ const payloadService = (() => {
             }
 
             const careStage = getCareStage(resource);
+            if (index < 5) {
+                console.log(`DEBUG: Resource ${index} extensions:`, JSON.stringify(resource.extension));
+            }
             console.log(`DEBUG: Resource ${index} (${resource.resourceType}) → careStage: ${careStage}`);
 
             const stageSection = sections[careStage];
