@@ -3377,6 +3377,10 @@ const codecPipeline = (() => {
         const conditionResource = {
             resourceType: 'Condition',
             id: condition.id || `condition-${careStage}-${Date.now()}`,
+            extension: [{
+                url: 'http://example.org/fhir/StructureDefinition/careStage',
+                valueString: careStage
+            }],
             clinicalStatus: {
                 coding: [{
                     system: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
@@ -3415,6 +3419,10 @@ const codecPipeline = (() => {
             const medAdmin = {
                 resourceType: 'MedicationAdministration',
                 id: event.id || `medication-${careStage}-${Date.now()}`,
+                extension: [{
+                    url: 'http://example.org/fhir/StructureDefinition/careStage',
+                    valueString: careStage
+                }],
                 status: 'completed',
                 medicationCodeableConcept: {
                     coding: [{
@@ -3446,6 +3454,10 @@ const codecPipeline = (() => {
             const procedure = {
                 resourceType: 'Procedure',
                 id: event.id || `procedure-${careStage}-${Date.now()}`,
+                extension: [{
+                    url: 'http://example.org/fhir/StructureDefinition/careStage',
+                    valueString: careStage
+                }],
                 status: 'completed',
                 code: {
                     coding: [{
