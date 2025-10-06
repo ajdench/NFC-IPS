@@ -4838,9 +4838,11 @@ const payloadService = (() => {
             return `${system}:${coding.code || 'unknown'}`;
         };
 
-        // Initialize all stage sections
+        // Initialize all stage sections with date trackers
+        const stageDateTrackers = {};
         stageKeys.forEach(key => {
             sections[key] = { vitals: [], conditions: [], events: [], allPills: [] };
+            stageDateTrackers[key] = new Map();
         });
 
         // Process each resource by type
@@ -4852,7 +4854,7 @@ const payloadService = (() => {
             const stageSection = sections[careStage];
             if (!stageSection) return;
 
-            const sectionDateTracker = new Map();
+            const sectionDateTracker = stageDateTrackers[careStage];
 
             // Process Observations (vitals)
             if (resource.resourceType === 'Observation') {
