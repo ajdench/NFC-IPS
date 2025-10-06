@@ -71,44 +71,17 @@ async function lookupSnomedCode(code) {
 }
 
 /**
- * Lookup a LOINC code via FHIR terminology service
+ * LOINC code lookup - Currently returns code as-is
+ * LOINC.org API requires authentication and doesn't support CORS
+ * TODO: Implement local LOINC database or use authenticated API
  * @param {string} code - LOINC code
- * @returns {Promise<string>} - Display name
+ * @returns {Promise<string>} - Code (no display available)
  */
 async function lookupLoincCode(code) {
-    const cacheKey = `loinc:${code}`;
-
-    // Check cache first
-    if (terminologyCache.has(cacheKey)) {
-        return terminologyCache.get(cacheKey);
-    }
-
-    // FHIR CodeSystem $lookup operation
-    const url = `${API_CONFIG.loinc.baseUrl}?system=http://loinc.org&code=${code}`;
-
-    try {
-        const response = await fetchWithTimeout(url, API_CONFIG.loinc.timeout);
-
-        if (!response.ok) {
-            console.warn(`LOINC lookup failed for ${code}: ${response.status}`);
-            return code; // Fallback to code
-        }
-
-        const data = await response.json();
-
-        // Extract display from FHIR Parameters resource
-        const displayParam = data.parameter?.find(p => p.name === 'display');
-        const display = displayParam?.valueString || code;
-
-        // Cache the result
-        terminologyCache.set(cacheKey, display);
-
-        return display;
-
-    } catch (error) {
-        console.error(`LOINC API error for ${code}:`, error.message);
-        return code; // Fallback to code on error
-    }
+    // LOINC API not available - fallback to code
+    // fhir.loinc.org requires authentication and blocks CORS
+    // Silently return code (logging would spam console)
+    return code;
 }
 
 /**
@@ -188,17 +161,13 @@ export async function resolveCodeDisplayAsync(system, code) {
     // Normalize system identifier
     const normalizedSystem = system.toLowerCase();
 
-    // Try local fallback first for non-SNOMED/LOINC codes
+    // Only SNOMED CT has working API - others fallback to code
     if (normalizedSystem !== 'sct' && normalizedSystem !== 'loinc') {
-        // Use local database for HL7 terminology, etc.
-        const key = `${normalizedSystem}:${code}`;
-        if (medicalCodeMap && medicalCodeMap[key]) {
-            return medicalCodeMap[key];
-        }
+        // Other systems (HL7, etc.) - fallback to code
         return code;
     }
 
-    // Perform rate-limited API lookup
+    // Perform rate-limited API lookup (SNOMED only, LOINC returns code)
     try {
         return await rateLimitedLookup(normalizedSystem, code);
     } catch (error) {
