@@ -45,7 +45,9 @@ import {
 } from './util/json.js';
 import {
     resolveCodeDisplayAsync,
-    batchResolveCodeDisplay
+    batchResolveCodeDisplay,
+    cacheDisplayText,
+    getCachedDisplay
 } from './terminology-api.js';
 
 // =============================================================================
@@ -1837,6 +1839,11 @@ if (typeof window !== 'undefined') {
  *   await resolveCodeDisplayAsync('loinc', '8480-6') → 'Systolic blood pressure'
  */
 function resolveCodeDisplay(system, code) {
+    // Check API cache first (populated from FHIR display text or API lookups)
+    const cached = getCachedDisplay(system, code);
+    if (cached) return cached;
+
+    // Fallback to local database
     const key = `${system}:${code}`;
     return medicalCodeMap[key] || code;
 }
@@ -6710,11 +6717,10 @@ async function init() {
                 showMessage('Parse stage active', 'info');
                 await new Promise(resolve => setTimeout(resolve, 500));
 
-                // Step 4: Display (Use the OutputFHIR for Parse display) - Green stage
-                const parsedViewModel = payloadService.buildViewModelFromObject(decodedCodeRef, {
-                    label: 'Decoded from Fragment',
-                    originalInput: formatState.conversionResults.fragment,
-                    rawPayload: decodedCodeRef
+                // Step 4: Display (Use the API-hydrated FHIR for rendering) - Green stage
+                const parsedViewModel = buildViewModelFromFhir(decodedFhirBundle, {
+                    label: 'Decoded from Fragment (API-hydrated)',
+                    originalInput: formatState.conversionResults.fragment
                 });
 
                 appState.currentViewModel = parsedViewModel;
@@ -6777,19 +6783,10 @@ async function init() {
                 hasPatientEntry: fhirBundle.entry?.some(e => e.resource?.resourceType === 'Patient') || false
             });
 
-            // Convert FHIR Bundle to CodeRef
-            const codeRef = codecPipeline.convertFhirBundleToCodeRef(fhirBundle);
-            addPipelineStage('FHIR to CodeRef Conversion', codeRef, {
-                hasPatient: !!codeRef?.patient,
-                patientKeys: codeRef?.patient ? Object.keys(codeRef.patient) : [],
-                careStages: Object.keys(codeRef || {}).filter(key => key !== 'patient')
-            });
-
-            // Build ViewModel from CodeRef
-            const parsedViewModel = payloadService.buildViewModelFromObject(codeRef, {
-                label: 'Parsed FHIR',
-                originalInput: fhirInput,
-                rawPayload: codeRef
+            // Build ViewModel directly from FHIR (caches display text internally)
+            const parsedViewModel = buildViewModelFromFhir(fhirBundle, {
+                label: 'Parsed FHIR (with display text)',
+                originalInput: fhirInput
             });
             addPipelineStage('CodeRef to ViewModel Conversion', parsedViewModel, {
                 hasPatient: !!parsedViewModel?.patient,
@@ -8046,3 +8043,95 @@ function resolveLegendPositions(positions, minY, maxY, minSpacing) {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
+/**
+ * Extract and cache all display text from FHIR Bundle
+ * Populates the terminology cache so UI rendering has display text
+ * @param {Object} fhirBundle - FHIR Bundle with display text
+ */
+function cacheFhirDisplayText(fhirBundle) {
+    if (!fhirBundle?.entry) return;
+
+    fhirBundle.entry.forEach(entry => {
+        const resource = entry.resource;
+        if (!resource) return;
+
+        // Helper to cache coding display
+        const cacheCoding = (coding) => {
+            if (coding?.system && coding?.code && coding?.display) {
+                const system = coding.system.includes('snomed') ? 'sct' :
+                               coding.system.includes('loinc') ? 'loinc' :
+                               coding.system;
+                cacheDisplayText(system, coding.code, coding.display);
+            }
+        };
+
+        // Cache from codeableConcept arrays
+        const cacheCodeableConcept = (concept) => {
+            if (concept?.coding) {
+                concept.coding.forEach(cacheCoding);
+            }
+        };
+
+        // Process different resource types
+        switch (resource.resourceType) {
+            case 'Observation':
+                cacheCodeableConcept(resource.code);
+                cacheCodeableConcept(resource.valueCodeableConcept);
+                resource.component?.forEach(comp => cacheCodeableConcept(comp.code));
+                break;
+            case 'Condition':
+                cacheCodeableConcept(resource.code);
+                break;
+            case 'Procedure':
+            case 'MedicationAdministration':
+                cacheCodeableConcept(resource.code);
+                cacheCodeableConcept(resource.medicationCodeableConcept);
+                break;
+            case 'MedicationStatement':
+                cacheCodeableConcept(resource.medicationCodeableConcept);
+                break;
+            case 'AllergyIntolerance':
+                cacheCodeableConcept(resource.code);
+                resource.reaction?.forEach(r => {
+                    r.manifestation?.forEach(cacheCodeableConcept);
+                });
+                break;
+            case 'ServiceRequest':
+                cacheCodeableConcept(resource.code);
+                break;
+            case 'ImagingStudy':
+                resource.procedureCode?.forEach(cacheCodeableConcept);
+                break;
+            case 'Patient':
+                // Blood group from extension
+                const bloodExt = resource.extension?.find(e => 
+                    e.url?.includes('patient-bloodGroup')
+                );
+                if (bloodExt?.valueCodeableConcept) {
+                    cacheCodeableConcept(bloodExt.valueCodeableConcept);
+                }
+                break;
+        }
+    });
+}
+
+/**
+ * Build ViewModel directly from FHIR Bundle (bypassing CodeRef)
+ * Used when FHIR already has complete display text from API lookups
+ * @param {Object} fhirBundle - FHIR Bundle with display text
+ * @param {Object} options - Options (label, etc.)
+ * @returns {Object} ViewModel for rendering
+ */
+function buildViewModelFromFhir(fhirBundle, options = {}) {
+    // First cache all display text so downstream code can use it
+    cacheFhirDisplayText(fhirBundle);
+    
+    // Then convert to CodeRef and build ViewModel normally
+    // The cached display text will be used during rendering
+    const codeRef = codecPipeline.convertFhirBundleToCodeRef(fhirBundle);
+    return payloadService.buildViewModelFromObject(codeRef, {
+        ...options,
+        rawPayload: codeRef
+    });
+}

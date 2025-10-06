@@ -250,3 +250,28 @@ export function getCacheStats() {
         keys: Array.from(terminologyCache.keys())
     };
 }
+
+/**
+ * Manually populate cache with display text from FHIR resources
+ * Used when FHIR has display text that we want to preserve
+ * @param {string} system - Terminology system
+ * @param {string} code - Code
+ * @param {string} display - Display text
+ */
+export function cacheDisplayText(system, code, display) {
+    if (system && code && display) {
+        const cacheKey = `${system}:${code}`;
+        terminologyCache.set(cacheKey, display);
+    }
+}
+
+/**
+ * Get display text from cache (synchronous)
+ * @param {string} system - Terminology system
+ * @param {string} code - Code
+ * @returns {string|null} - Cached display or null
+ */
+export function getCachedDisplay(system, code) {
+    const cacheKey = `${system}:${code}`;
+    return terminologyCache.get(cacheKey) || null;
+}
