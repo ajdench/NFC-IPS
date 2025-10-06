@@ -4800,24 +4800,195 @@ const payloadService = (() => {
         });
     }
 
+    /**
+     * Build stage sections directly from FHIR Bundle without lossy CodeRef conversion
+     * This preserves all API-hydrated display text from terminology lookups
+     */
+    function buildStageSectionsDirectlyFromFhirBundle(bundle) {
+        if (!bundle || bundle.resourceType !== 'Bundle') {
+            return { sections: {}, summary: null, allergies: [] };
+        }
+
+        const sections = {};
+        const totals = { vitals: 0, conditions: 0, events: 0 };
+        const allergies = [];
+
+        // Extract care stage from extension
+        const getCareStage = (resource) => {
+            const ext = resource.extension?.find(e => e.url === 'http://example.org/fhir/StructureDefinition/careStage');
+            return ext?.valueString || 'patient';
+        };
+
+        // Extract display text from CodeableConcept
+        const getDisplay = (codeableConcept) => {
+            if (!codeableConcept) return 'unknown';
+            return codeableConcept.coding?.[0]?.display ||
+                   codeableConcept.text ||
+                   codeableConcept.coding?.[0]?.code ||
+                   'unknown';
+        };
+
+        // Extract code reference string
+        const getCodeRef = (codeableConcept) => {
+            if (!codeableConcept?.coding?.[0]) return 'unknown';
+            const coding = codeableConcept.coding[0];
+            const system = coding.system?.includes('snomed') ? 'sct' :
+                          coding.system?.includes('loinc') ? 'loinc' :
+                          coding.system || 'unknown';
+            return `${system}:${coding.code || 'unknown'}`;
+        };
+
+        // Initialize all stage sections
+        stageKeys.forEach(key => {
+            sections[key] = { vitals: [], conditions: [], events: [], allPills: [] };
+        });
+
+        // Process each resource by type
+        bundle.entry?.forEach(entry => {
+            const resource = entry.resource;
+            if (!resource) return;
+
+            const careStage = getCareStage(resource);
+            const stageSection = sections[careStage];
+            if (!stageSection) return;
+
+            const sectionDateTracker = new Map();
+
+            // Process Observations (vitals)
+            if (resource.resourceType === 'Observation') {
+                const rawData = {
+                    code: getCodeRef(resource.code),
+                    description: getDisplay(resource.code),
+                    value: resource.valueQuantity?.value || resource.valueString || null,
+                    unit: resource.valueQuantity?.unit || null,
+                    dose: null,
+                    route: null,
+                    time: resource.effectiveDateTime || null,
+                    onset: null
+                };
+                const pill = createStandardizedPill('vitals', rawData, sectionDateTracker);
+                stageSection.vitals.push(pill);
+                stageSection.allPills.push(pill);
+                totals.vitals++;
+            }
+
+            // Process Conditions
+            else if (resource.resourceType === 'Condition') {
+                const rawData = {
+                    code: getCodeRef(resource.code),
+                    description: getDisplay(resource.code),
+                    value: null,
+                    unit: null,
+                    dose: null,
+                    route: null,
+                    time: null,
+                    onset: resource.onsetDateTime || resource.recordedDate || null
+                };
+                const pill = createStandardizedPill('conditions', rawData, sectionDateTracker);
+                stageSection.conditions.push(pill);
+                stageSection.allPills.push(pill);
+                totals.conditions++;
+            }
+
+            // Process Procedures (events)
+            else if (resource.resourceType === 'Procedure') {
+                const rawData = {
+                    code: getCodeRef(resource.code),
+                    description: getDisplay(resource.code),
+                    value: null,
+                    unit: null,
+                    dose: null,
+                    route: null,
+                    time: resource.performedDateTime || resource.performedPeriod?.start || null,
+                    onset: null
+                };
+                const pill = createStandardizedPill('events', rawData, sectionDateTracker);
+                stageSection.events.push(pill);
+                stageSection.allPills.push(pill);
+                totals.events++;
+            }
+
+            // Process MedicationAdministration (events)
+            else if (resource.resourceType === 'MedicationAdministration') {
+                // Extract dose and route from dosage
+                let dose = null;
+                let route = null;
+                if (resource.dosage) {
+                    if (resource.dosage.dose) {
+                        dose = `${resource.dosage.dose.value} ${resource.dosage.dose.unit || ''}`.trim();
+                    } else if (resource.dosage.rateQuantity) {
+                        dose = `${resource.dosage.rateQuantity.value} ${resource.dosage.rateQuantity.unit || ''}`.trim();
+                    } else if (resource.dosage.rateRatio) {
+                        const num = resource.dosage.rateRatio.numerator;
+                        const den = resource.dosage.rateRatio.denominator;
+                        dose = `${num.value} ${num.unit || ''}/${den.value} ${den.unit || ''}`.trim();
+                    }
+                    route = getDisplay(resource.dosage.route);
+                }
+
+                const rawData = {
+                    code: getCodeRef(resource.medicationCodeableConcept),
+                    description: getDisplay(resource.medicationCodeableConcept),
+                    value: null,
+                    unit: null,
+                    dose: dose,
+                    route: route,
+                    time: resource.effectiveDateTime || resource.effectivePeriod?.start || null,
+                    onset: null
+                };
+                const pill = createStandardizedPill('events', rawData, sectionDateTracker);
+                stageSection.events.push(pill);
+                stageSection.allPills.push(pill);
+                totals.events++;
+            }
+
+            // Process MedicationStatement (events - patient-level)
+            else if (resource.resourceType === 'MedicationStatement' && careStage === 'patient') {
+                const rawData = {
+                    code: getCodeRef(resource.medicationCodeableConcept),
+                    description: getDisplay(resource.medicationCodeableConcept),
+                    value: null,
+                    unit: null,
+                    dose: null,
+                    route: null,
+                    time: resource.effectiveDateTime || resource.effectivePeriod?.start || null,
+                    onset: null
+                };
+                const pill = createStandardizedPill('events', rawData, sectionDateTracker);
+                stageSection.events.push(pill);
+                stageSection.allPills.push(pill);
+                totals.events++;
+            }
+
+            // Process AllergyIntolerance
+            else if (resource.resourceType === 'AllergyIntolerance') {
+                allergies.push({
+                    code: getCodeRef(resource.code),
+                    description: getDisplay(resource.code),
+                    criticality: resource.criticality || 'unknown',
+                    type: resource.type || 'unknown'
+                });
+            }
+        });
+
+        // Build summary from bundle metadata
+        const summary = {
+            timestamp: bundle.timestamp || new Date().toISOString(),
+            totalVitals: totals.vitals,
+            totalConditions: totals.conditions,
+            totalEvents: totals.events
+        };
+
+        return { sections, summary, allergies };
+    }
+
     function buildStageSectionsFromBundle(bundle) {
         if (!bundle || bundle.resourceType !== 'Bundle') {
             return { sections: {}, summary: null, allergies: [] };
         }
 
-        try {
-            const codeRefPayload = codecPipeline.convertFhirBundleToCodeRef(bundle);
-            const stageResult = buildCodeRefStageSections(codeRefPayload);
-            const summary = buildSummary(codeRefPayload, stageResult.totals);
-            return {
-                sections: stageResult.sections || {},
-                summary,
-                allergies: codeRefPayload.allergies || []
-            };
-        } catch (error) {
-            console.warn('Failed to build stage sections from FHIR bundle:', error);
-            return { sections: {}, summary: null, allergies: [] };
-        }
+        // Use direct FHIR processing to preserve API-hydrated display text
+        return buildStageSectionsDirectlyFromFhirBundle(bundle);
     }
 
     return { buildViewModelFromObject, loadFromFragment, parseUserInput };
@@ -6680,150 +6851,71 @@ async function init() {
     }
 
     parseButton.addEventListener('click', async () => {
-        // Check if we have fragment content to start decode sequence
-        if (formatState.conversionResults?.fragment) {
-            // Start right pane decode sequence: Fragment → Protobuf → CodeRef → FHIR → Display
-            startPipelineTrace('Decode Fragment to Clinical Display');
-
-            try {
-                // Perform actual decoding ONCE: Fragment → OutputFHIR
-                const decodedViewModel = await payloadService.parseUserInput(formatState.conversionResults.fragment);
-                const decodedCodeRef = decodedViewModel.rawPayload;
-                const decodedFhirBundle = await codecPipeline.convertCodeRefToFhirBundle(decodedCodeRef);
-                const outputFhir = JSON.stringify(decodedFhirBundle, null, 2);
-
-                // Step 1: Decode (Fragment → Protobuf) - Red stage
-                updateRightPaneFormat('protobuf');
-                rightInput.textContent = decodedViewModel.protobuf || 'Protobuf binary data';
-                updateCharCount(rightInput, rightCharCount);
-                updateStageStates('right');
-                showMessage('Decode stage active', 'info');
-                await new Promise(resolve => setTimeout(resolve, 500));
-
-                // Step 2: Decompress (Protobuf → CodeRef) - Orange stage
-                updateRightPaneFormat('coderef');
-                rightInput.textContent = JSON.stringify(decodedCodeRef, null, 2);
-                updateCharCount(rightInput, rightCharCount);
-                updateStageStates('right');
-                showMessage('Decompress stage active', 'info');
-                await new Promise(resolve => setTimeout(resolve, 500));
-
-                // Step 3: Parse (CodeRef → FHIR) - Blue stage
-                updateRightPaneFormat('fhir');
-                rightInput.textContent = outputFhir;
-                updateCharCount(rightInput, rightCharCount);
-                updateStageStates('right');
-                updateParseButtonState();
-                showMessage('Parse stage active', 'info');
-                await new Promise(resolve => setTimeout(resolve, 500));
-
-                // Step 4: Display (Use the API-hydrated FHIR for rendering) - Green stage
-                const parsedViewModel = buildViewModelFromFhir(decodedFhirBundle, {
-                    label: 'Decoded from Fragment (API-hydrated)',
-                    originalInput: formatState.conversionResults.fragment
-                });
-
-                appState.currentViewModel = parsedViewModel;
-                appState.comparisonViewModel = appState.demos[0] || null;
-
-                // Render the clinical data to UI boxes
-                renderStageSections(parsedViewModel.stageSections);
-
-                // Render the vitals chart
-                renderVitalsChart(parsedViewModel);
-
-                // Update stage states to show Display stage
-                updateStageStates('right');
-                showMessage('Parse sequence complete - Clinical data and chart displayed', 'success');
-
-                finishPipelineTrace('success', 'Fragment decoded and clinical data displayed');
-                return;
-
-            } catch (error) {
-                console.error('Decode sequence error:', error);
-                showMessage(`Decode failed: ${error.message}`, 'error');
-                finishPipelineTrace('error', `Decode failed: ${error.message}`);
-                return;
-            }
-        }
-
-        // Original FHIR parsing logic (fallback)
-        startPipelineTrace('Parse FHIR to Clinical Display');
-
-        if (formatState.rightFormat !== 'fhir') {
-            addPipelineStage('Format Check Failed', formatState.rightFormat, { expectedFormat: 'fhir' });
-            finishPipelineTrace('error', 'Parse only available when right pane shows IPS FHIR JSON');
-            showMessage('Parse only available when right pane shows IPS FHIR JSON', 'warning');
+        // NFC web app primary path: Fragment → Protobuf → CodeRef → API rehydrate → FHIR → Display
+        if (!formatState.conversionResults?.fragment) {
+            showMessage('Display button requires fragment from Action button first', 'warning');
             return;
         }
 
-        addPipelineStage('Format Check Passed', formatState.rightFormat, { status: 'valid' });
-
-        const fhirInput = rightInput.textContent.trim();
-
-        if (!fhirInput) {
-            addPipelineStage('Input Check Failed', fhirInput.length, { isEmpty: true });
-            finishPipelineTrace('error', 'No FHIR JSON available to parse');
-            showMessage('No FHIR JSON available to parse', 'warning');
-            return;
-        }
-
-        addPipelineStage('Input Validated', fhirInput.length, {
-            characterCount: fhirInput.length,
-            hasPatientKeyword: fhirInput.includes('Patient'),
-            hasExtensionKeyword: fhirInput.includes('extension')
-        });
+        startPipelineTrace('Decode Fragment to Clinical Display');
 
         try {
-            // Parse FHIR JSON
-            const fhirBundle = JSON.parse(fhirInput);
-            addPipelineStage('FHIR JSON Parsed', fhirBundle, {
-                resourceType: fhirBundle.resourceType,
-                entryCount: fhirBundle.entry?.length || 0,
-                hasPatientEntry: fhirBundle.entry?.some(e => e.resource?.resourceType === 'Patient') || false
-            });
+            // Perform actual decoding ONCE: Fragment → OutputFHIR
+            const decodedViewModel = await payloadService.parseUserInput(formatState.conversionResults.fragment);
+            const decodedCodeRef = decodedViewModel.rawPayload;
+            const decodedFhirBundle = await codecPipeline.convertCodeRefToFhirBundle(decodedCodeRef);
+            const outputFhir = JSON.stringify(decodedFhirBundle, null, 2);
 
-            // Build ViewModel directly from FHIR (caches display text internally)
-            const parsedViewModel = buildViewModelFromFhir(fhirBundle, {
-                label: 'Parsed FHIR (with display text)',
-                originalInput: fhirInput
-            });
-            addPipelineStage('CodeRef to ViewModel Conversion', parsedViewModel, {
-                hasPatient: !!parsedViewModel?.patient,
-                patientKeys: parsedViewModel?.patient ? Object.keys(parsedViewModel.patient) : [],
-                bloodGroupInPatient: parsedViewModel?.patient?.bloodGroup || null,
-                clinicalSummaryCount: parsedViewModel?.clinicalSummary?.length || 0
+            // Step 1: Decode (Fragment → Protobuf) - Red stage
+            updateRightPaneFormat('protobuf');
+            rightInput.textContent = decodedViewModel.protobuf || 'Protobuf binary data';
+            updateCharCount(rightInput, rightCharCount);
+            updateStageStates('right');
+            showMessage('Decode stage active', 'info');
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            // Step 2: Decompress (Protobuf → CodeRef) - Orange stage
+            updateRightPaneFormat('coderef');
+            rightInput.textContent = JSON.stringify(decodedCodeRef, null, 2);
+            updateCharCount(rightInput, rightCharCount);
+            updateStageStates('right');
+            showMessage('Decompress stage active', 'info');
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            // Step 3: Parse (CodeRef → FHIR) - Blue stage
+            updateRightPaneFormat('fhir');
+            rightInput.textContent = outputFhir;
+            updateCharCount(rightInput, rightCharCount);
+            updateStageStates('right');
+            updateParseButtonState();
+            showMessage('Parse stage active', 'info');
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            // Step 4: Display (Use the API-hydrated FHIR for rendering) - Green stage
+            const parsedViewModel = buildViewModelFromFhir(decodedFhirBundle, {
+                label: 'Decoded from Fragment (API-hydrated)',
+                originalInput: formatState.conversionResults.fragment
             });
 
             appState.currentViewModel = parsedViewModel;
             appState.comparisonViewModel = appState.demos[0] || null;
-            addPipelineStage('App State Updated', appState.currentViewModel, {
-                viewModelSet: !!appState.currentViewModel,
-                comparisonSet: !!appState.comparisonViewModel
-            });
 
-            processAndRenderAll(parsedViewModel, appState.comparisonViewModel);
-            addPipelineStage('Clinical Display Rendered', document.querySelector('[data-key="clinicalSummary"]')?.innerHTML?.length || 0, {
-                clinicalSummaryRendered: !document.querySelector('[data-key="clinicalSummary"]')?.classList.contains('empty'),
-                patientRendered: !document.querySelector('[data-key="patient"]')?.classList.contains('empty')
-            });
+            // Render the clinical data to UI boxes
+            renderStageSections(parsedViewModel.stageSections);
 
-            finishPipelineTrace('success', 'FHIR JSON parsed and displayed successfully');
-            showMessage('FHIR JSON parsed and displayed successfully', 'success');
+            // Render the vitals chart
+            renderVitalsChart(parsedViewModel);
 
-            // Force log flush for complete pipeline session debugging
-            if (window.flushConsoleLogs) {
-                window.flushConsoleLogs();
-            }
+            // Update stage states to show Display stage
+            updateStageStates('right');
+            showMessage('Parse sequence complete - Clinical data and chart displayed', 'success');
+
+            finishPipelineTrace('success', 'Fragment decoded and clinical data displayed');
+
         } catch (error) {
-            console.error('Parse error:', error);
-            addPipelineStage('Parse Error', error.message, {
-                errorType: error.constructor.name,
-                errorMessage: error.message,
-                errorStack: error.stack
-            });
-            finishPipelineTrace('error', `Parse failed: ${error.message}`);
-            showMessage(`Parse failed: ${error.message}`, 'error');
+            console.error('Decode sequence error:', error);
+            showMessage(`Decode failed: ${error.message}`, 'error');
+            finishPipelineTrace('error', `Decode failed: ${error.message}`);
         }
     });
 
@@ -8124,14 +8216,13 @@ function cacheFhirDisplayText(fhirBundle) {
  * @returns {Object} ViewModel for rendering
  */
 function buildViewModelFromFhir(fhirBundle, options = {}) {
-    // First cache all display text so downstream code can use it
+    // Cache display text from API-hydrated FHIR so it's available during rendering
     cacheFhirDisplayText(fhirBundle);
-    
-    // Then convert to CodeRef and build ViewModel normally
-    // The cached display text will be used during rendering
-    const codeRef = codecPipeline.convertFhirBundleToCodeRef(fhirBundle);
-    return payloadService.buildViewModelFromObject(codeRef, {
+
+    // Build ViewModel directly from FHIR Bundle without lossy CodeRef conversion
+    // The buildViewModelFromObject function already handles FHIR Bundles at line 3934-3948
+    return payloadService.buildViewModelFromObject(fhirBundle, {
         ...options,
-        rawPayload: codeRef
+        rawPayload: options.rawPayload || fhirBundle
     });
 }
