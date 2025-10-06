@@ -6702,6 +6702,7 @@ async function init() {
                 rightInput.textContent = outputFhir;
                 updateCharCount(rightInput, rightCharCount);
                 updateStageStates('right');
+                updateParseButtonState();
                 showMessage('Parse stage active', 'info');
                 await new Promise(resolve => setTimeout(resolve, 500));
 
