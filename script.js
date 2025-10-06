@@ -6900,6 +6900,10 @@ async function init() {
                 originalInput: formatState.conversionResults.fragment
             });
 
+            console.log('DEBUG: parsedViewModel:', parsedViewModel);
+            console.log('DEBUG: stageSections:', parsedViewModel.stageSections);
+            console.log('DEBUG: stageSections keys:', Object.keys(parsedViewModel.stageSections || {}));
+
             appState.currentViewModel = parsedViewModel;
             appState.comparisonViewModel = appState.demos[0] || null;
 
