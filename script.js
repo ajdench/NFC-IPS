@@ -3340,6 +3340,10 @@ const codecPipeline = (() => {
             resourceType: 'Observation',
             id: vital.id || `vital-${careStage}-${Date.now()}`,
             status: 'final',
+            extension: [{
+                url: 'http://example.org/fhir/StructureDefinition/careStage',
+                valueString: careStage
+            }],
             category: [{
                 coding: [{
                     system: 'http://terminology.hl7.org/CodeSystem/observation-category',
@@ -4806,8 +4810,11 @@ const payloadService = (() => {
      */
     function buildStageSectionsDirectlyFromFhirBundle(bundle) {
         if (!bundle || bundle.resourceType !== 'Bundle') {
+            console.warn('DEBUG: Not a valid bundle:', bundle);
             return { sections: {}, summary: null, allergies: [] };
         }
+
+        console.log('DEBUG: Processing FHIR bundle with', bundle.entry?.length, 'entries');
 
         const sections = {};
         const totals = { vitals: 0, conditions: 0, events: 0 };
@@ -4846,13 +4853,21 @@ const payloadService = (() => {
         });
 
         // Process each resource by type
-        bundle.entry?.forEach(entry => {
+        bundle.entry?.forEach((entry, index) => {
             const resource = entry.resource;
-            if (!resource) return;
+            if (!resource) {
+                console.warn(`DEBUG: Entry ${index} has no resource`);
+                return;
+            }
 
             const careStage = getCareStage(resource);
+            console.log(`DEBUG: Resource ${index} (${resource.resourceType}) → careStage: ${careStage}`);
+
             const stageSection = sections[careStage];
-            if (!stageSection) return;
+            if (!stageSection) {
+                console.warn(`DEBUG: No section for careStage: ${careStage}`);
+                return;
+            }
 
             const sectionDateTracker = stageDateTrackers[careStage];
 
@@ -4980,6 +4995,9 @@ const payloadService = (() => {
             totalConditions: totals.conditions,
             totalEvents: totals.events
         };
+
+        console.log('DEBUG: Final totals:', totals);
+        console.log('DEBUG: Sections with data:', Object.entries(sections).map(([key, val]) => `${key}: ${val.vitals.length}v ${val.conditions.length}c ${val.events.length}e`).join(', '));
 
         return { sections, summary, allergies };
     }
