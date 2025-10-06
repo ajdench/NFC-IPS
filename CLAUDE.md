@@ -2,8 +2,8 @@
 
 ## 🚀 **QUICK START FOR NEW CLAUDE CODE INSTANCES**
 
-**⏰ LAST UPDATED: 2025-10-06 00:00 UTC** *(Round-trip fidelity achievement)*
-**🔄 TTL: Valid until 2025-10-20 00:00 UTC** *(Auto-refresh on any Auto-JJ commit)*
+**⏰ LAST UPDATED: 2025-10-06 00:11 UTC** *(Round-trip fidelity achievement)*
+**🔄 TTL: Valid until 2025-10-06 01:11 UTC** *(Auto-refresh on any Auto-JJ commit)*
 **💾 CRASH RECOVERY: If system restarted unexpectedly, check timestamps below**
 
 ### **Immediate Orientation**

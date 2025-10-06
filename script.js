@@ -6490,6 +6490,7 @@ async function init() {
                 rightInput.textContent = reconstructedFhir;
                 updateCharCount(rightInput, rightCharCount);
                 updateStageStates('right');
+                updateParseButtonState();
 
                 showMessage('Fragment decoded to FHIR - Click right title to cycle through formats', 'success');
 
