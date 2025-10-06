@@ -43,6 +43,10 @@ import {
     looksLikeJson,
     safeDeepClone
 } from './util/json.js';
+import {
+    resolveCodeDisplayAsync,
+    batchResolveCodeDisplay
+} from './terminology-api.js';
 
 // =============================================================================
 // CONFIGURATION AND DATA MODELS
@@ -988,7 +992,7 @@ function createStandardizedPill(type, rawData, sectionDateTracker, isFirstDispla
     const tooltip = tooltipParts.join(' | ');
 
     // Resolve display name for label
-    const displayName = resolveCodeDisplay(code.system, code.code);
+    const displayName = await resolveCodeDisplayAsync(code.system, code.code);
     const typeLabel = type === 'vitals' ? 'Vitals' : type === 'conditions' ? 'Condition' : 'Event';
     const label = `${typeLabel} • ${displayName}`;
 
@@ -1829,10 +1833,10 @@ if (typeof window !== 'undefined') {
  * @returns {string} - Display name or original code if not found
  *
  * Example:
- *   resolveCodeDisplay('sct', '386661006') → 'Fever'
- *   resolveCodeDisplay('loinc', '8480-6') → 'Systolic blood pressure'
+ *   await resolveCodeDisplayAsync('sct', '386661006') → 'Fever'
+ *   await resolveCodeDisplayAsync('loinc', '8480-6') → 'Systolic blood pressure'
  */
-function resolveCodeDisplay(system, code) {
+function await resolveCodeDisplayAsync(system, code) {
     const key = `${system}:${code}`;
     return medicalCodeMap[key] || code;
 }
@@ -2910,7 +2914,7 @@ const codecPipeline = (() => {
         return 'unknown';
     }
 
-    function convertCodeRefToFhirBundle(codeRefPayload) {
+    async function convertCodeRefToFhirBundle(codeRefPayload) {
 
         // Create base bundle structure with preserved metadata for lossless reconstruction
         const bundle = {
@@ -2955,7 +2959,7 @@ const codecPipeline = (() => {
 
         // Convert patient data back to FHIR Patient resource
         if (codeRefPayload.patient) {
-            const patient = convertCodeRefPatientToFhir(codeRefPayload.patient);
+            const patient = await convertCodeRefPatientToFhir(codeRefPayload.patient);
 
             // Find and replace existing patient entry instead of adding duplicate
             const existingPatientIndex = bundle.entry.findIndex(entry =>
@@ -2981,24 +2985,24 @@ const codecPipeline = (() => {
 
         // Convert allergies back to FHIR AllergyIntolerance resources
         if (codeRefPayload.allergies) {
-            codeRefPayload.allergies.forEach((allergy, index) => {
-                const allergyResource = convertCodeRefAllergyToFhir(allergy);
+            for (const allergy of codeRefPayload.allergies) {
+                const allergyResource = await convertCodeRefAllergyToFhir(allergy);
                 bundle.entry.push({
                     fullUrl: `urn:uuid:${allergyResource.id}`,
                     resource: allergyResource
                 });
-            });
+            }
         }
 
         // Convert MedicationStatements (patient-level)
         if (codeRefPayload.medications) {
-            codeRefPayload.medications.forEach(medication => {
-                const medResource = convertCodeRefMedicationStatementToFhir(medication, codeRefPayload.patient?.id);
+            for (const medication of codeRefPayload.medications) {
+                const medResource = await convertCodeRefMedicationStatementToFhir(medication, codeRefPayload.patient?.id);
                 bundle.entry.push({
                     fullUrl: `urn:uuid:${medResource.id}`,
                     resource: medResource
                 });
-            });
+            }
         }
 
         // Convert Organization (patient-level)
@@ -3012,9 +3016,9 @@ const codecPipeline = (() => {
 
         // Convert clinical data from each stage back to FHIR resources
         const stageKeys = ['poi', 'casevac', 'axp', 'medevac', 'r1', 'r1Phec', 'r1Phc', 'fwdTacevac', 'r2', 'rearTacevac', 'r3', 'stratevac'];
-        stageKeys.forEach(stageKey => {
+        for (const stageKey of stageKeys) {
             const stage = codeRefPayload[stageKey];
-            if (!stage) return;
+            if (!stage) continue;
 
             // Convert encounter metadata
             if (stage.encounter) {
@@ -3027,86 +3031,86 @@ const codecPipeline = (() => {
 
             // Convert vitals to Observation resources
             if (stage.vitals) {
-                stage.vitals.forEach((vital, index) => {
-                    const observation = convertCodeRefVitalToFhir(vital, stageKey, stage.encounter?.id, codeRefPayload.patient?.id);
+                for (const vital of stage.vitals) {
+                    const observation = await convertCodeRefVitalToFhir(vital, stageKey, stage.encounter?.id, codeRefPayload.patient?.id);
                     bundle.entry.push({
                         fullUrl: `urn:uuid:${observation.id}`,
                         resource: observation
                     });
-                });
+                }
             }
 
             // Convert labs to Observation resources (laboratory category)
             if (stage.labs) {
-                stage.labs.forEach(lab => {
-                    const observation = convertCodeRefLabToFhir(lab, stageKey, stage.encounter?.id, codeRefPayload.patient?.id);
+                for (const lab of stage.labs) {
+                    const observation = await convertCodeRefLabToFhir(lab, stageKey, stage.encounter?.id, codeRefPayload.patient?.id);
                     bundle.entry.push({
                         fullUrl: `urn:uuid:${observation.id}`,
                         resource: observation
                     });
-                });
+                }
             }
 
             // Convert assessments to Observation resources (exam/survey category)
             if (stage.assessments) {
-                stage.assessments.forEach(assessment => {
-                    const observation = convertCodeRefAssessmentToFhir(assessment, stageKey, stage.encounter?.id, codeRefPayload.patient?.id);
+                for (const assessment of stage.assessments) {
+                    const observation = await convertCodeRefAssessmentToFhir(assessment, stageKey, stage.encounter?.id, codeRefPayload.patient?.id);
                     bundle.entry.push({
                         fullUrl: `urn:uuid:${observation.id}`,
                         resource: observation
                     });
-                });
+                }
             }
 
             // Convert conditions to Condition resources
             if (stage.conditions) {
-                stage.conditions.forEach((condition, index) => {
-                    const conditionResource = convertCodeRefConditionToFhir(condition, stageKey, stage.encounter?.id, codeRefPayload.patient?.id);
+                for (const condition of stage.conditions) {
+                    const conditionResource = await convertCodeRefConditionToFhir(condition, stageKey, stage.encounter?.id, codeRefPayload.patient?.id);
                     bundle.entry.push({
                         fullUrl: `urn:uuid:${conditionResource.id}`,
                         resource: conditionResource
                     });
-                });
+                }
             }
 
             // Convert events to various FHIR resources
             if (stage.events) {
-                stage.events.forEach((event, index) => {
-                    const eventResource = convertCodeRefEventToFhir(event, stageKey, stage.encounter?.id, codeRefPayload.patient?.id);
+                for (const event of stage.events) {
+                    const eventResource = await convertCodeRefEventToFhir(event, stageKey, stage.encounter?.id, codeRefPayload.patient?.id);
                     bundle.entry.push({
                         fullUrl: `urn:uuid:${eventResource.id}`,
                         resource: eventResource
                     });
-                });
+                }
             }
 
             // Convert service requests to ServiceRequest resources
             if (stage.requests) {
-                stage.requests.forEach(request => {
-                    const requestResource = convertCodeRefServiceRequestToFhir(request, stageKey, stage.encounter?.id, codeRefPayload.patient?.id);
+                for (const request of stage.requests) {
+                    const requestResource = await convertCodeRefServiceRequestToFhir(request, stageKey, stage.encounter?.id, codeRefPayload.patient?.id);
                     bundle.entry.push({
                         fullUrl: `urn:uuid:${requestResource.id}`,
                         resource: requestResource
                     });
-                });
+                }
             }
 
             // Convert imaging studies to ImagingStudy resources
             if (stage.imaging) {
-                stage.imaging.forEach(imaging => {
-                    const imagingResource = convertCodeRefImagingToFhir(imaging, stageKey, stage.encounter?.id, codeRefPayload.patient?.id);
+                for (const imaging of stage.imaging) {
+                    const imagingResource = await convertCodeRefImagingToFhir(imaging, stageKey, stage.encounter?.id, codeRefPayload.patient?.id);
                     bundle.entry.push({
                         fullUrl: `urn:uuid:${imagingResource.id}`,
                         resource: imagingResource
                     });
-                });
+                }
             }
-        });
+        }
 
         return bundle;
     }
 
-    function convertCodeRefPatientToFhir(patientData) {
+    async function convertCodeRefPatientToFhir(patientData) {
         const patient = {
             resourceType: 'Patient',
             id: patientData.id || 'patient-example'
@@ -3187,7 +3191,7 @@ const codecPipeline = (() => {
                     coding: [{
                         system: 'http://snomed.info/sct',
                         code: bloodGroup.code,
-                        display: resolveCodeDisplay('sct', bloodGroup.code)
+                        display: await resolveCodeDisplayAsync('sct', bloodGroup.code)
                     }]
                 }
             };
@@ -3276,7 +3280,7 @@ const codecPipeline = (() => {
         return patient;
     }
 
-    function convertCodeRefAllergyToFhir(allergy) {
+    async function convertCodeRefAllergyToFhir(allergy) {
         const allergyResource = {
             resourceType: 'AllergyIntolerance',
             id: allergy.id || `allergy-${Date.now()}`,
@@ -3298,7 +3302,7 @@ const codecPipeline = (() => {
                 coding: [{
                     system: allergy.code?.sys === 'sct' ? 'http://snomed.info/sct' : 'http://unknown.system',
                     code: allergy.code?.code || 'unknown',
-                    display: resolveCodeDisplay(allergy.code?.sys, allergy.code?.code)
+                    display: await resolveCodeDisplayAsync(allergy.code?.sys, allergy.code?.code)
                 }]
             },
             patient: {
@@ -3314,7 +3318,7 @@ const codecPipeline = (() => {
                     coding: [{
                         system: 'http://snomed.info/sct',
                         code: allergy.reaction,
-                        display: resolveCodeDisplay('sct', allergy.reaction)
+                        display: await resolveCodeDisplayAsync('sct', allergy.reaction)
                     }]
                 }],
                 severity: allergy.severity || 'unknown'
@@ -3324,7 +3328,7 @@ const codecPipeline = (() => {
         return allergyResource;
     }
 
-    function convertCodeRefVitalToFhir(vital, careStage, encounterId, patientId) {
+    async function convertCodeRefVitalToFhir(vital, careStage, encounterId, patientId) {
         const observation = {
             resourceType: 'Observation',
             id: vital.id || `vital-${careStage}-${Date.now()}`,
@@ -3340,7 +3344,7 @@ const codecPipeline = (() => {
                 coding: [{
                     system: vital.code.sys === 'loinc' ? 'http://loinc.org' : `urn:code:${vital.code.sys}`,
                     code: vital.code.code,
-                    display: resolveCodeDisplay(vital.code.sys, vital.code.code)
+                    display: await resolveCodeDisplayAsync(vital.code.sys, vital.code.code)
                 }]
             },
             subject: { reference: `urn:uuid:${patientId || 'patient-example'}` },
@@ -3358,7 +3362,7 @@ const codecPipeline = (() => {
         return observation;
     }
 
-    function convertCodeRefConditionToFhir(condition, careStage, encounterId, patientId) {
+    async function convertCodeRefConditionToFhir(condition, careStage, encounterId, patientId) {
         const conditionResource = {
             resourceType: 'Condition',
             id: condition.id || `condition-${careStage}-${Date.now()}`,
@@ -3378,7 +3382,7 @@ const codecPipeline = (() => {
                 coding: [{
                     system: condition.code.sys === 'sct' ? 'http://snomed.info/sct' : `urn:code:${condition.code.sys}`,
                     code: condition.code.code,
-                    display: resolveCodeDisplay(condition.code.sys, condition.code.code)
+                    display: await resolveCodeDisplayAsync(condition.code.sys, condition.code.code)
                 }]
             },
             subject: { reference: `urn:uuid:${patientId || 'patient-example'}` },
@@ -3392,7 +3396,7 @@ const codecPipeline = (() => {
         return conditionResource;
     }
 
-    function convertCodeRefEventToFhir(event, careStage, encounterId, patientId) {
+    async function convertCodeRefEventToFhir(event, careStage, encounterId, patientId) {
         // Determine resource type based on the event code
         const isMedication = event.dose && typeof event.dose === 'number';
 
@@ -3405,7 +3409,7 @@ const codecPipeline = (() => {
                     coding: [{
                         system: event.code.sys === 'sct' ? 'http://snomed.info/sct' : `urn:code:${event.code.sys}`,
                         code: event.code.code,
-                        display: resolveCodeDisplay(event.code.sys, event.code.code)
+                        display: await resolveCodeDisplayAsync(event.code.sys, event.code.code)
                     }]
                 },
                 subject: { reference: `urn:uuid:${patientId || 'patient-example'}` },
@@ -3436,7 +3440,7 @@ const codecPipeline = (() => {
                     coding: [{
                         system: event.code.sys === 'sct' ? 'http://snomed.info/sct' : `urn:code:${event.code.sys}`,
                         code: event.code.code,
-                        display: resolveCodeDisplay(event.code.sys, event.code.code)
+                        display: await resolveCodeDisplayAsync(event.code.sys, event.code.code)
                     }]
                 },
                 subject: { reference: `urn:uuid:${patientId || 'patient-example'}` },
@@ -3453,7 +3457,7 @@ const codecPipeline = (() => {
     }
 
     // NEW: Lab converter
-    function convertCodeRefLabToFhir(lab, careStage, encounterId, patientId) {
+    async function convertCodeRefLabToFhir(lab, careStage, encounterId, patientId) {
         const observation = {
             resourceType: 'Observation',
             id: lab.id || `lab-${careStage}-${Date.now()}`,
@@ -3469,7 +3473,7 @@ const codecPipeline = (() => {
                 coding: [{
                     system: lab.code.sys === 'loinc' ? 'http://loinc.org' : `urn:code:${lab.code.sys}`,
                     code: lab.code.code,
-                    display: resolveCodeDisplay(lab.code.sys, lab.code.code)
+                    display: await resolveCodeDisplayAsync(lab.code.sys, lab.code.code)
                 }]
             },
             subject: { reference: `urn:uuid:${patientId || 'patient-example'}` },
@@ -3488,7 +3492,7 @@ const codecPipeline = (() => {
     }
 
     // NEW: Assessment converter
-    function convertCodeRefAssessmentToFhir(assessment, careStage, encounterId, patientId) {
+    async function convertCodeRefAssessmentToFhir(assessment, careStage, encounterId, patientId) {
         const observation = {
             resourceType: 'Observation',
             id: assessment.id || `assessment-${careStage}-${Date.now()}`,
@@ -3504,7 +3508,7 @@ const codecPipeline = (() => {
                 coding: [{
                     system: assessment.code.sys === 'loinc' ? 'http://loinc.org' : assessment.code.sys === 'sct' ? 'http://snomed.info/sct' : `urn:code:${assessment.code.sys}`,
                     code: assessment.code.code,
-                    display: resolveCodeDisplay(assessment.code.sys, assessment.code.code)
+                    display: await resolveCodeDisplayAsync(assessment.code.sys, assessment.code.code)
                 }]
             },
             subject: { reference: `urn:uuid:${patientId || 'patient-example'}` },
@@ -3517,7 +3521,7 @@ const codecPipeline = (() => {
                 coding: [{
                     system: assessment.value.sys === 'sct' ? 'http://snomed.info/sct' : `urn:code:${assessment.value.sys}`,
                     code: assessment.value.code,
-                    display: resolveCodeDisplay(assessment.value.sys, assessment.value.code)
+                    display: await resolveCodeDisplayAsync(assessment.value.sys, assessment.value.code)
                 }]
             };
         } else if (typeof assessment.value === 'boolean') {
@@ -3544,7 +3548,7 @@ const codecPipeline = (() => {
     }
 
     // NEW: ServiceRequest converter
-    function convertCodeRefServiceRequestToFhir(request, careStage, encounterId, patientId) {
+    async function convertCodeRefServiceRequestToFhir(request, careStage, encounterId, patientId) {
         const serviceRequest = {
             resourceType: 'ServiceRequest',
             id: request.id || `request-${careStage}-${Date.now()}`,
@@ -3555,7 +3559,7 @@ const codecPipeline = (() => {
                 coding: [{
                     system: request.code.sys === 'sct' ? 'http://snomed.info/sct' : `urn:code:${request.code.sys}`,
                     code: request.code.code,
-                    display: resolveCodeDisplay(request.code.sys, request.code.code)
+                    display: await resolveCodeDisplayAsync(request.code.sys, request.code.code)
                 }]
             },
             subject: { reference: `urn:uuid:${patientId || 'patient-example'}` },
@@ -3570,7 +3574,7 @@ const codecPipeline = (() => {
     }
 
     // NEW: ImagingStudy converter
-    function convertCodeRefImagingToFhir(imaging, careStage, encounterId, patientId) {
+    async function convertCodeRefImagingToFhir(imaging, careStage, encounterId, patientId) {
         const imagingStudy = {
             resourceType: 'ImagingStudy',
             id: imaging.id || `imaging-${careStage}-${Date.now()}`,
@@ -3641,7 +3645,7 @@ const codecPipeline = (() => {
     }
 
     // NEW: MedicationStatement converter
-    function convertCodeRefMedicationStatementToFhir(medication, patientId) {
+    async function convertCodeRefMedicationStatementToFhir(medication, patientId) {
         return {
             resourceType: 'MedicationStatement',
             id: medication.id || `medication-statement-${Date.now()}`,
@@ -3650,7 +3654,7 @@ const codecPipeline = (() => {
                 coding: [{
                     system: medication.code.sys === 'sct' ? 'http://snomed.info/sct' : `urn:code:${medication.code.sys}`,
                     code: medication.code.code,
-                    display: resolveCodeDisplay(medication.code.sys, medication.code.code)
+                    display: await resolveCodeDisplayAsync(medication.code.sys, medication.code.code)
                 }]
             },
             subject: { reference: `urn:uuid:${patientId || 'patient-example'}` }
@@ -4175,7 +4179,7 @@ const payloadService = (() => {
                 if (!Array.isArray(item) || item.length === 0) return null;
                 const [index, value, unit] = item;
                 const code = resolveLegacyCode(codebook, index);
-                const displayName = resolveCodeDisplay(code.system, code.code);
+                const displayName = await resolveCodeDisplayAsync(code.system, code.code);
 
                 return {
                     code: code.ref,
@@ -4198,7 +4202,7 @@ const payloadService = (() => {
                 if (!Array.isArray(item) || item.length === 0) return null;
                 const [index, onset] = item;
                 const code = resolveLegacyCode(codebook, index);
-                const displayName = resolveCodeDisplay(code.system, code.code);
+                const displayName = await resolveCodeDisplayAsync(code.system, code.code);
 
                 return {
                     code: code.ref,
@@ -4221,7 +4225,7 @@ const payloadService = (() => {
                 if (!Array.isArray(item) || item.length === 0) return null;
                 const [index, time] = item;
                 const code = resolveLegacyCode(codebook, index);
-                const displayName = resolveCodeDisplay(code.system, code.code);
+                const displayName = await resolveCodeDisplayAsync(code.system, code.code);
 
                 return {
                     code: code.ref,
@@ -4244,7 +4248,7 @@ const payloadService = (() => {
                 if (!Array.isArray(item) || item.length === 0) return null;
                 const [index, value, unit] = item;
                 const code = resolveLegacyCode(codebook, index);
-                const displayName = resolveCodeDisplay(code.system, code.code);
+                const displayName = await resolveCodeDisplayAsync(code.system, code.code);
 
                 // Build raw data for unified pill creation
                 const rawData = {
@@ -4270,7 +4274,7 @@ const payloadService = (() => {
                 if (!Array.isArray(item) || item.length === 0) return null;
                 const [index, onset] = item;
                 const code = resolveLegacyCode(codebook, index);
-                const displayName = resolveCodeDisplay(code.system, code.code);
+                const displayName = await resolveCodeDisplayAsync(code.system, code.code);
 
                 // Build raw data for unified pill creation
                 const rawData = {
@@ -4296,7 +4300,7 @@ const payloadService = (() => {
                 if (!Array.isArray(item) || item.length === 0) return null;
                 const [index, time, dose, route] = item;
                 const code = resolveLegacyCode(codebook, index);
-                const displayName = resolveCodeDisplay(code.system, code.code);
+                const displayName = await resolveCodeDisplayAsync(code.system, code.code);
 
                 // Build raw data for unified pill creation
                 const rawData = {
@@ -4444,7 +4448,7 @@ const payloadService = (() => {
 
         const normalizedBloodGroup = normaliseCodeRef(bloodGroupData);
         if (normalizedBloodGroup.code && normalizedBloodGroup.code !== 'Unknown code') {
-            const displayName = resolveCodeDisplay(normalizedBloodGroup.system, normalizedBloodGroup.code);
+            const displayName = await resolveCodeDisplayAsync(normalizedBloodGroup.system, normalizedBloodGroup.code);
             extensions.push({
                 url: FHIR_EXTENSIONS.PATIENT_BLOOD_GROUP,
                 valueCodeableConcept: {
@@ -4538,7 +4542,7 @@ const payloadService = (() => {
             .map(item => {
                 if (!item || !item.code) return null;
                 const code = normaliseCodeRef(item.code);
-                const description = resolveCodeDisplay(code.system, code.code);
+                const description = await resolveCodeDisplayAsync(code.system, code.code);
 
                 return {
                     code,
@@ -4559,7 +4563,7 @@ const payloadService = (() => {
             .map(item => {
                 if (!item || !item.code) return null;
                 const code = normaliseCodeRef(item.code);
-                const description = resolveCodeDisplay(code.system, code.code);
+                const description = await resolveCodeDisplayAsync(code.system, code.code);
 
                 return {
                     code,
@@ -4580,7 +4584,7 @@ const payloadService = (() => {
             .map(item => {
                 if (!item || !item.code) return null;
                 const code = normaliseCodeRef(item.code);
-                const description = resolveCodeDisplay(code.system, code.code);
+                const description = await resolveCodeDisplayAsync(code.system, code.code);
 
                 return {
                     code,
@@ -4601,7 +4605,7 @@ const payloadService = (() => {
             .map(item => {
                 if (!item || !item.code) return null;
                 const code = normaliseCodeRef(item.code);
-                const description = resolveCodeDisplay(code.system, code.code);
+                const description = await resolveCodeDisplayAsync(code.system, code.code);
 
                 return createStandardizedPill('vitals', {
                     code,
@@ -4622,7 +4626,7 @@ const payloadService = (() => {
             .map(item => {
                 if (!item || !item.code) return null;
                 const code = normaliseCodeRef(item.code);
-                const description = resolveCodeDisplay(code.system, code.code);
+                const description = await resolveCodeDisplayAsync(code.system, code.code);
 
                 return createStandardizedPill('conditions', {
                     code,
@@ -4643,7 +4647,7 @@ const payloadService = (() => {
             .map(item => {
                 if (!item || !item.code) return null;
                 const code = normaliseCodeRef(item.code);
-                const description = resolveCodeDisplay(code.system, code.code);
+                const description = await resolveCodeDisplayAsync(code.system, code.code);
 
                 return createStandardizedPill('events', {
                     code,
@@ -5140,7 +5144,7 @@ function extractBloodGroupDisplay(patient) {
     if (direct) {
         if (direct.display) return direct.display;
         if (direct.code) {
-            const resolved = resolveCodeDisplay('sct', direct.code);
+            const resolved = await resolveCodeDisplayAsync('sct', direct.code);
             if (resolved) return resolved;
         }
         if (direct.text) return direct.text;
@@ -5157,7 +5161,7 @@ function extractBloodGroupDisplay(patient) {
 
         // Fallback to code resolution
         if (coding.system?.includes('snomed.info/sct') && coding.code) {
-            const resolved = resolveCodeDisplay('sct', coding.code);
+            const resolved = await resolveCodeDisplayAsync('sct', coding.code);
             if (resolved) return resolved;
         }
     }
@@ -6482,7 +6486,7 @@ async function init() {
                 await new Promise(resolve => setTimeout(resolve, 500));
 
                 // Stage 3: Parse (CodeRef → FHIR) - Orange stage
-                const fhirBundle = codecPipeline.convertCodeRefToFhirBundle(parsedViewModel.rawPayload);
+                const fhirBundle = await codecPipeline.convertCodeRefToFhirBundle(parsedViewModel.rawPayload);
                 const reconstructedFhir = JSON.stringify(fhirBundle, null, 2);
                 // Don't overwrite original FHIR - store reconstruction separately
                 formatState.conversionResults.reconstructedFhir = reconstructedFhir;
@@ -6678,7 +6682,7 @@ async function init() {
                 // Perform actual decoding ONCE: Fragment → OutputFHIR
                 const decodedViewModel = await payloadService.parseUserInput(formatState.conversionResults.fragment);
                 const decodedCodeRef = decodedViewModel.rawPayload;
-                const decodedFhirBundle = codecPipeline.convertCodeRefToFhirBundle(decodedCodeRef);
+                const decodedFhirBundle = await codecPipeline.convertCodeRefToFhirBundle(decodedCodeRef);
                 const outputFhir = JSON.stringify(decodedFhirBundle, null, 2);
 
                 // Step 1: Decode (Fragment → Protobuf) - Red stage
