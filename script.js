@@ -3484,6 +3484,10 @@ const codecPipeline = (() => {
         const observation = {
             resourceType: 'Observation',
             id: lab.id || `lab-${careStage}-${Date.now()}`,
+            extension: [{
+                url: 'http://example.org/fhir/StructureDefinition/careStage',
+                valueString: careStage
+            }],
             status: 'final',
             category: [{
                 coding: [{
@@ -3519,6 +3523,10 @@ const codecPipeline = (() => {
         const observation = {
             resourceType: 'Observation',
             id: assessment.id || `assessment-${careStage}-${Date.now()}`,
+            extension: [{
+                url: 'http://example.org/fhir/StructureDefinition/careStage',
+                valueString: careStage
+            }],
             status: 'final',
             category: [{
                 coding: [{
@@ -3575,6 +3583,10 @@ const codecPipeline = (() => {
         const serviceRequest = {
             resourceType: 'ServiceRequest',
             id: request.id || `request-${careStage}-${Date.now()}`,
+            extension: [{
+                url: 'http://example.org/fhir/StructureDefinition/careStage',
+                valueString: careStage
+            }],
             status: 'active',
             intent: 'order',
             priority: request.priority || 'routine',
@@ -3601,6 +3613,10 @@ const codecPipeline = (() => {
         const imagingStudy = {
             resourceType: 'ImagingStudy',
             id: imaging.id || `imaging-${careStage}-${Date.now()}`,
+            extension: [{
+                url: 'http://example.org/fhir/StructureDefinition/careStage',
+                valueString: careStage
+            }],
             status: 'available',
             subject: { reference: `urn:uuid:${patientId || 'patient-example'}` },
             started: imaging.time,
