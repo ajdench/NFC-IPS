@@ -3341,8 +3341,8 @@ const codecPipeline = (() => {
             id: vital.id || `vital-${careStage}-${Date.now()}`,
             status: 'final',
             extension: [{
-                url: 'http://example.org/fhir/StructureDefinition/careStage',
-                valueString: careStage
+                url: 'http://example.org/fhir/StructureDefinition/care-stage',
+                valueCode: careStage
             }],
             category: [{
                 coding: [{
@@ -3378,8 +3378,8 @@ const codecPipeline = (() => {
             resourceType: 'Condition',
             id: condition.id || `condition-${careStage}-${Date.now()}`,
             extension: [{
-                url: 'http://example.org/fhir/StructureDefinition/careStage',
-                valueString: careStage
+                url: 'http://example.org/fhir/StructureDefinition/care-stage',
+                valueCode: careStage
             }],
             clinicalStatus: {
                 coding: [{
@@ -3420,8 +3420,8 @@ const codecPipeline = (() => {
                 resourceType: 'MedicationAdministration',
                 id: event.id || `medication-${careStage}-${Date.now()}`,
                 extension: [{
-                    url: 'http://example.org/fhir/StructureDefinition/careStage',
-                    valueString: careStage
+                    url: 'http://example.org/fhir/StructureDefinition/care-stage',
+                    valueCode: careStage
                 }],
                 status: 'completed',
                 medicationCodeableConcept: {
@@ -3455,8 +3455,8 @@ const codecPipeline = (() => {
                 resourceType: 'Procedure',
                 id: event.id || `procedure-${careStage}-${Date.now()}`,
                 extension: [{
-                    url: 'http://example.org/fhir/StructureDefinition/careStage',
-                    valueString: careStage
+                    url: 'http://example.org/fhir/StructureDefinition/care-stage',
+                    valueCode: careStage
                 }],
                 status: 'completed',
                 code: {
@@ -3485,8 +3485,8 @@ const codecPipeline = (() => {
             resourceType: 'Observation',
             id: lab.id || `lab-${careStage}-${Date.now()}`,
             extension: [{
-                url: 'http://example.org/fhir/StructureDefinition/careStage',
-                valueString: careStage
+                url: 'http://example.org/fhir/StructureDefinition/care-stage',
+                valueCode: careStage
             }],
             status: 'final',
             category: [{
@@ -3524,8 +3524,8 @@ const codecPipeline = (() => {
             resourceType: 'Observation',
             id: assessment.id || `assessment-${careStage}-${Date.now()}`,
             extension: [{
-                url: 'http://example.org/fhir/StructureDefinition/careStage',
-                valueString: careStage
+                url: 'http://example.org/fhir/StructureDefinition/care-stage',
+                valueCode: careStage
             }],
             status: 'final',
             category: [{
@@ -3584,8 +3584,8 @@ const codecPipeline = (() => {
             resourceType: 'ServiceRequest',
             id: request.id || `request-${careStage}-${Date.now()}`,
             extension: [{
-                url: 'http://example.org/fhir/StructureDefinition/careStage',
-                valueString: careStage
+                url: 'http://example.org/fhir/StructureDefinition/care-stage',
+                valueCode: careStage
             }],
             status: 'active',
             intent: 'order',
@@ -3614,8 +3614,8 @@ const codecPipeline = (() => {
             resourceType: 'ImagingStudy',
             id: imaging.id || `imaging-${careStage}-${Date.now()}`,
             extension: [{
-                url: 'http://example.org/fhir/StructureDefinition/careStage',
-                valueString: careStage
+                url: 'http://example.org/fhir/StructureDefinition/care-stage',
+                valueCode: careStage
             }],
             status: 'available',
             subject: { reference: `urn:uuid:${patientId || 'patient-example'}` },
@@ -4850,7 +4850,7 @@ const payloadService = (() => {
 
         // Extract care stage from extension
         const getCareStage = (resource) => {
-            const ext = resource.extension?.find(e => e.url === 'http://example.org/fhir/StructureDefinition/careStage');
+            const ext = resource.extension?.find(e => e.url === 'http://example.org/fhir/StructureDefinition/care-stage');
             return ext?.valueString || 'patient';
         };
 
