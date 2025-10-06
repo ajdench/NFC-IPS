@@ -992,7 +992,7 @@ function createStandardizedPill(type, rawData, sectionDateTracker, isFirstDispla
     const tooltip = tooltipParts.join(' | ');
 
     // Resolve display name for label
-    const displayName = await resolveCodeDisplayAsync(code.system, code.code);
+    const displayName = resolveCodeDisplay(code.system, code.code);
     const typeLabel = type === 'vitals' ? 'Vitals' : type === 'conditions' ? 'Condition' : 'Event';
     const label = `${typeLabel} • ${displayName}`;
 
@@ -1836,7 +1836,7 @@ if (typeof window !== 'undefined') {
  *   await resolveCodeDisplayAsync('sct', '386661006') → 'Fever'
  *   await resolveCodeDisplayAsync('loinc', '8480-6') → 'Systolic blood pressure'
  */
-function await resolveCodeDisplayAsync(system, code) {
+function resolveCodeDisplay(system, code) {
     const key = `${system}:${code}`;
     return medicalCodeMap[key] || code;
 }
@@ -4179,7 +4179,7 @@ const payloadService = (() => {
                 if (!Array.isArray(item) || item.length === 0) return null;
                 const [index, value, unit] = item;
                 const code = resolveLegacyCode(codebook, index);
-                const displayName = await resolveCodeDisplayAsync(code.system, code.code);
+                const displayName = resolveCodeDisplay(code.system, code.code);
 
                 return {
                     code: code.ref,
@@ -4202,7 +4202,7 @@ const payloadService = (() => {
                 if (!Array.isArray(item) || item.length === 0) return null;
                 const [index, onset] = item;
                 const code = resolveLegacyCode(codebook, index);
-                const displayName = await resolveCodeDisplayAsync(code.system, code.code);
+                const displayName = resolveCodeDisplay(code.system, code.code);
 
                 return {
                     code: code.ref,
@@ -4225,7 +4225,7 @@ const payloadService = (() => {
                 if (!Array.isArray(item) || item.length === 0) return null;
                 const [index, time] = item;
                 const code = resolveLegacyCode(codebook, index);
-                const displayName = await resolveCodeDisplayAsync(code.system, code.code);
+                const displayName = resolveCodeDisplay(code.system, code.code);
 
                 return {
                     code: code.ref,
@@ -4248,7 +4248,7 @@ const payloadService = (() => {
                 if (!Array.isArray(item) || item.length === 0) return null;
                 const [index, value, unit] = item;
                 const code = resolveLegacyCode(codebook, index);
-                const displayName = await resolveCodeDisplayAsync(code.system, code.code);
+                const displayName = resolveCodeDisplay(code.system, code.code);
 
                 // Build raw data for unified pill creation
                 const rawData = {
@@ -4274,7 +4274,7 @@ const payloadService = (() => {
                 if (!Array.isArray(item) || item.length === 0) return null;
                 const [index, onset] = item;
                 const code = resolveLegacyCode(codebook, index);
-                const displayName = await resolveCodeDisplayAsync(code.system, code.code);
+                const displayName = resolveCodeDisplay(code.system, code.code);
 
                 // Build raw data for unified pill creation
                 const rawData = {
@@ -4300,7 +4300,7 @@ const payloadService = (() => {
                 if (!Array.isArray(item) || item.length === 0) return null;
                 const [index, time, dose, route] = item;
                 const code = resolveLegacyCode(codebook, index);
-                const displayName = await resolveCodeDisplayAsync(code.system, code.code);
+                const displayName = resolveCodeDisplay(code.system, code.code);
 
                 // Build raw data for unified pill creation
                 const rawData = {
@@ -4448,7 +4448,7 @@ const payloadService = (() => {
 
         const normalizedBloodGroup = normaliseCodeRef(bloodGroupData);
         if (normalizedBloodGroup.code && normalizedBloodGroup.code !== 'Unknown code') {
-            const displayName = await resolveCodeDisplayAsync(normalizedBloodGroup.system, normalizedBloodGroup.code);
+            const displayName = resolveCodeDisplay(normalizedBloodGroup.system, normalizedBloodGroup.code);
             extensions.push({
                 url: FHIR_EXTENSIONS.PATIENT_BLOOD_GROUP,
                 valueCodeableConcept: {
