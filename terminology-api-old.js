@@ -15,10 +15,12 @@ const API_CONFIG = {
         timeout: 5000    // request timeout
     },
     loinc: {
-        // Using tx.fhir.org public terminology server for LOINC
-        baseUrl: 'https://tx.fhir.org/r4/CodeSystem/$lookup',
+        // Official LOINC FHIR Terminology Service (authenticated)
+        baseUrl: 'https://fhir.loinc.org/CodeSystem/$lookup',
         rateLimit: 200,
-        timeout: 5000
+        timeout: 5000,
+        // Base64 encoded credentials (username:password)
+        authToken: 'YWpkZW5jaDpkYXNkVXMtdHlneHkwLWdhd25lcw=='
     }
 };
 
@@ -71,8 +73,8 @@ async function lookupSnomedCode(code) {
 }
 
 /**
- * Lookup a LOINC code via public FHIR terminology server
- * Uses tx.fhir.org (HL7's public terminology server)
+ * Lookup a LOINC code via official LOINC FHIR Terminology Service
+ * Uses authenticated access to fhir.loinc.org
  * @param {string} code - LOINC code
  * @returns {Promise<string>} - Display name or code if not found
  */
@@ -88,7 +90,15 @@ async function lookupLoincCode(code) {
     const url = `${API_CONFIG.loinc.baseUrl}?system=http://loinc.org&code=${code}`;
 
     try {
-        const response = await fetchWithTimeout(url, API_CONFIG.loinc.timeout);
+        // Include Basic Authentication header
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Basic ${API_CONFIG.loinc.authToken}`,
+                'Accept': 'application/fhir+json'
+            },
+            signal: AbortSignal.timeout(API_CONFIG.loinc.timeout)
+        });
 
         if (!response.ok) {
             console.warn(`LOINC lookup failed for ${code}: ${response.status}`);
@@ -196,7 +206,7 @@ export async function resolveCodeDisplayAsync(system, code) {
         return code;
     }
 
-    // Perform rate-limited API lookup (SNOMED via Snowstorm, LOINC via tx.fhir.org)
+    // Perform rate-limited API lookup (SNOMED via Snowstorm, LOINC via NLM)
     try {
         return await rateLimitedLookup(normalizedSystem, code);
     } catch (error) {
