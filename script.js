@@ -4542,7 +4542,7 @@ const payloadService = (() => {
             .map(item => {
                 if (!item || !item.code) return null;
                 const code = normaliseCodeRef(item.code);
-                const description = await resolveCodeDisplayAsync(code.system, code.code);
+                const description = resolveCodeDisplay(code.system, code.code);
 
                 return {
                     code,
@@ -4563,7 +4563,7 @@ const payloadService = (() => {
             .map(item => {
                 if (!item || !item.code) return null;
                 const code = normaliseCodeRef(item.code);
-                const description = await resolveCodeDisplayAsync(code.system, code.code);
+                const description = resolveCodeDisplay(code.system, code.code);
 
                 return {
                     code,
@@ -4584,7 +4584,7 @@ const payloadService = (() => {
             .map(item => {
                 if (!item || !item.code) return null;
                 const code = normaliseCodeRef(item.code);
-                const description = await resolveCodeDisplayAsync(code.system, code.code);
+                const description = resolveCodeDisplay(code.system, code.code);
 
                 return {
                     code,
@@ -4605,7 +4605,7 @@ const payloadService = (() => {
             .map(item => {
                 if (!item || !item.code) return null;
                 const code = normaliseCodeRef(item.code);
-                const description = await resolveCodeDisplayAsync(code.system, code.code);
+                const description = resolveCodeDisplay(code.system, code.code);
 
                 return createStandardizedPill('vitals', {
                     code,
@@ -4626,7 +4626,7 @@ const payloadService = (() => {
             .map(item => {
                 if (!item || !item.code) return null;
                 const code = normaliseCodeRef(item.code);
-                const description = await resolveCodeDisplayAsync(code.system, code.code);
+                const description = resolveCodeDisplay(code.system, code.code);
 
                 return createStandardizedPill('conditions', {
                     code,
@@ -4647,7 +4647,7 @@ const payloadService = (() => {
             .map(item => {
                 if (!item || !item.code) return null;
                 const code = normaliseCodeRef(item.code);
-                const description = await resolveCodeDisplayAsync(code.system, code.code);
+                const description = resolveCodeDisplay(code.system, code.code);
 
                 return createStandardizedPill('events', {
                     code,
@@ -5144,7 +5144,7 @@ function extractBloodGroupDisplay(patient) {
     if (direct) {
         if (direct.display) return direct.display;
         if (direct.code) {
-            const resolved = await resolveCodeDisplayAsync('sct', direct.code);
+            const resolved = resolveCodeDisplay('sct', direct.code);
             if (resolved) return resolved;
         }
         if (direct.text) return direct.text;
@@ -5161,7 +5161,7 @@ function extractBloodGroupDisplay(patient) {
 
         // Fallback to code resolution
         if (coding.system?.includes('snomed.info/sct') && coding.code) {
-            const resolved = await resolveCodeDisplayAsync('sct', coding.code);
+            const resolved = resolveCodeDisplay('sct', coding.code);
             if (resolved) return resolved;
         }
     }
