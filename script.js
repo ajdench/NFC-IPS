@@ -3298,7 +3298,7 @@ const codecPipeline = (() => {
                 coding: [{
                     system: allergy.code?.sys === 'sct' ? 'http://snomed.info/sct' : 'http://unknown.system',
                     code: allergy.code?.code || 'unknown',
-                    display: '' // Will be filled by terminology lookup
+                    display: resolveCodeDisplay(allergy.code?.sys, allergy.code?.code)
                 }]
             },
             patient: {
@@ -3314,7 +3314,7 @@ const codecPipeline = (() => {
                     coding: [{
                         system: 'http://snomed.info/sct',
                         code: allergy.reaction,
-                        display: '' // Will be filled by terminology lookup
+                        display: resolveCodeDisplay('sct', allergy.reaction)
                     }]
                 }],
                 severity: allergy.severity || 'unknown'
