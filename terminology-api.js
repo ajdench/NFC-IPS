@@ -15,9 +15,9 @@ const API_CONFIG = {
         timeout: 5000    // request timeout
     },
     loinc: {
-        // LOINC.org provides a FHIR terminology service
-        baseUrl: 'https://fhir.loinc.org/CodeSystem/$lookup',
-        rateLimit: 500,
+        // NLM Clinical Tables API (free, no auth required)
+        baseUrl: 'https://clinicaltables.nlm.nih.gov/api/loinc_items/v3/search',
+        rateLimit: 200,
         timeout: 5000
     }
 };
@@ -71,17 +71,51 @@ async function lookupSnomedCode(code) {
 }
 
 /**
- * LOINC code lookup - Currently returns code as-is
- * LOINC.org API requires authentication and doesn't support CORS
- * TODO: Implement local LOINC database or use authenticated API
+ * Lookup a LOINC code via NLM Clinical Tables API
+ * Uses the free, public NIH/NLM service (no authentication required)
  * @param {string} code - LOINC code
- * @returns {Promise<string>} - Code (no display available)
+ * @returns {Promise<string>} - Display name or code if not found
  */
 async function lookupLoincCode(code) {
-    // LOINC API not available - fallback to code
-    // fhir.loinc.org requires authentication and blocks CORS
-    // Silently return code (logging would spam console)
-    return code;
+    const cacheKey = `loinc:${code}`;
+
+    // Check cache first
+    if (terminologyCache.has(cacheKey)) {
+        return terminologyCache.get(cacheKey);
+    }
+
+    // NLM Clinical Tables API query format: ?terms=CODE&ef=LOINC_NUM,COMPONENT
+    const url = `${API_CONFIG.loinc.baseUrl}?terms=${code}&ef=LOINC_NUM,COMPONENT`;
+
+    try {
+        const response = await fetchWithTimeout(url, API_CONFIG.loinc.timeout);
+
+        if (!response.ok) {
+            console.warn(`LOINC lookup failed for ${code}: ${response.status}`);
+            return code;
+        }
+
+        const data = await response.json();
+
+        // NLM API returns: [count, [codes], null, [extraFields]]
+        // extraFields[0] contains LOINC_NUM and COMPONENT arrays
+        if (data[0] > 0 && data[3] && data[3].length > 0) {
+            const components = data[3][1]; // COMPONENT field is second in ef list
+            const display = components[0] || code; // First match
+
+            // Cache the result
+            terminologyCache.set(cacheKey, display);
+
+            return display;
+        }
+
+        // No results found
+        return code;
+
+    } catch (error) {
+        console.error(`LOINC API error for ${code}:`, error.message);
+        return code;
+    }
 }
 
 /**
@@ -161,13 +195,13 @@ export async function resolveCodeDisplayAsync(system, code) {
     // Normalize system identifier
     const normalizedSystem = system.toLowerCase();
 
-    // Only SNOMED CT has working API - others fallback to code
+    // Only SNOMED CT and LOINC have working APIs - others fallback to code
     if (normalizedSystem !== 'sct' && normalizedSystem !== 'loinc') {
         // Other systems (HL7, etc.) - fallback to code
         return code;
     }
 
-    // Perform rate-limited API lookup (SNOMED only, LOINC returns code)
+    // Perform rate-limited API lookup (SNOMED via Snowstorm, LOINC via NLM)
     try {
         return await rateLimitedLookup(normalizedSystem, code);
     } catch (error) {
