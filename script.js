@@ -6853,24 +6853,25 @@ async function init() {
     }
 
     parseButton.addEventListener('click', async () => {
-        // NFC web app primary path: Fragment → Protobuf → CodeRef → API rehydrate → FHIR → Display
-        if (!formatState.conversionResults?.fragment) {
-            showMessage('Display button requires fragment from Action button first', 'warning');
+        // NFC web app primary path: Display the API-hydrated FHIR created by Action button
+        if (!formatState.conversionResults?.reconstructedFhir) {
+            showMessage('Display button requires Action button to be clicked first', 'warning');
             return;
         }
 
-        startPipelineTrace('Decode Fragment to Clinical Display');
+        startPipelineTrace('Display Clinical Data from API-hydrated FHIR');
 
         try {
-            // Perform actual decoding ONCE: Fragment → OutputFHIR
-            const decodedViewModel = await payloadService.parseUserInput(formatState.conversionResults.fragment);
-            const decodedCodeRef = decodedViewModel.rawPayload;
-            const decodedFhirBundle = await codecPipeline.convertCodeRefToFhirBundle(decodedCodeRef);
-            const outputFhir = JSON.stringify(decodedFhirBundle, null, 2);
+            // Use the FHIR that was already created during Action button's animation
+            // This was API-hydrated at line 6669 in performConversion()
+            const fhirBundle = JSON.parse(formatState.conversionResults.reconstructedFhir);
 
+            // Replay the visual animation without re-running the expensive API calls
             // Step 1: Decode (Fragment → Protobuf) - Red stage
             updateRightPaneFormat('protobuf');
-            rightInput.textContent = decodedViewModel.protobuf || 'Protobuf binary data';
+            const uint8Array = new Uint8Array(formatState.conversionResults.protobuf);
+            const hexDisplay = Array.from(uint8Array).map(b => b.toString(16).padStart(2, '0')).join(' ');
+            rightInput.textContent = hexDisplay;
             updateCharCount(rightInput, rightCharCount);
             updateStageStates('right');
             showMessage('Decode stage active', 'info');
@@ -6878,7 +6879,7 @@ async function init() {
 
             // Step 2: Decompress (Protobuf → CodeRef) - Orange stage
             updateRightPaneFormat('coderef');
-            rightInput.textContent = JSON.stringify(decodedCodeRef, null, 2);
+            rightInput.textContent = formatState.conversionResults.coderef;
             updateCharCount(rightInput, rightCharCount);
             updateStageStates('right');
             showMessage('Decompress stage active', 'info');
@@ -6886,7 +6887,7 @@ async function init() {
 
             // Step 3: Parse (CodeRef → FHIR) - Blue stage
             updateRightPaneFormat('fhir');
-            rightInput.textContent = outputFhir;
+            rightInput.textContent = formatState.conversionResults.reconstructedFhir;
             updateCharCount(rightInput, rightCharCount);
             updateStageStates('right');
             updateParseButtonState();
@@ -6894,7 +6895,7 @@ async function init() {
             await new Promise(resolve => setTimeout(resolve, 500));
 
             // Step 4: Display (Use the API-hydrated FHIR for rendering) - Green stage
-            const parsedViewModel = buildViewModelFromFhir(decodedFhirBundle, {
+            const parsedViewModel = buildViewModelFromFhir(fhirBundle, {
                 label: 'Decoded from Fragment (API-hydrated)',
                 originalInput: formatState.conversionResults.fragment
             });
