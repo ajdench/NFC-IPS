@@ -2,8 +2,8 @@
 
 ## 🚀 **QUICK START FOR NEW CLAUDE CODE INSTANCES**
 
-**⏰ LAST UPDATED: 2025-10-05 23:37 UTC** *(Power failure recovery)*
-**🔄 TTL: Valid until 2025-10-06 00:37 UTC** *(Auto-refresh on any Auto-JJ commit)*
+**⏰ LAST UPDATED: 2025-10-06 00:00 UTC** *(Round-trip fidelity achievement)*
+**🔄 TTL: Valid until 2025-10-20 00:00 UTC** *(Auto-refresh on any Auto-JJ commit)*
 **💾 CRASH RECOVERY: If system restarted unexpectedly, check timestamps below**
 
 ### **Immediate Orientation**
@@ -13,21 +13,34 @@
 - **Type**: NFC IPS (International Patient Summary) web viewer for medical data
 - **Stack**: JavaScript ES6+, Chart.js, HTML5, CSS3, protobuf compression
 - **Status**: Active development with auto-JJ version control system
-- **Last Major Work**: Dual title system fixes, auto-loading disabled, surgical logging implemented (2025-09-28)
+- **Last Major Work**: 99% round-trip fidelity achieved - timezone preservation, MedicationAdministration fixes (2025-10-05)
 
 ### **Current State Summary**
-🎉 **100% LOSSLESS ROUND-TRIP ACHIEVED (2025-10-05)**: 63/63 resources (100%)
-- **Sepsis Condition**: Moved to R1_PHC encounter with clinical evidence (CXR, labs, vitals)
-- **Blood Group**: Redundant observation removed, using Patient.extension only
-- **R1 Encounters**: Split into r1Phec/r1Phc with camelCase naming for protobuf.js
-- **All Care Stages**: Complete protobuf schema coverage (poi, casevac, axp, medevac, r1Phec, r1Phc, fwdTacevac, r2, rearTacevac, r3, stratevac)
-- **10/12 Resource Types**: Perfect capture (AllergyIntolerance, Composition, Condition, Encounter, ImagingStudy, MedicationStatement, Observation, Organization, Patient, ServiceRequest)
+🎉 **99% ROUND-TRIP FIDELITY ACHIEVED (2025-10-05)**: Clinically lossless, structurally imperfect
 
-⚠️ **KNOWN ISSUE - MedicationAdministration Type Confusion**:
-- **Problem**: 4 MedicationAdministrations have text-only medications (no codes, no doses)
-- **Current Behavior**: Reconstructed as Procedures (resource count still 100%, wrong type)
-- **Action Required**: Fix source FHIR to code medications with SNOMED and numeric doses
-- **Files Affected**: medadmin-R1_PHEC-50, medadmin-R1_PHC-25, medadmin-R1_PHC-30, medadmin-R2-20
+**Clinical Data Preservation** ✅:
+- **63/63 resources** preserved (100% resource count)
+- **12/12 resource types** correct (100% type preservation)
+- **4/4 MedicationAdministrations** with proper SNOMED codes and structured doses
+- **Timezone offsets preserved**: ISO8601 with timezone (e.g., `2025-10-02T05:50:00-04:00`)
+- **107/108 references** valid (99% reference integrity)
+
+**Resource Fixes Applied** ✅:
+- `medadmin-R1_PHEC-50`: Oxygen (SNOMED 57485005, 4 L/min, nasal cannula)
+- `medadmin-R1_PHC-25`: Normal saline (SNOMED 432102000, 1000 mL IV)
+- `medadmin-R1_PHC-30`: Piperacillin-tazobactam (SNOMED 432122003, 4.5 g IV)
+- `medadmin-R2-20`: Norepinephrine (SNOMED 45555007, 0.1 mcg/kg/min IV)
+
+**Protobuf Schema Updates** ✅:
+- Changed `t` field from `int64` to `string` for timezone preservation
+- Rebuilt `nfc_payload_pb.js` from updated schema
+
+⚠️ **KNOWN LIMITATION - Resource Ordering** (deferred):
+- **Resources reordered** during reconstruction (care-stage grouping vs Composition.section order)
+- **1 Composition ID** changed (`composition-ips-phc-illness` → `composition-example`)
+- **Impact**: Cannot achieve byte-for-byte identity, but semantically equivalent
+- **Documentation**: `memory/issues/2025-10-05-resource-ordering-reconstruction.md`
+- **Status**: Acceptable for clinical use, documented for future resolution
 
 ✅ **Architecture**: Dual title display, Chart.js positioned legends, custom x-axis ticks, CSS Grid layout
 ✅ **Systems**: Auto-JJ commits, JJ protection settings, claude-dementia memory v3.0, comprehensive recovery
@@ -85,18 +98,29 @@ jj commit -m "message"         # Manual commit changes
 6. **Development**: Run `npm run dev:auto-jj` to start environment with auto-commits
 7. **Update memory**: `./memory/update.sh "Session started - recovered from [timestamp]"`
 
-### **✅ RECENT COMPLETION - Preset #0 Button Implementation**
-**Status**: COMPLETED 2025-09-28 01:07 UTC
+### **✅ RECENT COMPLETION - 99% Round-Trip Fidelity**
+**Status**: COMPLETED 2025-10-05 23:47 UTC
 
 **Accomplished**:
-1. **HTML Structure**: Added preset #0 button between Clear and #1 buttons
-2. **JavaScript Integration**: Configured complete event handling for fragment/FHIR modes
-3. **Constants Management**: Added IPS_FHIR_JSON_0 to config/constants.js
-4. **File Mappings**: #0→ips-fhir-json-0.json, #1→ips-fhir-json-1.json (shifted)
-5. **Demo State Array**: Updated with proper index shifting (payload0→demos[0])
-6. **Issue Resolution**: Fixed "Preset 0 not available" by using proper constants
+1. **MedicationAdministration Fixes**: Added SNOMED codes and structured doses to all 4 resources
+2. **Timezone Preservation**: Changed protobuf schema `t` field from int64→string, fixed JavaScript conversion
+3. **Demo Data Cleanup**: Removed casevac injection that was corrupting Preset 1
+4. **Comprehensive Testing**: Browser-based comparison script with metadata-first output
+5. **Documentation**: Complete fix history and future resolution guide for resource ordering
 
-**System Status**: All preset buttons (#0-#3) fully functional, ready for new tasks
+**Test Results** (differences-summary-6.json):
+- Original: 75,975 chars, 63 entries
+- Reconstructed: 57,054 chars, 63 entries (25% smaller - formatting only)
+- Differences: 6 (all expected metadata normalization)
+- Clinical data: 100% preserved ✅
+- Timezone: Preserved ✅
+- Resource types: 100% correct ✅
+- References: 99% valid ✅
+
+**Documentation Created**:
+- `memory/fixes/2025-10-05-lossless-roundtrip-achievement.md`
+- `memory/issues/2025-10-05-resource-ordering-reconstruction.md`
+- `PASTE-IN-CONSOLE.txt` - Updated comparison script with summary-first format
 
 ---
 
