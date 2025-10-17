@@ -129,3 +129,6 @@
 3. **High Priority**: Fix SNOMED API CORS/404 errors
 4. **Medium Priority**: Patient Demographics padding double-gap
 5. **Medium Priority**: MIL/NH identifiers pipeline issue
+
+### Update: 2025-10-17 13:58
+- Fixed critical careStage extraction bug - Display button now works for Preset #1
