@@ -4838,20 +4838,16 @@ const payloadService = (() => {
      */
     function buildStageSectionsDirectlyFromFhirBundle(bundle) {
         if (!bundle || bundle.resourceType !== 'Bundle') {
-            console.warn('DEBUG: Not a valid bundle:', bundle);
             return { sections: {}, summary: null, allergies: [] };
         }
-
-        console.log('DEBUG: Processing FHIR bundle with', bundle.entry?.length, 'entries');
 
         const sections = {};
         const totals = { vitals: 0, conditions: 0, events: 0 };
         const allergies = [];
 
-        // Extract care stage from extension
+        // Extract care stage from resource (supports both Encounter-based and extension-based)
         const getCareStage = (resource) => {
-            const ext = resource.extension?.find(e => e.url === 'http://example.org/fhir/StructureDefinition/care-stage');
-            return ext?.valueCode || 'patient';
+            return getCareStageFromResource(resource, bundle) || 'patient';
         };
 
         // Extract display text from CodeableConcept
@@ -4883,22 +4879,12 @@ const payloadService = (() => {
         // Process each resource by type
         bundle.entry?.forEach((entry, index) => {
             const resource = entry.resource;
-            if (!resource) {
-                console.warn(`DEBUG: Entry ${index} has no resource`);
-                return;
-            }
+            if (!resource) return;
 
             const careStage = getCareStage(resource);
-            if (index < 5) {
-                console.log(`DEBUG: Resource ${index} extensions:`, JSON.stringify(resource.extension));
-            }
-            console.log(`DEBUG: Resource ${index} (${resource.resourceType}) → careStage: ${careStage}`);
 
             const stageSection = sections[careStage];
-            if (!stageSection) {
-                console.warn(`DEBUG: No section for careStage: ${careStage}`);
-                return;
-            }
+            if (!stageSection) return;
 
             const sectionDateTracker = stageDateTrackers[careStage];
 
@@ -5026,9 +5012,6 @@ const payloadService = (() => {
             totalConditions: totals.conditions,
             totalEvents: totals.events
         };
-
-        console.log('DEBUG: Final totals:', totals);
-        console.log('DEBUG: Sections with data:', Object.entries(sections).map(([key, val]) => `${key}: ${val.vitals.length}v ${val.conditions.length}c ${val.events.length}e`).join(', '));
 
         return { sections, summary, allergies };
     }
