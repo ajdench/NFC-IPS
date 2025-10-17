@@ -2,8 +2,8 @@
 
 ## 🚀 **QUICK START FOR NEW CLAUDE CODE INSTANCES**
 
-**⏰ LAST UPDATED: 2025-10-06 19:48 UTC** *(Round-trip fidelity achievement)*
-**🔄 TTL: Valid until 2025-10-06 20:48 UTC** *(Auto-refresh on any Auto-JJ commit)*
+**⏰ LAST UPDATED: 2025-10-17 12:00 UTC** *(Display functionality and API debugging)*
+**🔄 TTL: Valid until 2025-10-31 23:59 UTC** *(Auto-refresh on any Auto-JJ commit)*
 **💾 CRASH RECOVERY: If system restarted unexpectedly, check timestamps below**
 
 ### **Immediate Orientation**
@@ -98,29 +98,62 @@ jj commit -m "message"         # Manual commit changes
 6. **Development**: Run `npm run dev:auto-jj` to start environment with auto-commits
 7. **Update memory**: `./memory/update.sh "Session started - recovered from [timestamp]"`
 
-### **✅ RECENT COMPLETION - 99% Round-Trip Fidelity**
-**Status**: COMPLETED 2025-10-05 23:47 UTC
+### **🔧 CURRENT WORK - Display Functionality & API Integration (2025-10-17)**
+**Status**: IN PROGRESS
+
+**Bugs Fixed This Session**:
+1. **careStage Extension Reading** ✅ FIXED
+   - All resources showing `careStage: patient` instead of POI/R1/R2/etc.
+   - Root cause: `getCareStage()` checked `valueString` but extensions use `valueCode`
+   - Fix: Changed line 4854 from `ext?.valueString` to `ext?.valueCode`
+   - Commit: "fix(fhir): Fix getCareStage() to read valueCode instead of valueString"
+
+2. **Display Button Performance** ✅ FIXED (Previous session)
+   - Display button was re-running expensive API calls
+   - Fix: Use cached `formatState.conversionResults.reconstructedFhir`
+   - Result: Eliminated duplicate terminology lookups
+
+3. **Extension Format Mismatch** ✅ FIXED (Previous session)
+   - Converters used `careStage` (camelCase) + `valueString`
+   - Original FHIR uses `care-stage` (hyphen) + `valueCode`
+   - Fix: Bulk sed replacement across 8 converter functions
+
+**Outstanding Issues**:
+1. **Clinical Data Display** - AWAITING TEST
+   - Status: careStage bug fixed, needs browser refresh to verify
+   - Expected: Data should now appear in POI, CASEVAC, R1, R2 sections
+
+2. **LOINC API Failures** ⚠️ HIGH PRIORITY
+   - Error: "The string did not match the expected pattern"
+   - All LOINC codes failing (vitals, labs)
+   - Impact: Displays codes instead of "Body temperature", etc.
+   - Investigation needed: tx.fhir.org API format
+
+3. **SNOMED API Failures** ⚠️ HIGH PRIORITY
+   - Error: CORS + 404 from snowstorm-training.snomedtools.org
+   - Medication/condition names show codes only
+   - Investigation needed: Server status, alternative endpoints
+
+**Documentation Created**:
+- `memory/fixes/2025-10-17-carestage-extension-reading.md`
+- `memory/issues/2025-10-17-api-lookup-failures.md`
+- `test-conversion.mjs`: Node.js script for offline FHIR analysis
+
+### **✅ PREVIOUS COMPLETION - 99% Round-Trip Fidelity (2025-10-05)**
 
 **Accomplished**:
 1. **MedicationAdministration Fixes**: Added SNOMED codes and structured doses to all 4 resources
-2. **Timezone Preservation**: Changed protobuf schema `t` field from int64→string, fixed JavaScript conversion
-3. **Demo Data Cleanup**: Removed casevac injection that was corrupting Preset 1
-4. **Comprehensive Testing**: Browser-based comparison script with metadata-first output
-5. **Documentation**: Complete fix history and future resolution guide for resource ordering
+2. **Timezone Preservation**: Changed protobuf schema `t` field from int64→string
+3. **Demo Data Cleanup**: Removed casevac injection corrupting Preset 1
+4. **Comprehensive Testing**: Browser-based comparison script
 
 **Test Results** (differences-summary-6.json):
 - Original: 75,975 chars, 63 entries
-- Reconstructed: 57,054 chars, 63 entries (25% smaller - formatting only)
-- Differences: 6 (all expected metadata normalization)
+- Reconstructed: 57,054 chars, 63 entries
 - Clinical data: 100% preserved ✅
 - Timezone: Preserved ✅
 - Resource types: 100% correct ✅
 - References: 99% valid ✅
-
-**Documentation Created**:
-- `memory/fixes/2025-10-05-lossless-roundtrip-achievement.md`
-- `memory/issues/2025-10-05-resource-ordering-reconstruction.md`
-- `PASTE-IN-CONSOLE.txt` - Updated comparison script with summary-first format
 
 ---
 
