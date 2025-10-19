@@ -3966,6 +3966,29 @@ const codecPipeline = (() => {
         }
     }
 
+    /**
+     * Decode Base64 URL-safe fragment to Protobuf binary
+     * @param {string} fragment - Base64 URL-safe encoded fragment
+     * @returns {Uint8Array} - Protobuf binary data
+     */
+    async function decodeFragmentToProtobuf(fragment) {
+        // Convert URL-safe back to standard base64
+        const base64 = fragment.replace(/-/g, '+').replace(/_/g, '/');
+        // Add padding if needed
+        const padded = base64 + '==='.slice((base64.length + 3) % 4);
+
+        // Decode base64 to binary
+        const binaryString = atob(padded);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+
+        // Decompress
+        const decompressed = pako.inflate(bytes);
+        return decompressed;
+    }
+
     return {
         decodeFragment,
         encodeToFragment,
@@ -3974,7 +3997,8 @@ const codecPipeline = (() => {
         convertFhirToCodeRef,
         convertFhirBundleToCodeRef,
         convertFhirBundleToUltraCompactCodeRef,
-        encodeProtobufToFragment
+        encodeProtobufToFragment,
+        decodeFragmentToProtobuf
     };
 })();
 
@@ -6878,53 +6902,97 @@ async function init() {
                 return;
             }
 
-            // Clear previous results AND force fresh decode
-            formatState.conversionResults = {};
+            // For Preset #4 with explicit decode: preserve the fragment but allow re-decode
+            if (isExplicitAction && formatState.preset4Mode) {
+                const existingFragment = formatState.conversionResults.fragment;
+                formatState.conversionResults = { fragment: existingFragment };
+            } else {
+                // Clear previous results AND force fresh decode
+                formatState.conversionResults = {};
+            }
 
             if (formatState.leftMode === 'fragment') {
                 // Decode: Fragment → FHIR in right pane (with staged progression)
 
-                // Decode the fragment to prepare all formats
-                const parsedViewModel = await payloadService.parseUserInput(inputContent);
-                if (!parsedViewModel?.rawPayload) {
-                    throw new Error('Unable to decode fragment data');
+                if (formatState.preset4Mode) {
+                    // PRESET #4 DIRECT DECODE: Fragment → Protobuf → FHIR (skip CodeRef)
+
+                    // Store fragment
+                    formatState.conversionResults.fragment = inputContent;
+
+                    // Stage 1: Decode Base64 to Protobuf binary
+                    const protobufBinary = await codecPipeline.decodeFragmentToProtobuf(inputContent);
+                    formatState.conversionResults.protobuf = protobufBinary;
+                    updateRightPaneFormat('protobuf');
+                    const uint8Array = new Uint8Array(protobufBinary);
+                    const hexDisplay = Array.from(uint8Array).map(b => b.toString(16).padStart(2, '0')).join(' ');
+                    rightInput.textContent = hexDisplay;
+                    updateCharCount(rightInput, rightCharCount);
+                    updateStageStates('right');
+                    showMessage('Decode stage active (Preset #4: Direct)', 'info');
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    // Stage 2: Skip CodeRef (grey out Parse stage)
+                    formatState.conversionResults.coderef = null;
+                    showMessage('CodeRef stage skipped (Preset #4)', 'info');
+                    await new Promise(resolve => setTimeout(resolve, 300));
+
+                    // Stage 3: Extract FHIR directly from protobuf
+                    const fhirJson = await convertProtobufToFhirDirect(protobufBinary);
+                    formatState.conversionResults.reconstructedFhir = fhirJson;
+                    updateRightPaneFormat('fhir');
+                    rightInput.textContent = JSON.stringify(JSON.parse(fhirJson), null, 2);
+                    updateCharCount(rightInput, rightCharCount);
+                    updateStageStates('right');
+                    updateParseButtonState();
+
+                    showMessage('Preset #4: Direct FHIR decoded (CodeRef bypassed)', 'success');
+
+                } else {
+                    // STANDARD DECODE: Fragment → Protobuf → CodeRef → FHIR
+
+                    // Decode the fragment to prepare all formats
+                    const parsedViewModel = await payloadService.parseUserInput(inputContent);
+                    if (!parsedViewModel?.rawPayload) {
+                        throw new Error('Unable to decode fragment data');
+                    }
+
+                    // Store fragment
+                    formatState.conversionResults.fragment = inputContent;
+
+                    // Stage 1: Decode (Fragment → Protobuf) - Red stage
+                    formatState.conversionResults.protobuf = await codecPipeline.getProtobufBinary(parsedViewModel.rawPayload);
+                    updateRightPaneFormat('protobuf');
+                    const uint8Array = new Uint8Array(formatState.conversionResults.protobuf);
+                    const hexDisplay = Array.from(uint8Array).map(b => b.toString(16).padStart(2, '0')).join(' ');
+                    rightInput.textContent = hexDisplay;
+                    updateCharCount(rightInput, rightCharCount);
+                    updateStageStates('right');
+                    showMessage('Decode stage active', 'info');
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    // Stage 2: Decompress (Protobuf → CodeRef) - Blue stage
+                    formatState.conversionResults.coderef = JSON.stringify(parsedViewModel.rawPayload, null, 2);
+                    updateRightPaneFormat('coderef');
+                    rightInput.textContent = formatState.conversionResults.coderef;
+                    updateCharCount(rightInput, rightCharCount);
+                    updateStageStates('right');
+                    showMessage('Decompress stage active', 'info');
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    // Stage 3: Parse (CodeRef → FHIR) - Orange stage
+                    const fhirBundle = await codecPipeline.convertCodeRefToFhirBundle(parsedViewModel.rawPayload);
+                    const reconstructedFhir = JSON.stringify(fhirBundle, null, 2);
+                    // Don't overwrite original FHIR - store reconstruction separately
+                    formatState.conversionResults.reconstructedFhir = reconstructedFhir;
+                    updateRightPaneFormat('fhir');
+                    rightInput.textContent = reconstructedFhir;
+                    updateCharCount(rightInput, rightCharCount);
+                    updateStageStates('right');
+                    updateParseButtonState();
+
+                    showMessage('Fragment decoded to FHIR - Click right title to cycle through formats', 'success');
                 }
-
-                // Store fragment
-                formatState.conversionResults.fragment = inputContent;
-
-                // Stage 1: Decode (Fragment → Protobuf) - Red stage
-                formatState.conversionResults.protobuf = await codecPipeline.getProtobufBinary(parsedViewModel.rawPayload);
-                updateRightPaneFormat('protobuf');
-                const uint8Array = new Uint8Array(formatState.conversionResults.protobuf);
-                const hexDisplay = Array.from(uint8Array).map(b => b.toString(16).padStart(2, '0')).join(' ');
-                rightInput.textContent = hexDisplay;
-                updateCharCount(rightInput, rightCharCount);
-                updateStageStates('right');
-                showMessage('Decode stage active', 'info');
-                await new Promise(resolve => setTimeout(resolve, 500));
-
-                // Stage 2: Decompress (Protobuf → CodeRef) - Blue stage
-                formatState.conversionResults.coderef = JSON.stringify(parsedViewModel.rawPayload, null, 2);
-                updateRightPaneFormat('coderef');
-                rightInput.textContent = formatState.conversionResults.coderef;
-                updateCharCount(rightInput, rightCharCount);
-                updateStageStates('right');
-                showMessage('Decompress stage active', 'info');
-                await new Promise(resolve => setTimeout(resolve, 500));
-
-                // Stage 3: Parse (CodeRef → FHIR) - Orange stage
-                const fhirBundle = await codecPipeline.convertCodeRefToFhirBundle(parsedViewModel.rawPayload);
-                const reconstructedFhir = JSON.stringify(fhirBundle, null, 2);
-                // Don't overwrite original FHIR - store reconstruction separately
-                formatState.conversionResults.reconstructedFhir = reconstructedFhir;
-                updateRightPaneFormat('fhir');
-                rightInput.textContent = reconstructedFhir;
-                updateCharCount(rightInput, rightCharCount);
-                updateStageStates('right');
-                updateParseButtonState();
-
-                showMessage('Fragment decoded to FHIR - Click right title to cycle through formats', 'success');
 
             } else if (formatState.leftMode === 'fhir') {
                 // Encode: FHIR Bundle -> URL Fragment in left pane only (with staged progression)
@@ -7177,10 +7245,14 @@ async function init() {
 
                 // Use the FHIR that was already decoded during Encode
                 fhirToDisplay = formatState.conversionResults.reconstructedFhir;
+                console.log('DISPLAY BUTTON: reconstructedFhir type:', typeof fhirToDisplay);
+                console.log('DISPLAY BUTTON: reconstructedFhir length:', fhirToDisplay?.length);
+                console.log('DISPLAY BUTTON: reconstructedFhir preview:', fhirToDisplay?.substring(0, 200));
                 if (!fhirToDisplay) {
                     throw new Error('No reconstructed FHIR available - click Encode first');
                 }
                 fhirBundle = JSON.parse(fhirToDisplay);
+                console.log('DISPLAY BUTTON: fhirBundle entries:', fhirBundle?.entry?.length);
 
             } else {
                 // STANDARD PATH: Protobuf → CodeRef → FHIR
