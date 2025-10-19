@@ -6292,6 +6292,7 @@ async function init() {
     const preset1Button = document.getElementById('preset-1');
     const preset2Button = document.getElementById('preset-2');
     const preset3Button = document.getElementById('preset-3');
+    const preset4Button = document.getElementById('preset-4');
     const clearLeftButton = document.getElementById('clear-left');
     // const clearRightButton = document.getElementById('clear-right'); // Removed
 
@@ -6308,6 +6309,7 @@ async function init() {
     const payload1 = await fetchJson(DEMO_PAYLOADS.IPS_FHIR_JSON_1);
     const payload2 = await fetchJson(DEMO_PAYLOADS.IPS_FHIR_JSON_2);
     const payload3 = await fetchJson(DEMO_PAYLOADS.IPS_FHIR_JSON_3);
+    const payload4 = await fetchJson(DEMO_PAYLOADS.IPS_FHIR_JSON_4);
 
     // Note: Payloads are processed on-demand when preset buttons are clicked,
     // not pre-loaded here to avoid unnecessary processing and console noise
@@ -7137,6 +7139,22 @@ async function init() {
             } else {
                 showMessage('Preset #3 FHIR JSON not available', 'warning');
             }
+        }
+    });
+
+    preset4Button.addEventListener('click', () => {
+        // Preset #4: Test preset with data at all 11 care stages
+        // Direct FHIR → Protobuf pipeline (bypasses CodeRef)
+        if (payload4) {
+            const fhirJson = JSON.stringify(payload4, null, 2);
+            leftInput.textContent = fhirJson;
+            updateCharCount(leftInput, leftCharCount);
+            formatState.originalFhir = fhirJson;
+            formatState.preset4Mode = true; // Flag for direct conversion
+            showMessage('Loaded preset #4 FHIR JSON (Test - All Care Stages)', 'success');
+            updateActivePreset(preset4Button);
+        } else {
+            showMessage('Preset #4 FHIR JSON not available', 'warning');
         }
     });
 

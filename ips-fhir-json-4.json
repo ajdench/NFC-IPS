@@ -1,0 +1,4011 @@
+{
+  "resourceType": "Bundle",
+  "id": "ips-test-preset4",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/uv/ips/StructureDefinition/Bundle-uv-ips"
+    ]
+  },
+  "type": "document",
+  "timestamp": "2025-10-19T16:00:00Z",
+  "identifier": {
+    "system": "urn:ietf:rfc:3986",
+    "value": "urn:uuid:preset4-test-bundle"
+  },
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:composition-preset4",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "composition-preset4",
+        "status": "final",
+        "type": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "60591-5",
+              "display": "Patient summary Document"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "date": "2025-10-19T16:00:00Z",
+        "author": [
+          {
+            "display": "Test System"
+          }
+        ],
+        "title": "International Patient Summary - Preset #4 Test",
+        "section": []
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:patient-preset4",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-preset4",
+        "name": [
+          {
+            "given": [
+              "Thomas"
+            ],
+            "family": "Hodge"
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1998-03-15"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:encounter-poi",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "encounter-poi",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "poi",
+                "display": "Point of Injury"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "period": {
+          "start": "2025-10-19T10:00:00.000Z"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-poi-0",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-poi-0",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8867-4",
+              "display": "Heart rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-poi"
+        },
+        "effectiveDateTime": "2025-10-19T10:00:00.000Z",
+        "valueQuantity": {
+          "value": 80,
+          "unit": "beats/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "beats/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-poi-1",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-poi-1",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "9279-1",
+              "display": "Respiratory rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-poi"
+        },
+        "effectiveDateTime": "2025-10-19T10:10:00.000Z",
+        "valueQuantity": {
+          "value": 16,
+          "unit": "breaths/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "breaths/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-poi-2",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-poi-2",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8310-5",
+              "display": "Body temperature"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-poi"
+        },
+        "effectiveDateTime": "2025-10-19T10:20:00.000Z",
+        "valueQuantity": {
+          "value": 37,
+          "unit": "Cel",
+          "system": "http://unitsofmeasure.org",
+          "code": "Cel"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-poi-0",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-poi-0",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "386661006",
+              "display": "Fever"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-poi"
+        },
+        "recordedDate": "2025-10-19T10:30:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-poi-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-poi-1",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "25064002",
+              "display": "Headache"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-poi"
+        },
+        "recordedDate": "2025-10-19T10:35:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-poi-2",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-poi-2",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "62315008",
+              "display": "Diarrhea"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-poi"
+        },
+        "recordedDate": "2025-10-19T10:40:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-poi-0",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-poi-0",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387517004",
+              "display": "Paracetamol"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-poi"
+        },
+        "effectiveDateTime": "2025-10-19T10:50:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 500,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-poi-1",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-poi-1",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "372756006",
+              "display": "Ibuprofen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-poi"
+        },
+        "effectiveDateTime": "2025-10-19T11:00:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 400,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-poi-2",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-poi-2",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387207008",
+              "display": "Ondansetron"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-poi"
+        },
+        "effectiveDateTime": "2025-10-19T11:10:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 4,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "47625008",
+                "display": "Intravenous"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:encounter-casevac",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "encounter-casevac",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "casevac",
+                "display": "Casualty Evacuation"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "period": {
+          "start": "2025-10-19T11:00:00.000Z"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-casevac-0",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-casevac-0",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8867-4",
+              "display": "Heart rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-casevac"
+        },
+        "effectiveDateTime": "2025-10-19T11:00:00.000Z",
+        "valueQuantity": {
+          "value": 82,
+          "unit": "beats/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "beats/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-casevac-1",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-casevac-1",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "9279-1",
+              "display": "Respiratory rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-casevac"
+        },
+        "effectiveDateTime": "2025-10-19T11:10:00.000Z",
+        "valueQuantity": {
+          "value": 18,
+          "unit": "breaths/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "breaths/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-casevac-2",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-casevac-2",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8310-5",
+              "display": "Body temperature"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-casevac"
+        },
+        "effectiveDateTime": "2025-10-19T11:20:00.000Z",
+        "valueQuantity": {
+          "value": 39,
+          "unit": "Cel",
+          "system": "http://unitsofmeasure.org",
+          "code": "Cel"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-casevac-0",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-casevac-0",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "386661006",
+              "display": "Fever"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-casevac"
+        },
+        "recordedDate": "2025-10-19T11:30:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-casevac-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-casevac-1",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "25064002",
+              "display": "Headache"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-casevac"
+        },
+        "recordedDate": "2025-10-19T11:35:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-casevac-2",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-casevac-2",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "62315008",
+              "display": "Diarrhea"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-casevac"
+        },
+        "recordedDate": "2025-10-19T11:40:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-casevac-0",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-casevac-0",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387517004",
+              "display": "Paracetamol"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-casevac"
+        },
+        "effectiveDateTime": "2025-10-19T11:50:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 500,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-casevac-1",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-casevac-1",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "372756006",
+              "display": "Ibuprofen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-casevac"
+        },
+        "effectiveDateTime": "2025-10-19T12:00:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 400,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-casevac-2",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-casevac-2",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387207008",
+              "display": "Ondansetron"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-casevac"
+        },
+        "effectiveDateTime": "2025-10-19T12:10:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 4,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "47625008",
+                "display": "Intravenous"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:encounter-axp",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "encounter-axp",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "axp",
+                "display": "Ambulance Exchange Point"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "period": {
+          "start": "2025-10-19T12:00:00.000Z"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-axp-0",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-axp-0",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8867-4",
+              "display": "Heart rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-axp"
+        },
+        "effectiveDateTime": "2025-10-19T12:00:00.000Z",
+        "valueQuantity": {
+          "value": 84,
+          "unit": "beats/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "beats/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-axp-1",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-axp-1",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "9279-1",
+              "display": "Respiratory rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-axp"
+        },
+        "effectiveDateTime": "2025-10-19T12:10:00.000Z",
+        "valueQuantity": {
+          "value": 20,
+          "unit": "breaths/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "breaths/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-axp-2",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-axp-2",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8310-5",
+              "display": "Body temperature"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-axp"
+        },
+        "effectiveDateTime": "2025-10-19T12:20:00.000Z",
+        "valueQuantity": {
+          "value": 41,
+          "unit": "Cel",
+          "system": "http://unitsofmeasure.org",
+          "code": "Cel"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-axp-0",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-axp-0",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "386661006",
+              "display": "Fever"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-axp"
+        },
+        "recordedDate": "2025-10-19T12:30:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-axp-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-axp-1",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "25064002",
+              "display": "Headache"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-axp"
+        },
+        "recordedDate": "2025-10-19T12:35:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-axp-2",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-axp-2",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "62315008",
+              "display": "Diarrhea"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-axp"
+        },
+        "recordedDate": "2025-10-19T12:40:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-axp-0",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-axp-0",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387517004",
+              "display": "Paracetamol"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-axp"
+        },
+        "effectiveDateTime": "2025-10-19T12:50:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 500,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-axp-1",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-axp-1",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "372756006",
+              "display": "Ibuprofen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-axp"
+        },
+        "effectiveDateTime": "2025-10-19T13:00:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 400,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-axp-2",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-axp-2",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387207008",
+              "display": "Ondansetron"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-axp"
+        },
+        "effectiveDateTime": "2025-10-19T13:10:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 4,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "47625008",
+                "display": "Intravenous"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:encounter-medevac",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "encounter-medevac",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "medevac",
+                "display": "Medical Evacuation"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "period": {
+          "start": "2025-10-19T13:00:00.000Z"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-medevac-0",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-medevac-0",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8867-4",
+              "display": "Heart rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-medevac"
+        },
+        "effectiveDateTime": "2025-10-19T13:00:00.000Z",
+        "valueQuantity": {
+          "value": 86,
+          "unit": "beats/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "beats/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-medevac-1",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-medevac-1",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "9279-1",
+              "display": "Respiratory rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-medevac"
+        },
+        "effectiveDateTime": "2025-10-19T13:10:00.000Z",
+        "valueQuantity": {
+          "value": 22,
+          "unit": "breaths/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "breaths/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-medevac-2",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-medevac-2",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8310-5",
+              "display": "Body temperature"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-medevac"
+        },
+        "effectiveDateTime": "2025-10-19T13:20:00.000Z",
+        "valueQuantity": {
+          "value": 43,
+          "unit": "Cel",
+          "system": "http://unitsofmeasure.org",
+          "code": "Cel"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-medevac-0",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-medevac-0",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "386661006",
+              "display": "Fever"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-medevac"
+        },
+        "recordedDate": "2025-10-19T13:30:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-medevac-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-medevac-1",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "25064002",
+              "display": "Headache"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-medevac"
+        },
+        "recordedDate": "2025-10-19T13:35:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-medevac-2",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-medevac-2",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "62315008",
+              "display": "Diarrhea"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-medevac"
+        },
+        "recordedDate": "2025-10-19T13:40:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-medevac-0",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-medevac-0",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387517004",
+              "display": "Paracetamol"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-medevac"
+        },
+        "effectiveDateTime": "2025-10-19T13:50:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 500,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-medevac-1",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-medevac-1",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "372756006",
+              "display": "Ibuprofen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-medevac"
+        },
+        "effectiveDateTime": "2025-10-19T14:00:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 400,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-medevac-2",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-medevac-2",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387207008",
+              "display": "Ondansetron"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-medevac"
+        },
+        "effectiveDateTime": "2025-10-19T14:10:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 4,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "47625008",
+                "display": "Intravenous"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:encounter-r1_phec",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "encounter-r1_phec",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "r1_phec",
+                "display": "Role 1 PHEC"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "period": {
+          "start": "2025-10-19T14:00:00.000Z"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-r1_phec-0",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-r1_phec-0",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8867-4",
+              "display": "Heart rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r1_phec"
+        },
+        "effectiveDateTime": "2025-10-19T14:00:00.000Z",
+        "valueQuantity": {
+          "value": 88,
+          "unit": "beats/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "beats/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-r1_phec-1",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-r1_phec-1",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "9279-1",
+              "display": "Respiratory rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r1_phec"
+        },
+        "effectiveDateTime": "2025-10-19T14:10:00.000Z",
+        "valueQuantity": {
+          "value": 24,
+          "unit": "breaths/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "breaths/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-r1_phec-2",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-r1_phec-2",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8310-5",
+              "display": "Body temperature"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r1_phec"
+        },
+        "effectiveDateTime": "2025-10-19T14:20:00.000Z",
+        "valueQuantity": {
+          "value": 45,
+          "unit": "Cel",
+          "system": "http://unitsofmeasure.org",
+          "code": "Cel"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-r1_phec-0",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-r1_phec-0",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "386661006",
+              "display": "Fever"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r1_phec"
+        },
+        "recordedDate": "2025-10-19T14:30:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-r1_phec-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-r1_phec-1",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "25064002",
+              "display": "Headache"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r1_phec"
+        },
+        "recordedDate": "2025-10-19T14:35:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-r1_phec-2",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-r1_phec-2",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "62315008",
+              "display": "Diarrhea"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r1_phec"
+        },
+        "recordedDate": "2025-10-19T14:40:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-r1_phec-0",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-r1_phec-0",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387517004",
+              "display": "Paracetamol"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-r1_phec"
+        },
+        "effectiveDateTime": "2025-10-19T14:50:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 500,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-r1_phec-1",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-r1_phec-1",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "372756006",
+              "display": "Ibuprofen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-r1_phec"
+        },
+        "effectiveDateTime": "2025-10-19T15:00:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 400,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-r1_phec-2",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-r1_phec-2",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387207008",
+              "display": "Ondansetron"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-r1_phec"
+        },
+        "effectiveDateTime": "2025-10-19T15:10:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 4,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "47625008",
+                "display": "Intravenous"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:encounter-r1_phc",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "encounter-r1_phc",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "r1_phc",
+                "display": "Role 1 PHC"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "period": {
+          "start": "2025-10-19T15:00:00.000Z"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-r1_phc-0",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-r1_phc-0",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8867-4",
+              "display": "Heart rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r1_phc"
+        },
+        "effectiveDateTime": "2025-10-19T15:00:00.000Z",
+        "valueQuantity": {
+          "value": 90,
+          "unit": "beats/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "beats/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-r1_phc-1",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-r1_phc-1",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "9279-1",
+              "display": "Respiratory rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r1_phc"
+        },
+        "effectiveDateTime": "2025-10-19T15:10:00.000Z",
+        "valueQuantity": {
+          "value": 26,
+          "unit": "breaths/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "breaths/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-r1_phc-2",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-r1_phc-2",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8310-5",
+              "display": "Body temperature"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r1_phc"
+        },
+        "effectiveDateTime": "2025-10-19T15:20:00.000Z",
+        "valueQuantity": {
+          "value": 47,
+          "unit": "Cel",
+          "system": "http://unitsofmeasure.org",
+          "code": "Cel"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-r1_phc-0",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-r1_phc-0",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "386661006",
+              "display": "Fever"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r1_phc"
+        },
+        "recordedDate": "2025-10-19T15:30:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-r1_phc-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-r1_phc-1",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "25064002",
+              "display": "Headache"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r1_phc"
+        },
+        "recordedDate": "2025-10-19T15:35:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-r1_phc-2",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-r1_phc-2",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "62315008",
+              "display": "Diarrhea"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r1_phc"
+        },
+        "recordedDate": "2025-10-19T15:40:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-r1_phc-0",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-r1_phc-0",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387517004",
+              "display": "Paracetamol"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-r1_phc"
+        },
+        "effectiveDateTime": "2025-10-19T15:50:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 500,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-r1_phc-1",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-r1_phc-1",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "372756006",
+              "display": "Ibuprofen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-r1_phc"
+        },
+        "effectiveDateTime": "2025-10-19T16:00:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 400,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-r1_phc-2",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-r1_phc-2",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387207008",
+              "display": "Ondansetron"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-r1_phc"
+        },
+        "effectiveDateTime": "2025-10-19T16:10:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 4,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "47625008",
+                "display": "Intravenous"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:encounter-fwd_tacevac",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "encounter-fwd_tacevac",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "fwd_tacevac",
+                "display": "Forward Tactical Evacuation"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "period": {
+          "start": "2025-10-19T16:00:00.000Z"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-fwd_tacevac-0",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-fwd_tacevac-0",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8867-4",
+              "display": "Heart rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-fwd_tacevac"
+        },
+        "effectiveDateTime": "2025-10-19T16:00:00.000Z",
+        "valueQuantity": {
+          "value": 92,
+          "unit": "beats/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "beats/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-fwd_tacevac-1",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-fwd_tacevac-1",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "9279-1",
+              "display": "Respiratory rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-fwd_tacevac"
+        },
+        "effectiveDateTime": "2025-10-19T16:10:00.000Z",
+        "valueQuantity": {
+          "value": 28,
+          "unit": "breaths/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "breaths/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-fwd_tacevac-2",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-fwd_tacevac-2",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8310-5",
+              "display": "Body temperature"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-fwd_tacevac"
+        },
+        "effectiveDateTime": "2025-10-19T16:20:00.000Z",
+        "valueQuantity": {
+          "value": 49,
+          "unit": "Cel",
+          "system": "http://unitsofmeasure.org",
+          "code": "Cel"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-fwd_tacevac-0",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-fwd_tacevac-0",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "386661006",
+              "display": "Fever"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-fwd_tacevac"
+        },
+        "recordedDate": "2025-10-19T16:30:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-fwd_tacevac-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-fwd_tacevac-1",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "25064002",
+              "display": "Headache"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-fwd_tacevac"
+        },
+        "recordedDate": "2025-10-19T16:35:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-fwd_tacevac-2",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-fwd_tacevac-2",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "62315008",
+              "display": "Diarrhea"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-fwd_tacevac"
+        },
+        "recordedDate": "2025-10-19T16:40:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-fwd_tacevac-0",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-fwd_tacevac-0",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387517004",
+              "display": "Paracetamol"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-fwd_tacevac"
+        },
+        "effectiveDateTime": "2025-10-19T16:50:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 500,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-fwd_tacevac-1",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-fwd_tacevac-1",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "372756006",
+              "display": "Ibuprofen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-fwd_tacevac"
+        },
+        "effectiveDateTime": "2025-10-19T17:00:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 400,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-fwd_tacevac-2",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-fwd_tacevac-2",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387207008",
+              "display": "Ondansetron"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-fwd_tacevac"
+        },
+        "effectiveDateTime": "2025-10-19T17:10:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 4,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "47625008",
+                "display": "Intravenous"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:encounter-r2_dhc",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "encounter-r2_dhc",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "r2_dhc",
+                "display": "Role 2 DHC"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "period": {
+          "start": "2025-10-19T17:00:00.000Z"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-r2_dhc-0",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-r2_dhc-0",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8867-4",
+              "display": "Heart rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r2_dhc"
+        },
+        "effectiveDateTime": "2025-10-19T17:00:00.000Z",
+        "valueQuantity": {
+          "value": 94,
+          "unit": "beats/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "beats/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-r2_dhc-1",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-r2_dhc-1",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "9279-1",
+              "display": "Respiratory rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r2_dhc"
+        },
+        "effectiveDateTime": "2025-10-19T17:10:00.000Z",
+        "valueQuantity": {
+          "value": 30,
+          "unit": "breaths/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "breaths/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-r2_dhc-2",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-r2_dhc-2",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8310-5",
+              "display": "Body temperature"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r2_dhc"
+        },
+        "effectiveDateTime": "2025-10-19T17:20:00.000Z",
+        "valueQuantity": {
+          "value": 51,
+          "unit": "Cel",
+          "system": "http://unitsofmeasure.org",
+          "code": "Cel"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-r2_dhc-0",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-r2_dhc-0",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "386661006",
+              "display": "Fever"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r2_dhc"
+        },
+        "recordedDate": "2025-10-19T17:30:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-r2_dhc-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-r2_dhc-1",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "25064002",
+              "display": "Headache"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r2_dhc"
+        },
+        "recordedDate": "2025-10-19T17:35:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-r2_dhc-2",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-r2_dhc-2",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "62315008",
+              "display": "Diarrhea"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r2_dhc"
+        },
+        "recordedDate": "2025-10-19T17:40:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-r2_dhc-0",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-r2_dhc-0",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387517004",
+              "display": "Paracetamol"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-r2_dhc"
+        },
+        "effectiveDateTime": "2025-10-19T17:50:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 500,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-r2_dhc-1",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-r2_dhc-1",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "372756006",
+              "display": "Ibuprofen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-r2_dhc"
+        },
+        "effectiveDateTime": "2025-10-19T18:00:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 400,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-r2_dhc-2",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-r2_dhc-2",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387207008",
+              "display": "Ondansetron"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-r2_dhc"
+        },
+        "effectiveDateTime": "2025-10-19T18:10:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 4,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "47625008",
+                "display": "Intravenous"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:encounter-rear_tacevac",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "encounter-rear_tacevac",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "rear_tacevac",
+                "display": "Rear Tactical Evacuation"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "period": {
+          "start": "2025-10-19T18:00:00.000Z"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-rear_tacevac-0",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-rear_tacevac-0",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8867-4",
+              "display": "Heart rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-rear_tacevac"
+        },
+        "effectiveDateTime": "2025-10-19T18:00:00.000Z",
+        "valueQuantity": {
+          "value": 96,
+          "unit": "beats/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "beats/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-rear_tacevac-1",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-rear_tacevac-1",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "9279-1",
+              "display": "Respiratory rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-rear_tacevac"
+        },
+        "effectiveDateTime": "2025-10-19T18:10:00.000Z",
+        "valueQuantity": {
+          "value": 32,
+          "unit": "breaths/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "breaths/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-rear_tacevac-2",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-rear_tacevac-2",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8310-5",
+              "display": "Body temperature"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-rear_tacevac"
+        },
+        "effectiveDateTime": "2025-10-19T18:20:00.000Z",
+        "valueQuantity": {
+          "value": 53,
+          "unit": "Cel",
+          "system": "http://unitsofmeasure.org",
+          "code": "Cel"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-rear_tacevac-0",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-rear_tacevac-0",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "386661006",
+              "display": "Fever"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-rear_tacevac"
+        },
+        "recordedDate": "2025-10-19T18:30:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-rear_tacevac-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-rear_tacevac-1",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "25064002",
+              "display": "Headache"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-rear_tacevac"
+        },
+        "recordedDate": "2025-10-19T18:35:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-rear_tacevac-2",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-rear_tacevac-2",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "62315008",
+              "display": "Diarrhea"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-rear_tacevac"
+        },
+        "recordedDate": "2025-10-19T18:40:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-rear_tacevac-0",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-rear_tacevac-0",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387517004",
+              "display": "Paracetamol"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-rear_tacevac"
+        },
+        "effectiveDateTime": "2025-10-19T18:50:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 500,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-rear_tacevac-1",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-rear_tacevac-1",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "372756006",
+              "display": "Ibuprofen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-rear_tacevac"
+        },
+        "effectiveDateTime": "2025-10-19T19:00:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 400,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-rear_tacevac-2",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-rear_tacevac-2",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387207008",
+              "display": "Ondansetron"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-rear_tacevac"
+        },
+        "effectiveDateTime": "2025-10-19T19:10:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 4,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "47625008",
+                "display": "Intravenous"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:encounter-r3_dhc",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "encounter-r3_dhc",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "r3_dhc",
+                "display": "Role 3 DHC"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "period": {
+          "start": "2025-10-19T19:00:00.000Z"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-r3_dhc-0",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-r3_dhc-0",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8867-4",
+              "display": "Heart rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r3_dhc"
+        },
+        "effectiveDateTime": "2025-10-19T19:00:00.000Z",
+        "valueQuantity": {
+          "value": 98,
+          "unit": "beats/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "beats/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-r3_dhc-1",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-r3_dhc-1",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "9279-1",
+              "display": "Respiratory rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r3_dhc"
+        },
+        "effectiveDateTime": "2025-10-19T19:10:00.000Z",
+        "valueQuantity": {
+          "value": 34,
+          "unit": "breaths/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "breaths/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-r3_dhc-2",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-r3_dhc-2",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8310-5",
+              "display": "Body temperature"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r3_dhc"
+        },
+        "effectiveDateTime": "2025-10-19T19:20:00.000Z",
+        "valueQuantity": {
+          "value": 55,
+          "unit": "Cel",
+          "system": "http://unitsofmeasure.org",
+          "code": "Cel"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-r3_dhc-0",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-r3_dhc-0",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "386661006",
+              "display": "Fever"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r3_dhc"
+        },
+        "recordedDate": "2025-10-19T19:30:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-r3_dhc-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-r3_dhc-1",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "25064002",
+              "display": "Headache"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r3_dhc"
+        },
+        "recordedDate": "2025-10-19T19:35:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-r3_dhc-2",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-r3_dhc-2",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "62315008",
+              "display": "Diarrhea"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-r3_dhc"
+        },
+        "recordedDate": "2025-10-19T19:40:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-r3_dhc-0",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-r3_dhc-0",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387517004",
+              "display": "Paracetamol"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-r3_dhc"
+        },
+        "effectiveDateTime": "2025-10-19T19:50:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 500,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-r3_dhc-1",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-r3_dhc-1",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "372756006",
+              "display": "Ibuprofen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-r3_dhc"
+        },
+        "effectiveDateTime": "2025-10-19T20:00:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 400,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-r3_dhc-2",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-r3_dhc-2",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387207008",
+              "display": "Ondansetron"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-r3_dhc"
+        },
+        "effectiveDateTime": "2025-10-19T20:10:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 4,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "47625008",
+                "display": "Intravenous"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:encounter-stratevac",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "encounter-stratevac",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://medis.org.uk/fhir/CodeSystem/opcp-care-stages",
+                "code": "stratevac",
+                "display": "Strategic Evacuation"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "period": {
+          "start": "2025-10-19T20:00:00.000Z"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-stratevac-0",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-stratevac-0",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8867-4",
+              "display": "Heart rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-stratevac"
+        },
+        "effectiveDateTime": "2025-10-19T20:00:00.000Z",
+        "valueQuantity": {
+          "value": 100,
+          "unit": "beats/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "beats/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-stratevac-1",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-stratevac-1",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "9279-1",
+              "display": "Respiratory rate"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-stratevac"
+        },
+        "effectiveDateTime": "2025-10-19T20:10:00.000Z",
+        "valueQuantity": {
+          "value": 36,
+          "unit": "breaths/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "breaths/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-stratevac-2",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-stratevac-2",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8310-5",
+              "display": "Body temperature"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-stratevac"
+        },
+        "effectiveDateTime": "2025-10-19T20:20:00.000Z",
+        "valueQuantity": {
+          "value": 57,
+          "unit": "Cel",
+          "system": "http://unitsofmeasure.org",
+          "code": "Cel"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-stratevac-0",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-stratevac-0",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "386661006",
+              "display": "Fever"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-stratevac"
+        },
+        "recordedDate": "2025-10-19T20:30:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-stratevac-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-stratevac-1",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "25064002",
+              "display": "Headache"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-stratevac"
+        },
+        "recordedDate": "2025-10-19T20:35:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cond-stratevac-2",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-stratevac-2",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "62315008",
+              "display": "Diarrhea"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "encounter": {
+          "reference": "urn:uuid:encounter-stratevac"
+        },
+        "recordedDate": "2025-10-19T20:40:00.000Z"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-stratevac-0",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-stratevac-0",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387517004",
+              "display": "Paracetamol"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-stratevac"
+        },
+        "effectiveDateTime": "2025-10-19T20:50:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 500,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-stratevac-1",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-stratevac-1",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "372756006",
+              "display": "Ibuprofen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-stratevac"
+        },
+        "effectiveDateTime": "2025-10-19T21:00:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 400,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:med-stratevac-2",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-stratevac-2",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "387207008",
+              "display": "Ondansetron"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-preset4"
+        },
+        "context": {
+          "reference": "urn:uuid:encounter-stratevac"
+        },
+        "effectiveDateTime": "2025-10-19T21:10:00.000Z",
+        "dosage": {
+          "dose": {
+            "value": 4,
+            "unit": "mg"
+          },
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "47625008",
+                "display": "Intravenous"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
