@@ -4845,8 +4845,45 @@ const payloadService = (() => {
         const totals = { vitals: 0, conditions: 0, events: 0 };
         const allergies = [];
 
-        // Extract care stage from resource extension
+        // Extract care stage from resource (supports both Encounter-based and extension-based)
         const getCareStage = (resource) => {
+            // Approach 1: If resource has encounter.reference, look up the Encounter
+            if (resource.encounter?.reference) {
+                const encounterRef = resource.encounter.reference;
+                const encounterEntry = bundle.entry.find(entry =>
+                    entry.fullUrl === encounterRef ||
+                    entry.resource?.id === encounterRef.replace('urn:uuid:', '')
+                );
+
+                if (encounterEntry?.resource?.resourceType === 'Encounter') {
+                    const encounter = encounterEntry.resource;
+
+                    // Check for type.coding (IPS-OPCP approach)
+                    const typeCoding = encounter.type?.[0]?.coding?.find(coding =>
+                        coding.system === 'http://medis.org.uk/fhir/CodeSystem/opcp-care-stages'
+                    );
+
+                    if (typeCoding?.code) {
+                        // Map codes to internal stage keys
+                        const codeMap = {
+                            'poi': 'poi',
+                            'casevac': 'casevac',
+                            'axp': 'axp',
+                            'medevac': 'medevac',
+                            'r1_phec': 'r1',
+                            'r1_phc': 'r1',
+                            'fwd_tacevac': 'fwdTacevac',
+                            'r2_dhc': 'r2',
+                            'rear_tacevac': 'rearTacevac',
+                            'r3_dhc': 'r3',
+                            'stratevac': 'stratevac'
+                        };
+                        return codeMap[typeCoding.code] || typeCoding.code;
+                    }
+                }
+            }
+
+            // Approach 2: Fallback to care-stage extension (old Preset #0 approach)
             const ext = resource.extension?.find(e => e.url === 'http://example.org/fhir/StructureDefinition/care-stage');
             return ext?.valueCode || 'patient';
         };
