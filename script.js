@@ -3912,6 +3912,21 @@ const codecPipeline = (() => {
         }
     }
 
+    /**
+     * Encode Protobuf binary to URL fragment
+     * (extracted from encodeToFragment for direct pipeline)
+     */
+    async function encodeProtobufToFragment(protobufBinary) {
+        try {
+            const compressed = pako.deflate(protobufBinary);
+            const base64 = btoa(String.fromCharCode(...compressed));
+            return base64;
+        } catch (error) {
+            console.error('Error encoding protobuf to fragment:', error);
+            throw error;
+        }
+    }
+
     return {
         decodeFragment,
         encodeToFragment,
@@ -3919,9 +3934,70 @@ const codecPipeline = (() => {
         getProtobufBinary,
         convertFhirToCodeRef,
         convertFhirBundleToCodeRef,
-        convertFhirBundleToUltraCompactCodeRef
+        convertFhirBundleToUltraCompactCodeRef,
+        encodeProtobufToFragment
     };
 })();
+
+/**
+ * Convert FHIR Bundle directly to Protobuf (Preset #4 direct pipeline)
+ * Bypasses CodeRef stage entirely - FHIR → Protobuf
+ * @param {Object} fhirBundle - FHIR Bundle resource
+ * @returns {Promise<ArrayBuffer>} - Protobuf binary data
+ */
+async function convertFhirToProtobufDirect(fhirBundle) {
+    try {
+        // Serialize the entire FHIR Bundle as JSON string for protobuf storage
+        const fhirJson = JSON.stringify(fhirBundle);
+
+        // Load protobuf schema
+        const protoResponse = await fetch(RESOURCES.NFC_PAYLOAD_PROTO);
+        if (!protoResponse.ok) {
+            throw new Error(`Unable to load Proto schema (${protoResponse.status})`);
+        }
+        const protoText = await protoResponse.text();
+        const root = protobuf.parse(protoText).root;
+        const payloadType = root.lookupType('NfcPayload');
+
+        // Create protobuf message with FHIR JSON stored directly
+        // This bypasses all CodeRef conversion
+        const protoPayload = {
+            originalBundleJson: fhirJson,
+            version: 1,
+            schemaVersion: 'direct-fhir',
+            // All other fields remain empty/default since we're storing raw FHIR
+            patient: {},
+            allergies: [],
+            vitals: {},
+            conditions: {},
+            events: {},
+            imaging: {},
+            labs: {},
+            assessments: {},
+            serviceRequests: {}
+        };
+
+        // Validate and encode
+        const errMsg = payloadType.verify(protoPayload);
+        if (errMsg) {
+            throw new Error(`Protobuf validation failed: ${errMsg}`);
+        }
+
+        const message = payloadType.create(protoPayload);
+        const buffer = payloadType.encode(message).finish();
+
+        console.log('Direct FHIR → Protobuf conversion:', {
+            fhirSize: fhirJson.length,
+            protobufSize: buffer.length,
+            compression: ((1 - buffer.length / fhirJson.length) * 100).toFixed(1) + '%'
+        });
+
+        return buffer;
+    } catch (error) {
+        console.error('Error in direct FHIR → Protobuf conversion:', error);
+        throw error;
+    }
+}
 
 /**
  * Encode FHIR payloads to NFC fragments while returning the intermediate CodeRef.
@@ -6737,34 +6813,65 @@ async function init() {
                 formatState.originalFhir = inputContent;
                 formatState.conversionResults.fhir = inputContent;
 
-                // Stage 1: Convert (FHIR → CodeRef) - Orange stage
-                const codeRef = codecPipeline.convertFhirBundleToCodeRef(fhirPayload);
-                formatState.conversionResults.coderef = JSON.stringify(codeRef, null, 2);
-                await updateLeftPaneMode('coderef');
-                leftInput.textContent = formatState.conversionResults.coderef;
-                updateCharCount(leftInput, leftCharCount);
-                updateStageStates('left');
-                showMessage('Convert stage active', 'info');
-                await new Promise(resolve => setTimeout(resolve, 500));
+                // Check if Preset #4 direct mode (bypass CodeRef)
+                if (formatState.preset4Mode) {
+                    // DIRECT FHIR → PROTOBUF PIPELINE (no CodeRef stage)
 
-                // Stage 2: Compress (CodeRef → Protobuf) - Blue stage
-                formatState.conversionResults.protobuf = await codecPipeline.getProtobufBinary(codeRef);
-                await updateLeftPaneMode('protobuf');
-                const uint8Array = new Uint8Array(formatState.conversionResults.protobuf);
-                const hexDisplay = Array.from(uint8Array).map(b => b.toString(16).padStart(2, '0')).join(' ');
-                leftInput.textContent = hexDisplay;
-                updateCharCount(leftInput, leftCharCount);
-                updateStageStates('left');
-                showMessage('Compress stage active', 'info');
-                await new Promise(resolve => setTimeout(resolve, 500));
+                    // Stage 1: Convert (FHIR → Protobuf) - Direct conversion
+                    showMessage('Direct FHIR → Protobuf conversion (bypassing CodeRef)', 'info');
+                    const protobufData = await convertFhirToProtobufDirect(fhirPayload);
+                    formatState.conversionResults.protobuf = protobufData;
+                    formatState.conversionResults.coderef = null; // Mark as skipped
 
-                // Stage 3: Encode (Protobuf → Fragment) - Red stage
-                const fragment = await codecPipeline.encodeToFragment(fhirPayload);
-                formatState.conversionResults.fragment = fragment;
-                await updateLeftPaneMode('fragment');
-                leftInput.textContent = fragment;
-                updateCharCount(leftInput, leftCharCount);
-                updateStageStates('left');
+                    await updateLeftPaneMode('protobuf');
+                    const uint8Array = new Uint8Array(protobufData);
+                    const hexDisplay = Array.from(uint8Array).map(b => b.toString(16).padStart(2, '0')).join(' ');
+                    leftInput.textContent = hexDisplay;
+                    updateCharCount(leftInput, leftCharCount);
+                    updateStageStates('left');
+                    showMessage('Direct compress stage active (CodeRef skipped)', 'info');
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    // Stage 2: Encode (Protobuf → Fragment) - Red stage
+                    const fragment = await codecPipeline.encodeProtobufToFragment(protobufData);
+                    formatState.conversionResults.fragment = fragment;
+                    await updateLeftPaneMode('fragment');
+                    leftInput.textContent = fragment;
+                    updateCharCount(leftInput, leftCharCount);
+                    updateStageStates('left');
+                    showMessage('✓ FHIR encoded to Fragment (direct path)', 'success');
+
+                } else {
+                    // STANDARD PIPELINE: FHIR → CodeRef → Protobuf → Fragment
+
+                    // Stage 1: Convert (FHIR → CodeRef) - Orange stage
+                    const codeRef = codecPipeline.convertFhirBundleToCodeRef(fhirPayload);
+                    formatState.conversionResults.coderef = JSON.stringify(codeRef, null, 2);
+                    await updateLeftPaneMode('coderef');
+                    leftInput.textContent = formatState.conversionResults.coderef;
+                    updateCharCount(leftInput, leftCharCount);
+                    updateStageStates('left');
+                    showMessage('Convert stage active', 'info');
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    // Stage 2: Compress (CodeRef → Protobuf) - Blue stage
+                    formatState.conversionResults.protobuf = await codecPipeline.getProtobufBinary(codeRef);
+                    await updateLeftPaneMode('protobuf');
+                    const uint8Array = new Uint8Array(formatState.conversionResults.protobuf);
+                    const hexDisplay = Array.from(uint8Array).map(b => b.toString(16).padStart(2, '0')).join(' ');
+                    leftInput.textContent = hexDisplay;
+                    updateCharCount(leftInput, leftCharCount);
+                    updateStageStates('left');
+                    showMessage('Compress stage active', 'info');
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    // Stage 3: Encode (Protobuf → Fragment) - Red stage
+                    const fragment = await codecPipeline.encodeToFragment(fhirPayload);
+                    formatState.conversionResults.fragment = fragment;
+                    await updateLeftPaneMode('fragment');
+                    leftInput.textContent = fragment;
+                    updateCharCount(leftInput, leftCharCount);
+                    updateStageStates('left');
 
                 // Do NOT update right pane - it should remain in current state until Decode is clicked
 
