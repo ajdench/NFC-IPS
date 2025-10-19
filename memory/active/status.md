@@ -147,3 +147,6 @@
 
 ### Update: 2025-10-19 16:53
 - Documented all Preset #1 bugs: vitals chart missing R2, some codes not displaying, vitals click not working
+
+### Update: 2025-10-19 17:33
+- Preset #4 complete: Direct FHIR→Protobuf pipeline bypassing CodeRef. Ready for testing.
