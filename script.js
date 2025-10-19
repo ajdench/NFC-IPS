@@ -4845,9 +4845,10 @@ const payloadService = (() => {
         const totals = { vitals: 0, conditions: 0, events: 0 };
         const allergies = [];
 
-        // Extract care stage from resource (supports both Encounter-based and extension-based)
+        // Extract care stage from resource extension
         const getCareStage = (resource) => {
-            return getCareStageFromResource(resource, bundle) || 'patient';
+            const ext = resource.extension?.find(e => e.url === 'http://example.org/fhir/StructureDefinition/care-stage');
+            return ext?.valueCode || 'patient';
         };
 
         // Extract display text from CodeableConcept
