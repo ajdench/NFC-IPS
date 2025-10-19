@@ -2959,6 +2959,7 @@ const codecPipeline = (() => {
     async function convertCodeRefToFhirBundle(codeRefPayload) {
 
         // Create base bundle structure with preserved metadata for lossless reconstruction
+        console.error('WARNING: convertCodeRefToFhirBundle called! Stack trace:', new Error().stack);
         const bundle = {
             resourceType: 'Bundle',
             id: codeRefPayload.bundle_id || 'ips-reconstructed',
@@ -3986,7 +3987,13 @@ const codecPipeline = (() => {
 async function convertFhirToProtobufDirect(fhirBundle) {
     try {
         // Serialize the entire FHIR Bundle as JSON string for protobuf storage
+        // Use compact format (no spacing) to minimize size
         const fhirJson = JSON.stringify(fhirBundle);
+
+        console.log('DEBUG ENCODE: Input fhirBundle type:', typeof fhirBundle);
+        console.log('DEBUG ENCODE: fhirBundle is object?', fhirBundle && typeof fhirBundle === 'object');
+        console.log('DEBUG ENCODE: Stringified length:', fhirJson.length);
+        console.log('DEBUG ENCODE: Preview:', fhirJson.substring(0, 200));
 
         // Load DIRECT protobuf schema (not the standard CodeRef schema)
         const protoResponse = await fetch(RESOURCES.NFC_PAYLOAD_DIRECT_PROTO);
@@ -4057,6 +4064,11 @@ async function convertProtobufToFhirDirect(protobufBinary) {
         // Decode the protobuf binary
         const message = payloadType.decode(protobufBinary);
         const payload = payloadType.toObject(message);
+
+        console.log('DEBUG: Decoded payload keys:', Object.keys(payload));
+        console.log('DEBUG: originalBundleJson type:', typeof payload.originalBundleJson);
+        console.log('DEBUG: originalBundleJson length:', payload.originalBundleJson?.length);
+        console.log('DEBUG: originalBundleJson preview:', payload.originalBundleJson?.substring(0, 200));
 
         // Extract the original FHIR JSON from originalBundleJson field
         if (!payload.originalBundleJson) {
@@ -4137,7 +4149,24 @@ const payloadService = (() => {
         if (schemaVersion === 'direct' || payload.originalBundleJson) {
             // Direct schema: extract FHIR JSON and build from it
             const fhirBundle = JSON.parse(payload.originalBundleJson);
-            return buildStageSectionsDirectlyFromFhirBundle(fhirBundle, options);
+            const result = buildStageSectionsDirectlyFromFhirBundle(fhirBundle);
+
+            // Extract patient resource from bundle
+            const patientEntry = fhirBundle.entry?.find(e => e.resource?.resourceType === 'Patient');
+            const patientResource = patientEntry?.resource || { resourceType: 'Patient' };
+
+            // Return full view model structure
+            return {
+                type: 'nfc',
+                label: options.label || 'Direct FHIR Payload',
+                patientResource,
+                allergies: result.allergies || [],
+                stageSections: result.sections || {},
+                summary: result.summary,
+                rawPayload: options.rawPayload || payload,
+                originalInput: options.originalInput || null,
+                codebook: []  // No codebook for direct FHIR
+            };
         }
 
         if (schemaVersion === 'legacy' || isLegacyIndexedPayload(payload)) {
@@ -6841,6 +6870,14 @@ async function init() {
                 return;
             }
 
+            // For Preset #4: Don't auto-decode after encoding - reconstructedFhir already set
+            // Only skip if this is NOT an explicit user action (button click)
+            const isExplicitAction = arguments[0] === true; // Check if called with explicit flag
+            if (!isExplicitAction && formatState.preset4Mode && formatState.conversionResults.reconstructedFhir) {
+                console.log('Preset #4: Skipping auto-decode, using existing reconstructedFhir');
+                return;
+            }
+
             // Clear previous results AND force fresh decode
             formatState.conversionResults = {};
 
@@ -6910,6 +6947,9 @@ async function init() {
 
                     // Immediately decode to verify round-trip and populate reconstructedFhir
                     const decodedFhir = await convertProtobufToFhirDirect(protobufData);
+                    console.log('DEBUG ENCODE PATH: decodedFhir type:', typeof decodedFhir);
+                    console.log('DEBUG ENCODE PATH: decodedFhir length:', decodedFhir?.length);
+                    console.log('DEBUG ENCODE PATH: decodedFhir preview:', decodedFhir?.substring(0, 200));
                     formatState.conversionResults.reconstructedFhir = decodedFhir;
 
                     await updateLeftPaneMode('protobuf');
@@ -6929,6 +6969,9 @@ async function init() {
                     updateCharCount(leftInput, leftCharCount);
                     updateStageStates('left');
                     showMessage('✓ FHIR encoded to Fragment (direct path)', 'success');
+
+                    console.log('DEBUG END OF ENCODE: reconstructedFhir length:', formatState.conversionResults.reconstructedFhir?.length);
+                    console.log('DEBUG END OF ENCODE: Keys in conversionResults:', Object.keys(formatState.conversionResults));
 
                 } else {
                     // STANDARD PIPELINE: FHIR → CodeRef → Protobuf → Fragment
@@ -7039,7 +7082,7 @@ async function init() {
     });
 
     // Action button - perform encode/decode based on current mode
-    actionButton.addEventListener('click', performConversion);
+    actionButton.addEventListener('click', () => performConversion(true));
 
     // Character count updates
     leftInput.addEventListener('input', () => updateCharCount(leftInput, leftCharCount));
@@ -7100,11 +7143,10 @@ async function init() {
     }
 
     parseButton.addEventListener('click', async () => {
-        // NFC web app primary path: Display the API-hydrated FHIR created by Action button
-        // For both standard and Preset #4 modes, use reconstructedFhir (decoded from protobuf)
-        const fhirToDisplay = formatState.conversionResults?.reconstructedFhir;
+        // NFC web app primary path: Display the decoded FHIR from Action button
+        // Preset #4 uses direct protobuf decode, others use CodeRef reconstruction
 
-        if (!fhirToDisplay) {
+        if (!formatState.conversionResults?.protobuf) {
             showMessage('Display button requires Action button to be clicked first', 'warning');
             return;
         }
@@ -7114,10 +7156,7 @@ async function init() {
             : 'Display Clinical Data from API-hydrated FHIR');
 
         try {
-            const fhirBundle = JSON.parse(fhirToDisplay);
-
-            // Replay the visual animation without re-running the expensive API calls
-            // Step 1: Decode (Fragment → Protobuf) - Red stage
+            // Step 1: Decode (Fragment → Protobuf) - Red stage (visual only)
             updateRightPaneFormat('protobuf');
             const uint8Array = new Uint8Array(formatState.conversionResults.protobuf);
             const hexDisplay = Array.from(uint8Array).map(b => b.toString(16).padStart(2, '0')).join(' ');
@@ -7127,34 +7166,55 @@ async function init() {
             showMessage('Decode stage active', 'info');
             await new Promise(resolve => setTimeout(resolve, 500));
 
-            // Step 2: Decompress (Protobuf → CodeRef) - Orange stage
-            // SKIP for Preset #4 direct mode (no CodeRef)
-            if (!formatState.preset4Mode) {
+            // Step 2: Decompress (Protobuf → CodeRef/FHIR) - Orange/Blue stage
+            let fhirToDisplay;
+            let fhirBundle;
+
+            if (formatState.preset4Mode) {
+                // DIRECT PATH: Use already-decoded FHIR (no re-decoding needed)
+                showMessage('Using direct FHIR (CodeRef skipped)', 'info');
+                await new Promise(resolve => setTimeout(resolve, 300));
+
+                // Use the FHIR that was already decoded during Encode
+                fhirToDisplay = formatState.conversionResults.reconstructedFhir;
+                if (!fhirToDisplay) {
+                    throw new Error('No reconstructed FHIR available - click Encode first');
+                }
+                fhirBundle = JSON.parse(fhirToDisplay);
+
+            } else {
+                // STANDARD PATH: Protobuf → CodeRef → FHIR
                 updateRightPaneFormat('coderef');
                 rightInput.textContent = formatState.conversionResults.coderef;
                 updateCharCount(rightInput, rightCharCount);
                 updateStageStates('right');
                 showMessage('Decompress stage active', 'info');
                 await new Promise(resolve => setTimeout(resolve, 500));
-            } else {
-                showMessage('Decompress stage skipped (direct FHIR mode)', 'info');
-                await new Promise(resolve => setTimeout(resolve, 300));
+
+                // Reconstruct FHIR from CodeRef
+                fhirToDisplay = formatState.conversionResults?.reconstructedFhir;
+                if (!fhirToDisplay) {
+                    throw new Error('No reconstructed FHIR available');
+                }
+                fhirBundle = JSON.parse(fhirToDisplay);
             }
 
-            // Step 3: Parse (Protobuf/CodeRef → FHIR) - Blue stage
+            // Step 3: Display FHIR in right pane
             updateRightPaneFormat('fhir');
-            rightInput.textContent = fhirToDisplay;
+            rightInput.textContent = JSON.stringify(fhirBundle, null, 2); // Pretty print for display
             updateCharCount(rightInput, rightCharCount);
             updateStageStates('right');
             updateParseButtonState();
             showMessage(formatState.preset4Mode
-                ? 'Parse stage active (direct from protobuf)'
-                : 'Parse stage active', 'info');
+                ? 'Parse complete (direct from protobuf)'
+                : 'Parse complete (reconstructed from CodeRef)', 'info');
             await new Promise(resolve => setTimeout(resolve, 500));
 
-            // Step 4: Display (Use the API-hydrated FHIR for rendering) - Green stage
+            // Step 4: Build view model and render UI
             const parsedViewModel = buildViewModelFromFhir(fhirBundle, {
-                label: 'Decoded from Fragment (API-hydrated)',
+                label: formatState.preset4Mode
+                    ? 'Direct FHIR (no CodeRef)'
+                    : 'Decoded from Fragment (API-hydrated)',
                 originalInput: formatState.conversionResults.fragment
             });
 
@@ -7711,7 +7771,7 @@ function initializeStageReveals() {
 
             leftStages?.forEach(stage => {
                 // Clear all state classes
-                stage.classList.remove('active', 'state-empty', 'state-loaded', 'state-encoded', 'state-convert', 'state-compress');
+                stage.classList.remove('active', 'state-empty', 'state-loaded', 'state-encoded', 'state-convert', 'state-compress', 'state-skipped');
 
                 const stageType = stage.dataset.stage;
 
@@ -7727,7 +7787,10 @@ function initializeStageReveals() {
                         }
                         // Otherwise remains white/default
                     } else if (stageType === 'convert') {
-                        if (currentMode === 'coderef') {
+                        // Grey out Convert stage for Preset #4 (direct FHIR)
+                        if (formatState.preset4Mode) {
+                            stage.classList.add('state-skipped'); // Grey/disabled for Preset #4
+                        } else if (currentMode === 'coderef') {
                             stage.classList.add('active', 'state-convert'); // Orange when CodeRef active
                         }
                         // Otherwise remains white/default
@@ -7753,7 +7816,7 @@ function initializeStageReveals() {
 
             rightStages?.forEach(stage => {
                 // Clear all state classes
-                stage.classList.remove('active', 'state-decode', 'state-decompress', 'state-parse', 'state-display');
+                stage.classList.remove('active', 'state-decode', 'state-decompress', 'state-parse', 'state-display', 'state-skipped');
 
                 const stageType = stage.dataset.stage;
 
@@ -7775,8 +7838,10 @@ function initializeStageReveals() {
                         stage.classList.add('active', 'state-decompress'); // Orange when Protobuf active
                     }
                 } else if (stageType === 'parse') {
-                    // Parse blue when CodeRef active and enables Parse button
-                    if (currentFormat === 'coderef') {
+                    // Grey out Parse (Invert) stage for Preset #4 (direct FHIR)
+                    if (formatState.preset4Mode) {
+                        stage.classList.add('state-skipped'); // Grey/disabled for Preset #4
+                    } else if (currentFormat === 'coderef') {
                         stage.classList.add('active', 'state-parse'); // Blue when CodeRef active
                     }
                 } else if (stageType === 'display') {

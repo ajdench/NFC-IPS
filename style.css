@@ -840,6 +840,25 @@ main {
     box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
 }
 
+/* Skipped state for Preset #4 (direct FHIR bypasses CodeRef) */
+.stage-reveal-item.state-skipped {
+    background-color: rgba(108, 117, 125, 0.05);
+    border-color: #dee2e6;
+    color: #adb5bd;
+    opacity: 0.6;
+    position: relative;
+}
+
+.stage-reveal-item.state-skipped::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background-color: #adb5bd;
+}
+
 .stage-label {
     font-size: calc(var(--font-size-uniform) * 0.8);
     font-weight: 600;
