@@ -993,10 +993,9 @@ function createStandardizedPill(type, rawData, sectionDateTracker, isFirstDispla
     const tooltipParts = [`${codePrefix}:${code.code}`, tooltipValueContent, tooltipDateDisplay].filter(Boolean);
     const tooltip = tooltipParts.join(' | ');
 
-    // Resolve display name for label
-    const displayName = resolveCodeDisplay(code.system, code.code);
+    // Use the description already provided in rawData
     const typeLabel = type === 'vitals' ? 'Vitals' : type === 'conditions' ? 'Condition' : 'Event';
-    const label = `${typeLabel} • ${displayName}`;
+    const label = `${typeLabel} • ${description}`;
 
 
     return {
@@ -4956,6 +4955,7 @@ const payloadService = (() => {
                     time: null,
                     onset: resource.onsetDateTime || resource.recordedDate || null
                 };
+                console.log('DEBUG Condition:', resource.id, 'description:', rawData.description, 'code:', rawData.code);
                 const pill = createStandardizedPill('conditions', rawData, sectionDateTracker);
                 stageSection.conditions.push(pill);
                 stageSection.allPills.push(pill);

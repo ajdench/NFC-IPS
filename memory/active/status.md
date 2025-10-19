@@ -141,3 +141,6 @@
 
 ### Update: 2025-10-19 16:20
 - Fixed scope error preventing Preset #1 from loading - getCareStageFromResource was out of scope
+
+### Update: 2025-10-19 16:28
+- Fixed Preset #1 loading: scope error + Encounter-based care stage lookup + LOINC API headers
