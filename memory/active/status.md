@@ -150,3 +150,9 @@
 
 ### Update: 2025-10-19 17:33
 - Preset #4 complete: Direct FHIR→Protobuf pipeline bypassing CodeRef. Ready for testing.
+
+### Update: 2025-10-19 17:41
+- Auto-JJ commit: feat(core): Update application logic
+
+### Update: 2025-10-19 17:41
+- CLAUDE.md timestamps updated: Auto-JJ timestamp refresh

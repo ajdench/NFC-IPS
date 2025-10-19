@@ -292,7 +292,8 @@ export const DEMO_PAYLOADS = {
 // =============================================================================
 export const RESOURCES = {
     NFC_PAYLOAD_PROTO: new URL('resources/nfc_payload.proto?v=2', BASE_URL).href,  // v=2: Added r1_phec/r1_phc split
-    NFC_PAYLOAD_LEGACY_PROTO: new URL('resources/nfc_payload_legacy.proto', BASE_URL).href
+    NFC_PAYLOAD_LEGACY_PROTO: new URL('resources/nfc_payload_legacy.proto', BASE_URL).href,
+    NFC_PAYLOAD_DIRECT_PROTO: new URL('resources/nfc_payload_direct.proto', BASE_URL).href  // Direct FHIR storage (no CodeRef)
 };
 
 // =============================================================================

@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package medis.nfc.direct;
+
+/**
+ * Direct FHIR Storage Schema
+ *
+ * Purpose: Store complete FHIR Bundle as raw JSON string
+ * Use Case: Testing, development, maximum fidelity (no CodeRef conversion)
+ * Trade-off: Larger payload size, but 100% lossless
+ *
+ * Usage: Preset #4 and other test scenarios where compression is secondary
+ */
+
+message NFCPayloadDirect {
+    // Core payload - the entire FHIR Bundle as JSON string
+    string originalBundleJson = 1;
+
+    // Metadata for tracking
+    int32 version = 2;              // Schema version (1 for initial)
+    string schemaVersion = 3;       // Human-readable: "direct-fhir-v1"
+
+    // Optional: Basic metadata extracted for quick reference
+    string bundleId = 4;            // Bundle.id
+    string patientId = 5;           // Patient.id
+    string timestamp = 6;           // Bundle.timestamp
+}

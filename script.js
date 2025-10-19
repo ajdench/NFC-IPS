@@ -2031,9 +2031,11 @@ const codecPipeline = (() => {
 
     const PROTO_URL = RESOURCES.NFC_PAYLOAD_PROTO;
     const LEGACY_PROTO_URL = RESOURCES.NFC_PAYLOAD_LEGACY_PROTO;
+    const DIRECT_PROTO_URL = RESOURCES.NFC_PAYLOAD_DIRECT_PROTO;
 
     let payloadTypePromise = null;
     let legacyPayloadTypePromise = null;
+    let directPayloadTypePromise = null;
 
     function ensurePayloadType() {
         if (!payloadTypePromise) {
@@ -2083,6 +2085,31 @@ const codecPipeline = (() => {
                 });
         }
         return legacyPayloadTypePromise;
+    }
+
+    function ensureDirectPayloadType() {
+        if (!directPayloadTypePromise) {
+            directPayloadTypePromise = fetch(DIRECT_PROTO_URL)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Unable to load direct Proto schema (${response.status})`);
+                    }
+                    return response.text();
+                })
+                .then(protoText => {
+                    const root = protobuf.parse(protoText).root;
+                    const type = root.lookupType('medis.nfc.direct.NFCPayloadDirect');
+                    if (!type) {
+                        throw new Error('Direct NFCPayloadDirect type not found in Proto schema.');
+                    }
+                    return type;
+                })
+                .catch(error => {
+                    directPayloadTypePromise = null;
+                    throw error;
+                });
+        }
+        return directPayloadTypePromise;
     }
 
     function attemptInflations(bytes) {
@@ -2171,12 +2198,21 @@ const codecPipeline = (() => {
 
         const buffers = attemptInflations(bytes);
 
+        // Try direct schema first (Preset #4)
+        const directPayloadType = await ensureDirectPayloadType();
+        const directResult = await tryDecode(directPayloadType, buffers, 'direct');
+        if (directResult) {
+            return { data: directResult, schemaVersion: 'direct' };
+        }
+
+        // Try standard CodeRef schema
         const payloadType = await ensurePayloadType();
         const coderefResult = await tryDecode(payloadType, buffers, 'coderef');
         if (coderefResult) {
             return { data: coderefResult, schemaVersion: 'coderef' };
         }
 
+        // Try legacy schema
         const legacyPayloadType = await ensureLegacyPayloadType();
         const legacyResult = await tryDecode(legacyPayloadType, buffers, 'legacy');
         if (legacyResult) {
@@ -3920,7 +3956,9 @@ const codecPipeline = (() => {
         try {
             const compressed = pako.deflate(protobufBinary);
             const base64 = btoa(String.fromCharCode(...compressed));
-            return base64;
+            // Convert to URL-safe base64: + → -, / → _, remove padding =
+            const urlSafe = base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+            return urlSafe;
         } catch (error) {
             console.error('Error encoding protobuf to fragment:', error);
             throw error;
@@ -3950,31 +3988,29 @@ async function convertFhirToProtobufDirect(fhirBundle) {
         // Serialize the entire FHIR Bundle as JSON string for protobuf storage
         const fhirJson = JSON.stringify(fhirBundle);
 
-        // Load protobuf schema
-        const protoResponse = await fetch(RESOURCES.NFC_PAYLOAD_PROTO);
+        // Load DIRECT protobuf schema (not the standard CodeRef schema)
+        const protoResponse = await fetch(RESOURCES.NFC_PAYLOAD_DIRECT_PROTO);
         if (!protoResponse.ok) {
-            throw new Error(`Unable to load Proto schema (${protoResponse.status})`);
+            throw new Error(`Unable to load Direct Proto schema (${protoResponse.status})`);
         }
         const protoText = await protoResponse.text();
         const root = protobuf.parse(protoText).root;
-        const payloadType = root.lookupType('medis.nfc.NFCPayload');
+        const payloadType = root.lookupType('medis.nfc.direct.NFCPayloadDirect');
+
+        // Extract metadata for optional fields
+        const bundleId = fhirBundle.id || '';
+        const patientEntry = fhirBundle.entry?.find(e => e.resource?.resourceType === 'Patient');
+        const patientId = patientEntry?.resource?.id || '';
+        const timestamp = fhirBundle.timestamp || '';
 
         // Create protobuf message with FHIR JSON stored directly
-        // This bypasses all CodeRef conversion
         const protoPayload = {
             originalBundleJson: fhirJson,
             version: 1,
-            schemaVersion: 'direct-fhir',
-            // All other fields remain empty/default since we're storing raw FHIR
-            patient: {},
-            allergies: [],
-            vitals: {},
-            conditions: {},
-            events: {},
-            imaging: {},
-            labs: {},
-            assessments: {},
-            serviceRequests: {}
+            schemaVersion: 'direct-fhir-v1',
+            bundleId: bundleId,
+            patientId: patientId,
+            timestamp: timestamp
         };
 
         // Validate and encode
@@ -3989,12 +4025,55 @@ async function convertFhirToProtobufDirect(fhirBundle) {
         console.log('Direct FHIR → Protobuf conversion:', {
             fhirSize: fhirJson.length,
             protobufSize: buffer.length,
-            compression: ((1 - buffer.length / fhirJson.length) * 100).toFixed(1) + '%'
+            ratio: (buffer.length / fhirJson.length * 100).toFixed(1) + '%',
+            bundleId: bundleId,
+            patientId: patientId
         });
 
         return buffer;
     } catch (error) {
         console.error('Error in direct FHIR → Protobuf conversion:', error);
+        throw error;
+    }
+}
+
+/**
+ * Decode protobuf binary back to FHIR (direct mode - no CodeRef)
+ * Extracts the originalBundleJson field from the protobuf message
+ * @param {Uint8Array} protobufBinary - The protobuf binary data
+ * @returns {Promise<string>} - FHIR JSON string
+ */
+async function convertProtobufToFhirDirect(protobufBinary) {
+    try {
+        // Load DIRECT protobuf schema (not the standard CodeRef schema)
+        const protoResponse = await fetch(RESOURCES.NFC_PAYLOAD_DIRECT_PROTO);
+        if (!protoResponse.ok) {
+            throw new Error(`Unable to load Direct Proto schema (${protoResponse.status})`);
+        }
+        const protoText = await protoResponse.text();
+        const root = protobuf.parse(protoText).root;
+        const payloadType = root.lookupType('medis.nfc.direct.NFCPayloadDirect');
+
+        // Decode the protobuf binary
+        const message = payloadType.decode(protobufBinary);
+        const payload = payloadType.toObject(message);
+
+        // Extract the original FHIR JSON from originalBundleJson field
+        if (!payload.originalBundleJson) {
+            throw new Error('No originalBundleJson found in protobuf - not a direct FHIR payload');
+        }
+
+        console.log('Direct Protobuf → FHIR conversion:', {
+            protobufSize: protobufBinary.length,
+            fhirSize: payload.originalBundleJson.length,
+            schemaVersion: payload.schemaVersion,
+            bundleId: payload.bundleId,
+            patientId: payload.patientId
+        });
+
+        return payload.originalBundleJson;
+    } catch (error) {
+        console.error('Error in direct Protobuf → FHIR conversion:', error);
         throw error;
     }
 }
@@ -4053,6 +4132,12 @@ const payloadService = (() => {
                 allergies: stageData.allergies,
                 rawPayload: options.rawPayload || payload
             });
+        }
+
+        if (schemaVersion === 'direct' || payload.originalBundleJson) {
+            // Direct schema: extract FHIR JSON and build from it
+            const fhirBundle = JSON.parse(payload.originalBundleJson);
+            return buildStageSectionsDirectlyFromFhirBundle(fhirBundle, options);
         }
 
         if (schemaVersion === 'legacy' || isLegacyIndexedPayload(payload)) {
@@ -6823,6 +6908,10 @@ async function init() {
                     formatState.conversionResults.protobuf = protobufData;
                     formatState.conversionResults.coderef = null; // Mark as skipped
 
+                    // Immediately decode to verify round-trip and populate reconstructedFhir
+                    const decodedFhir = await convertProtobufToFhirDirect(protobufData);
+                    formatState.conversionResults.reconstructedFhir = decodedFhir;
+
                     await updateLeftPaneMode('protobuf');
                     const uint8Array = new Uint8Array(protobufData);
                     const hexDisplay = Array.from(uint8Array).map(b => b.toString(16).padStart(2, '0')).join(' ');
@@ -7012,10 +7101,8 @@ async function init() {
 
     parseButton.addEventListener('click', async () => {
         // NFC web app primary path: Display the API-hydrated FHIR created by Action button
-        // For Preset #4 direct mode, use original FHIR directly
-        const fhirToDisplay = formatState.preset4Mode
-            ? formatState.originalFhir
-            : formatState.conversionResults?.reconstructedFhir;
+        // For both standard and Preset #4 modes, use reconstructedFhir (decoded from protobuf)
+        const fhirToDisplay = formatState.conversionResults?.reconstructedFhir;
 
         if (!fhirToDisplay) {
             showMessage('Display button requires Action button to be clicked first', 'warning');
