@@ -4955,7 +4955,6 @@ const payloadService = (() => {
                     time: null,
                     onset: resource.onsetDateTime || resource.recordedDate || null
                 };
-                console.log('DEBUG Condition:', resource.id, 'description:', rawData.description, 'code:', rawData.code);
                 const pill = createStandardizedPill('conditions', rawData, sectionDateTracker);
                 stageSection.conditions.push(pill);
                 stageSection.allPills.push(pill);
@@ -6304,35 +6303,14 @@ async function init() {
     const ipsInput = document.getElementById('ips-input');
     const fragmentInput = document.getElementById('fragment-input');
 
+    // Load preset FHIR JSON files (lazy-loaded on button click, not pre-processed)
     const payload0 = await fetchJson(DEMO_PAYLOADS.IPS_FHIR_JSON_0);
     const payload1 = await fetchJson(DEMO_PAYLOADS.IPS_FHIR_JSON_1);
     const payload2 = await fetchJson(DEMO_PAYLOADS.IPS_FHIR_JSON_2);
     const payload3 = await fetchJson(DEMO_PAYLOADS.IPS_FHIR_JSON_3);
 
-    if (payload1) {
-        appState.demos[1] = payloadService.buildViewModelFromObject(payload1, {
-            label: 'Payload 1',
-            rawPayload: payload1
-        });
-    }
-    if (payload0) {
-        appState.demos[0] = payloadService.buildViewModelFromObject(payload0, {
-            label: 'Payload 0',
-            rawPayload: payload0
-        });
-    }
-    if (payload2) {
-        appState.demos[2] = payloadService.buildViewModelFromObject(payload2, {
-            label: 'Payload 2',
-            rawPayload: payload2
-        });
-    }
-    if (payload3) {
-        appState.demos[3] = payloadService.buildViewModelFromObject(payload3, {
-            label: 'Payload 3',
-            rawPayload: payload3
-        });
-    }
+    // Note: Payloads are processed on-demand when preset buttons are clicked,
+    // not pre-loaded here to avoid unnecessary processing and console noise
 
     let initialViewModel = null;
     let initialComparison = null;
