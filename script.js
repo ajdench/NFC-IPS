@@ -3957,7 +3957,7 @@ async function convertFhirToProtobufDirect(fhirBundle) {
         }
         const protoText = await protoResponse.text();
         const root = protobuf.parse(protoText).root;
-        const payloadType = root.lookupType('NfcPayload');
+        const payloadType = root.lookupType('medis.nfc.NFCPayload');
 
         // Create protobuf message with FHIR JSON stored directly
         // This bypasses all CodeRef conversion
@@ -6872,6 +6872,7 @@ async function init() {
                     leftInput.textContent = fragment;
                     updateCharCount(leftInput, leftCharCount);
                     updateStageStates('left');
+                }
 
                 // Do NOT update right pane - it should remain in current state until Decode is clicked
 
