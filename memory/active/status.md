@@ -144,3 +144,6 @@
 
 ### Update: 2025-10-19 16:28
 - Fixed Preset #1 loading: scope error + Encounter-based care stage lookup + LOINC API headers
+
+### Update: 2025-10-19 16:53
+- Documented all Preset #1 bugs: vitals chart missing R2, some codes not displaying, vitals click not working
