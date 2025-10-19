@@ -138,3 +138,6 @@
 
 ### Update: 2025-10-19 16:20
 - CLAUDE.md timestamps updated: Auto-JJ timestamp refresh
+
+### Update: 2025-10-19 16:20
+- Fixed scope error preventing Preset #1 from loading - getCareStageFromResource was out of scope

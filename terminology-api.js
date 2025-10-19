@@ -88,7 +88,11 @@ async function lookupLoincCode(code) {
     const url = `${API_CONFIG.loinc.baseUrl}?system=http://loinc.org&code=${code}`;
 
     try {
-        const response = await fetchWithTimeout(url, API_CONFIG.loinc.timeout);
+        const response = await fetchWithTimeout(url, API_CONFIG.loinc.timeout, {
+            headers: {
+                'Accept': 'application/fhir+json'
+            }
+        });
 
         if (!response.ok) {
             console.warn(`LOINC lookup failed for ${code}: ${response.status}`);
@@ -117,14 +121,18 @@ async function lookupLoincCode(code) {
  * Fetch with timeout wrapper
  * @param {string} url - Request URL
  * @param {number} timeout - Timeout in milliseconds
+ * @param {Object} options - Additional fetch options (headers, etc.)
  * @returns {Promise<Response>}
  */
-async function fetchWithTimeout(url, timeout) {
+async function fetchWithTimeout(url, timeout, options = {}) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
     try {
-        const response = await fetch(url, { signal: controller.signal });
+        const response = await fetch(url, {
+            ...options,
+            signal: controller.signal
+        });
         clearTimeout(timeoutId);
         return response;
     } catch (error) {
