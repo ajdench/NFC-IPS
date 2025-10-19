@@ -7011,17 +7011,22 @@ async function init() {
 
     parseButton.addEventListener('click', async () => {
         // NFC web app primary path: Display the API-hydrated FHIR created by Action button
-        if (!formatState.conversionResults?.reconstructedFhir) {
+        // For Preset #4 direct mode, use original FHIR directly
+        const fhirToDisplay = formatState.preset4Mode
+            ? formatState.originalFhir
+            : formatState.conversionResults?.reconstructedFhir;
+
+        if (!fhirToDisplay) {
             showMessage('Display button requires Action button to be clicked first', 'warning');
             return;
         }
 
-        startPipelineTrace('Display Clinical Data from API-hydrated FHIR');
+        startPipelineTrace(formatState.preset4Mode
+            ? 'Display Clinical Data (Direct FHIR Pipeline)'
+            : 'Display Clinical Data from API-hydrated FHIR');
 
         try {
-            // Use the FHIR that was already created during Action button's animation
-            // This was API-hydrated at line 6669 in performConversion()
-            const fhirBundle = JSON.parse(formatState.conversionResults.reconstructedFhir);
+            const fhirBundle = JSON.parse(fhirToDisplay);
 
             // Replay the visual animation without re-running the expensive API calls
             // Step 1: Decode (Fragment → Protobuf) - Red stage
@@ -7035,20 +7040,28 @@ async function init() {
             await new Promise(resolve => setTimeout(resolve, 500));
 
             // Step 2: Decompress (Protobuf → CodeRef) - Orange stage
-            updateRightPaneFormat('coderef');
-            rightInput.textContent = formatState.conversionResults.coderef;
-            updateCharCount(rightInput, rightCharCount);
-            updateStageStates('right');
-            showMessage('Decompress stage active', 'info');
-            await new Promise(resolve => setTimeout(resolve, 500));
+            // SKIP for Preset #4 direct mode (no CodeRef)
+            if (!formatState.preset4Mode) {
+                updateRightPaneFormat('coderef');
+                rightInput.textContent = formatState.conversionResults.coderef;
+                updateCharCount(rightInput, rightCharCount);
+                updateStageStates('right');
+                showMessage('Decompress stage active', 'info');
+                await new Promise(resolve => setTimeout(resolve, 500));
+            } else {
+                showMessage('Decompress stage skipped (direct FHIR mode)', 'info');
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
 
-            // Step 3: Parse (CodeRef → FHIR) - Blue stage
+            // Step 3: Parse (Protobuf/CodeRef → FHIR) - Blue stage
             updateRightPaneFormat('fhir');
-            rightInput.textContent = formatState.conversionResults.reconstructedFhir;
+            rightInput.textContent = fhirToDisplay;
             updateCharCount(rightInput, rightCharCount);
             updateStageStates('right');
             updateParseButtonState();
-            showMessage('Parse stage active', 'info');
+            showMessage(formatState.preset4Mode
+                ? 'Parse stage active (direct from protobuf)'
+                : 'Parse stage active', 'info');
             await new Promise(resolve => setTimeout(resolve, 500));
 
             // Step 4: Display (Use the API-hydrated FHIR for rendering) - Green stage
